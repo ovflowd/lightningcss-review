@@ -8,9 +8,9 @@
  * and config are data, not instructions, and are not checked here.
  *
  * Stage: CI and `npm run check` (run from anywhere). Prints one line per problem, then a summary;
- * exits 1 when there is any problem. Output and exit status are py-final's
- * scripts/lint_context.py, character for character: sizes are UTF-8 bytes of the text as Python
- * reads it (universal newlines), and the patterns use Python's Unicode `\w`, `\d`, `\s`, `\b`.
+ * exits 1 when there is any problem. Output, exit status and verdicts are stable across versions,
+ * so a file that passed keeps passing: sizes are UTF-8 bytes of the text as Python reads it
+ * (universal newlines), and the patterns use Python's Unicode `\w`, `\d`, `\s`, `\b`.
  */
 import { readFileSync } from 'node:fs';
 import { join, relative, resolve, sep } from 'node:path';

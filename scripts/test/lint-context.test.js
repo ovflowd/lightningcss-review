@@ -52,7 +52,7 @@ test('history, line references and oversized files are reported once per line', 
   );
 });
 
-test('a tree with planted problems prints what py-final printed, byte for byte', (t) => {
+test('a tree with planted problems prints the recorded output, byte for byte', (t) => {
   using dir = tempDir();
   const golden =
     /** @type {{ files: Record<string, string>, outputs: Record<string, { stdout: string, status: number }> }} */ (

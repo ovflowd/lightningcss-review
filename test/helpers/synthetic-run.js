@@ -1,8 +1,7 @@
 /**
  * A synthetic run directory with every stage file the report, the worklist and the status reader
- * use, plus builders for the cases and oracle verdicts those tests need. Ported from py-final's
- * tests/test_report.py (`Run`, `verdict`, `probe_case`, `mutation_case`), so the ported report and
- * driver tests can share one fixture builder.
+ * use, plus builders for the cases and oracle verdicts those tests need, so the report and driver
+ * tests share one fixture builder and each test states only the cases it cares about.
  *
  * Usage:
  *   using run = new SyntheticRun();

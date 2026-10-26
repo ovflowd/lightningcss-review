@@ -1,7 +1,7 @@
 /**
  * A stand-in for the JSONL adapter in the driver group's tests (oracle-driver and inspect): it
  * answers every request with the CSS unchanged, so "pretty-printing" is the identity and a test
- * controls both sides' output. py-final's goldens (python-golden.json) ran the same script.
+ * controls both sides' output. The golden outputs (golden.json) were recorded with the same script.
  */
 import { chmodSync, mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';

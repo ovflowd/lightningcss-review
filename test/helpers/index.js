@@ -1,6 +1,6 @@
 /**
  * Shared test helpers: temporary directories, captured output, synthetic run directories and
- * the Python golden vectors.
+ * the golden vectors.
  *
  * Every test file imports from here instead of writing its own temp-dir or stdout plumbing, so
  * tests stay short and clean up after themselves (`using dir = tempDir()`).
@@ -18,9 +18,9 @@ export const REPO_ROOT = join(import.meta.dirname, '..', '..');
 /**
  * test/fixtures/: shared fixtures, one subdirectory per part of the code (`build`, `core`, `driver`
  * for lib/oracle-driver and lib/inspect, `infra` for lib/cli and scripts, `report`). The
- * `python-golden.json` files and `infra/*.json` record what the Python implementation (tag
- * py-final) answered; they are frozen, so a deliberate behavior change edits the expected value
- * by hand and says why in the test.
+ * `golden.json` files and `infra/*.json` are frozen expected answers, recorded once from the
+ * original Python implementation (tag `py-final`); they pin the on-disk and printed formats, so a
+ * deliberate behavior change edits the expected value by hand and says why in the test.
  */
 export const FIXTURES_DIR = join(REPO_ROOT, 'test', 'fixtures');
 
@@ -178,7 +178,7 @@ export async function captureOutput(fn) {
 }
 
 /**
- * @typedef {object} PythonGolden test/fixtures/core/python-golden.json
+ * @typedef {object} PythonGolden test/fixtures/core/golden.json
  * @property {[string, string][]} float_repr `[float.hex(), repr()]`.
  * @property {{ file: string, line: string, ascii: string, ascii_indent: string }[]} dumps
  * @property {string[]} dumps_sources The values `dumps` was computed from (insertion order).
@@ -195,15 +195,13 @@ export async function captureOutput(fn) {
  */
 
 /**
- * Python's answers for the core helpers (test/fixtures/core/python-golden.json, generated with
- * CPython 3.14 from py-final's helpers).
+ * Python's answers for the core helpers (test/fixtures/core/golden.json, generated with
+ * CPython 3.14).
  *
  * @returns {PythonGolden}
  */
 export function pythonGolden() {
-  return /** @type {PythonGolden} */ (
-    loads(readFileSync(join(FIXTURES_DIR, 'core', 'python-golden.json'), 'utf8'))
-  );
+  return /** @type {PythonGolden} */ (loads(readFileSync(join(FIXTURES_DIR, 'core', 'golden.json'), 'utf8')));
 }
 
 /**

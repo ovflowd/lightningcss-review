@@ -8,8 +8,9 @@
  * with one id prefix per file and ids numbered 1..n without gaps.
  *
  * Stage: CI and `npm run check`. Prints one line per problem, then a summary; exits 1 when there
- * is any problem. Output and exit status are py-final's scripts/check_checklists.py, character for
- * character (Python's `\d`, line splitting and whitespace rules included).
+ * is any problem. It accepts exactly the lines `lcr report` parses, so it uses the same rules
+ * (Python's `\d`, line splitting and whitespace rules included), and its output and exit status
+ * are stable across versions.
  */
 import { readdirSync, readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';

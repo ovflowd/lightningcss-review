@@ -45,7 +45,7 @@ test('format problems are reported in file order', (t) => {
   assert.equal(out.mock.calls.at(-1)?.arguments[0], '2 checklists, 4 problems\n');
 });
 
-test('a tree with planted problems prints what py-final printed, byte for byte', (t) => {
+test('a tree with planted problems prints the recorded output, byte for byte', (t) => {
   using dir = tempDir();
   const golden =
     /** @type {{ files: Record<string, string>, outputs: Record<string, { stdout: string, status: number }> }} */ (

@@ -1,7 +1,7 @@
 /**
- * py-final's answers for the lib/build and lib/prepare helpers (python-golden.json next to this
- * file, generated once with CPython 3.14 from py-final's modules). The file is frozen: it is the
- * parity record, not something to regenerate (see FIXTURES_DIR in test/helpers/index.js).
+ * The expected answers for the lib/build and lib/prepare helpers (golden.json next to this file).
+ * The file is frozen: it pins the scripts and stage-file formats these helpers produce, so it is
+ * not something to regenerate (see FIXTURES_DIR in test/helpers/index.js).
  */
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -17,7 +17,7 @@ let cached = null;
  * @returns {any}
  */
 export function buildGolden() {
-  cached ??= loads(readFileSync(join(import.meta.dirname, 'python-golden.json'), 'utf8'));
+  cached ??= loads(readFileSync(join(import.meta.dirname, 'golden.json'), 'utf8'));
 
   return cached;
 }

@@ -140,13 +140,14 @@ after its stage, with its unit tests in a `test/` directory next to it:
 | `lib/types.js` | every shared data shape (stage files, config, adapter protocol) as `@typedef` |
 | `oracle/*.mjs`, `oracle/lib/` | the analysis-image scripts (`prepare-jobs`, `compare`, `spec-cards`) and their modules: DOM synthesis, value normalization, per-engine verdicts, transitions; shapes in `oracle/lib/types.mjs` |
 | `oracle/engine-runner.cjs`, `oracle/runner/` | the engine runner and its in-page functions (CommonJS, ES2020: it also runs on the legacy images' Node 14 and 16) |
-| `test/` | shared test helpers (`test/helpers/`) and fixtures, including the frozen py-final golden outputs |
+| `test/` | shared test helpers (`test/helpers/`) and fixtures, including the frozen golden outputs |
 
 Stage files keep the exact format the harness has always written: `.json` files in Python's
 `json.dumps(indent=2, sort_keys=True)` layout, `.jsonl` rows in its compact form, and case ids
-hashed from that same serialization (`lib/core/pyjson.js`, `lib/core/ids.js`). Existing runs,
-baselines and analyses therefore stay valid, and reports are byte-identical across versions. The
-`lib/core/py*.js` helpers keep the other behaviors this output depends on (number formatting,
+hashed from that same serialization (`lib/core/pyjson.js`, `lib/core/ids.js`). These formats
+originate from the harness's original Python implementation (tag `py-final`) and are frozen, so
+existing runs, baselines and analyses stay valid and reports are byte-identical across versions.
+The `lib/core/py*.js` helpers keep the other behaviors this output depends on (number formatting,
 rounding, string splitting, sorting by code point, Unicode-aware regex classes); use them instead
 of the JavaScript built-ins wherever a value ends up in a stage file or in printed output.
 

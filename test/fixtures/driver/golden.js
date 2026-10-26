@@ -1,12 +1,11 @@
 /**
- * py-final's answers for the oracle-driver and inspect commands (python-golden.json next to this
- * file, generated once with CPython from py-final's modules on synthetic runs). The file is
- * frozen: it is the parity record, not something to regenerate (see FIXTURES_DIR in
- * test/helpers/index.js).
+ * The expected output of the oracle-driver and inspect commands on synthetic runs (golden.json
+ * next to this file). The file is frozen: those outputs are fixed formats, so it is the record a
+ * change must keep, not something to regenerate (see FIXTURES_DIR in test/helpers/index.js).
  *
- * Each scenario carries the input files of a run and what py-final printed for each call, with
- * the run directory replaced by `<run>`, so a test can rebuild the run in a temp dir, call the
- * port and compare the output byte for byte.
+ * Each scenario carries the input files of a run and the expected output of each call, with the
+ * run directory replaced by `<run>`, so a test can rebuild the run in a temp dir, call the command
+ * and compare the output byte for byte.
  */
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -16,11 +15,11 @@ import { loads } from '../../../lib/core/pyjson.js';
 import { captureOutput, writeFiles } from '../../helpers/index.js';
 import { writeFakeAdapters } from './fake-adapter.js';
 
-/** What py-final printed in place of the run directory. */
+/** What the golden output holds in place of the run directory. */
 export const RUN_TOKEN = '<run>';
 
 /**
- * One py-final call of a command: `[function name, positional arguments, keyword arguments]`,
+ * One recorded call of a command: `[function name, positional arguments, keyword arguments]`,
  * and what it printed (or the LcrError message it raised).
  *
  * @typedef {object} GoldenCall
@@ -45,7 +44,7 @@ let cached = null;
  * @returns {any}
  */
 export function driverGolden() {
-  cached ??= loads(readFileSync(join(import.meta.dirname, 'python-golden.json'), 'utf8'));
+  cached ??= loads(readFileSync(join(import.meta.dirname, 'golden.json'), 'utf8'));
 
   return cached;
 }
