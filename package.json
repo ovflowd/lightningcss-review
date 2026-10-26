@@ -23,7 +23,7 @@
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
-    "@types/node": "24.19.2",
+    "@types/node": "26.6.5",
     "colorjs.io": "0.7.1",
     "css-tree": "3.2.1",
     "eslint": "10.13.0",
