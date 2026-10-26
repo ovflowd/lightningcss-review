@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: effects-masking/sie-mask-position-three-value-invalid
+area: effects-masking
+title: A three-value mask-position is invalid and must not override an earlier valid one
+mode: minify
+targets: none
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/css-masking-1/#the-mask-position https://drafts.csswg.org/css-values-4/#position https://github.com/web-platform-tests/wpt/blob/master/css/css-masking/parsing/mask-position-invalid.html
+note: MASTER FAILS (no issue filed yet). mask-position is <position>#, not <bg-position>#; master prints mask-position:50px 0. Chrome 156 rejects `left 50px top` in mask-position (it does accept it inside the mask shorthand, an engine quirk)
+*/
+.t { width: 100px; height: 100px; background: red; mask-image: linear-gradient(#000, #000); mask-size: 10px 10px; mask-repeat: no-repeat; mask-position: 0 0; mask-position: left 50px top; }

@@ -1,0 +1,14 @@
+/*! lcr-probe
+id: nesting/nesting-selector-specificity-is-max-of-parent-list
+area: nesting
+title: Lowered `&` keeps :is() specificity (max of the parent list), not per-branch specificity
+mode: lower-minify
+targets: chrome 100
+expect: equivalent
+known: none
+ref: https://drafts.csswg.org/css-nesting-1/#nest-selector
+dom: <b class="foo"><i class="t">x</i></b>
+note: guard, master passes; expanding to `#a i, b i` would give the matching branch (0,0,2) and let `.foo i` (0,1,1) win
+*/
+#a, b { & i { color: rgb(0, 128, 0); } }
+.foo i { color: rgb(255, 0, 0); }

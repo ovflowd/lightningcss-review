@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: transition-animation/css-wide-keyword-longhand-not-folded-into-shorthand
+area: transition-animation
+title: A CSS-wide keyword transition-property must not be folded into an invalid `transition` shorthand
+mode: minify
+targets: none
+expect: equivalent, output-not-contains:"transition:initial"
+known: open-issue#1214
+ref: https://drafts.csswg.org/css-values-4/#common-keywords https://drafts.csswg.org/css-transitions-1/#single-transition-property https://github.com/parcel-bundler/lightningcss/issues/1214
+note: output `transition:initial 1s` is invalid (Chrome drops it), so the 1s duration is lost
+*/
+.t { transition-property: initial; transition-duration: 1s; transition-timing-function: ease; transition-delay: 0s; }

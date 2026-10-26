@@ -1,0 +1,14 @@
+/*! lcr-probe
+id: effects-masking/sie-mask-composite-porter-duff-mapping
+area: effects-masking
+title: Lowering mask-composite to -webkit-mask-composite must use the Porter-Duff equivalents
+mode: lower-minify
+targets: safari 14
+expect: output-contains:"-webkit-mask-composite:source-out", output-contains:"-webkit-mask-composite:xor", output-contains:"-webkit-mask-composite:source-in"
+known: none
+ref: https://drafts.csswg.org/css-masking-1/#the-mask-composite https://drafts.csswg.org/compositing-1/#porterduffcompositingoperators
+note: guard. add=source over, subtract=source out, intersect=source in, exclude=XOR (spec prose); Safari < 15.4 only understands the legacy keywords. One operator per rule so the expected strings contain no commas
+*/
+.s { width: 50px; height: 50px; background: red; mask-image: linear-gradient(#000, #000), linear-gradient(#000, #000); mask-composite: subtract; }
+.x { width: 50px; height: 50px; background: red; mask-image: linear-gradient(#000, #000), linear-gradient(#000, #000); mask-composite: exclude; }
+.i { width: 50px; height: 50px; background: red; mask-image: linear-gradient(#000, #000), linear-gradient(#000, #000); mask-composite: intersect; }

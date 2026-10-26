@@ -1,0 +1,11 @@
+/*! lcr-probe
+id: color/community-prs-color-mix-system-color
+area: color
+title: color-mix() with a system color must not panic (left unresolved instead)
+mode: lower
+targets: chrome 100
+expect: no-panic
+known: fixed-by#819
+ref: https://drafts.csswg.org/css-color-5/#color-mix https://drafts.csswg.org/css-color-4/#css-system-colors https://github.com/parcel-bundler/lightningcss/issues/685 https://github.com/parcel-bundler/lightningcss/pull/819
+*/
+.t { background: color-mix(in srgb, blue, AccentColor); }

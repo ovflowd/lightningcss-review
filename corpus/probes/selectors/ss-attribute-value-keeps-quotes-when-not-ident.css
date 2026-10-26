@@ -1,0 +1,16 @@
+/*! lcr-probe
+id: selectors/ss-attribute-value-keeps-quotes-when-not-ident
+area: selectors
+title: Attribute values that are not valid identifiers (`1`, `-1`, empty) must stay quoted
+mode: minify
+targets: none
+expect: equivalent, idempotent
+known: none
+dom: <div class="a" data-x="1"></div><div class="b" data-x="-1"></div><div class="c" data-x=""></div><div class="d" data-x="--"></div>
+ref: https://drafts.csswg.org/selectors-4/#attribute-representation https://drafts.csswg.org/css-syntax-3/#would-start-an-identifier
+note: values must be <ident-token> or <string-token>; `[data-x=1]` is a parse error. `--` is a valid ident since css-syntax-3, so `[data-x=--]` is fine
+*/
+.a[data-x="1"] { color: red; }
+.b[data-x="-1"] { color: green; }
+.c[data-x=""] { color: blue; }
+.d[data-x="--"] { color: orange; }

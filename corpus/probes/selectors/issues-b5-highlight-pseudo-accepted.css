@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: selectors/issues-b5-highlight-pseudo-accepted
+area: selectors
+title: `::highlight(name)` parses without error or warning
+mode: minify
+targets: none
+expect: output-contains:"::highlight(x)", idempotent
+known: fixed-by#970
+ref: https://drafts.csswg.org/css-highlight-api-1/#custom-highlight-pseudo https://github.com/parcel-bundler/lightningcss/issues/1300 https://github.com/parcel-bundler/lightningcss/pull/970
+note: shipped in 1.33.0; 1.32.0 rejected it (UnsupportedPseudoElement)
+*/
+::highlight(x) { color: red; }

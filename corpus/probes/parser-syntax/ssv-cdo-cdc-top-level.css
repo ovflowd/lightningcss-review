@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: parser-syntax/ssv-cdo-cdc-top-level
+area: parser-syntax
+title: CDO/CDC at the top level are ignored
+mode: minify
+targets: none
+expect: equivalent
+known: none
+ref: https://drafts.csswg.org/css-syntax-3/#consume-stylesheet-contents
+note: guard
+*/
+<!-- .t { color: green; } -->

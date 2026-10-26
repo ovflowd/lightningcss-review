@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: transition-animation/sat-animation-name-empty-string-invalid
+area: transition-animation
+title: animation-name "" is invalid and must not replace the fallback or print as an empty name
+mode: minify
+targets: none
+expect: equivalent, output-not-contains:"animation-name:,"
+known: open-bug
+ref: https://drafts.csswg.org/css-animations-1/#typedef-keyframes-name https://github.com/web-platform-tests/wpt/blob/master/css/css-animations/parsing/animation-name-invalid.html
+note: MASTER FAILS (no issue filed). <string> excludes the empty string; master accepts it and prints the syntactically invalid `animation-name:,b`, so engines compute none instead of the fallback a
+*/
+.t { animation-name: a; animation-name: "", b; }

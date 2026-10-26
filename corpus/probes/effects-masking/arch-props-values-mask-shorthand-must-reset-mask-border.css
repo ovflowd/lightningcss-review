@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: effects-masking/arch-props-values-mask-shorthand-must-reset-mask-border
+area: effects-masking
+title: `mask` declared after `mask-border` resets it; the output must keep that order
+mode: minify
+targets: none
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/css-masking-1/#the-mask
+note: MaskHandler flushes mask before mask-border (src/properties/masking.rs flush/flush_mask_border); 1.33.0 emits mask:...;mask-border:...
+*/
+.t { mask-border: linear-gradient(red, red) 30; mask: linear-gradient(#000, #000); }

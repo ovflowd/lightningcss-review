@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: nesting/issues-important-nest-selector-in-pseudo-element
+area: nesting
+title: & inside a pseudo-element rule matches nothing and must not be flattened into a valid rule
+mode: lower-minify
+targets: chrome 100
+expect: equivalent
+known: open-issue#982
+ref: https://github.com/parcel-bundler/lightningcss/issues/982 https://github.com/parcel-bundler/lightningcss/issues/975 https://drafts.csswg.org/css-nesting-1/#nest-selector
+dom: <div id="b">t</div>
+note: the nesting selector cannot represent pseudo-elements; output `#b:after{color:green}` turns dead CSS into live CSS
+*/
+#b::after { content: "x"; & { color: green; } }

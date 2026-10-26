@@ -1,0 +1,17 @@
+/*! lcr-probe
+id: rule-merging/issues-important-important-dedupe-nonadjacent
+area: rule-merging
+title: Non-adjacent duplicate rules that differ only in !important must not drop the important one
+mode: minify
+targets: none
+expect: equivalent
+known: fixed-by#93b9e66
+ref: https://github.com/parcel-bundler/lightningcss/issues/1109 https://github.com/parcel-bundler/lightningcss/issues/1347 https://drafts.csswg.org/css-cascade-5/#importance
+note: 1.20.0 (aa083a7 duplicate-rule removal) through 1.33.0 output `body{margin:0}h1{color:red}`; fixed on master by commit 93b9e66 (unreleased)
+*/
+h1 { color: green !important; }
+body { margin: 0; }
+h1 { color: red; }
+.a { overflow: auto !important; }
+.foo { color: red; }
+.a { overflow: auto; }

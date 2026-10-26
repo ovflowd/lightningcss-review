@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: rule-merging/arch-core-overflow-inline-after-overflow
+area: rule-merging
+title: `overflow-inline` after `overflow` must keep winning for the inline axis (same logical property group)
+mode: minify
+targets: none
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/css-overflow-3/#propdef-overflow-inline https://drafts.csswg.org/css-logical-1/#logical-property-group
+note: MASTER FAILS (no issue filed yet). OverflowHandler buffers `overflow` until finalize while unhandled `overflow-inline` is pushed first: master prints `.t{overflow-inline:auto;overflow:hidden}`. Observable where overflow-inline is supported (Firefox)
+*/
+.t { overflow: hidden; overflow-inline: auto; }

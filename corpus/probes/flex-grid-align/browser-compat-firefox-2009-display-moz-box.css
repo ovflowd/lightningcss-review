@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: flex-grid-align/browser-compat-firefox-2009-display-moz-box
+area: flex-grid-align
+title: For Firefox 20 targets display:flex must also emit display:-moz-box, like the -moz-box-* longhands
+mode: lower
+targets: firefox 20
+expect: output-contains:"display: -moz-box"
+known: open-bug
+ref: https://www.w3.org/TR/2009/WD-css3-flexbox-20090723/#overview https://drafts.csswg.org/css-flexbox-1/#flex-containers
+note: UNFILED master failure; DisplayHandler::finalize (src/properties/display.rs:430-450) emits -moz-box only inside is_flex_2009(), whose generated ranges cover android/chrome/ios_saf/safari only (autoprefixer has no '2009' tag for firefox), while FlexHandler adds -moz-box-orient/-moz-box-direction whenever Moz is needed; 1.33.0 prints the -moz-box-* longhands with display:flex only
+*/
+.t { display: flex; flex-direction: column; }

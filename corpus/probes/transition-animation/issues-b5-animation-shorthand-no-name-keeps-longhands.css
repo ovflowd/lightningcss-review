@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: transition-animation/issues-b5-animation-shorthand-no-name-keeps-longhands
+area: transition-animation
+title: `animation: .5s ease-out both` (name none) must keep duration, easing and fill-mode
+mode: minify
+targets: none
+expect: equivalent
+known: open-issue#1369
+ref: https://drafts.csswg.org/css-animations-1/#animation https://github.com/parcel-bundler/lightningcss/issues/1369
+note: from the #1369 thread (UIkit pattern; the name comes from another rule); Animation::to_css prints only `none` when the name is none (src/properties/animation.rs:670)
+*/
+.t { animation: .5s ease-out both; }

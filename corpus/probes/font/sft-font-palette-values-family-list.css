@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: font/sft-font-palette-values-family-list
+area: font
+title: The @font-palette-values font-family descriptor accepts a list of families
+mode: minify
+targets: none
+expect: output-contains:"font-family:A,B"
+known: open-bug
+ref: https://drafts.csswg.org/css-fonts-4/#descdef-font-palette-values-font-family
+note: grammar is <font-family-name>#; master parses a single FontFamily (src/rules/font_palette_values.rs:108-110), drops the descriptor and leaves a rule without font-family, which browsers ignore
+*/
+@font-palette-values --p { font-family: A, B; base-palette: 1; }
+.t { font-family: A; font-palette: --p; }

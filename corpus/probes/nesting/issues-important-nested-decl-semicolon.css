@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: nesting/issues-important-nested-decl-semicolon
+area: nesting
+title: Interleaved nested declarations must be separated by a semicolon when nesting is preserved
+mode: minify
+targets: none
+expect: equivalent, idempotent
+known: fixed-by#9e04c01
+ref: https://github.com/parcel-bundler/lightningcss/issues/1003 https://github.com/parcel-bundler/lightningcss/issues/1002 https://drafts.csswg.org/css-nesting-1/#nested-declarations-rule
+note: 1.30.0-1.30.2 printed `--some-var:100%& .Baz{...}` (missing ;), swallowing the next rule
+*/
+.Foo { color: red; .Bar { color: blue; } --some-var: 100%; .Baz { color: green; } }
+.foo { &.bar { color: red; } border-color: blue; &:hover { background: green; } }

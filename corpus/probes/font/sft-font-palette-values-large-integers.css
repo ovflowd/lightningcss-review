@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: font/sft-font-palette-values-large-integers
+area: font
+title: base-palette and override-colors indexes above 65535 must not wrap around
+mode: minify
+targets: none
+expect: output-contains:"base-palette:70000", output-contains:"65537 red"
+known: open-bug
+ref: https://drafts.csswg.org/css-fonts-4/#descdef-font-palette-values-base-palette https://drafts.csswg.org/css-fonts-4/#descdef-font-palette-values-override-colors
+note: master stores the indexes as u16 and prints base-palette:4464 and override-colors:1 red (src/rules/font_palette_values.rs:191 and :230), which selects a real palette entry
+*/
+@font-palette-values --p { font-family: A; base-palette: 70000; override-colors: 65537 red; }

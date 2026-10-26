@@ -1,0 +1,14 @@
+/*! lcr-probe
+id: nesting/error-recovery-keeps-declarations-before-invalid-nested-rule
+area: nesting
+title: An invalid nested rule is dropped without discarding the declarations before it
+mode: minify
+targets: none
+flags: error-recovery
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/css-syntax-3/#consume-block-contents https://drafts.csswg.org/css-syntax-3/#invalid-rule-error
+dom: <p class="t">x</p>
+note: master fails (no issue filed); NestedRuleParser::parse_nested clears all parsed declarations on any item error (src/parser.rs:496-499, from a8b7ea0); css-syntax-3 flushes them into the rule on an invalid rule error, so `.t` stays green
+*/
+.t { color: rgb(0, 128, 0); ..bad { color: red; } }

@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: prefixing-compat/issues-important-backdrop-filter-webkit-kept-for-safari
+area: prefixing-compat
+title: -webkit-backdrop-filter must be kept when a Safari target still needs it
+mode: lower-minify
+targets: safari 15, chrome 100
+expect: equivalent, output-contains:"-webkit-backdrop-filter"
+known: fixed-by#94f254c
+ref: https://github.com/parcel-bundler/lightningcss/issues/537 https://github.com/parcel-bundler/lightningcss/issues/403
+note: 1.21.0-1.21.5 dropped the prefix (Safari lost the blur); fixed in 1.21.6
+*/
+body { -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); }

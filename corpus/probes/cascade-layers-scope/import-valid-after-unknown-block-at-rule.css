@@ -1,0 +1,15 @@
+/*! lcr-probe
+id: cascade-layers-scope/import-valid-after-unknown-block-at-rule
+area: cascade-layers-scope
+title: An unknown at-rule with a block is invalid and does not make a following @import invalid
+mode: minify
+targets: none
+flags: error-recovery
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/css-cascade-5/#at-import https://drafts.csswg.org/css-conditional-5/#supports-condition-rule
+dom: <p class="t">x</p>
+note: master fails (no issue filed); TopLevelRuleParser::parse_block sets State::Body for every block at-rule, unknown ones included (src/parser.rs:365); this also rejects the spec-allowed `@supports-condition --x {}` before @import; needs data: URL @import support in the harness
+*/
+@unknown-rule { }
+@import url("data:text/css,.t%7Bcolor:rgb(0,128,0)%7D");

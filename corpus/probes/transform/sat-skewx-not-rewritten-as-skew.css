@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: transform/sat-skewx-not-rewritten-as-skew
+area: transform
+title: skewX() must not be minified to skew(); the pair skewX()->skew(a,b) interpolates through matrices
+mode: minify
+targets: none
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/css-transforms-1/#transform-primitives https://drafts.csswg.org/css-transforms-1/#interpolation-of-transforms https://drafts.csswg.org/css-transforms-2/#interpolation-of-transform-functions
+note: MASTER FAILS (no issue filed). skew()/skewX()/skewY() share no primitive (Blink SkewTransformOperation has no PrimitiveType override); master prints skew(10deg) (src/properties/transform.rs:1218), so the pair now interpolates numerically. At 50%: input matrix(1.04064, 0.278839, 0.338419, 0.962402, 0, 0), output matrix(1, 0.267949, 0.267949, 1, 0, 0) in Chrome 156/Firefox 157; WebKit 27.2 also differs
+*/
+@keyframes sat-skew { from { transform: skewX(10deg); } to { transform: skew(20deg, 30deg); } }
+.t { animation: sat-skew 1s linear -0.5s paused; }

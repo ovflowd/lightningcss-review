@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: text/sft-text-box-none-trim-kept
+area: text
+title: text-box none cap alphabetic must keep none (an omitted trim means trim-both)
+mode: minify
+targets: none
+expect: equivalent, output-contains:"none cap alphabetic"
+known: none
+ref: https://drafts.csswg.org/css-inline-3/#text-box-shorthand https://drafts.csswg.org/css-inline-3/#text-edges
+note: dropping the initial-looking none changes trim to trim-both; also cap alone is invalid <text-edge> (only symmetric keywords may be single); untyped passthrough on master
+*/
+.t { text-box: none cap alphabetic; }

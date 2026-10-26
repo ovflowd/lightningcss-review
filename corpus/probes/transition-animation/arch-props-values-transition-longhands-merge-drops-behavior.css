@@ -1,0 +1,18 @@
+/*! lcr-probe
+id: transition-animation/arch-props-values-transition-longhands-merge-drops-behavior
+area: transition-animation
+title: Merging transition longhands into `transition` must not reset transition-behavior
+mode: minify
+targets: none
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/css-transitions-2/#transition-shorthand-property
+note: transition-behavior is unknown to Lightning CSS and passes through; the merged transition shorthand is emitted after it and resets it
+*/
+.t {
+  transition-property: opacity;
+  transition-duration: 1s;
+  transition-behavior: allow-discrete;
+  transition-timing-function: ease;
+  transition-delay: 0s;
+}

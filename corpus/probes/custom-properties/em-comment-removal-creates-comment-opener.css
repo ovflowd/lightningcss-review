@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: custom-properties/em-comment-removal-creates-comment-opener
+area: custom-properties
+title: Dropping a comment between `/` and `*` in a token list must not create `/*` and swallow the rest of the sheet
+mode: minify
+targets: none
+expect: equivalent, output-not-contains:"x/*y"
+known: open-bug
+ref: https://drafts.csswg.org/css-syntax-3/#serialization https://github.com/oven-sh/bun/pull/33683
+note: tokens are `/` comment `*`; Token::Comment prints nothing when minifying (properties/custom.rs:898-902), so master emits `--a:x/*y}.u{...}` and every later rule becomes part of an unterminated comment. Bun also guards `/`+`*` and `/`+`*=` adjacency
+*/
+.t { --a: x//**/*y; }
+.u { color: rgb(0, 128, 0); }

@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: ui-misc/sft-list-style-type-named-like-position
+area: ui-misc
+title: list-style with a counter style named outside or inside must keep the position keyword
+mode: minify
+targets: none
+expect: equivalent, output-not-contains:"list-style:outside}", output-not-contains:"list-style:inside}"
+known: open-bug
+ref: https://drafts.csswg.org/css-lists-3/#list-style-property https://github.com/web-platform-tests/wpt/blob/b89af32bc8f42d678f444eb0703bca015ddcf240/css/css-lists/parsing/list-style-valid.html
+note: ListStyle::to_css (src/properties/list.rs:414) omits the default position, so type outside prints as list-style:outside (type lost) and outside inside as list-style:inside (position flips); WPT list-style-valid case, Chrome oracle computed-difference
+*/
+.t { list-style: outside outside; }
+.u { list-style: outside inside; }

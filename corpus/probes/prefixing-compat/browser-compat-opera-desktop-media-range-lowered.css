@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: prefixing-compat/browser-compat-opera-desktop-media-range-lowered
+area: prefixing-compat
+title: Range media queries must be lowered for desktop Opera 74 (Chromium 88), which lacks range syntax
+mode: lower
+targets: opera 74
+expect: output-contains:"min-width"
+known: open-bug
+ref: https://drafts.csswg.org/mediaqueries-4/#mq-range-context https://github.com/mdn/browser-compat-data/blob/main/css/at-rules/media.json https://github.com/parcel-bundler/lightningcss/blob/cbeaf83/scripts/build-prefixes.js#L449
+note: UNFILED master failure; build-prefixes.js lets opera_android overwrite opera (BCD range_syntax opera 90, opera_android 71), so MediaRangeSyntax treats opera >= 71 as supported; 1.33.0 keeps (width >= 600px) for opera 74 but lowers it to (min-width: 600px) for chrome 88
+*/
+@media (width >= 600px) { .t { color: green; } }

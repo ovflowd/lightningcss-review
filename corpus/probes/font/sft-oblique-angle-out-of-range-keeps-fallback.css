@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: font/sft-oblique-angle-out-of-range-keeps-fallback
+area: font
+title: font-style oblique 100deg is invalid and must not replace the preceding italic
+mode: minify
+targets: none
+expect: equivalent, output-contains:"font-style:italic"
+known: open-bug
+ref: https://drafts.csswg.org/css-fonts-4/#font-style-prop
+note: angles outside [-90deg,90deg] are invalid; master keeps only oblique 100deg (FontStyle parse, src/properties/font.rs:469), so the element falls back to normal
+*/
+.t { font-style: italic; font-style: oblique 100deg; }

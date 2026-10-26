@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: logical/arch-core-important-logical-lowering-keeps-important
+area: logical
+title: Lowering an `!important` logical property to :lang()/:dir() rules must keep `!important`
+mode: lower-minify
+targets: safari 11
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/css-cascade-5/#importance https://github.com/parcel-bundler/lightningcss/blob/cbeaf83/src/context.rs#L84-L118
+note: MASTER FAILS (no issue filed yet). PropertyHandlerContext::add_logical_rule ignores is_important and get_additional_rules always builds `important_declarations: vec![]`, so master prints `.t:not(:lang(...)){margin-left:1px}` without !important and `.t.t.t` wins (5px instead of 1px)
+*/
+.t { margin-inline-start: 1px !important; }
+.t.t.t { margin-left: 5px; }

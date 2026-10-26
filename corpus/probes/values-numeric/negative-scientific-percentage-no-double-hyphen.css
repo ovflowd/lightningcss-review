@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: values-numeric/negative-scientific-percentage-no-double-hyphen
+area: values-numeric
+title: Tiny negative percentages must not serialize with a doubled minus sign
+mode: minify
+targets: none
+expect: output-not-contains:"--", idempotent
+known: open-issue#1219
+ref: https://drafts.csswg.org/css-syntax-3/#consume-number https://github.com/parcel-bundler/lightningcss/issues/1219 https://github.com/parcel-bundler/lightningcss/pull/1192
+note: #1192 fixed the length copy of `trim_start_matches("-0")`; the percentage copy (src/values/percentage.rs:69) still prints `--10e-8%`
+*/
+.t { margin-left: -0.0000001%; rotate: -0.0000001deg; width: calc(100% - -0.0000001px); }

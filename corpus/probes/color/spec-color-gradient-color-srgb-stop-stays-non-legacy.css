@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: color/spec-color-gradient-color-srgb-stop-stays-non-legacy
+area: color
+title: a color(srgb ...) stop must not be shortened to a legacy named/hex color
+mode: minify
+targets: none
+expect: equivalent
+known: none
+ref: https://drafts.csswg.org/css-color-4/#interpolation-space https://drafts.csswg.org/css-color-4/#serializing-color-function-values
+note: guard: master keeps color(srgb 1 0 0); shortening to red would switch Oklab -> sRGB interpolation
+*/
+.t { background-image: linear-gradient(90deg, color(srgb 1 0 0), white); }

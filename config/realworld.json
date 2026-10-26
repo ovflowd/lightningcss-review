@@ -1,0 +1,429 @@
+{
+  "$comment": "Pinned real-world stylesheets (research: ecosystem-consumers). sha256/bytes are filled by  on first download and then enforced.",
+  "files": [
+    {
+      "areas": [
+        "custom-properties",
+        "prefixing-compat",
+        "selectors",
+        "rule-merging",
+        "media-queries",
+        "values-numeric",
+        "background",
+        "border-outline",
+        "flex-grid-align",
+        "printer-serialization"
+      ],
+      "bytes": 280311,
+      "license": "MIT",
+      "name": "bootstrap",
+      "sha256": "4a50207b956a4ab943640ee993118b554a34e96a23261cfe58b9aa1807a7849b",
+      "url": "https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.css"
+    },
+    {
+      "areas": [
+        "custom-properties",
+        "calc-math",
+        "color",
+        "logical",
+        "supports-container",
+        "selectors",
+        "rule-merging",
+        "perf",
+        "background",
+        "border-outline"
+      ],
+      "bytes": 763923,
+      "license": "MIT",
+      "name": "bulma",
+      "sha256": "ee66316c24a2f62971913bce50e10847349b9cd6d05538ca54825589b75b5901",
+      "url": "https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.css"
+    },
+    {
+      "areas": [
+        "parser-syntax",
+        "prefixing-compat",
+        "flex-grid-align",
+        "values-numeric",
+        "display-layout",
+        "at-rules-other",
+        "media-queries",
+        "box-model-size"
+      ],
+      "bytes": 161306,
+      "license": "MIT",
+      "name": "foundation",
+      "sha256": "0cc7b60548616a63391bd3a4e865e81eb978ae255562eb49a7c6d45593f73300",
+      "url": "https://cdn.jsdelivr.net/npm/foundation-sites@6.9.0/dist/css/foundation.css"
+    },
+    {
+      "areas": [
+        "parser-syntax",
+        "rule-merging",
+        "media-queries",
+        "prefixing-compat",
+        "bundler"
+      ],
+      "bytes": 114984,
+      "license": "MIT",
+      "name": "tachyons",
+      "sha256": "e24dd3551dab4c568876e42c086a4b0a960d22a4446bd4c0a5fd47cda142e021",
+      "url": "https://cdn.jsdelivr.net/npm/tachyons@4.12.0/css/tachyons.css"
+    },
+    {
+      "areas": [
+        "selectors",
+        "custom-properties",
+        "gradient-image",
+        "media-queries",
+        "at-rules-other",
+        "ui-misc"
+      ],
+      "bytes": 93407,
+      "license": "MIT",
+      "name": "pico",
+      "sha256": "55dae2996f4f2dc108cea27ffecd3ad8eaf0063fc96fa8d92306ed76a3ad33ec",
+      "url": "https://cdn.jsdelivr.net/npm/@picocss/pico@2.1.1/css/pico.css"
+    },
+    {
+      "areas": [
+        "font",
+        "printer-serialization",
+        "custom-properties",
+        "transition-animation",
+        "transform",
+        "selectors"
+      ],
+      "bytes": 130150,
+      "license": "CC-BY-4.0 AND OFL-1.1 AND MIT",
+      "name": "fontawesome",
+      "sha256": "5abdb8615ede42769101febbd322bd8640c7cbfe9ab28650f7a8246930b08083",
+      "url": "https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.3.1/css/all.css"
+    },
+    {
+      "areas": [
+        "transition-animation",
+        "transform",
+        "prefixing-compat",
+        "calc-math",
+        "custom-properties"
+      ],
+      "bytes": 95374,
+      "license": "MIT",
+      "name": "animate",
+      "sha256": "c1b6f9ed1effff87233740ce612ed3cd3fbd3cb34c0863373d820fde1b2c8d8f",
+      "url": "https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.css"
+    },
+    {
+      "areas": [
+        "custom-properties",
+        "media-queries",
+        "rule-merging",
+        "values-numeric",
+        "selectors",
+        "perf",
+        "border-outline"
+      ],
+      "bytes": 1061467,
+      "license": "MIT",
+      "name": "primer",
+      "sha256": "2dbafa2de726c584e0b2f7128c061fceda730f3776ecd8b0c5fac93b986e884e",
+      "url": "https://cdn.jsdelivr.net/npm/@primer/css@22.3.2/dist/primer.css"
+    },
+    {
+      "areas": [
+        "custom-properties",
+        "color",
+        "gradient-image",
+        "transition-animation",
+        "calc-math"
+      ],
+      "bytes": 29566,
+      "license": "MIT",
+      "name": "open-props",
+      "sha256": "4bc9bec663eb7fef2cb7680d2983e21f0f79778a61a77bee74224030dc981f5c",
+      "url": "https://cdn.jsdelivr.net/npm/open-props@1.7.23/open-props.min.css"
+    },
+    {
+      "areas": [
+        "media-queries",
+        "at-rules-other"
+      ],
+      "bytes": 2726,
+      "license": "MIT",
+      "name": "open-props-media",
+      "sha256": "71547b03604efdcf533a8c24b4333bd9e6d30ec66ca4d9984f29e50ba9bb50ee",
+      "url": "https://cdn.jsdelivr.net/npm/open-props@1.7.23/media.min.css"
+    },
+    {
+      "areas": [
+        "prefixing-compat",
+        "transition-animation",
+        "transform",
+        "custom-properties",
+        "supports-container",
+        "effects-masking",
+        "perf",
+        "box-model-size",
+        "text",
+        "ui-misc"
+      ],
+      "bytes": 623927,
+      "license": "MIT",
+      "name": "mdc-web",
+      "sha256": "6cec6e7b37f5a302209de1a757a193280e98b928fb6ff36f3bacfc0cfd41d07a",
+      "url": "https://cdn.jsdelivr.net/npm/material-components-web@14.0.0/dist/material-components-web.css"
+    },
+    {
+      "areas": [
+        "selectors",
+        "calc-math",
+        "values-numeric",
+        "custom-properties",
+        "flex-grid-align",
+        "logical",
+        "supports-container"
+      ],
+      "bytes": 166474,
+      "license": "GPL-2.0-or-later",
+      "name": "wp-block-library",
+      "sha256": "75230f7af37b164b550f972115832bc989a7022fe737f87b659124de9964107c",
+      "url": "https://cdn.jsdelivr.net/npm/@wordpress/block-library@11.2.0/build-style/style.css"
+    },
+    {
+      "areas": [
+        "cascade-layers-scope",
+        "nesting",
+        "media-queries",
+        "color",
+        "supports-container",
+        "transition-animation",
+        "selectors",
+        "logical",
+        "custom-properties",
+        "values-numeric",
+        "perf",
+        "effects-masking",
+        "border-outline",
+        "display-layout",
+        "background",
+        "ui-misc",
+        "gradient-image",
+        "transform"
+      ],
+      "bytes": 1138571,
+      "license": "MIT",
+      "name": "daisyui",
+      "sha256": "d057842b420556c5f98a5a3c362b7a1eff194125bdce03e654835db1956e3d0c",
+      "url": "https://cdn.jsdelivr.net/npm/daisyui@5.7.47/daisyui.css"
+    },
+    {
+      "areas": [
+        "nesting",
+        "custom-properties",
+        "cascade-layers-scope",
+        "supports-container",
+        "media-queries",
+        "color",
+        "transition-animation",
+        "logical",
+        "selectors"
+      ],
+      "bytes": 234016,
+      "license": "MIT",
+      "name": "basecoat",
+      "sha256": "b141fedba05673faedc5f70d0fb7fb18bab9d5f1449f68945a151824941d51dd",
+      "url": "https://cdn.jsdelivr.net/npm/basecoat-css@1.0.2/dist/basecoat.cdn.css"
+    },
+    {
+      "areas": [
+        "selectors",
+        "supports-container",
+        "color",
+        "prefixing-compat",
+        "text",
+        "ui-misc"
+      ],
+      "bytes": 8489,
+      "license": "MIT",
+      "name": "tailwind-preflight",
+      "sha256": "ace8310eed6dc5568a56fc16e1d695cf58da7528d81d66d81649e93cce644df6",
+      "url": "https://cdn.jsdelivr.net/npm/tailwindcss@4.3.3/preflight.css"
+    },
+    {
+      "areas": [
+        "color",
+        "selectors",
+        "calc-math",
+        "supports-container",
+        "font",
+        "flex-grid-align",
+        "perf",
+        "box-model-size",
+        "text"
+      ],
+      "bytes": 812667,
+      "license": "MIT",
+      "name": "radix-themes",
+      "sha256": "9d8b991c6cd9045d0b6a31b4f6d3f192726676cba52be102a5c91b719d306f05",
+      "url": "https://cdn.jsdelivr.net/npm/@radix-ui/themes@3.3.0/styles.css"
+    },
+    {
+      "areas": [
+        "cascade-layers-scope",
+        "selectors",
+        "logical",
+        "calc-math",
+        "values-numeric",
+        "custom-properties",
+        "supports-container"
+      ],
+      "bytes": 294621,
+      "license": "MIT",
+      "name": "mantine-layer",
+      "sha256": "b521d684f2ecb39529f61c27fb97ba2f41ed47ca916f202b9ba5b1ac9f8cc98d",
+      "url": "https://cdn.jsdelivr.net/npm/@mantine/core@9.7.1/styles.layer.css"
+    },
+    {
+      "areas": [
+        "selectors",
+        "logical",
+        "custom-properties",
+        "transition-animation"
+      ],
+      "bytes": 41207,
+      "license": "MIT",
+      "name": "ionic-select-md",
+      "sha256": "90f896c2296198b163c7e05f61816503c1e001f3d3bd5b47c71958967315384e",
+      "url": "https://cdn.jsdelivr.net/npm/@ionic/core@9.0.7/dist/collection/components/select/select.md.css"
+    },
+    {
+      "areas": [
+        "custom-properties",
+        "logical",
+        "selectors",
+        "printer-serialization",
+        "flex-grid-align",
+        "effects-masking",
+        "supports-container",
+        "perf",
+        "display-layout",
+        "box-model-size"
+      ],
+      "bytes": 1994117,
+      "license": "MIT",
+      "name": "patternfly",
+      "sha256": "d20aa22f3fd30404ff53d454afe6504659f6d6e4457820c09ca188d53b9b070e",
+      "url": "https://cdn.jsdelivr.net/npm/@patternfly/patternfly@6.6.1/patternfly.css"
+    },
+    {
+      "areas": [
+        "font",
+        "values-numeric",
+        "box-model-size",
+        "text"
+      ],
+      "bytes": 33084,
+      "license": "MIT",
+      "name": "katex",
+      "sha256": "b7982e2cec4d22ce352e4ab96b71302496237795206ade87ddb67710ffdb7e36",
+      "url": "https://cdn.jsdelivr.net/npm/katex@0.19.0/dist/katex.css"
+    },
+    {
+      "areas": [
+        "perf",
+        "values-numeric",
+        "printer-serialization",
+        "prefixing-compat",
+        "selectors",
+        "font",
+        "transition-animation",
+        "background",
+        "effects-masking",
+        "transform",
+        "border-outline"
+      ],
+      "bytes": 2033764,
+      "license": "MIT",
+      "name": "fomantic",
+      "sha256": "3a12e169cbed3e58420b2ee27fb18e76b365a5ed6402e274ae5b76b0e3faaa25",
+      "url": "https://cdn.jsdelivr.net/npm/fomantic-ui-css@2.9.4/semantic.css"
+    },
+    {
+      "areas": [
+        "supports-container",
+        "media-queries",
+        "selectors",
+        "calc-math",
+        "color",
+        "custom-properties",
+        "parser-syntax",
+        "box-model-size",
+        "text"
+      ],
+      "bytes": 338237,
+      "license": "MIT",
+      "name": "nhsuk",
+      "sha256": "fc3b8a17d290c8738c977763cde997059495becab26cef8ba2f8c24c8b4927d4",
+      "url": "https://cdn.jsdelivr.net/npm/nhsuk-frontend@10.6.1/dist/nhsuk/nhsuk-frontend.css"
+    },
+    {
+      "areas": [
+        "at-rules-other",
+        "logical",
+        "transition-animation",
+        "supports-container",
+        "font",
+        "calc-math",
+        "selectors",
+        "values-numeric",
+        "perf",
+        "effects-masking",
+        "border-outline",
+        "display-layout",
+        "ui-misc",
+        "text"
+      ],
+      "bytes": 1372448,
+      "license": "Apache-2.0",
+      "name": "carbon",
+      "sha256": "13f00ebee3715ac407ba7960ea1e51f6307ba0ddfb147604f06fec1bc94bf9db",
+      "url": "https://cdn.jsdelivr.net/npm/@carbon/styles@1.117.0/css/styles.css"
+    },
+    {
+      "areas": [
+        "nesting",
+        "color",
+        "selectors",
+        "logical",
+        "supports-container",
+        "flex-grid-align",
+        "custom-properties"
+      ],
+      "bytes": 76016,
+      "license": "BSD-2-Clause",
+      "name": "missing-css",
+      "sha256": "6a58e7654ade4e116adda384d0409e9a9d504a01d76f7392961675ee7a372164",
+      "url": "https://cdn.jsdelivr.net/npm/missing.css@1.3.0/dist/missing.css"
+    },
+    {
+      "areas": [
+        "color",
+        "logical",
+        "selectors",
+        "rule-merging",
+        "custom-properties",
+        "perf",
+        "effects-masking",
+        "border-outline",
+        "display-layout",
+        "box-model-size"
+      ],
+      "bytes": 739320,
+      "license": "MIT",
+      "name": "tabler",
+      "sha256": "4542380078671a75987630720d891b4f6485357cb4136044639b0e666928a722",
+      "url": "https://cdn.jsdelivr.net/npm/@tabler/core@1.6.1/dist/css/tabler.css"
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: prefixing-compat/issues-b0-text-size-adjust-webkit-ios
+area: prefixing-compat
+title: text-size-adjust gets -webkit- for iOS Safari targets
+mode: lower
+targets: ios_saf 15
+expect: output-contains:"-webkit-text-size-adjust"
+known: none
+ref: https://compat.spec.whatwg.org/#css-prefixed-aliases https://drafts.csswg.org/css-size-adjust-1/#propdef-text-size-adjust https://github.com/parcel-bundler/lightningcss/issues/934
+note: only ios_saf triggers the prefix (desktop Safari has neither form); with safari-only targets an authored -webkit-text-size-adjust is removed, which is what #934 reporters hit through Vite's targets
+*/
+.t { text-size-adjust: 100%; }

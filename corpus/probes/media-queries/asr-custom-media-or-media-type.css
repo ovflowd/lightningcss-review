@@ -1,0 +1,16 @@
+/*! lcr-probe
+id: media-queries/asr-custom-media-or-media-type
+area: media-queries
+title: A custom media with a media type inside an `or` condition must not become `and`
+mode: lower-minify
+targets: chrome 120
+flags: custom-media
+expect: output-not-contains:"screen and"
+known: open-bug
+ref: https://drafts.csswg.org/mediaqueries-5/#custom-mq https://github.com/parcel-bundler/lightningcss/issues/213
+note: process_condition (media_query.rs:1827-1847) hoists the custom query's media type onto the outer query regardless of the surrounding operator, giving `screen and ((width>=100px))`; same root cause as #213
+*/
+@custom-media --s screen;
+@media (--s) or (min-width: 100px) {
+  .t { color: red }
+}

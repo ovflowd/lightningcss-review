@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: calc-math/arch-props-values-zero-percentage-dropped-from-calc
+area: calc-math
+title: Dropping `0%` from calc() changes cyclic-percentage behavior of height
+mode: minify
+targets: none
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/css-sizing-3/#cyclic-percentage-contribution https://drafts.csswg.org/css2/#the-height-property
+dom: <div><div class="t"></div></div>
+note: DimensionPercentage::add returns the other operand when one is zero (src/values/percentage.rs:408); calc(0% + 10px) with an indefinite containing block behaves as auto, 10px does not
+*/
+.t { height: calc(0% + 10px); }

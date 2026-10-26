@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: font/sft-font-family-css-wide-in-list-keeps-fallback
+area: font
+title: A family list containing a CSS-wide keyword is invalid and must not replace the earlier font-family
+mode: minify
+targets: none
+expect: equivalent, output-contains:"font-family:serif"
+known: open-bug
+ref: https://drafts.csswg.org/css-fonts-4/#font-family-name-syntax https://drafts.csswg.org/css-values-4/#common-keywords
+note: CSS-wide keywords are only valid alone; master accepts foo,inherit as a typed list and drops the serif fallback (FamilyName parse, src/properties/font.rs:383)
+*/
+.t { font-family: serif; font-family: foo, inherit; }

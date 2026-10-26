@@ -1,0 +1,14 @@
+/*! lcr-probe
+id: logical/issues-b2-margin-inline-start-lowering-specificity
+area: logical
+title: Lowered margin-inline-start must not out-rank a later equal-specificity physical override
+mode: lower-minify
+targets: chrome 64
+expect: equivalent
+known: open-issue#1018
+ref: https://github.com/parcel-bundler/lightningcss/issues/1018 https://drafts.csswg.org/selectors-4/#specificity-rules https://drafts.csswg.org/css-logical-1/#margin-properties
+dom: <div class="ms-0 ml-2">x</div>
+note: the :not(:lang(...))/:is(:lang(...)) fallback adds (0,1,0), so .ml-2 (source-later, same specificity in the input) loses; src/context.rs:94 TODO acknowledges it
+*/
+.ms-0 { margin-inline-start: 0px; }
+.ml-2 { margin-left: 8px; }

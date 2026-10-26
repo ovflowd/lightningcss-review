@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: font/sft-font-face-unicode-range-compression
+area: font
+title: unicode-range wildcard compression must stay exact at the U+10FFFF boundary
+mode: minify
+targets: none
+expect: idempotent, output-not-contains:"U+1?????"
+known: none
+ref: https://drafts.csswg.org/css-fonts-4/#unicode-range-desc https://drafts.csswg.org/css-syntax-3/#consume-unicode-range-token
+note: U+100000-10FFFF is U+10???? (master prints that); U+1????? would be 100000-1FFFFF; guards UnicodeRange::to_css (src/rules/font_face.rs:321)
+*/
+@font-face { font-family: X; src: url(a.woff2); unicode-range: U+100000-10FFFF, U+0-FF, U+4??; }

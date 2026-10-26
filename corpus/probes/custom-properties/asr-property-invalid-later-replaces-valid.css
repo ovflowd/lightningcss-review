@@ -1,0 +1,15 @@
+/*! lcr-probe
+id: custom-properties/asr-property-invalid-later-replaces-valid
+area: custom-properties
+title: A later @property that browsers reject must not replace an earlier valid one
+mode: minify
+targets: none
+expect: equivalent
+known: open-bug
+ref: https://drafts.css-houdini.org/css-properties-values-api-1/#initial-value-descriptor https://drafts.css-houdini.org/css-properties-values-api-1/#at-property-rule
+dom: <div class="t"></div>
+note: initial-value 10em is not computationally independent, so browsers ignore the second rule; CssRuleList::minify (rules/mod.rs:973-978) keeps only the last same-name @property and PropertyRule::parse does not check computational independence
+*/
+@property --x { syntax: "<length>"; inherits: false; initial-value: 10px }
+@property --x { syntax: "<length>"; inherits: false; initial-value: 10em }
+.t { width: var(--x) }

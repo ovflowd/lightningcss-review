@@ -1,0 +1,14 @@
+/*! lcr-probe
+id: cascade-layers-scope/anonymous-layers-stay-distinct-important
+area: cascade-layers-scope
+title: Two anonymous @layer blocks are distinct layers; for !important the earlier one wins
+mode: minify
+targets: none
+expect: equivalent
+known: none
+ref: https://drafts.csswg.org/css-cascade-5/#unnamed-layers https://drafts.csswg.org/css-cascade-5/#cascade-sort
+dom: <p class="t">x</p>
+note: guard, master passes; merging anonymous layers (or unwrapping them) would let the later important declaration win
+*/
+@layer { .t { color: rgb(0, 128, 0) !important; } }
+@layer { .t { color: rgb(255, 0, 0) !important; } }

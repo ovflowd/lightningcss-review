@@ -1,0 +1,14 @@
+/*! lcr-probe
+id: cascade-layers-scope/layer-block-merge-across-conditional-keeps-order
+area: cascade-layers-scope
+title: Same-name @layer blocks must not be merged across a conditional rule that adds to the layer
+mode: minify
+targets: none
+expect: equivalent
+known: none
+ref: https://drafts.csswg.org/css-cascade-5/#layering https://github.com/parcel-bundler/lightningcss/issues/1222 https://github.com/parcel-bundler/lightningcss/commit/32aecd9568da1256770c3bfce3ff699b89c1f296
+note: v1.33.0 merges the last `@layer a` into the first, moving it before the @media copy (Chrome 156: green -> blue); fixed on master by 32aecd9 (unreleased as of 2026-10-25)
+*/
+@layer a { .t { color: red; } }
+@media (min-width: 1px) { @layer a { .t { color: blue; } } }
+@layer a { .t { color: green; } }

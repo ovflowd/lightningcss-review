@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: transition-animation/sat-steps-zero-invalid
+area: transition-animation
+title: steps(0) is invalid and must not replace the fallback
+mode: minify
+targets: none
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/css-easing-2/#funcdef-steps https://github.com/web-platform-tests/wpt/blob/master/css/css-easing/timing-functions-syntax-invalid.html
+note: MASTER FAILS (no issue filed). CSSInteger::parse accepts 0 and negatives; master prints steps(0,end) only, so engines compute ease instead of linear
+*/
+.t { animation-timing-function: linear; animation-timing-function: steps(0); }

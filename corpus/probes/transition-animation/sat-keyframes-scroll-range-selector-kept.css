@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: transition-animation/sat-keyframes-scroll-range-selector-kept
+area: transition-animation
+title: Keyframe selectors on the scroll named timeline range must be kept
+mode: minify
+targets: none
+expect: output-contains:"scroll 50%"
+known: open-bug
+ref: https://drafts.csswg.org/scroll-animations-1/#valdef-animation-timeline-range-scroll https://drafts.csswg.org/scroll-animations-1/#named-range-keyframes https://github.com/w3c/csswg-drafts/pull/13306
+note: MASTER FAILS (no issue filed; same class as #786). TimelineRangeName (src/properties/animation.rs:389-403) lacks `scroll` (spec PR merged 2026-01), so the keyframe fails to parse and master prints `@keyframes sat-scroll-range{}`; Chrome 156 and WebKit 27.2 keep the rule (keyText "scroll 50%")
+*/
+@keyframes sat-scroll-range { scroll 50% { color: green; } }
+.t { animation: sat-scroll-range 1s; }

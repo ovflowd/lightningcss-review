@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: effects-masking/sie-drop-shadow-default-color-currentcolor
+area: effects-masking
+title: An omitted drop-shadow() color means currentcolor, so only an explicit currentcolor may be dropped
+mode: minify
+targets: none
+expect: equivalent
+known: none
+ref: https://drafts.csswg.org/filter-effects-1/#funcdef-filter-drop-shadow https://drafts.csswg.org/filter-effects-1/#computed-values-of-filter-functions
+note: guard. The omitted color is taken from the color property (the initial value for interpolation is transparent, which is different); master prints drop-shadow(4px 4px) for the first and keeps black for the second
+*/
+.t { width: 50px; height: 50px; color: red; background: white; filter: drop-shadow(4px 4px 0 currentcolor); }
+.u { width: 50px; height: 50px; color: red; background: white; filter: drop-shadow(4px 4px 0 black); }

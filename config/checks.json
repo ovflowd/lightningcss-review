@@ -1,0 +1,244 @@
+{
+  "$comment": "Check catalog. report.py evaluates every check from stage outputs (never from prose) and maps the result to a severity with these rules. Verdict: any BLOCKER -> UNSAFE; else any MAJOR -> NEEDS_CHANGES; else any MINOR -> SAFE_WITH_NITS; else SAFE. INCONCLUSIVE replaces SAFE/SAFE_WITH_NITS when a required stage did not run.",
+  "severities": [
+    "BLOCKER",
+    "MAJOR",
+    "MINOR",
+    "NOTE"
+  ],
+  "verdicts": [
+    "UNSAFE",
+    "NEEDS_CHANGES",
+    "SAFE_WITH_NITS",
+    "SAFE",
+    "INCONCLUSIVE"
+  ],
+  "required_stages": [
+    "prepare",
+    "build",
+    "corpus",
+    "oracle",
+    "analysis"
+  ],
+  "checks": [
+    {
+      "id": "B1",
+      "group": "build",
+      "title": "Head test suite passes (cargo test --all-features)",
+      "fail": "BLOCKER"
+    },
+    {
+      "id": "B2",
+      "group": "build",
+      "title": "Compiles with RUSTFLAGS=-D warnings (CI)",
+      "fail": "MAJOR"
+    },
+    {
+      "id": "B3",
+      "group": "build",
+      "title": "rustfmt clean on changed files",
+      "fail": "MINOR"
+    },
+    {
+      "id": "B4",
+      "group": "build",
+      "title": "Cargo.lock in sync (--locked)",
+      "fail": "MAJOR"
+    },
+    {
+      "id": "B5",
+      "group": "build",
+      "title": "JS lane: yarn build / test / tsc (when bindings change)",
+      "fail": "MAJOR"
+    },
+    {
+      "id": "B6",
+      "group": "build",
+      "title": "GitHub CI checks on the PR",
+      "fail": "MAJOR"
+    },
+    {
+      "id": "B7",
+      "group": "build",
+      "title": "parcel_selectors crate tests (not run by CI)",
+      "fail": "MAJOR"
+    },
+    {
+      "id": "B8",
+      "group": "build",
+      "title": "Builds with --no-default-features",
+      "fail": "MAJOR"
+    },
+    {
+      "id": "B9",
+      "group": "build",
+      "title": "wasm32 compile gate (CI test-wasm compiles cfg(wasm32) code only there)",
+      "fail": "MAJOR"
+    },
+    {
+      "id": "B10",
+      "group": "build",
+      "title": "C bindings build and c/lightningcss.h is up to date",
+      "fail": "MAJOR"
+    },
+    {
+      "id": "B11",
+      "group": "build",
+      "title": "Generated files in sync (build-prefixes.js output, ast.d.ts)",
+      "fail": "MAJOR"
+    },
+    {
+      "id": "T1",
+      "group": "tests",
+      "title": "Source changes come with tests in src/lib.rs (or tests/, node/test)",
+      "fail": "MAJOR"
+    },
+    {
+      "id": "T2",
+      "group": "tests",
+      "title": "New test cases exercise the change (fail on base)",
+      "fail": "MAJOR",
+      "partial": "NOTE"
+    },
+    {
+      "id": "T3",
+      "group": "tests",
+      "title": "Changed expectations are browser-equivalent to their input",
+      "fail": "BLOCKER"
+    },
+    {
+      "id": "T4",
+      "group": "tests",
+      "title": "No existing expectation removed while behavior changed",
+      "fail": "MAJOR"
+    },
+    {
+      "id": "T5",
+      "group": "tests",
+      "title": "Harness fidelity: recorded head expectations reproduce through the adapter",
+      "fail": "NOTE"
+    },
+    {
+      "id": "O1",
+      "group": "oracle",
+      "title": "No regression in current engines (base equivalent -> head different)",
+      "fail": "BLOCKER"
+    },
+    {
+      "id": "O2",
+      "group": "oracle",
+      "title": "New/changed test outputs are equivalent to their input in current engines",
+      "fail": "BLOCKER"
+    },
+    {
+      "id": "O3",
+      "group": "oracle",
+      "title": "No new declarations/selectors/conditions rejected by an engine without a surviving fallback",
+      "fail": "MAJOR"
+    },
+    {
+      "id": "O4",
+      "group": "oracle",
+      "title": "Lowered output in legacy engines within targets matches the modern rendering",
+      "fail": "MAJOR"
+    },
+    {
+      "id": "O5",
+      "group": "oracle",
+      "title": "No new near-miss (color/number drift within tolerance)",
+      "fail": "MINOR"
+    },
+    {
+      "id": "O6",
+      "group": "oracle",
+      "title": "Pixel-identical rendering for visual areas",
+      "fail": "MINOR"
+    },
+    {
+      "id": "O7",
+      "group": "oracle",
+      "title": "WPT property cases do not regress",
+      "fail": "MAJOR"
+    },
+    {
+      "id": "O8",
+      "group": "oracle",
+      "title": "Every behavioral delta was verified or classified",
+      "fail": "MAJOR"
+    },
+    {
+      "id": "O9",
+      "group": "oracle",
+      "title": "Engines disagree on the input: the spec decides (classify with a spec or WPT citation)",
+      "fail": "MAJOR"
+    },
+    {
+      "id": "R1",
+      "group": "robustness",
+      "title": "No new panic / crash / timeout",
+      "fail": "BLOCKER"
+    },
+    {
+      "id": "R2",
+      "group": "robustness",
+      "title": "Output is stable under re-minification (idempotent)",
+      "fail": "MINOR"
+    },
+    {
+      "id": "S1",
+      "group": "side-effects",
+      "title": "Deltas stay inside the declared areas (or are explained)",
+      "fail": "MAJOR"
+    },
+    {
+      "id": "S2",
+      "group": "side-effects",
+      "title": "Real-world minified size does not grow (> 0.1%)",
+      "fail": "MINOR"
+    },
+    {
+      "id": "S3",
+      "group": "side-effects",
+      "title": "Overlapping open PRs identified",
+      "fail": "NOTE"
+    },
+    {
+      "id": "P1",
+      "group": "perf",
+      "title": "No consistent slowdown on the real-world corpus (release build; optional `lcr perf`)",
+      "fail": "MINOR"
+    },
+    {
+      "id": "P2",
+      "group": "perf",
+      "title": "Release binary size does not grow by more than 1% (optional `lcr perf`)",
+      "fail": "MINOR"
+    },
+    {
+      "id": "A1",
+      "group": "analysis",
+      "title": "Spec checklist for the affected areas",
+      "fail": "per-item"
+    },
+    {
+      "id": "A2",
+      "group": "analysis",
+      "title": "Linked issue repro fixed on head (fails on base)",
+      "fail": "MAJOR"
+    },
+    {
+      "id": "A3",
+      "group": "analysis",
+      "title": "Analysis complete (every slot filled with evidence)",
+      "fail": "MAJOR"
+    }
+  ],
+  "thresholds": {
+    "size_growth_ratio": 0.001,
+    "max_listed_cases": 12,
+    "snippet_chars": 600,
+    "perf_total_ratio": 1.1,
+    "perf_slower_share": 0.6,
+    "binary_growth_ratio": 1.01
+  }
+}

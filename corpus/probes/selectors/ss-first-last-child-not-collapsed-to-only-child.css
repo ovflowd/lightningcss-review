@@ -1,0 +1,14 @@
+/*! lcr-probe
+id: selectors/ss-first-last-child-not-collapsed-to-only-child
+area: selectors
+title: `:first-child:last-child` must not be rewritten to `:only-child` (lower specificity)
+mode: minify
+targets: none
+expect: equivalent
+known: none
+dom: <div><div class="t x"></div></div>
+ref: https://drafts.csswg.org/selectors-4/#the-only-child-pseudo https://drafts.csswg.org/selectors-4/#specificity-rules
+note: ":only-child ... Same as :first-child:last-child ... but with a lower specificity"; (0,3,0) beats `.t.x` (0,2,0), (0,2,0) would tie and lose to the later rule
+*/
+.t:first-child:last-child { color: red; }
+.t.x { color: blue; }

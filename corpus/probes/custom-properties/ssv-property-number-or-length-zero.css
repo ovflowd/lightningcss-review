@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: custom-properties/ssv-property-number-or-length-zero
+area: custom-properties
+title: initial-value 0px must not become 0 when <number> is tried first
+mode: minify
+targets: none
+expect: equivalent, output-not-contains:"initial-value:0}"
+known: open-bug
+ref: https://drafts.css-houdini.org/css-properties-values-api-1/#combinator https://drafts.csswg.org/css-values-4/#lengths
+note: UNFILED master failure; re-parsed `0` matches <number> first, so calc(var(--x) + 10px) becomes calc(0 + 10px), invalid at computed-value time
+*/
+@property --ssv-c { syntax: "<number> | <length>"; inherits: false; initial-value: 0px; }
+.t { width: calc(var(--ssv-c) + 10px); }

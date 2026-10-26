@@ -1,0 +1,25 @@
+{
+  "$comment": "Transform matrix for differential runs. Targets are explicit browser versions (no browserslist data dependency), so a mode means the same thing on every machine. `print`/`minify`/`lower`/`lower-minify` mirror the WPT harness in parcel-bundler/lightningcss#1328.",
+  "targets": {
+    "none": null,
+    "modern": "chrome 120, edge 120, firefox 121, safari 17.2, ios_saf 17.2",
+    "baseline-2022": "chrome 109, edge 109, firefox 115, safari 15.6, ios_saf 15.6, samsung 20",
+    "legacy-2020": "chrome 80, edge 80, firefox 78, safari 13.1, ios_saf 13.4, samsung 12",
+    "wpt-1328": "chrome 80"
+  },
+  "modes": {
+    "print": { "minify": false, "compact": false, "targets": "none" },
+    "minify": { "minify": true, "compact": true, "targets": "none" },
+    "lower": { "minify": true, "compact": false, "targets": "legacy-2020" },
+    "lower-minify": { "minify": true, "compact": true, "targets": "legacy-2020" },
+    "lower-modern": { "minify": true, "compact": true, "targets": "modern" },
+    "lower-baseline": { "minify": true, "compact": true, "targets": "baseline-2022" }
+  },
+  "matrix": {
+    "probes": ["as-declared"],
+    "tuples": ["as-test"],
+    "wpt": ["print", "minify", "lower-minify"],
+    "realworld": ["minify", "lower-baseline", "lower-minify"],
+    "issues": ["as-declared"]
+  }
+}

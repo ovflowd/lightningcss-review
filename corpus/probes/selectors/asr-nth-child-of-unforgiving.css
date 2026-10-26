@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: selectors/asr-nth-child-of-unforgiving
+area: selectors
+title: An invalid item in :nth-child(An+B of S) must keep the selector invalid
+mode: print
+targets: none
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/selectors-4/#the-nth-child-pseudo https://drafts.csswg.org/selectors-4/#forgiving-selector
+dom: <div class="t"></div>
+note: parse_nth_pseudo_class (selectors/parser.rs:2934) parses `of S` forgivingly, turning an invalid rule into a valid one
+*/
+.t:nth-child(1 of .t, 1) { color: red }

@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: text/sft-text-decoration-line-none-combo-keeps-fallback
+area: text
+title: text-decoration-line none underline is invalid and must not become underline
+mode: minify
+targets: none
+expect: equivalent, output-contains:"overline"
+known: open-bug
+ref: https://drafts.csswg.org/css-text-decor-4/#text-decoration-line-property https://github.com/web-platform-tests/wpt/blob/b89af32bc8f42d678f444eb0703bca015ddcf240/css/css-text-decor/parsing/text-decoration-line-invalid.html
+note: TextDecorationLine::parse (src/properties/text.rs:496) accepts none followed by keywords and repeated keywords (underline underline), then dedupe drops the valid overline
+*/
+.t { text-decoration-line: overline; text-decoration-line: none underline; }
+.u { text-decoration-line: overline; text-decoration-line: underline underline; }

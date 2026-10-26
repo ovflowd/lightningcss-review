@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: values-numeric/community-prs-percentage-int-value-serialization
+area: values-numeric
+title: Percentages keep their value after the cssparser 0.37 int_value change
+mode: lower
+targets: firefox 89
+expect: output-contains:"10%"
+known: fixed-by#1200
+ref: https://github.com/servo/rust-cssparser/issues/429 https://github.com/parcel-bundler/lightningcss/pull/1200
+note: with cssparser 0.37 the old Percentage::to_css int_value (self.0 as i32) printed `0%`; caught by the existing prefix_test in the PR
+*/
+.t { text-decoration: underline 10%; }

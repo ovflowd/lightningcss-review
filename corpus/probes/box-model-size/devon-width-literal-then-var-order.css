@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: box-model-size/devon-width-literal-then-var-order
+area: box-model-size
+title: a literal width followed by an unparsed var() width must keep both, in order
+mode: minify
+targets: none
+expect: equivalent
+known: none
+ref: https://github.com/parcel-bundler/lightningcss/issues/805 https://github.com/parcel-bundler/lightningcss/pull/838
+note: guards 22a8b6f (flush on unparsed); the earlier value is a real fallback when the later one is unsupported
+*/
+.x { width: 200px; width: var(--w, 100px); }
+.y { width: var(--w, 100px); width: 200px; }

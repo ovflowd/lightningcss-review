@@ -1,0 +1,14 @@
+/*! lcr-probe
+id: rule-merging/ss-no-merge-nested-has
+area: rule-merging
+title: `:has()` nested inside `:has()` is invalid and must not be merged into a valid rule
+mode: minify
+targets: none
+expect: equivalent
+known: open-bug
+dom: <div class="t"></div>
+ref: https://drafts.csswg.org/selectors-4/#relational
+note: ":has() is not valid within :has()"; parse_has accepts it and is_compatible only checks HasSelector support, so `.t,.u:has(:has(.v))` is emitted and browsers drop `.t`
+*/
+.t { color: red; }
+.u:has(:has(.v)) { color: red; }

@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: nesting/declarations-after-nested-rule-keep-order-when-lowered
+area: nesting
+title: Declarations after a nested rule form a nested declarations rule that comes after it
+mode: lower-minify
+targets: chrome 100
+expect: equivalent
+known: none
+ref: https://drafts.csswg.org/css-nesting-1/#mixing https://drafts.csswg.org/css-nesting-1/#nested-declarations-rule
+dom: <p class="t">x</p>
+note: guard, master passes; the pre-2024 model hoisted trailing declarations above the nested rule (blue would win)
+*/
+.t { color: rgb(255, 0, 0); & { color: rgb(0, 0, 255); } color: rgb(0, 128, 0); }

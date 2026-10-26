@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: color/community-prs-relative-color-omitted-alpha
+area: color
+title: Relative color syntax with omitted alpha inherits the origin color's alpha
+mode: minify
+targets: none
+expect: equivalent
+known: fixed-by#1343
+ref: https://drafts.csswg.org/css-color-5/#relative-colors https://github.com/parcel-bundler/lightningcss/pull/1343
+note: <=1.33.0 dropped the alpha (opaque red). Fix is on master, unreleased
+*/
+.t { color: rgb(from rgb(255 0 0 / 50%) r g b); }

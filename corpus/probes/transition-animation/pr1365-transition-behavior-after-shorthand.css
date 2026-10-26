@@ -1,0 +1,14 @@
+/*! lcr-probe
+id: transition-animation/pr1365-transition-behavior-after-shorthand
+area: transition-animation
+title: Longhands written after a transition/animation shorthand must stay after it
+mode: minify
+targets: none
+expect: equivalent
+known: open-issue#1084
+ref: https://drafts.csswg.org/css-transitions-2/#transition-shorthand-property https://github.com/parcel-bundler/lightningcss/issues/1084 https://github.com/parcel-bundler/lightningcss/pull/1365
+note: 1.33.0 moves transition-behavior and animation-composition before the shorthand, which then resets them to their initial values
+*/
+.t { transition: opacity 1s; transition-behavior: allow-discrete; }
+.u { animation: fade 1s; animation-composition: add; }
+@keyframes fade { from { opacity: 0; } to { opacity: 1; } }

@@ -1,0 +1,15 @@
+/*! lcr-probe
+id: transition-animation/issues-b1-animation-timeline-folded-into-shorthand
+area: transition-animation
+title: animation-timeline must stay a separate declaration; shipping engines treat it as reset-only in the animation shorthand
+mode: minify
+targets: none
+expect: equivalent
+known: open-issue#1369
+ref: https://github.com/parcel-bundler/lightningcss/issues/1369 https://github.com/parcel-bundler/lightningcss/issues/1283 https://github.com/parcel-bundler/lightningcss/issues/1012 https://drafts.csswg.org/css-animations-2/#animation-shorthand
+note: v1.33.0 prints `animation:1s foo view()`; Chrome 156 rejects it (CSS.supports('animation','1s foo view()') is false), so the whole animation is dropped. Same with chrome>=115 targets because compat data (animationTimelineShorthand) says supported
+*/
+.p {
+  animation: foo 1s;
+  animation-timeline: view();
+}

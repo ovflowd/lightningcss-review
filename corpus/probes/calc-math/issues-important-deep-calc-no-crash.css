@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: calc-math/issues-important-deep-calc-no-crash
+area: calc-math
+title: Nested sum calc() with mixed viewport units must not crash
+mode: minify
+targets: none
+expect: no-panic
+known: open-issue#910
+ref: https://github.com/parcel-bundler/lightningcss/issues/910 https://github.com/parcel-bundler/lightningcss/pull/1245 https://drafts.csswg.org/css-values-4/#calc-simplification
+note: 1.14..master die with a signal (stack overflow / segfault) in calc sum-term reduction
+*/
+.c { height: calc((100dvh - 10.5rem) + (4vh + 230px)); }

@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: color/devon-currentcolor-color-mix-no-panic
+area: color
+title: color-mix() and relative colors with currentColor are passed through, never resolved or panicking
+mode: minify
+targets: none
+expect: no-panic, equivalent
+known: none
+ref: https://drafts.csswg.org/css-color-5/#color-mix https://github.com/parcel-bundler/lightningcss/issues/522
+note: guards 20c9612 (to_rgb/to_lab became fallible); currentColor cannot be resolved at build time
+*/
+.x { color: color-mix(in srgb, currentColor, blue); }
+.y { color: rgb(from currentColor r g b / 0.5); }

@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: calc-math/ssv-clamp-percentages-negative-basis
+area: calc-math
+title: clamp() of percentages cannot be resolved when the basis may be negative
+mode: minify
+targets: none
+expect: equivalent, output-contains:"clamp("
+known: open-bug
+ref: https://drafts.csswg.org/css-values-4/#comp-func https://drafts.csswg.org/css-values-4/#calc-simplification
+note: UNFILED master failure; with basis -200px clamp(10%,50%,30%) resolves to 10% (-20px); master emits 30% (clamp reduction, calc.rs:376-432)
+*/
+.t { width: 100px; height: 100px; background-image: linear-gradient(red, blue); background-size: 300px 300px; background-repeat: no-repeat; background-position: clamp(10%, 50%, 30%) 0; }

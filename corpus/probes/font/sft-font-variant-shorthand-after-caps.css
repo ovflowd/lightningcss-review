@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: font/sft-font-variant-shorthand-after-caps
+area: font
+title: font-variant after font-variant-caps must stay after it (the shorthand resets caps)
+mode: minify
+targets: none
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/css-fonts-4/#font-variant-prop https://github.com/parcel-bundler/lightningcss/issues/1207 https://github.com/parcel-bundler/lightningcss/pull/1209
+note: master prints font-variant:normal;font-variant-caps:all-small-caps (FontHandler buffers the typed caps longhand, untyped font-variant is pushed at once); opposite direction of #1207, #1209 does not cover it
+*/
+.t { font-variant-caps: all-small-caps; font-variant: normal; }

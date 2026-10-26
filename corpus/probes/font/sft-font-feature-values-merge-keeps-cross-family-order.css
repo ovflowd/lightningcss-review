@@ -1,0 +1,14 @@
+/*! lcr-probe
+id: font/sft-font-feature-values-merge-keeps-cross-family-order
+area: font
+title: Merging same-prelude @font-feature-values must not move a later definition before an overlapping rule
+mode: minify
+targets: none
+expect: output-contains:"Foo,Bar{@swash{x:2}}@font-feature-values Foo{@swash{x:3}}"
+known: open-bug
+ref: https://drafts.csswg.org/css-fonts-4/#font-feature-values-syntax
+note: for Foo the last-defined x is 3; master hoists x:3 into the first Foo rule (src/rules/mod.rs:950-961) so the Foo,Bar rule's x:2 now wins for Foo
+*/
+@font-feature-values Foo { @swash { x: 1; } }
+@font-feature-values Foo, Bar { @swash { x: 2; } }
+@font-feature-values Foo { @swash { x: 3; } }

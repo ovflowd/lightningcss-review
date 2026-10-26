@@ -1,0 +1,4024 @@
+[
+ {
+  "area": "effects-masking",
+  "file": "src/properties/masking.rs",
+  "handler": "none (name is parsed as unknown CustomProperty because PropertyId::from strips -webkit- first; typed variant only emitted by MaskHandler)",
+  "longhands": [],
+  "name": "-webkit-mask-composite",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": false
+ },
+ {
+  "area": "ui-misc",
+  "file": "src/properties/ui.rs",
+  "handler": "none (passthrough)",
+  "longhands": [],
+  "name": "accent-color",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "flex-grid-align",
+  "file": "src/properties/align.rs",
+  "handler": "AlignHandler",
+  "longhands": [],
+  "name": "align-content",
+  "prefixes": [
+   "-webkit-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "flex-grid-align",
+  "file": "src/properties/align.rs",
+  "handler": "AlignHandler",
+  "longhands": [],
+  "name": "align-items",
+  "prefixes": [
+   "-webkit-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "flex-grid-align",
+  "file": "src/properties/align.rs",
+  "handler": "AlignHandler",
+  "longhands": [],
+  "name": "align-self",
+  "prefixes": [
+   "-webkit-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "transition-animation",
+  "file": "src/properties/animation.rs",
+  "handler": "AnimationHandler",
+  "longhands": [
+   "animation-name",
+   "animation-duration",
+   "animation-timing-function",
+   "animation-iteration-count",
+   "animation-direction",
+   "animation-play-state",
+   "animation-delay",
+   "animation-fill-mode",
+   "animation-timeline"
+  ],
+  "name": "animation",
+  "prefixes": [
+   "-webkit-",
+   "-moz-",
+   "-o-"
+  ],
+  "shorthand": true,
+  "typed": true
+ },
+ {
+  "area": "transition-animation",
+  "file": "src/properties/animation.rs",
+  "handler": "none (typed value passthrough; Unparsed handled by AnimationHandler)",
+  "longhands": [],
+  "name": "animation-composition",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "transition-animation",
+  "file": "src/properties/animation.rs",
+  "handler": "AnimationHandler",
+  "longhands": [],
+  "name": "animation-delay",
+  "prefixes": [
+   "-webkit-",
+   "-moz-",
+   "-o-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "transition-animation",
+  "file": "src/properties/animation.rs",
+  "handler": "AnimationHandler",
+  "longhands": [],
+  "name": "animation-direction",
+  "prefixes": [
+   "-webkit-",
+   "-moz-",
+   "-o-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "transition-animation",
+  "file": "src/properties/animation.rs",
+  "handler": "AnimationHandler",
+  "longhands": [],
+  "name": "animation-duration",
+  "prefixes": [
+   "-webkit-",
+   "-moz-",
+   "-o-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "transition-animation",
+  "file": "src/properties/animation.rs",
+  "handler": "AnimationHandler",
+  "longhands": [],
+  "name": "animation-fill-mode",
+  "prefixes": [
+   "-webkit-",
+   "-moz-",
+   "-o-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "transition-animation",
+  "file": "src/properties/animation.rs",
+  "handler": "AnimationHandler",
+  "longhands": [],
+  "name": "animation-iteration-count",
+  "prefixes": [
+   "-webkit-",
+   "-moz-",
+   "-o-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "transition-animation",
+  "file": "src/properties/animation.rs",
+  "handler": "AnimationHandler",
+  "longhands": [],
+  "name": "animation-name",
+  "prefixes": [
+   "-webkit-",
+   "-moz-",
+   "-o-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "transition-animation",
+  "file": "src/properties/animation.rs",
+  "handler": "AnimationHandler",
+  "longhands": [],
+  "name": "animation-play-state",
+  "prefixes": [
+   "-webkit-",
+   "-moz-",
+   "-o-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "transition-animation",
+  "file": "src/properties/animation.rs",
+  "handler": "AnimationHandler",
+  "longhands": [],
+  "name": "animation-range",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "transition-animation",
+  "file": "src/properties/animation.rs",
+  "handler": "AnimationHandler",
+  "longhands": [],
+  "name": "animation-range-end",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "transition-animation",
+  "file": "src/properties/animation.rs",
+  "handler": "AnimationHandler",
+  "longhands": [],
+  "name": "animation-range-start",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "transition-animation",
+  "file": "src/properties/animation.rs",
+  "handler": "AnimationHandler",
+  "longhands": [],
+  "name": "animation-timeline",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "transition-animation",
+  "file": "src/properties/animation.rs",
+  "handler": "AnimationHandler",
+  "longhands": [],
+  "name": "animation-timing-function",
+  "prefixes": [
+   "-webkit-",
+   "-moz-",
+   "-o-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "ui-misc",
+  "file": "src/properties/ui.rs",
+  "handler": "PrefixHandler [src/properties/prefix_handler.rs]",
+  "longhands": [],
+  "name": "appearance",
+  "prefixes": [
+   "-webkit-",
+   "-moz-",
+   "-ms-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "box-model-size",
+  "file": "src/properties/size.rs",
+  "handler": "none (passthrough)",
+  "longhands": [],
+  "name": "aspect-ratio",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "effects-masking",
+  "file": "src/properties/effects.rs",
+  "handler": "FallbackHandler [src/properties/prefix_handler.rs]",
+  "longhands": [],
+  "name": "backdrop-filter",
+  "prefixes": [
+   "-webkit-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "transform",
+  "file": "src/properties/transform.rs",
+  "handler": "PrefixHandler [src/properties/prefix_handler.rs]",
+  "longhands": [],
+  "name": "backface-visibility",
+  "prefixes": [
+   "-webkit-",
+   "-moz-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "background",
+  "file": "src/properties/background.rs",
+  "handler": "BackgroundHandler",
+  "longhands": [
+   "background-color",
+   "background-image",
+   "background-position-x",
+   "background-position-y",
+   "background-repeat",
+   "background-size",
+   "background-attachment",
+   "background-origin",
+   "background-clip"
+  ],
+  "name": "background",
+  "prefixes": [],
+  "shorthand": true,
+  "typed": true
+ },
+ {
+  "area": "background",
+  "file": "src/properties/background.rs",
+  "handler": "BackgroundHandler",
+  "longhands": [],
+  "name": "background-attachment",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "background",
+  "file": "src/properties/background.rs",
+  "handler": "BackgroundHandler",
+  "longhands": [],
+  "name": "background-clip",
+  "prefixes": [
+   "-webkit-",
+   "-moz-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "background",
+  "file": "src/properties/background.rs",
+  "handler": "BackgroundHandler",
+  "longhands": [],
+  "name": "background-color",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "background",
+  "file": "src/properties/background.rs",
+  "handler": "BackgroundHandler",
+  "longhands": [],
+  "name": "background-image",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "background",
+  "file": "src/properties/background.rs",
+  "handler": "BackgroundHandler",
+  "longhands": [],
+  "name": "background-origin",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "background",
+  "file": "src/properties/background.rs",
+  "handler": "BackgroundHandler",
+  "longhands": [
+   "background-position-x",
+   "background-position-y"
+  ],
+  "name": "background-position",
+  "prefixes": [],
+  "shorthand": true,
+  "typed": true
+ },
+ {
+  "area": "background",
+  "file": "src/properties/background.rs",
+  "handler": "BackgroundHandler",
+  "longhands": [],
+  "name": "background-position-x",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "background",
+  "file": "src/properties/background.rs",
+  "handler": "BackgroundHandler",
+  "longhands": [],
+  "name": "background-position-y",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "background",
+  "file": "src/properties/background.rs",
+  "handler": "BackgroundHandler",
+  "longhands": [],
+  "name": "background-repeat",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "background",
+  "file": "src/properties/background.rs",
+  "handler": "BackgroundHandler",
+  "longhands": [],
+  "name": "background-size",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "logical",
+  "file": "src/properties/size.rs",
+  "handler": "SizeHandler",
+  "longhands": [],
+  "name": "block-size",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "border-outline",
+  "file": "src/properties/border.rs",
+  "handler": "BorderHandler",
+  "longhands": [
+   "border-top-width",
+   "border-right-width",
+   "border-bottom-width",
+   "border-left-width",
+   "border-top-style",
+   "border-right-style",
+   "border-bottom-style",
+   "border-left-style",
+   "border-top-color",
+   "border-right-color",
+   "border-bottom-color",
+   "border-left-color"
+  ],
+  "name": "border",
+  "prefixes": [],
+  "shorthand": true,
+  "typed": true
+ },
+ {
+  "area": "border-outline",
+  "file": "src/properties/border.rs",
+  "handler": "BorderHandler",
+  "longhands": [
+   "border-block-start-width",
+   "border-block-end-width",
+   "border-block-start-style",
+   "border-block-end-style",
+   "border-block-start-color",
+   "border-block-end-color"
+  ],
+  "name": "border-block",
+  "prefixes": [],
+  "shorthand": true,
+  "typed": true
+ },
+ {
+  "area": "border-outline",
+  "file": "src/properties/border.rs",
+  "handler": "BorderHandler",
+  "longhands": [
+   "border-block-start-color",
+   "border-block-end-color"
+  ],
+  "name": "border-block-color",
+  "prefixes": [],
+  "shorthand": true,
+  "typed": true
+ },
+ {
+  "area": "border-outline",
+  "file": "src/properties/border.rs",
+  "handler": "BorderHandler",
+  "longhands": [
+   "border-block-end-width",
+   "border-block-end-style",
+   "border-block-end-color"
+  ],
+  "name": "border-block-end",
+  "prefixes": [],
+  "shorthand": true,
+  "typed": true
+ },
+ {
+  "area": "border-outline",
+  "file": "src/properties/border.rs",
+  "handler": "BorderHandler",
+  "longhands": [],
+  "name": "border-block-end-color",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "border-outline",
+  "file": "src/properties/border.rs",
+  "handler": "BorderHandler",
+  "longhands": [],
+  "name": "border-block-end-style",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "border-outline",
+  "file": "src/properties/border.rs",
+  "handler": "BorderHandler",
+  "longhands": [],
+  "name": "border-block-end-width",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "border-outline",
+  "file": "src/properties/border.rs",
+  "handler": "BorderHandler",
+  "longhands": [
+   "border-block-start-width",
+   "border-block-start-style",
+   "border-block-start-color"
+  ],
+  "name": "border-block-start",
+  "prefixes": [],
+  "shorthand": true,
+  "typed": true
+ },
+ {
+  "area": "border-outline",
+  "file": "src/properties/border.rs",
+  "handler": "BorderHandler",
+  "longhands": [],
+  "name": "border-block-start-color",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "border-outline",
+  "file": "src/properties/border.rs",
+  "handler": "BorderHandler",
+  "longhands": [],
+  "name": "border-block-start-style",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "border-outline",
+  "file": "src/properties/border.rs",
+  "handler": "BorderHandler",
+  "longhands": [],
+  "name": "border-block-start-width",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "border-outline",
+  "file": "src/properties/border.rs",
+  "handler": "BorderHandler",
+  "longhands": [
+   "border-block-start-style",
+   "border-block-end-style"
+  ],
+  "name": "border-block-style",
+  "prefixes": [],
+  "shorthand": true,
+  "typed": true
+ },
+ {
+  "area": "border-outline",
+  "file": "src/properties/border.rs",
+  "handler": "BorderHandler",
+  "longhands": [
+   "border-block-start-width",
+   "border-block-end-width"
+  ],
+  "name": "border-block-width",
+  "prefixes": [],
+  "shorthand": true,
+  "typed": true
+ },
+ {
+  "area": "border-outline",
+  "file": "src/properties/border.rs",
+  "handler": "BorderHandler",
+  "longhands": [
+   "border-bottom-width",
+   "border-bottom-style",
+   "border-bottom-color"
+  ],
+  "name": "border-bottom",
+  "prefixes": [],
+  "shorthand": true,
+  "typed": true
+ },
+ {
+  "area": "border-outline",
+  "file": "src/properties/border.rs",
+  "handler": "BorderHandler",
+  "longhands": [],
+  "name": "border-bottom-color",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "border-outline",
+  "file": "src/properties/border_radius.rs",
+  "handler": "BorderRadiusHandler (via BorderHandler)",
+  "longhands": [],
+  "name": "border-bottom-left-radius",
+  "prefixes": [
+   "-webkit-",
+   "-moz-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "border-outline",
+  "file": "src/properties/border_radius.rs",
+  "handler": "BorderRadiusHandler (via BorderHandler)",
+  "longhands": [],
+  "name": "border-bottom-right-radius",
+  "prefixes": [
+   "-webkit-",
+   "-moz-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "border-outline",
+  "file": "src/properties/border.rs",
+  "handler": "BorderHandler",
+  "longhands": [],
+  "name": "border-bottom-style",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "border-outline",
+  "file": "src/properties/border.rs",
+  "handler": "BorderHandler",
+  "longhands": [],
+  "name": "border-bottom-width",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "border-outline",
+  "file": "src/properties/border.rs",
+  "handler": "BorderHandler",
+  "longhands": [
+   "border-top-color",
+   "border-right-color",
+   "border-bottom-color",
+   "border-left-color"
+  ],
+  "name": "border-color",
+  "prefixes": [],
+  "shorthand": true,
+  "typed": true
+ },
+ {
+  "area": "border-outline",
+  "file": "src/properties/border_radius.rs",
+  "handler": "BorderRadiusHandler (via BorderHandler)",
+  "longhands": [],
+  "name": "border-end-end-radius",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "border-outline",
+  "file": "src/properties/border_radius.rs",
+  "handler": "BorderRadiusHandler (via BorderHandler)",
+  "longhands": [],
+  "name": "border-end-start-radius",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "border-outline",
+  "file": "src/properties/border_image.rs",
+  "handler": "BorderImageHandler (via BorderHandler)",
+  "longhands": [
+   "border-image-source",
+   "border-image-slice",
+   "border-image-width",
+   "border-image-outset",
+   "border-image-repeat"
+  ],
+  "name": "border-image",
+  "prefixes": [
+   "-webkit-",
+   "-moz-",
+   "-o-"
+  ],
+  "shorthand": true,
+  "typed": true
+ },
+ {
+  "area": "border-outline",
+  "file": "src/properties/border_image.rs",
+  "handler": "BorderImageHandler (via BorderHandler)",
+  "longhands": [],
+  "name": "border-image-outset",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "border-outline",
+  "file": "src/properties/border_image.rs",
+  "handler": "BorderImageHandler (via BorderHandler)",
+  "longhands": [],
+  "name": "border-image-repeat",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "border-outline",
+  "file": "src/properties/border_image.rs",
+  "handler": "BorderImageHandler (via BorderHandler)",
+  "longhands": [],
+  "name": "border-image-slice",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "border-outline",
+  "file": "src/properties/border_image.rs",
+  "handler": "BorderImageHandler (via BorderHandler)",
+  "longhands": [],
+  "name": "border-image-source",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "border-outline",
+  "file": "src/properties/border_image.rs",
+  "handler": "BorderImageHandler (via BorderHandler)",
+  "longhands": [],
+  "name": "border-image-width",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "border-outline",
+  "file": "src/properties/border.rs",
+  "handler": "BorderHandler",
+  "longhands": [
+   "border-inline-start-width",
+   "border-inline-end-width",
+   "border-inline-start-style",
+   "border-inline-end-style",
+   "border-inline-start-color",
+   "border-inline-end-color"
+  ],
+  "name": "border-inline",
+  "prefixes": [],
+  "shorthand": true,
+  "typed": true
+ },
+ {
+  "area": "border-outline",
+  "file": "src/properties/border.rs",
+  "handler": "BorderHandler",
+  "longhands": [
+   "border-inline-start-color",
+   "border-inline-end-color"
+  ],
+  "name": "border-inline-color",
+  "prefixes": [],
+  "shorthand": true,
+  "typed": true
+ },
+ {
+  "area": "border-outline",
+  "file": "src/properties/border.rs",
+  "handler": "BorderHandler",
+  "longhands": [
+   "border-inline-end-width",
+   "border-inline-end-style",
+   "border-inline-end-color"
+  ],
+  "name": "border-inline-end",
+  "prefixes": [],
+  "shorthand": true,
+  "typed": true
+ },
+ {
+  "area": "border-outline",
+  "file": "src/properties/border.rs",
+  "handler": "BorderHandler",
+  "longhands": [],
+  "name": "border-inline-end-color",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "border-outline",
+  "file": "src/properties/border.rs",
+  "handler": "BorderHandler",
+  "longhands": [],
+  "name": "border-inline-end-style",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "border-outline",
+  "file": "src/properties/border.rs",
+  "handler": "BorderHandler",
+  "longhands": [],
+  "name": "border-inline-end-width",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "border-outline",
+  "file": "src/properties/border.rs",
+  "handler": "BorderHandler",
+  "longhands": [
+   "border-inline-start-width",
+   "border-inline-start-style",
+   "border-inline-start-color"
+  ],
+  "name": "border-inline-start",
+  "prefixes": [],
+  "shorthand": true,
+  "typed": true
+ },
+ {
+  "area": "border-outline",
+  "file": "src/properties/border.rs",
+  "handler": "BorderHandler",
+  "longhands": [],
+  "name": "border-inline-start-color",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "border-outline",
+  "file": "src/properties/border.rs",
+  "handler": "BorderHandler",
+  "longhands": [],
+  "name": "border-inline-start-style",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "border-outline",
+  "file": "src/properties/border.rs",
+  "handler": "BorderHandler",
+  "longhands": [],
+  "name": "border-inline-start-width",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "border-outline",
+  "file": "src/properties/border.rs",
+  "handler": "BorderHandler",
+  "longhands": [
+   "border-inline-start-style",
+   "border-inline-end-style"
+  ],
+  "name": "border-inline-style",
+  "prefixes": [],
+  "shorthand": true,
+  "typed": true
+ },
+ {
+  "area": "border-outline",
+  "file": "src/properties/border.rs",
+  "handler": "BorderHandler",
+  "longhands": [
+   "border-inline-start-width",
+   "border-inline-end-width"
+  ],
+  "name": "border-inline-width",
+  "prefixes": [],
+  "shorthand": true,
+  "typed": true
+ },
+ {
+  "area": "border-outline",
+  "file": "src/properties/border.rs",
+  "handler": "BorderHandler",
+  "longhands": [
+   "border-left-width",
+   "border-left-style",
+   "border-left-color"
+  ],
+  "name": "border-left",
+  "prefixes": [],
+  "shorthand": true,
+  "typed": true
+ },
+ {
+  "area": "border-outline",
+  "file": "src/properties/border.rs",
+  "handler": "BorderHandler",
+  "longhands": [],
+  "name": "border-left-color",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "border-outline",
+  "file": "src/properties/border.rs",
+  "handler": "BorderHandler",
+  "longhands": [],
+  "name": "border-left-style",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "border-outline",
+  "file": "src/properties/border.rs",
+  "handler": "BorderHandler",
+  "longhands": [],
+  "name": "border-left-width",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "border-outline",
+  "file": "src/properties/border_radius.rs",
+  "handler": "BorderRadiusHandler (via BorderHandler)",
+  "longhands": [
+   "border-top-left-radius",
+   "border-top-right-radius",
+   "border-bottom-right-radius",
+   "border-bottom-left-radius"
+  ],
+  "name": "border-radius",
+  "prefixes": [
+   "-webkit-",
+   "-moz-"
+  ],
+  "shorthand": true,
+  "typed": true
+ },
+ {
+  "area": "border-outline",
+  "file": "src/properties/border.rs",
+  "handler": "BorderHandler",
+  "longhands": [
+   "border-right-width",
+   "border-right-style",
+   "border-right-color"
+  ],
+  "name": "border-right",
+  "prefixes": [],
+  "shorthand": true,
+  "typed": true
+ },
+ {
+  "area": "border-outline",
+  "file": "src/properties/border.rs",
+  "handler": "BorderHandler",
+  "longhands": [],
+  "name": "border-right-color",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "border-outline",
+  "file": "src/properties/border.rs",
+  "handler": "BorderHandler",
+  "longhands": [],
+  "name": "border-right-style",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "border-outline",
+  "file": "src/properties/border.rs",
+  "handler": "BorderHandler",
+  "longhands": [],
+  "name": "border-right-width",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "box-model-size",
+  "file": "src/properties/border.rs",
+  "handler": "none (passthrough)",
+  "longhands": [],
+  "name": "border-spacing",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "border-outline",
+  "file": "src/properties/border_radius.rs",
+  "handler": "BorderRadiusHandler (via BorderHandler)",
+  "longhands": [],
+  "name": "border-start-end-radius",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "border-outline",
+  "file": "src/properties/border_radius.rs",
+  "handler": "BorderRadiusHandler (via BorderHandler)",
+  "longhands": [],
+  "name": "border-start-start-radius",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "border-outline",
+  "file": "src/properties/border.rs",
+  "handler": "BorderHandler",
+  "longhands": [
+   "border-top-style",
+   "border-right-style",
+   "border-bottom-style",
+   "border-left-style"
+  ],
+  "name": "border-style",
+  "prefixes": [],
+  "shorthand": true,
+  "typed": true
+ },
+ {
+  "area": "border-outline",
+  "file": "src/properties/border.rs",
+  "handler": "BorderHandler",
+  "longhands": [
+   "border-top-width",
+   "border-top-style",
+   "border-top-color"
+  ],
+  "name": "border-top",
+  "prefixes": [],
+  "shorthand": true,
+  "typed": true
+ },
+ {
+  "area": "border-outline",
+  "file": "src/properties/border.rs",
+  "handler": "BorderHandler",
+  "longhands": [],
+  "name": "border-top-color",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "border-outline",
+  "file": "src/properties/border_radius.rs",
+  "handler": "BorderRadiusHandler (via BorderHandler)",
+  "longhands": [],
+  "name": "border-top-left-radius",
+  "prefixes": [
+   "-webkit-",
+   "-moz-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "border-outline",
+  "file": "src/properties/border_radius.rs",
+  "handler": "BorderRadiusHandler (via BorderHandler)",
+  "longhands": [],
+  "name": "border-top-right-radius",
+  "prefixes": [
+   "-webkit-",
+   "-moz-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "border-outline",
+  "file": "src/properties/border.rs",
+  "handler": "BorderHandler",
+  "longhands": [],
+  "name": "border-top-style",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "border-outline",
+  "file": "src/properties/border.rs",
+  "handler": "BorderHandler",
+  "longhands": [],
+  "name": "border-top-width",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "border-outline",
+  "file": "src/properties/border.rs",
+  "handler": "BorderHandler",
+  "longhands": [
+   "border-top-width",
+   "border-right-width",
+   "border-bottom-width",
+   "border-left-width"
+  ],
+  "name": "border-width",
+  "prefixes": [],
+  "shorthand": true,
+  "typed": true
+ },
+ {
+  "area": "display-layout",
+  "file": "src/properties/margin_padding.rs",
+  "handler": "InsetHandler (side_handler!)",
+  "longhands": [],
+  "name": "bottom",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "flex-grid-align",
+  "file": "src/properties/align.rs",
+  "handler": "AlignHandler",
+  "longhands": [],
+  "name": "box-align",
+  "prefixes": [
+   "-webkit-",
+   "-moz-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "ui-misc",
+  "file": "src/properties/text.rs",
+  "handler": "PrefixHandler [src/properties/prefix_handler.rs]",
+  "longhands": [],
+  "name": "box-decoration-break",
+  "prefixes": [
+   "-webkit-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "flex-grid-align",
+  "file": "src/properties/flex.rs",
+  "handler": "FlexHandler",
+  "longhands": [],
+  "name": "box-direction",
+  "prefixes": [
+   "-webkit-",
+   "-moz-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "flex-grid-align",
+  "file": "src/properties/flex.rs",
+  "handler": "FlexHandler",
+  "longhands": [],
+  "name": "box-flex",
+  "prefixes": [
+   "-webkit-",
+   "-moz-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "flex-grid-align",
+  "file": "src/properties/flex.rs",
+  "handler": "none (passthrough; not matched by FlexHandler)",
+  "longhands": [],
+  "name": "box-flex-group",
+  "prefixes": [
+   "-webkit-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "flex-grid-align",
+  "file": "src/properties/flex.rs",
+  "handler": "FlexHandler",
+  "longhands": [],
+  "name": "box-lines",
+  "prefixes": [
+   "-webkit-",
+   "-moz-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "flex-grid-align",
+  "file": "src/properties/flex.rs",
+  "handler": "FlexHandler",
+  "longhands": [],
+  "name": "box-ordinal-group",
+  "prefixes": [
+   "-webkit-",
+   "-moz-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "flex-grid-align",
+  "file": "src/properties/flex.rs",
+  "handler": "FlexHandler",
+  "longhands": [],
+  "name": "box-orient",
+  "prefixes": [
+   "-webkit-",
+   "-moz-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "flex-grid-align",
+  "file": "src/properties/align.rs",
+  "handler": "AlignHandler",
+  "longhands": [],
+  "name": "box-pack",
+  "prefixes": [
+   "-webkit-",
+   "-moz-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "effects-masking",
+  "file": "src/properties/box_shadow.rs",
+  "handler": "BoxShadowHandler",
+  "longhands": [],
+  "name": "box-shadow",
+  "prefixes": [
+   "-webkit-",
+   "-moz-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "box-model-size",
+  "file": "src/properties/size.rs",
+  "handler": "PrefixHandler [src/properties/prefix_handler.rs]",
+  "longhands": [],
+  "name": "box-sizing",
+  "prefixes": [
+   "-webkit-",
+   "-moz-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "ui-misc",
+  "file": "src/properties/ui.rs",
+  "handler": "FallbackHandler [src/properties/prefix_handler.rs]",
+  "longhands": [
+   "caret-color",
+   "caret-shape"
+  ],
+  "name": "caret",
+  "prefixes": [],
+  "shorthand": true,
+  "typed": true
+ },
+ {
+  "area": "ui-misc",
+  "file": "src/properties/ui.rs",
+  "handler": "FallbackHandler [src/properties/prefix_handler.rs]",
+  "longhands": [],
+  "name": "caret-color",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "ui-misc",
+  "file": "src/properties/ui.rs",
+  "handler": "none (passthrough)",
+  "longhands": [],
+  "name": "caret-shape",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "effects-masking",
+  "file": "src/properties/masking.rs",
+  "handler": "PrefixHandler [src/properties/prefix_handler.rs]",
+  "longhands": [],
+  "name": "clip-path",
+  "prefixes": [
+   "-webkit-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "effects-masking",
+  "file": "src/values/shape.rs",
+  "handler": "none (passthrough)",
+  "longhands": [],
+  "name": "clip-rule",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "color",
+  "file": "src/values/color.rs",
+  "handler": "FallbackHandler [src/properties/prefix_handler.rs]",
+  "longhands": [],
+  "name": "color",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "ui-misc",
+  "file": "src/properties/svg.rs",
+  "handler": "none (passthrough)",
+  "longhands": [],
+  "name": "color-interpolation",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "ui-misc",
+  "file": "src/properties/svg.rs",
+  "handler": "none (passthrough)",
+  "longhands": [],
+  "name": "color-interpolation-filters",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "ui-misc",
+  "file": "src/properties/svg.rs",
+  "handler": "none (passthrough)",
+  "longhands": [],
+  "name": "color-rendering",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "ui-misc",
+  "file": "src/properties/ui.rs",
+  "handler": "ColorSchemeHandler",
+  "longhands": [],
+  "name": "color-scheme",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "flex-grid-align",
+  "file": "src/properties/align.rs",
+  "handler": "AlignHandler",
+  "longhands": [],
+  "name": "column-gap",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "css-modules",
+  "file": "src/properties/css_modules.rs",
+  "handler": "none (printed specially by DeclarationBlock::to_css; css_modules only)",
+  "longhands": [],
+  "name": "composes",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "supports-container",
+  "file": "src/properties/contain.rs",
+  "handler": "ContainerHandler (shorthand_handler!)",
+  "longhands": [
+   "container-name",
+   "container-type"
+  ],
+  "name": "container",
+  "prefixes": [],
+  "shorthand": true,
+  "typed": true
+ },
+ {
+  "area": "supports-container",
+  "file": "src/properties/contain.rs",
+  "handler": "ContainerHandler (shorthand_handler!)",
+  "longhands": [],
+  "name": "container-name",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "supports-container",
+  "file": "src/properties/contain.rs",
+  "handler": "ContainerHandler (shorthand_handler!)",
+  "longhands": [],
+  "name": "container-type",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "ui-misc",
+  "file": "src/properties/ui.rs",
+  "handler": "none (passthrough)",
+  "longhands": [],
+  "name": "cursor",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "text",
+  "file": "src/properties/text.rs",
+  "handler": "DeclarationHandler::handle_all (deferred to finalize) [src/declaration.rs]",
+  "longhands": [],
+  "name": "direction",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "display-layout",
+  "file": "src/properties/display.rs",
+  "handler": "DisplayHandler",
+  "longhands": [],
+  "name": "display",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "ui-misc",
+  "file": "src/properties/svg.rs",
+  "handler": "FallbackHandler [src/properties/prefix_handler.rs]",
+  "longhands": [],
+  "name": "fill",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "ui-misc",
+  "file": "src/properties/svg.rs",
+  "handler": "none (passthrough)",
+  "longhands": [],
+  "name": "fill-opacity",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "ui-misc",
+  "file": "src/values/shape.rs",
+  "handler": "none (passthrough)",
+  "longhands": [],
+  "name": "fill-rule",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "effects-masking",
+  "file": "src/properties/effects.rs",
+  "handler": "FallbackHandler [src/properties/prefix_handler.rs]",
+  "longhands": [],
+  "name": "filter",
+  "prefixes": [
+   "-webkit-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "flex-grid-align",
+  "file": "src/properties/flex.rs",
+  "handler": "FlexHandler",
+  "longhands": [
+   "flex-grow",
+   "flex-shrink",
+   "flex-basis"
+  ],
+  "name": "flex",
+  "prefixes": [
+   "-webkit-",
+   "-ms-"
+  ],
+  "shorthand": true,
+  "typed": true
+ },
+ {
+  "area": "flex-grid-align",
+  "file": "src/properties/align.rs",
+  "handler": "AlignHandler",
+  "longhands": [],
+  "name": "flex-align",
+  "prefixes": [
+   "-ms-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "flex-grid-align",
+  "file": "src/properties/flex.rs",
+  "handler": "FlexHandler",
+  "longhands": [],
+  "name": "flex-basis",
+  "prefixes": [
+   "-webkit-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "flex-grid-align",
+  "file": "src/properties/flex.rs",
+  "handler": "FlexHandler",
+  "longhands": [],
+  "name": "flex-direction",
+  "prefixes": [
+   "-webkit-",
+   "-ms-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "flex-grid-align",
+  "file": "src/properties/flex.rs",
+  "handler": "FlexHandler",
+  "longhands": [
+   "flex-direction",
+   "flex-wrap"
+  ],
+  "name": "flex-flow",
+  "prefixes": [
+   "-webkit-",
+   "-ms-"
+  ],
+  "shorthand": true,
+  "typed": true
+ },
+ {
+  "area": "flex-grid-align",
+  "file": "src/properties/flex.rs",
+  "handler": "FlexHandler",
+  "longhands": [],
+  "name": "flex-grow",
+  "prefixes": [
+   "-webkit-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "flex-grid-align",
+  "file": "src/properties/align.rs",
+  "handler": "AlignHandler",
+  "longhands": [],
+  "name": "flex-item-align",
+  "prefixes": [
+   "-ms-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "flex-grid-align",
+  "file": "src/properties/align.rs",
+  "handler": "AlignHandler",
+  "longhands": [],
+  "name": "flex-line-pack",
+  "prefixes": [
+   "-ms-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "flex-grid-align",
+  "file": "src/properties/flex.rs",
+  "handler": "FlexHandler",
+  "longhands": [],
+  "name": "flex-negative",
+  "prefixes": [
+   "-ms-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "flex-grid-align",
+  "file": "src/properties/flex.rs",
+  "handler": "FlexHandler",
+  "longhands": [],
+  "name": "flex-order",
+  "prefixes": [
+   "-ms-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "flex-grid-align",
+  "file": "src/properties/align.rs",
+  "handler": "AlignHandler",
+  "longhands": [],
+  "name": "flex-pack",
+  "prefixes": [
+   "-ms-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "flex-grid-align",
+  "file": "src/properties/flex.rs",
+  "handler": "FlexHandler",
+  "longhands": [],
+  "name": "flex-positive",
+  "prefixes": [
+   "-ms-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "flex-grid-align",
+  "file": "src/properties/flex.rs",
+  "handler": "FlexHandler",
+  "longhands": [],
+  "name": "flex-preferred-size",
+  "prefixes": [
+   "-ms-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "flex-grid-align",
+  "file": "src/properties/flex.rs",
+  "handler": "FlexHandler",
+  "longhands": [],
+  "name": "flex-shrink",
+  "prefixes": [
+   "-webkit-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "flex-grid-align",
+  "file": "src/properties/flex.rs",
+  "handler": "FlexHandler",
+  "longhands": [],
+  "name": "flex-wrap",
+  "prefixes": [
+   "-webkit-",
+   "-ms-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "font",
+  "file": "src/properties/font.rs",
+  "handler": "FontHandler",
+  "longhands": [
+   "font-family",
+   "font-size",
+   "font-style",
+   "font-weight",
+   "font-stretch",
+   "line-height",
+   "font-variant-caps"
+  ],
+  "name": "font",
+  "prefixes": [],
+  "shorthand": true,
+  "typed": true
+ },
+ {
+  "area": "font",
+  "file": "src/properties/font.rs",
+  "handler": "FontHandler",
+  "longhands": [],
+  "name": "font-family",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "font",
+  "file": "src/values/ident.rs",
+  "handler": "none (passthrough)",
+  "longhands": [],
+  "name": "font-palette",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "font",
+  "file": "src/properties/font.rs",
+  "handler": "FontHandler",
+  "longhands": [],
+  "name": "font-size",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "font",
+  "file": "src/properties/font.rs",
+  "handler": "FontHandler",
+  "longhands": [],
+  "name": "font-stretch",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "font",
+  "file": "src/properties/font.rs",
+  "handler": "FontHandler",
+  "longhands": [],
+  "name": "font-style",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "font",
+  "file": "src/properties/font.rs",
+  "handler": "FontHandler",
+  "longhands": [],
+  "name": "font-variant-caps",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "font",
+  "file": "src/properties/font.rs",
+  "handler": "FontHandler",
+  "longhands": [],
+  "name": "font-weight",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "flex-grid-align",
+  "file": "src/properties/align.rs",
+  "handler": "AlignHandler",
+  "longhands": [
+   "row-gap",
+   "column-gap"
+  ],
+  "name": "gap",
+  "prefixes": [],
+  "shorthand": true,
+  "typed": true
+ },
+ {
+  "area": "flex-grid-align",
+  "file": "src/properties/grid.rs",
+  "handler": "GridHandler",
+  "longhands": [
+   "grid-template-rows",
+   "grid-template-columns",
+   "grid-template-areas",
+   "grid-auto-rows",
+   "grid-auto-columns",
+   "grid-auto-flow"
+  ],
+  "name": "grid",
+  "prefixes": [],
+  "shorthand": true,
+  "typed": true
+ },
+ {
+  "area": "flex-grid-align",
+  "file": "src/properties/grid.rs",
+  "handler": "GridHandler",
+  "longhands": [
+   "grid-row-start",
+   "grid-column-start",
+   "grid-row-end",
+   "grid-column-end"
+  ],
+  "name": "grid-area",
+  "prefixes": [],
+  "shorthand": true,
+  "typed": true
+ },
+ {
+  "area": "flex-grid-align",
+  "file": "src/properties/grid.rs",
+  "handler": "GridHandler",
+  "longhands": [],
+  "name": "grid-auto-columns",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "flex-grid-align",
+  "file": "src/properties/grid.rs",
+  "handler": "GridHandler",
+  "longhands": [],
+  "name": "grid-auto-flow",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "flex-grid-align",
+  "file": "src/properties/grid.rs",
+  "handler": "GridHandler",
+  "longhands": [],
+  "name": "grid-auto-rows",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "flex-grid-align",
+  "file": "src/properties/grid.rs",
+  "handler": "GridHandler",
+  "longhands": [
+   "grid-column-start",
+   "grid-column-end"
+  ],
+  "name": "grid-column",
+  "prefixes": [],
+  "shorthand": true,
+  "typed": true
+ },
+ {
+  "area": "flex-grid-align",
+  "file": "src/properties/grid.rs",
+  "handler": "GridHandler",
+  "longhands": [],
+  "name": "grid-column-end",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "flex-grid-align",
+  "file": "src/properties/grid.rs",
+  "handler": "GridHandler",
+  "longhands": [],
+  "name": "grid-column-start",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "flex-grid-align",
+  "file": "src/properties/grid.rs",
+  "handler": "GridHandler",
+  "longhands": [
+   "grid-row-start",
+   "grid-row-end"
+  ],
+  "name": "grid-row",
+  "prefixes": [],
+  "shorthand": true,
+  "typed": true
+ },
+ {
+  "area": "flex-grid-align",
+  "file": "src/properties/grid.rs",
+  "handler": "GridHandler",
+  "longhands": [],
+  "name": "grid-row-end",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "flex-grid-align",
+  "file": "src/properties/grid.rs",
+  "handler": "GridHandler",
+  "longhands": [],
+  "name": "grid-row-start",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "flex-grid-align",
+  "file": "src/properties/grid.rs",
+  "handler": "GridHandler",
+  "longhands": [
+   "grid-template-rows",
+   "grid-template-columns",
+   "grid-template-areas"
+  ],
+  "name": "grid-template",
+  "prefixes": [],
+  "shorthand": true,
+  "typed": true
+ },
+ {
+  "area": "flex-grid-align",
+  "file": "src/properties/grid.rs",
+  "handler": "GridHandler",
+  "longhands": [],
+  "name": "grid-template-areas",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "flex-grid-align",
+  "file": "src/properties/grid.rs",
+  "handler": "GridHandler",
+  "longhands": [],
+  "name": "grid-template-columns",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "flex-grid-align",
+  "file": "src/properties/grid.rs",
+  "handler": "GridHandler",
+  "longhands": [],
+  "name": "grid-template-rows",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "box-model-size",
+  "file": "src/properties/size.rs",
+  "handler": "SizeHandler",
+  "longhands": [],
+  "name": "height",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "text",
+  "file": "src/properties/text.rs",
+  "handler": "PrefixHandler [src/properties/prefix_handler.rs]",
+  "longhands": [],
+  "name": "hyphens",
+  "prefixes": [
+   "-webkit-",
+   "-moz-",
+   "-ms-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "ui-misc",
+  "file": "src/properties/svg.rs",
+  "handler": "none (passthrough)",
+  "longhands": [],
+  "name": "image-rendering",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "logical",
+  "file": "src/properties/size.rs",
+  "handler": "SizeHandler",
+  "longhands": [],
+  "name": "inline-size",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "display-layout",
+  "file": "src/properties/margin_padding.rs",
+  "handler": "InsetHandler (side_handler!)",
+  "longhands": [
+   "top",
+   "right",
+   "bottom",
+   "left"
+  ],
+  "name": "inset",
+  "prefixes": [],
+  "shorthand": true,
+  "typed": true
+ },
+ {
+  "area": "logical",
+  "file": "src/properties/margin_padding.rs",
+  "handler": "InsetHandler (side_handler!)",
+  "longhands": [
+   "inset-block-start",
+   "inset-block-end"
+  ],
+  "name": "inset-block",
+  "prefixes": [],
+  "shorthand": true,
+  "typed": true
+ },
+ {
+  "area": "logical",
+  "file": "src/properties/margin_padding.rs",
+  "handler": "InsetHandler (side_handler!)",
+  "longhands": [],
+  "name": "inset-block-end",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "logical",
+  "file": "src/properties/margin_padding.rs",
+  "handler": "InsetHandler (side_handler!)",
+  "longhands": [],
+  "name": "inset-block-start",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "logical",
+  "file": "src/properties/margin_padding.rs",
+  "handler": "InsetHandler (side_handler!)",
+  "longhands": [
+   "inset-inline-start",
+   "inset-inline-end"
+  ],
+  "name": "inset-inline",
+  "prefixes": [],
+  "shorthand": true,
+  "typed": true
+ },
+ {
+  "area": "logical",
+  "file": "src/properties/margin_padding.rs",
+  "handler": "InsetHandler (side_handler!)",
+  "longhands": [],
+  "name": "inset-inline-end",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "logical",
+  "file": "src/properties/margin_padding.rs",
+  "handler": "InsetHandler (side_handler!)",
+  "longhands": [],
+  "name": "inset-inline-start",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "flex-grid-align",
+  "file": "src/properties/align.rs",
+  "handler": "AlignHandler",
+  "longhands": [],
+  "name": "justify-content",
+  "prefixes": [
+   "-webkit-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "flex-grid-align",
+  "file": "src/properties/align.rs",
+  "handler": "AlignHandler",
+  "longhands": [],
+  "name": "justify-items",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "flex-grid-align",
+  "file": "src/properties/align.rs",
+  "handler": "AlignHandler",
+  "longhands": [],
+  "name": "justify-self",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "display-layout",
+  "file": "src/properties/margin_padding.rs",
+  "handler": "InsetHandler (side_handler!)",
+  "longhands": [],
+  "name": "left",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "text",
+  "file": "src/properties/text.rs",
+  "handler": "none (passthrough)",
+  "longhands": [],
+  "name": "letter-spacing",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "text",
+  "file": "src/properties/text.rs",
+  "handler": "none (passthrough)",
+  "longhands": [],
+  "name": "line-break",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "font",
+  "file": "src/properties/font.rs",
+  "handler": "FontHandler",
+  "longhands": [],
+  "name": "line-height",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "ui-misc",
+  "file": "src/properties/list.rs",
+  "handler": "ListStyleHandler (shorthand_handler!)",
+  "longhands": [
+   "list-style-position",
+   "list-style-image",
+   "list-style-type"
+  ],
+  "name": "list-style",
+  "prefixes": [],
+  "shorthand": true,
+  "typed": true
+ },
+ {
+  "area": "ui-misc",
+  "file": "src/properties/list.rs",
+  "handler": "ListStyleHandler (shorthand_handler!)",
+  "longhands": [],
+  "name": "list-style-image",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "ui-misc",
+  "file": "src/properties/list.rs",
+  "handler": "ListStyleHandler (shorthand_handler!)",
+  "longhands": [],
+  "name": "list-style-position",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "ui-misc",
+  "file": "src/properties/list.rs",
+  "handler": "ListStyleHandler (shorthand_handler!)",
+  "longhands": [],
+  "name": "list-style-type",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "box-model-size",
+  "file": "src/properties/margin_padding.rs",
+  "handler": "MarginHandler (side_handler!)",
+  "longhands": [
+   "margin-top",
+   "margin-right",
+   "margin-bottom",
+   "margin-left"
+  ],
+  "name": "margin",
+  "prefixes": [],
+  "shorthand": true,
+  "typed": true
+ },
+ {
+  "area": "box-model-size",
+  "file": "src/properties/margin_padding.rs",
+  "handler": "MarginHandler (side_handler!)",
+  "longhands": [
+   "margin-block-start",
+   "margin-block-end"
+  ],
+  "name": "margin-block",
+  "prefixes": [],
+  "shorthand": true,
+  "typed": true
+ },
+ {
+  "area": "box-model-size",
+  "file": "src/properties/margin_padding.rs",
+  "handler": "MarginHandler (side_handler!)",
+  "longhands": [],
+  "name": "margin-block-end",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "box-model-size",
+  "file": "src/properties/margin_padding.rs",
+  "handler": "MarginHandler (side_handler!)",
+  "longhands": [],
+  "name": "margin-block-start",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "box-model-size",
+  "file": "src/properties/margin_padding.rs",
+  "handler": "MarginHandler (side_handler!)",
+  "longhands": [],
+  "name": "margin-bottom",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "box-model-size",
+  "file": "src/properties/margin_padding.rs",
+  "handler": "MarginHandler (side_handler!)",
+  "longhands": [
+   "margin-inline-start",
+   "margin-inline-end"
+  ],
+  "name": "margin-inline",
+  "prefixes": [],
+  "shorthand": true,
+  "typed": true
+ },
+ {
+  "area": "box-model-size",
+  "file": "src/properties/margin_padding.rs",
+  "handler": "MarginHandler (side_handler!)",
+  "longhands": [],
+  "name": "margin-inline-end",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "box-model-size",
+  "file": "src/properties/margin_padding.rs",
+  "handler": "MarginHandler (side_handler!)",
+  "longhands": [],
+  "name": "margin-inline-start",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "box-model-size",
+  "file": "src/properties/margin_padding.rs",
+  "handler": "MarginHandler (side_handler!)",
+  "longhands": [],
+  "name": "margin-left",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "box-model-size",
+  "file": "src/properties/margin_padding.rs",
+  "handler": "MarginHandler (side_handler!)",
+  "longhands": [],
+  "name": "margin-right",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "box-model-size",
+  "file": "src/properties/margin_padding.rs",
+  "handler": "MarginHandler (side_handler!)",
+  "longhands": [],
+  "name": "margin-top",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "ui-misc",
+  "file": "src/properties/svg.rs",
+  "handler": "none (passthrough)",
+  "longhands": [],
+  "name": "marker",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "ui-misc",
+  "file": "src/properties/svg.rs",
+  "handler": "none (passthrough)",
+  "longhands": [],
+  "name": "marker-end",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "ui-misc",
+  "file": "src/properties/svg.rs",
+  "handler": "none (passthrough)",
+  "longhands": [],
+  "name": "marker-mid",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "ui-misc",
+  "file": "src/properties/list.rs",
+  "handler": "none (passthrough)",
+  "longhands": [],
+  "name": "marker-side",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "ui-misc",
+  "file": "src/properties/svg.rs",
+  "handler": "none (passthrough)",
+  "longhands": [],
+  "name": "marker-start",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "effects-masking",
+  "file": "src/properties/masking.rs",
+  "handler": "MaskHandler",
+  "longhands": [
+   "mask-image",
+   "mask-position",
+   "mask-size",
+   "mask-repeat",
+   "mask-clip",
+   "mask-origin",
+   "mask-composite",
+   "mask-mode"
+  ],
+  "name": "mask",
+  "prefixes": [
+   "-webkit-"
+  ],
+  "shorthand": true,
+  "typed": true
+ },
+ {
+  "area": "effects-masking",
+  "file": "src/properties/masking.rs",
+  "handler": "MaskHandler",
+  "longhands": [
+   "mask-border-source",
+   "mask-border-slice",
+   "mask-border-width",
+   "mask-border-outset",
+   "mask-border-repeat",
+   "mask-border-mode"
+  ],
+  "name": "mask-border",
+  "prefixes": [],
+  "shorthand": true,
+  "typed": true
+ },
+ {
+  "area": "effects-masking",
+  "file": "src/properties/masking.rs",
+  "handler": "MaskHandler",
+  "longhands": [],
+  "name": "mask-border-mode",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "effects-masking",
+  "file": "src/properties/masking.rs",
+  "handler": "MaskHandler",
+  "longhands": [],
+  "name": "mask-border-outset",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "effects-masking",
+  "file": "src/properties/masking.rs",
+  "handler": "MaskHandler",
+  "longhands": [],
+  "name": "mask-border-repeat",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "effects-masking",
+  "file": "src/properties/masking.rs",
+  "handler": "MaskHandler",
+  "longhands": [],
+  "name": "mask-border-slice",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "effects-masking",
+  "file": "src/properties/masking.rs",
+  "handler": "MaskHandler",
+  "longhands": [],
+  "name": "mask-border-source",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "effects-masking",
+  "file": "src/properties/masking.rs",
+  "handler": "MaskHandler",
+  "longhands": [],
+  "name": "mask-border-width",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "effects-masking",
+  "file": "src/properties/masking.rs",
+  "handler": "MaskHandler",
+  "longhands": [],
+  "name": "mask-box-image",
+  "prefixes": [
+   "-webkit-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "effects-masking",
+  "file": "src/properties/masking.rs",
+  "handler": "MaskHandler",
+  "longhands": [],
+  "name": "mask-box-image-outset",
+  "prefixes": [
+   "-webkit-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "effects-masking",
+  "file": "src/properties/masking.rs",
+  "handler": "MaskHandler",
+  "longhands": [],
+  "name": "mask-box-image-repeat",
+  "prefixes": [
+   "-webkit-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "effects-masking",
+  "file": "src/properties/masking.rs",
+  "handler": "MaskHandler",
+  "longhands": [],
+  "name": "mask-box-image-slice",
+  "prefixes": [
+   "-webkit-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "effects-masking",
+  "file": "src/properties/masking.rs",
+  "handler": "MaskHandler",
+  "longhands": [],
+  "name": "mask-box-image-source",
+  "prefixes": [
+   "-webkit-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "effects-masking",
+  "file": "src/properties/masking.rs",
+  "handler": "MaskHandler",
+  "longhands": [],
+  "name": "mask-box-image-width",
+  "prefixes": [
+   "-webkit-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "effects-masking",
+  "file": "src/properties/masking.rs",
+  "handler": "MaskHandler",
+  "longhands": [],
+  "name": "mask-clip",
+  "prefixes": [
+   "-webkit-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "effects-masking",
+  "file": "src/properties/masking.rs",
+  "handler": "MaskHandler",
+  "longhands": [],
+  "name": "mask-composite",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "effects-masking",
+  "file": "src/properties/masking.rs",
+  "handler": "MaskHandler",
+  "longhands": [],
+  "name": "mask-image",
+  "prefixes": [
+   "-webkit-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "effects-masking",
+  "file": "src/properties/masking.rs",
+  "handler": "MaskHandler",
+  "longhands": [],
+  "name": "mask-mode",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "effects-masking",
+  "file": "src/properties/masking.rs",
+  "handler": "MaskHandler",
+  "longhands": [],
+  "name": "mask-origin",
+  "prefixes": [
+   "-webkit-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "effects-masking",
+  "file": "src/properties/masking.rs",
+  "handler": "MaskHandler",
+  "longhands": [],
+  "name": "mask-position",
+  "prefixes": [
+   "-webkit-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "effects-masking",
+  "file": "src/properties/masking.rs",
+  "handler": "none (passthrough)",
+  "longhands": [],
+  "name": "mask-position-x",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "effects-masking",
+  "file": "src/properties/masking.rs",
+  "handler": "none (passthrough)",
+  "longhands": [],
+  "name": "mask-position-y",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "effects-masking",
+  "file": "src/properties/masking.rs",
+  "handler": "MaskHandler",
+  "longhands": [],
+  "name": "mask-repeat",
+  "prefixes": [
+   "-webkit-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "effects-masking",
+  "file": "src/properties/masking.rs",
+  "handler": "MaskHandler",
+  "longhands": [],
+  "name": "mask-size",
+  "prefixes": [
+   "-webkit-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "effects-masking",
+  "file": "src/properties/masking.rs",
+  "handler": "none (passthrough)",
+  "longhands": [],
+  "name": "mask-source-type",
+  "prefixes": [
+   "-webkit-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "effects-masking",
+  "file": "src/properties/masking.rs",
+  "handler": "none (passthrough)",
+  "longhands": [],
+  "name": "mask-type",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "logical",
+  "file": "src/properties/size.rs",
+  "handler": "SizeHandler",
+  "longhands": [],
+  "name": "max-block-size",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "box-model-size",
+  "file": "src/properties/size.rs",
+  "handler": "SizeHandler",
+  "longhands": [],
+  "name": "max-height",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "logical",
+  "file": "src/properties/size.rs",
+  "handler": "SizeHandler",
+  "longhands": [],
+  "name": "max-inline-size",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "box-model-size",
+  "file": "src/properties/size.rs",
+  "handler": "SizeHandler",
+  "longhands": [],
+  "name": "max-width",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "logical",
+  "file": "src/properties/size.rs",
+  "handler": "SizeHandler",
+  "longhands": [],
+  "name": "min-block-size",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "box-model-size",
+  "file": "src/properties/size.rs",
+  "handler": "SizeHandler",
+  "longhands": [],
+  "name": "min-height",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "logical",
+  "file": "src/properties/size.rs",
+  "handler": "SizeHandler",
+  "longhands": [],
+  "name": "min-inline-size",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "box-model-size",
+  "file": "src/properties/size.rs",
+  "handler": "SizeHandler",
+  "longhands": [],
+  "name": "min-width",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "effects-masking",
+  "file": "src/properties/effects.rs",
+  "handler": "none (passthrough)",
+  "longhands": [],
+  "name": "mix-blend-mode",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "effects-masking",
+  "file": "src/values/alpha.rs",
+  "handler": "none (passthrough)",
+  "longhands": [],
+  "name": "opacity",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "flex-grid-align",
+  "file": "src/properties/flex.rs",
+  "handler": "FlexHandler",
+  "longhands": [],
+  "name": "order",
+  "prefixes": [
+   "-webkit-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "border-outline",
+  "file": "src/properties/outline.rs",
+  "handler": "OutlineHandler (shorthand_handler!)",
+  "longhands": [
+   "outline-width",
+   "outline-style",
+   "outline-color"
+  ],
+  "name": "outline",
+  "prefixes": [],
+  "shorthand": true,
+  "typed": true
+ },
+ {
+  "area": "border-outline",
+  "file": "src/properties/outline.rs",
+  "handler": "OutlineHandler (shorthand_handler!)",
+  "longhands": [],
+  "name": "outline-color",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "border-outline",
+  "file": "src/properties/outline.rs",
+  "handler": "OutlineHandler (shorthand_handler!)",
+  "longhands": [],
+  "name": "outline-style",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "border-outline",
+  "file": "src/properties/outline.rs",
+  "handler": "OutlineHandler (shorthand_handler!)",
+  "longhands": [],
+  "name": "outline-width",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "display-layout",
+  "file": "src/properties/overflow.rs",
+  "handler": "OverflowHandler",
+  "longhands": [
+   "overflow-x",
+   "overflow-y"
+  ],
+  "name": "overflow",
+  "prefixes": [],
+  "shorthand": true,
+  "typed": true
+ },
+ {
+  "area": "text",
+  "file": "src/properties/text.rs",
+  "handler": "none (passthrough)",
+  "longhands": [],
+  "name": "overflow-wrap",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "display-layout",
+  "file": "src/properties/overflow.rs",
+  "handler": "OverflowHandler",
+  "longhands": [],
+  "name": "overflow-x",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "display-layout",
+  "file": "src/properties/overflow.rs",
+  "handler": "OverflowHandler",
+  "longhands": [],
+  "name": "overflow-y",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "box-model-size",
+  "file": "src/properties/margin_padding.rs",
+  "handler": "PaddingHandler (side_handler!)",
+  "longhands": [
+   "padding-top",
+   "padding-right",
+   "padding-bottom",
+   "padding-left"
+  ],
+  "name": "padding",
+  "prefixes": [],
+  "shorthand": true,
+  "typed": true
+ },
+ {
+  "area": "box-model-size",
+  "file": "src/properties/margin_padding.rs",
+  "handler": "PaddingHandler (side_handler!)",
+  "longhands": [
+   "padding-block-start",
+   "padding-block-end"
+  ],
+  "name": "padding-block",
+  "prefixes": [],
+  "shorthand": true,
+  "typed": true
+ },
+ {
+  "area": "box-model-size",
+  "file": "src/properties/margin_padding.rs",
+  "handler": "PaddingHandler (side_handler!)",
+  "longhands": [],
+  "name": "padding-block-end",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "box-model-size",
+  "file": "src/properties/margin_padding.rs",
+  "handler": "PaddingHandler (side_handler!)",
+  "longhands": [],
+  "name": "padding-block-start",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "box-model-size",
+  "file": "src/properties/margin_padding.rs",
+  "handler": "PaddingHandler (side_handler!)",
+  "longhands": [],
+  "name": "padding-bottom",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "box-model-size",
+  "file": "src/properties/margin_padding.rs",
+  "handler": "PaddingHandler (side_handler!)",
+  "longhands": [
+   "padding-inline-start",
+   "padding-inline-end"
+  ],
+  "name": "padding-inline",
+  "prefixes": [],
+  "shorthand": true,
+  "typed": true
+ },
+ {
+  "area": "box-model-size",
+  "file": "src/properties/margin_padding.rs",
+  "handler": "PaddingHandler (side_handler!)",
+  "longhands": [],
+  "name": "padding-inline-end",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "box-model-size",
+  "file": "src/properties/margin_padding.rs",
+  "handler": "PaddingHandler (side_handler!)",
+  "longhands": [],
+  "name": "padding-inline-start",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "box-model-size",
+  "file": "src/properties/margin_padding.rs",
+  "handler": "PaddingHandler (side_handler!)",
+  "longhands": [],
+  "name": "padding-left",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "box-model-size",
+  "file": "src/properties/margin_padding.rs",
+  "handler": "PaddingHandler (side_handler!)",
+  "longhands": [],
+  "name": "padding-right",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "box-model-size",
+  "file": "src/properties/margin_padding.rs",
+  "handler": "PaddingHandler (side_handler!)",
+  "longhands": [],
+  "name": "padding-top",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "transform",
+  "file": "src/properties/transform.rs",
+  "handler": "PrefixHandler [src/properties/prefix_handler.rs]",
+  "longhands": [],
+  "name": "perspective",
+  "prefixes": [
+   "-webkit-",
+   "-moz-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "transform",
+  "file": "src/values/position.rs",
+  "handler": "PrefixHandler [src/properties/prefix_handler.rs]",
+  "longhands": [],
+  "name": "perspective-origin",
+  "prefixes": [
+   "-webkit-",
+   "-moz-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "flex-grid-align",
+  "file": "src/properties/align.rs",
+  "handler": "AlignHandler",
+  "longhands": [
+   "align-content",
+   "justify-content"
+  ],
+  "name": "place-content",
+  "prefixes": [],
+  "shorthand": true,
+  "typed": true
+ },
+ {
+  "area": "flex-grid-align",
+  "file": "src/properties/align.rs",
+  "handler": "AlignHandler",
+  "longhands": [
+   "align-items",
+   "justify-items"
+  ],
+  "name": "place-items",
+  "prefixes": [],
+  "shorthand": true,
+  "typed": true
+ },
+ {
+  "area": "flex-grid-align",
+  "file": "src/properties/align.rs",
+  "handler": "AlignHandler",
+  "longhands": [
+   "align-self",
+   "justify-self"
+  ],
+  "name": "place-self",
+  "prefixes": [],
+  "shorthand": true,
+  "typed": true
+ },
+ {
+  "area": "display-layout",
+  "file": "src/properties/position.rs",
+  "handler": "PositionHandler",
+  "longhands": [],
+  "name": "position",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "ui-misc",
+  "file": "src/properties/ui.rs",
+  "handler": "PrefixHandler [src/properties/prefix_handler.rs]",
+  "longhands": [],
+  "name": "print-color-adjust",
+  "prefixes": [
+   "-webkit-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "ui-misc",
+  "file": "src/properties/ui.rs",
+  "handler": "none (passthrough)",
+  "longhands": [],
+  "name": "resize",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "display-layout",
+  "file": "src/properties/margin_padding.rs",
+  "handler": "InsetHandler (side_handler!)",
+  "longhands": [],
+  "name": "right",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "transform",
+  "file": "src/properties/transform.rs",
+  "handler": "TransformHandler",
+  "longhands": [],
+  "name": "rotate",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "flex-grid-align",
+  "file": "src/properties/align.rs",
+  "handler": "AlignHandler",
+  "longhands": [],
+  "name": "row-gap",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "transform",
+  "file": "src/properties/transform.rs",
+  "handler": "TransformHandler",
+  "longhands": [],
+  "name": "scale",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "box-model-size",
+  "file": "src/properties/margin_padding.rs",
+  "handler": "ScrollMarginHandler (side_handler!)",
+  "longhands": [
+   "scroll-margin-top",
+   "scroll-margin-right",
+   "scroll-margin-bottom",
+   "scroll-margin-left"
+  ],
+  "name": "scroll-margin",
+  "prefixes": [],
+  "shorthand": true,
+  "typed": true
+ },
+ {
+  "area": "box-model-size",
+  "file": "src/properties/margin_padding.rs",
+  "handler": "ScrollMarginHandler (side_handler!)",
+  "longhands": [
+   "scroll-margin-block-start",
+   "scroll-margin-block-end"
+  ],
+  "name": "scroll-margin-block",
+  "prefixes": [],
+  "shorthand": true,
+  "typed": true
+ },
+ {
+  "area": "box-model-size",
+  "file": "src/properties/margin_padding.rs",
+  "handler": "ScrollMarginHandler (side_handler!)",
+  "longhands": [],
+  "name": "scroll-margin-block-end",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "box-model-size",
+  "file": "src/properties/margin_padding.rs",
+  "handler": "ScrollMarginHandler (side_handler!)",
+  "longhands": [],
+  "name": "scroll-margin-block-start",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "box-model-size",
+  "file": "src/properties/margin_padding.rs",
+  "handler": "ScrollMarginHandler (side_handler!)",
+  "longhands": [],
+  "name": "scroll-margin-bottom",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "box-model-size",
+  "file": "src/properties/margin_padding.rs",
+  "handler": "ScrollMarginHandler (side_handler!)",
+  "longhands": [
+   "scroll-margin-inline-start",
+   "scroll-margin-inline-end"
+  ],
+  "name": "scroll-margin-inline",
+  "prefixes": [],
+  "shorthand": true,
+  "typed": true
+ },
+ {
+  "area": "box-model-size",
+  "file": "src/properties/margin_padding.rs",
+  "handler": "ScrollMarginHandler (side_handler!)",
+  "longhands": [],
+  "name": "scroll-margin-inline-end",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "box-model-size",
+  "file": "src/properties/margin_padding.rs",
+  "handler": "ScrollMarginHandler (side_handler!)",
+  "longhands": [],
+  "name": "scroll-margin-inline-start",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "box-model-size",
+  "file": "src/properties/margin_padding.rs",
+  "handler": "ScrollMarginHandler (side_handler!)",
+  "longhands": [],
+  "name": "scroll-margin-left",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "box-model-size",
+  "file": "src/properties/margin_padding.rs",
+  "handler": "ScrollMarginHandler (side_handler!)",
+  "longhands": [],
+  "name": "scroll-margin-right",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "box-model-size",
+  "file": "src/properties/margin_padding.rs",
+  "handler": "ScrollMarginHandler (side_handler!)",
+  "longhands": [],
+  "name": "scroll-margin-top",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "box-model-size",
+  "file": "src/properties/margin_padding.rs",
+  "handler": "ScrollPaddingHandler (side_handler!)",
+  "longhands": [
+   "scroll-padding-top",
+   "scroll-padding-right",
+   "scroll-padding-bottom",
+   "scroll-padding-left"
+  ],
+  "name": "scroll-padding",
+  "prefixes": [],
+  "shorthand": true,
+  "typed": true
+ },
+ {
+  "area": "box-model-size",
+  "file": "src/properties/margin_padding.rs",
+  "handler": "ScrollPaddingHandler (side_handler!)",
+  "longhands": [
+   "scroll-padding-block-start",
+   "scroll-padding-block-end"
+  ],
+  "name": "scroll-padding-block",
+  "prefixes": [],
+  "shorthand": true,
+  "typed": true
+ },
+ {
+  "area": "box-model-size",
+  "file": "src/properties/margin_padding.rs",
+  "handler": "ScrollPaddingHandler (side_handler!)",
+  "longhands": [],
+  "name": "scroll-padding-block-end",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "box-model-size",
+  "file": "src/properties/margin_padding.rs",
+  "handler": "ScrollPaddingHandler (side_handler!)",
+  "longhands": [],
+  "name": "scroll-padding-block-start",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "box-model-size",
+  "file": "src/properties/margin_padding.rs",
+  "handler": "ScrollPaddingHandler (side_handler!)",
+  "longhands": [],
+  "name": "scroll-padding-bottom",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "box-model-size",
+  "file": "src/properties/margin_padding.rs",
+  "handler": "ScrollPaddingHandler (side_handler!)",
+  "longhands": [
+   "scroll-padding-inline-start",
+   "scroll-padding-inline-end"
+  ],
+  "name": "scroll-padding-inline",
+  "prefixes": [],
+  "shorthand": true,
+  "typed": true
+ },
+ {
+  "area": "box-model-size",
+  "file": "src/properties/margin_padding.rs",
+  "handler": "ScrollPaddingHandler (side_handler!)",
+  "longhands": [],
+  "name": "scroll-padding-inline-end",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "box-model-size",
+  "file": "src/properties/margin_padding.rs",
+  "handler": "ScrollPaddingHandler (side_handler!)",
+  "longhands": [],
+  "name": "scroll-padding-inline-start",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "box-model-size",
+  "file": "src/properties/margin_padding.rs",
+  "handler": "ScrollPaddingHandler (side_handler!)",
+  "longhands": [],
+  "name": "scroll-padding-left",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "box-model-size",
+  "file": "src/properties/margin_padding.rs",
+  "handler": "ScrollPaddingHandler (side_handler!)",
+  "longhands": [],
+  "name": "scroll-padding-right",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "box-model-size",
+  "file": "src/properties/margin_padding.rs",
+  "handler": "ScrollPaddingHandler (side_handler!)",
+  "longhands": [],
+  "name": "scroll-padding-top",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "ui-misc",
+  "file": "src/properties/svg.rs",
+  "handler": "none (passthrough)",
+  "longhands": [],
+  "name": "shape-rendering",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "ui-misc",
+  "file": "src/properties/svg.rs",
+  "handler": "FallbackHandler [src/properties/prefix_handler.rs]",
+  "longhands": [],
+  "name": "stroke",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "ui-misc",
+  "file": "src/properties/svg.rs",
+  "handler": "none (passthrough)",
+  "longhands": [],
+  "name": "stroke-dasharray",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "ui-misc",
+  "file": "src/properties/svg.rs",
+  "handler": "none (passthrough)",
+  "longhands": [],
+  "name": "stroke-dashoffset",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "ui-misc",
+  "file": "src/properties/svg.rs",
+  "handler": "none (passthrough)",
+  "longhands": [],
+  "name": "stroke-linecap",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "ui-misc",
+  "file": "src/properties/svg.rs",
+  "handler": "none (passthrough)",
+  "longhands": [],
+  "name": "stroke-linejoin",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "ui-misc",
+  "file": "src/properties/svg.rs",
+  "handler": "none (passthrough)",
+  "longhands": [],
+  "name": "stroke-miterlimit",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "ui-misc",
+  "file": "src/properties/svg.rs",
+  "handler": "none (passthrough)",
+  "longhands": [],
+  "name": "stroke-opacity",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "ui-misc",
+  "file": "src/properties/svg.rs",
+  "handler": "none (passthrough)",
+  "longhands": [],
+  "name": "stroke-width",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "text",
+  "file": "src/values/length.rs",
+  "handler": "PrefixHandler [src/properties/prefix_handler.rs]",
+  "longhands": [],
+  "name": "tab-size",
+  "prefixes": [
+   "-moz-",
+   "-o-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "text",
+  "file": "src/properties/text.rs",
+  "handler": "TextDecorationHandler",
+  "longhands": [],
+  "name": "text-align",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "text",
+  "file": "src/properties/text.rs",
+  "handler": "PrefixHandler [src/properties/prefix_handler.rs]",
+  "longhands": [],
+  "name": "text-align-last",
+  "prefixes": [
+   "-moz-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "text",
+  "file": "src/properties/text.rs",
+  "handler": "TextDecorationHandler",
+  "longhands": [
+   "text-decoration-line",
+   "text-decoration-thickness",
+   "text-decoration-style",
+   "text-decoration-color"
+  ],
+  "name": "text-decoration",
+  "prefixes": [
+   "-webkit-",
+   "-moz-"
+  ],
+  "shorthand": true,
+  "typed": true
+ },
+ {
+  "area": "text",
+  "file": "src/properties/text.rs",
+  "handler": "TextDecorationHandler",
+  "longhands": [],
+  "name": "text-decoration-color",
+  "prefixes": [
+   "-webkit-",
+   "-moz-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "text",
+  "file": "src/properties/text.rs",
+  "handler": "TextDecorationHandler",
+  "longhands": [],
+  "name": "text-decoration-line",
+  "prefixes": [
+   "-webkit-",
+   "-moz-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "text",
+  "file": "src/properties/text.rs",
+  "handler": "PrefixHandler [src/properties/prefix_handler.rs]",
+  "longhands": [],
+  "name": "text-decoration-skip-ink",
+  "prefixes": [
+   "-webkit-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "text",
+  "file": "src/properties/text.rs",
+  "handler": "TextDecorationHandler",
+  "longhands": [],
+  "name": "text-decoration-style",
+  "prefixes": [
+   "-webkit-",
+   "-moz-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "text",
+  "file": "src/properties/text.rs",
+  "handler": "TextDecorationHandler",
+  "longhands": [],
+  "name": "text-decoration-thickness",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "text",
+  "file": "src/properties/text.rs",
+  "handler": "TextDecorationHandler",
+  "longhands": [
+   "text-emphasis-style",
+   "text-emphasis-color"
+  ],
+  "name": "text-emphasis",
+  "prefixes": [
+   "-webkit-"
+  ],
+  "shorthand": true,
+  "typed": true
+ },
+ {
+  "area": "text",
+  "file": "src/properties/text.rs",
+  "handler": "TextDecorationHandler",
+  "longhands": [],
+  "name": "text-emphasis-color",
+  "prefixes": [
+   "-webkit-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "text",
+  "file": "src/properties/text.rs",
+  "handler": "TextDecorationHandler",
+  "longhands": [],
+  "name": "text-emphasis-position",
+  "prefixes": [
+   "-webkit-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "text",
+  "file": "src/properties/text.rs",
+  "handler": "TextDecorationHandler",
+  "longhands": [],
+  "name": "text-emphasis-style",
+  "prefixes": [
+   "-webkit-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "text",
+  "file": "src/properties/text.rs",
+  "handler": "none (passthrough)",
+  "longhands": [],
+  "name": "text-indent",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "text",
+  "file": "src/properties/text.rs",
+  "handler": "none (passthrough)",
+  "longhands": [],
+  "name": "text-justify",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "text",
+  "file": "src/properties/overflow.rs",
+  "handler": "PrefixHandler [src/properties/prefix_handler.rs]",
+  "longhands": [],
+  "name": "text-overflow",
+  "prefixes": [
+   "-o-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "ui-misc",
+  "file": "src/properties/svg.rs",
+  "handler": "none (passthrough)",
+  "longhands": [],
+  "name": "text-rendering",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "text",
+  "file": "src/properties/text.rs",
+  "handler": "FallbackHandler [src/properties/prefix_handler.rs]",
+  "longhands": [],
+  "name": "text-shadow",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "text",
+  "file": "src/properties/text.rs",
+  "handler": "PrefixHandler [src/properties/prefix_handler.rs]",
+  "longhands": [],
+  "name": "text-size-adjust",
+  "prefixes": [
+   "-webkit-",
+   "-moz-",
+   "-ms-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "text",
+  "file": "src/properties/text.rs",
+  "handler": "none (passthrough)",
+  "longhands": [],
+  "name": "text-transform",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "display-layout",
+  "file": "src/properties/margin_padding.rs",
+  "handler": "InsetHandler (side_handler!)",
+  "longhands": [],
+  "name": "top",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "transform",
+  "file": "src/properties/transform.rs",
+  "handler": "TransformHandler",
+  "longhands": [],
+  "name": "transform",
+  "prefixes": [
+   "-webkit-",
+   "-moz-",
+   "-ms-",
+   "-o-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "transform",
+  "file": "src/properties/transform.rs",
+  "handler": "none (passthrough)",
+  "longhands": [],
+  "name": "transform-box",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "transform",
+  "file": "src/values/position.rs",
+  "handler": "PrefixHandler [src/properties/prefix_handler.rs]",
+  "longhands": [],
+  "name": "transform-origin",
+  "prefixes": [
+   "-webkit-",
+   "-moz-",
+   "-ms-",
+   "-o-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "transform",
+  "file": "src/properties/transform.rs",
+  "handler": "PrefixHandler [src/properties/prefix_handler.rs]",
+  "longhands": [],
+  "name": "transform-style",
+  "prefixes": [
+   "-webkit-",
+   "-moz-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "transition-animation",
+  "file": "src/properties/transition.rs",
+  "handler": "TransitionHandler",
+  "longhands": [
+   "transition-property",
+   "transition-duration",
+   "transition-delay",
+   "transition-timing-function"
+  ],
+  "name": "transition",
+  "prefixes": [
+   "-webkit-",
+   "-moz-",
+   "-ms-"
+  ],
+  "shorthand": true,
+  "typed": true
+ },
+ {
+  "area": "transition-animation",
+  "file": "src/properties/transition.rs",
+  "handler": "TransitionHandler",
+  "longhands": [],
+  "name": "transition-delay",
+  "prefixes": [
+   "-webkit-",
+   "-moz-",
+   "-ms-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "transition-animation",
+  "file": "src/properties/transition.rs",
+  "handler": "TransitionHandler",
+  "longhands": [],
+  "name": "transition-duration",
+  "prefixes": [
+   "-webkit-",
+   "-moz-",
+   "-ms-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "transition-animation",
+  "file": "src/properties/transition.rs",
+  "handler": "TransitionHandler",
+  "longhands": [],
+  "name": "transition-property",
+  "prefixes": [
+   "-webkit-",
+   "-moz-",
+   "-ms-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "transition-animation",
+  "file": "src/properties/transition.rs",
+  "handler": "TransitionHandler",
+  "longhands": [],
+  "name": "transition-timing-function",
+  "prefixes": [
+   "-webkit-",
+   "-moz-",
+   "-ms-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "transform",
+  "file": "src/properties/transform.rs",
+  "handler": "TransformHandler",
+  "longhands": [],
+  "name": "translate",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "text",
+  "file": "src/properties/text.rs",
+  "handler": "DeclarationHandler::handle_all (deferred to finalize) [src/declaration.rs]",
+  "longhands": [],
+  "name": "unicode-bidi",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "ui-misc",
+  "file": "src/properties/ui.rs",
+  "handler": "PrefixHandler [src/properties/prefix_handler.rs]",
+  "longhands": [],
+  "name": "user-select",
+  "prefixes": [
+   "-webkit-",
+   "-moz-",
+   "-ms-"
+  ],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "text",
+  "file": "src/properties/font.rs",
+  "handler": "none (passthrough)",
+  "longhands": [],
+  "name": "vertical-align",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "transition-animation",
+  "file": "src/values/ident.rs",
+  "handler": "none (passthrough)",
+  "longhands": [],
+  "name": "view-transition-class",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "transition-animation",
+  "file": "src/properties/transition.rs",
+  "handler": "none (passthrough)",
+  "longhands": [],
+  "name": "view-transition-group",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "transition-animation",
+  "file": "src/properties/transition.rs",
+  "handler": "none (passthrough)",
+  "longhands": [],
+  "name": "view-transition-name",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "display-layout",
+  "file": "src/properties/display.rs",
+  "handler": "none (passthrough)",
+  "longhands": [],
+  "name": "visibility",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "text",
+  "file": "src/properties/text.rs",
+  "handler": "none (passthrough)",
+  "longhands": [],
+  "name": "white-space",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "box-model-size",
+  "file": "src/properties/size.rs",
+  "handler": "SizeHandler",
+  "longhands": [],
+  "name": "width",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "text",
+  "file": "src/properties/text.rs",
+  "handler": "none (passthrough)",
+  "longhands": [],
+  "name": "word-break",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "text",
+  "file": "src/properties/text.rs",
+  "handler": "none (passthrough)",
+  "longhands": [],
+  "name": "word-spacing",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "text",
+  "file": "src/properties/text.rs",
+  "handler": "none (passthrough)",
+  "longhands": [],
+  "name": "word-wrap",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ },
+ {
+  "area": "display-layout",
+  "file": "src/properties/position.rs",
+  "handler": "none (passthrough)",
+  "longhands": [],
+  "name": "z-index",
+  "prefixes": [],
+  "shorthand": false,
+  "typed": true
+ }
+]

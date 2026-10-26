@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: effects-masking/sie-filter-identity-not-none
+area: effects-masking
+title: An identity filter such as grayscale(0) must not be minified to `none`
+mode: minify
+targets: none
+expect: equivalent, output-not-contains:"filter:none"
+known: none
+ref: https://drafts.csswg.org/filter-effects-1/#FilterProperty https://drafts.csswg.org/filter-effects-2/#BackdropRoot
+note: guard. Any value other than none creates a stacking context, a containing block for fixed/absolute descendants and a Backdrop Root, and changes interpolation pairing; static pixels are identical so only computed/layout checks catch this
+*/
+.t { width: 50px; height: 50px; filter: grayscale(0); }

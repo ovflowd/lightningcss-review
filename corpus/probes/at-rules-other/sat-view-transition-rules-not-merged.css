@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: at-rules-other/sat-view-transition-rules-not-merged
+area: at-rules-other
+title: Two @view-transition rules must not be merged (only the last rule counts; descriptors do not cascade)
+mode: minify
+targets: none
+expect: output-not-contains:"navigation:auto;types"
+known: none
+ref: https://drafts.csswg.org/css-view-transitions-2/#vt-rule-algo https://drafts.csswg.org/css-view-transitions-2/#view-transition-navigation-descriptor
+note: guard. The last rule (navigation defaults to none) disables cross-document transitions; a merged rule would enable them. Master keeps both rules
+*/
+@view-transition { navigation: auto; }
+@view-transition { types: slide; }

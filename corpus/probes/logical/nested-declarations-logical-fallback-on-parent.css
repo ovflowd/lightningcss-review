@@ -1,0 +1,17 @@
+/*! lcr-probe
+id: logical/nested-declarations-logical-fallback-on-parent
+area: logical
+title: Logical-property fallbacks from nested declarations must attach to the parent selector
+mode: lower-minify
+targets: safari 14
+expect: equivalent
+known: open-issue#1246
+ref: https://drafts.csswg.org/css-nesting-1/#nested-declarations-rule https://drafts.csswg.org/css-logical-1/#border-radius-properties https://github.com/parcel-bundler/lightningcss/issues/1246
+dom: <div dir="ltr" lang="en"><div class="btn">x</div></div>
+note: NestedDeclarationsRule::minify never consumes handler_context ltr/rtl rules (src/rules/nesting.rs:72), so the next nested style rule (&:hover) picks them up; regression since v1.30.0 (6c465c1). Chrome 156: 8px -> 0px
+*/
+.btn {
+  @media (prefers-reduced-motion: reduce) { transition: none; }
+  border-start-start-radius: 8px;
+  &:hover { color: red; }
+}

@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: transform/sat-scale-percentage-serializes-as-number
+area: transform
+title: Percentages in scale and scale functions are numbers (and the number form works in pre-2022 engines)
+mode: minify
+targets: none
+expect: equivalent, output-not-contains:"%"
+known: fixed-by#1174
+ref: https://drafts.csswg.org/css-transforms-2/#transform-functions https://drafts.csswg.org/css-transforms-2/#propdef-scale https://github.com/parcel-bundler/lightningcss/pull/1174
+note: guard. scale3d(50%, 100%, 150%) serializes as scale3d(0.5, 1, 1.5); master prints transform:scale3d(.5,1,1.5);scale:.5 1.5
+*/
+.t { scale: 50% 150%; transform: scale3d(50%, 100%, 150%); }

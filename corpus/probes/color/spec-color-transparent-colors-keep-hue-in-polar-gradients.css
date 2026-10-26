@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: color/spec-color-transparent-colors-keep-hue-in-polar-gradients
+area: color
+title: fully transparent colors are not interchangeable in polar interpolation (hue is not premultiplied)
+mode: minify
+targets: none
+expect: equivalent
+known: none
+ref: https://drafts.csswg.org/css-color-4/#interpolation-alpha https://drafts.csswg.org/css-color-4/#hue-interpolation
+note: guard: master keeps #f000; normalizing it to transparent/#0000 would make the hue missing and change the gradient
+*/
+.t { background-image: linear-gradient(90deg in oklch, rgb(255 0 0 / 0), blue); }

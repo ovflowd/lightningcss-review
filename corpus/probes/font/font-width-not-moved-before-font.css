@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: font/font-width-not-moved-before-font
+area: font
+title: font-width written after the font shorthand must not be moved before it
+mode: minify
+targets: none
+expect: equivalent
+known: open-issue#1207
+ref: https://drafts.csswg.org/css-fonts-4/#font-width-prop https://drafts.csswg.org/css-fonts-4/#font-prop https://github.com/parcel-bundler/lightningcss/issues/1234 https://github.com/parcel-bundler/lightningcss/issues/1207
+note: font-width is unknown to LightningCSS, so it is emitted before the buffered `font`, which resets it; Chrome 156 does not support font-width yet (engines without it see no difference)
+*/
+.t { font: 12px serif; font-width: condensed; }

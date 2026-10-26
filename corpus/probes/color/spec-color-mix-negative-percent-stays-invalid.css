@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: color/spec-color-mix-negative-percent-stays-invalid
+area: color
+title: negative color-mix() percentage is a parse error and must not be evaluated
+mode: minify
+targets: none
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/css-color-5/#color-mix https://github.com/web-platform-tests/wpt/blob/master/css/css-color/parsing/color-invalid-color-mix-function.html
+note: all three engines reject (WPT color-invalid-color-mix-function 141/141); master emits oklch(...)
+*/
+.t { color: red; color: color-mix(in oklch, red -10%, blue); }

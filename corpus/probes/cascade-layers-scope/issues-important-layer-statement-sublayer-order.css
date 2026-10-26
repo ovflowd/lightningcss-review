@@ -1,0 +1,14 @@
+/*! lcr-probe
+id: cascade-layers-scope/issues-important-layer-statement-sublayer-order
+area: cascade-layers-scope
+title: Inlining layer blocks into a layer statement must keep the declared sublayer order
+mode: minify
+targets: none
+expect: equivalent
+known: fixed-by#32aecd9
+ref: https://github.com/parcel-bundler/lightningcss/issues/974 https://github.com/parcel-bundler/lightningcss/issues/1222 https://drafts.csswg.org/css-cascade-5/#layer-ordering https://github.com/parcel-bundler/lightningcss/commit/32aecd9568da1256770c3bfce3ff699b89c1f296
+note: 1.23.0 (aedf6b6) .. 1.33.0 moved `@layer one.b;` after one.a, so .t turned green instead of red; fixed on master (unreleased)
+*/
+@layer one, one.a, one.b;
+@layer one { @layer b { .t { color: red; } } }
+@layer one.a { .t { color: green; } }

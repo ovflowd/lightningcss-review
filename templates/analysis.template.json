@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "run_id": "<filled by `lcr analysis-init`>",
+  "intent": {
+    "kind": "bugfix | feature | refactor | compat-data | perf | tests | docs | api | deps",
+    "summary": "One or two sentences: what the PR changes, in CSS terms (which syntax, which output).",
+    "claims": ["Each behavior the PR (title/body/tests) claims to change, one per entry."],
+    "behind_flag": "yes | no | n/a  (draft/one-engine syntax must be behind a ParserFlags/Features flag)"
+  },
+  "checklist": [
+    { "item": "GEN-01", "answer": "PASS | FAIL | N/A", "evidence": "case id, probe id, file:line, spec URL#anchor, or command output", "note": "optional, one line" }
+  ],
+  "deltas": [
+    { "id": "case id from deltas / oracle", "classification": "INTENDED | ACCEPTABLE_SIDE_EFFECT | REGRESSION | NEEDS_MAINTAINER_DECISION | ORACLE_NOISE", "reason": "one line; for ORACLE_NOISE say which tolerance/limitation" }
+  ],
+  "findings": [
+    {
+      "severity": "BLOCKER | MAJOR | MINOR | NOTE",
+      "title": "imperative, one line",
+      "detail": "what is wrong and why, citing the spec or the browser evidence",
+      "evidence": ["case/probe ids, file:line, spec URL#anchor"],
+      "suggested_test": "optional: a ready-to-paste minify_test/prefix_test/... call"
+    }
+  ],
+  "probes_written": ["ids of probes written to <run>/probes"]
+}

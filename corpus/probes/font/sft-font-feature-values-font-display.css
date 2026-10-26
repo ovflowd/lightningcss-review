@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: font/sft-font-feature-values-font-display
+area: font
+title: font-display is a valid descriptor inside @font-feature-values
+mode: minify
+targets: none
+expect: output-contains:"font-display:swap", output-contains:"flowing:1"
+known: open-bug
+ref: https://drafts.csswg.org/css-fonts-4/#font-display-font-feature-values https://drafts.csswg.org/css-fonts-4/#font-feature-values-syntax
+note: master rejects the whole stylesheet with UnexpectedToken(font-display) (declarations not parsed, src/rules/font_feature_values.rs:145; the CLI unwraps and panics); no engine implements the descriptor yet (BCD)
+*/
+@font-feature-values Foo { font-display: swap; @swash { flowing: 1; } }

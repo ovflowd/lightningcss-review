@@ -1,0 +1,40 @@
+/*! lcr-probe
+id: at-rules-other/issues-b1-property-in-layer-media-supports
+area: at-rules-other
+title: @property inside @layer, @media and @supports is valid and must be kept as a parsed rule
+mode: minify
+targets: none
+expect: equivalent, idempotent, output-contains:"@property --radialprogress"
+known: none
+ref: https://github.com/parcel-bundler/lightningcss/issues/968 https://github.com/parcel-bundler/lightningcss/pull/1090 https://drafts.csswg.org/css-conditional-3/#contents-of https://drafts.csswg.org/css-cascade-5/#layer-empty
+note: guard for #1090 and for PR #1314, which tightens nested @property validation; `initial-value: 0%` must stay a percentage
+*/
+@layer base {
+  @property --radialprogress {
+    syntax: "<percentage>";
+    inherits: true;
+    initial-value: 0%;
+  }
+}
+
+@media screen {
+  @property --m {
+    syntax: "<length>";
+    inherits: false;
+    initial-value: 4px;
+  }
+}
+
+@supports (display: grid) {
+  @property --s {
+    syntax: "<color>";
+    inherits: false;
+    initial-value: red;
+  }
+}
+
+.t {
+  width: var(--m);
+  color: var(--s);
+  --p2: var(--radialprogress);
+}

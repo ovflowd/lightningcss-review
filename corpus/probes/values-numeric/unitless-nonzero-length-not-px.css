@@ -1,0 +1,14 @@
+/*! lcr-probe
+id: values-numeric/unitless-nonzero-length-not-px
+area: values-numeric
+title: A unitless non-zero number in a <length> slot is invalid and must not become px
+mode: minify
+targets: none
+expect: equivalent, output-not-contains:"3px", output-not-contains:"9px"
+known: open-issue#1199
+ref: https://drafts.csswg.org/css-values-4/#lengths https://quirks.spec.whatwg.org/#the-unitless-length-quirk https://github.com/parcel-bundler/lightningcss/issues/1199
+dom: <div class="t">x</div><div class="u">y</div>
+note: LengthValue::parse accepts Token::Number as Px ("TODO: quirks mode only?", src/values/length.rs:145); invalid-in becomes valid-out
+*/
+.t { width: 3; }
+.u { transform: translateZ(9); }

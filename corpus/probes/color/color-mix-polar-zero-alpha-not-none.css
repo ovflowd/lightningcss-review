@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: color/color-mix-polar-zero-alpha-not-none
+area: color
+title: color-mix() in a polar space with both alphas 0 must not produce `none` channels
+mode: minify
+targets: none
+expect: equivalent, output-not-contains:"none"
+known: open-issue#1194
+ref: https://drafts.csswg.org/css-color-4/#interpolation-alpha https://github.com/parcel-bundler/lightningcss/issues/1194
+note: polar_premultiply::unpremultiply divides by alpha 0 (src/values/color.rs:3661); NaN then serializes as `none`. Chrome computes oklch(0 0 180 / 0)
+*/
+.t { color: color-mix(in oklch, oklch(0.5 0.2 120 / 0), oklch(0.7 0.1 240 / 0)); }
+.u { color: color-mix(in lch, lch(50 30 120 / 0), lch(70 10 240 / 0)); }

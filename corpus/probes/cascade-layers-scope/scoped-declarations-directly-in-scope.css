@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: cascade-layers-scope/scoped-declarations-directly-in-scope
+area: cascade-layers-scope
+title: Declarations directly inside @scope apply to the scoping root with zero specificity
+mode: minify
+targets: none
+expect: equivalent
+known: open-issue#1165
+ref: https://drafts.csswg.org/css-cascade-6/#scoped-declarations https://github.com/parcel-bundler/lightningcss/issues/1165
+dom: <div class="t">x</div>
+note: master fails (tracked issue); top-level @scope blocks are parsed without allow_declarations, so this is a hard parse error; WPT css/css-cascade/scope-declarations.html passes 5/5 in Chrome, Firefox and Safari
+*/
+@scope (.t) { color: rgb(0, 128, 0); }

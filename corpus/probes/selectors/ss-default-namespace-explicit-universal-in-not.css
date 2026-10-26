@@ -1,0 +1,15 @@
+/*! lcr-probe
+id: selectors/ss-default-namespace-explicit-universal-in-not
+area: selectors
+title: An explicit `*` inside :not() opts into the default namespace and must not be elided
+mode: minify
+targets: none
+expect: equivalent
+known: open-bug
+dom: <svg><rect class="a"></rect></svg>
+ref: https://drafts.csswg.org/selectors-4/#negation https://drafts.csswg.org/selectors-4/#matches https://drafts.csswg.org/css-namespaces-3/#default-namespace
+note: with a default namespace, `:not(*.a)` means :not(xhtml|*.a) and matches an SVG rect.a, while `:not(.a)` ignores the default namespace and does not; serialize_selector elides `*` (can_elide_namespace, src/selector.rs:1492-1498,1573)
+*/
+@namespace url(http://www.w3.org/1999/xhtml);
+@namespace svg url(http://www.w3.org/2000/svg);
+svg|rect:not(*.a) { color: red; }

@@ -1,0 +1,15 @@
+/*! lcr-probe
+id: flex-grid-align/place-items-self-stretch-vs-normal
+area: flex-grid-align
+title: justify-*:stretch must not be omitted when align-* is normal in place-items/place-self
+mode: minify
+targets: none
+expect: equivalent
+known: open-issue#1182
+ref: https://drafts.csswg.org/css-align-3/#place-items-property https://drafts.csswg.org/css-align-3/#place-self-property https://github.com/parcel-bundler/lightningcss/issues/1182
+dom: <div class="g"><div class="t">x</div></div><div class="g u"><div class="i">y</div></div>
+note: the Stretch arms compare against Normal instead of Stretch (src/properties/align.rs:512 and :780), so `normal stretch` prints as `normal`
+*/
+.g { display: grid; grid-template-columns: 200px; }
+.t { align-self: normal; justify-self: stretch; }
+.u { align-items: normal; justify-items: stretch; }

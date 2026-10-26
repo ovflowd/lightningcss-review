@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: printer-serialization/pr1025-hex-escape-before-space
+area: printer-serialization
+title: A hex escape followed by a literal space must keep both the terminator and the space
+mode: minify
+targets: none
+expect: equivalent, idempotent
+known: none
+ref: https://drafts.csswg.org/css-syntax-3/#consume-escaped-code-point https://drafts.csswg.org/cssom/#serialize-a-string https://github.com/parcel-bundler/lightningcss/pull/1025
+note: value is U+0001 U+0020 Z; master prints it unchanged; #1025's hex_escape omits the terminator unless the next char is a hex digit so the space is lost (reasoned from the diff)
+*/
+.t { font-family: "\1  Z", serif; }

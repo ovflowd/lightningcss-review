@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: font/sft-font-face-src-fallback-kept
+area: font
+title: Repeated @font-face src descriptors are a fallback pattern and must both survive
+mode: minify
+targets: none
+expect: idempotent, output-contains:"src:url(a.woff2)", output-contains:"tech(incremental)"
+known: none
+ref: https://drafts.csswg.org/css-fonts-4/#font-face-src-parsing https://drafts.csswg.org/css-fonts-4/#src-desc
+note: a src whose every entry has an unsupported tech()/format() is a parse error, so the earlier src wins; deduping descriptors like properties would break it
+*/
+@font-face { font-family: X; src: url(a.woff2); src: url(b.woff2) tech(incremental); }

@@ -1,0 +1,14 @@
+/*! lcr-probe
+id: flex-grid-align/wpt-engines-grid-template-line-names-between-rows
+area: flex-grid-align
+title: grid-template keeps a line name that sits between two area rows on the line between them
+mode: print
+targets: none
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/css-grid-2/#explicit-grid-shorthand https://github.com/web-platform-tests/wpt/blob/master/css/css-grid/parsing/grid-template-shorthand-valid.html
+dom: <div class="t"><div></div><div class="c"></div></div>
+note: UNFILED master failure found by running PR #1328's oracle on WPT cases; GridTemplate::parse (src/properties/grid.rs:746-771) pushes no empty list for line 1 when row 1 has no leading names, so [mid] shifts to line 1 and prints as [mid]"a"10px"b"10px (1.33.0, print and minify); .c moves from y=10px to y=0 in Chrome 156
+*/
+.t { display: grid; grid-template: "a" 10px [mid] "b" 10px; }
+.c { grid-row-start: mid; }

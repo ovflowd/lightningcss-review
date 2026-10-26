@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: effects-masking/sie-mask-clip-margin-box-invalid
+area: effects-masking
+title: `mask-clip: margin-box` is invalid and must not replace an earlier valid mask-clip
+mode: minify
+targets: none
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/css-masking-1/#the-mask-clip https://drafts.csswg.org/css-masking-1/#changes
+note: MASTER FAILS (no issue filed yet). mask-clip/mask-origin take <coord-box> ("Remove margin-box as possible value from mask-origin and mask-clip"); GeometryBox includes MarginBox (src/properties/masking.rs:83-99) and master keeps only mask-clip:margin-box, which Chrome 156 rejects
+*/
+.t { width: 50px; height: 50px; padding: 10px; background: red; mask-image: linear-gradient(#000, #000); mask-clip: content-box; mask-clip: margin-box; }

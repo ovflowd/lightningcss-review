@@ -1,0 +1,26 @@
+/*! lcr-probe
+id: nesting/issues-b1-nested-rule-then-declarations-order
+area: nesting
+title: Declarations after a nested rule must stay after it when nesting is lowered
+mode: lower-minify
+targets: chrome 100
+expect: equivalent
+known: none
+ref: https://github.com/parcel-bundler/lightningcss/issues/964 https://github.com/parcel-bundler/lightningcss/commit/6c465c123deb549dfb45fd3558f25dca0dbde0d6 https://drafts.csswg.org/css-nesting-1/#nested-declarations-rule
+dom: <div class="q">q</div><div class="r">r</div>
+note: before v1.30.0 declarations were hoisted above nested rules, so `border-radius` from `& {}` overrode the later `border-top-left-radius: 0`
+*/
+.q {
+  & {
+    border-radius: 9px;
+  }
+  border-top-left-radius: 0;
+}
+
+.r {
+  color: red;
+  & {
+    color: blue;
+  }
+  color: green;
+}

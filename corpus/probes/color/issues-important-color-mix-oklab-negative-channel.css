@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: color/issues-important-color-mix-oklab-negative-channel
+area: color
+title: Resolved color-mix() with tiny negative channels must serialize valid numbers
+mode: lower-minify
+targets: chrome 111
+expect: equivalent, output-not-contains:"--"
+known: fixed-by#901
+ref: https://github.com/parcel-bundler/lightningcss/issues/899 https://drafts.csswg.org/css-color-5/#color-mix https://github.com/parcel-bundler/lightningcss/pull/901
+note: 1.20.0-1.29.1 printed `oklab(17.3042% --7.45058e-9 ...)`, an invalid value (Tailwind v4 transparency utilities)
+*/
+body { background: color-mix(in oklab, #101010 85%, transparent); }

@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: transform/sat-skew-zero-x-not-rewritten-as-skewy
+area: transform
+title: skew(0, a) must not be minified to skewY(a); skew()->skew() interpolates per argument, skewY()->skew() does not
+mode: minify
+targets: none
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/css-transforms-1/#transform-primitives https://drafts.csswg.org/css-transforms-1/#interpolation-of-transform-functions
+note: MASTER FAILS (no issue filed). master prints skewY(10deg) (src/properties/transform.rs:1204-1207). At 50%: input matrix(1, 0.36397, 0.176327, 1, 0, 0), output matrix(1.01963, 0.371114, 0.250968, 0.97932, 0, 0) in Chrome 156/Firefox 157 (WebKit 27.2 differs too)
+*/
+@keyframes sat-skewy { from { transform: skew(0, 10deg); } to { transform: skew(20deg, 30deg); } }
+.t { animation: sat-skewy 1s linear -0.5s paused; }

@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: color/issues-b0-negative-tiny-component-no-double-minus
+area: color
+title: color-mix() results with tiny negative components must serialize as valid numbers
+mode: minify
+targets: none
+expect: output-not-contains:"--", idempotent
+known: fixed-by#901
+ref: https://drafts.csswg.org/css-syntax-3/#consume-number https://github.com/parcel-bundler/lightningcss/issues/899 https://github.com/parcel-bundler/lightningcss/pull/901
+note: <=1.29.1 printed `oklab(17.3042% --7.45058e-9 ...)`; f32 noise makes a/b tiny negatives, and the "-0" trim assumed no scientific notation
+*/
+.t { background-color: color-mix(in oklab, #101010 85%, transparent); }

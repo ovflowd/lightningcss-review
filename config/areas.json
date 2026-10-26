@@ -1,0 +1,1158 @@
+{
+  "$comment": "Deterministic change classification. `files` maps a repo-relative glob (fnmatch, first match wins top to bottom) to area ids. Area metadata drives which tests, WPT directories, probes and checklists apply. Keep ids in sync with references/areas.md.",
+  "files": [
+    [
+      "src/lib.rs",
+      [
+        "tests"
+      ]
+    ],
+    [
+      "src/test_helpers.rs",
+      [
+        "tests"
+      ]
+    ],
+    [
+      "src/properties/mod.rs",
+      [
+        "properties-registry"
+      ]
+    ],
+    [
+      "src/properties/align.rs",
+      [
+        "flex-grid-align"
+      ]
+    ],
+    [
+      "src/properties/animation.rs",
+      [
+        "transition-animation"
+      ]
+    ],
+    [
+      "src/properties/background.rs",
+      [
+        "background"
+      ]
+    ],
+    [
+      "src/properties/border_image.rs",
+      [
+        "border-outline"
+      ]
+    ],
+    [
+      "src/properties/border_radius.rs",
+      [
+        "border-outline"
+      ]
+    ],
+    [
+      "src/properties/border.rs",
+      [
+        "border-outline"
+      ]
+    ],
+    [
+      "src/properties/box_shadow.rs",
+      [
+        "effects-masking"
+      ]
+    ],
+    [
+      "src/properties/contain.rs",
+      [
+        "display-layout",
+        "supports-container"
+      ]
+    ],
+    [
+      "src/properties/css_modules.rs",
+      [
+        "css-modules"
+      ]
+    ],
+    [
+      "src/properties/custom.rs",
+      [
+        "custom-properties"
+      ]
+    ],
+    [
+      "src/properties/display.rs",
+      [
+        "display-layout"
+      ]
+    ],
+    [
+      "src/properties/effects.rs",
+      [
+        "effects-masking"
+      ]
+    ],
+    [
+      "src/properties/flex.rs",
+      [
+        "flex-grid-align"
+      ]
+    ],
+    [
+      "src/properties/font.rs",
+      [
+        "font"
+      ]
+    ],
+    [
+      "src/properties/grid.rs",
+      [
+        "flex-grid-align"
+      ]
+    ],
+    [
+      "src/properties/list.rs",
+      [
+        "ui-misc"
+      ]
+    ],
+    [
+      "src/properties/margin_padding.rs",
+      [
+        "box-model-size",
+        "logical"
+      ]
+    ],
+    [
+      "src/properties/masking.rs",
+      [
+        "effects-masking"
+      ]
+    ],
+    [
+      "src/properties/outline.rs",
+      [
+        "border-outline"
+      ]
+    ],
+    [
+      "src/properties/overflow.rs",
+      [
+        "display-layout"
+      ]
+    ],
+    [
+      "src/properties/position.rs",
+      [
+        "display-layout",
+        "box-model-size"
+      ]
+    ],
+    [
+      "src/properties/prefix_handler.rs",
+      [
+        "prefixing-compat"
+      ]
+    ],
+    [
+      "src/properties/size.rs",
+      [
+        "box-model-size"
+      ]
+    ],
+    [
+      "src/properties/svg.rs",
+      [
+        "ui-misc"
+      ]
+    ],
+    [
+      "src/properties/text.rs",
+      [
+        "text"
+      ]
+    ],
+    [
+      "src/properties/transform.rs",
+      [
+        "transform"
+      ]
+    ],
+    [
+      "src/properties/transition.rs",
+      [
+        "transition-animation"
+      ]
+    ],
+    [
+      "src/properties/ui.rs",
+      [
+        "ui-misc"
+      ]
+    ],
+    [
+      "src/values/alpha.rs",
+      [
+        "color"
+      ]
+    ],
+    [
+      "src/values/angle.rs",
+      [
+        "values-numeric"
+      ]
+    ],
+    [
+      "src/values/calc.rs",
+      [
+        "calc-math"
+      ]
+    ],
+    [
+      "src/values/color.rs",
+      [
+        "color"
+      ]
+    ],
+    [
+      "src/values/easing.rs",
+      [
+        "transition-animation"
+      ]
+    ],
+    [
+      "src/values/gradient.rs",
+      [
+        "gradient-image"
+      ]
+    ],
+    [
+      "src/values/ident.rs",
+      [
+        "parser-syntax",
+        "css-modules"
+      ]
+    ],
+    [
+      "src/values/image.rs",
+      [
+        "gradient-image"
+      ]
+    ],
+    [
+      "src/values/length.rs",
+      [
+        "values-numeric",
+        "calc-math"
+      ]
+    ],
+    [
+      "src/values/number.rs",
+      [
+        "values-numeric"
+      ]
+    ],
+    [
+      "src/values/percentage.rs",
+      [
+        "values-numeric"
+      ]
+    ],
+    [
+      "src/values/position.rs",
+      [
+        "background",
+        "values-numeric"
+      ]
+    ],
+    [
+      "src/values/ratio.rs",
+      [
+        "values-numeric"
+      ]
+    ],
+    [
+      "src/values/rect.rs",
+      [
+        "values-numeric"
+      ]
+    ],
+    [
+      "src/values/resolution.rs",
+      [
+        "values-numeric",
+        "gradient-image"
+      ]
+    ],
+    [
+      "src/values/shape.rs",
+      [
+        "effects-masking"
+      ]
+    ],
+    [
+      "src/values/size.rs",
+      [
+        "values-numeric"
+      ]
+    ],
+    [
+      "src/values/string.rs",
+      [
+        "printer-serialization"
+      ]
+    ],
+    [
+      "src/values/syntax.rs",
+      [
+        "custom-properties"
+      ]
+    ],
+    [
+      "src/values/time.rs",
+      [
+        "values-numeric",
+        "transition-animation"
+      ]
+    ],
+    [
+      "src/values/url.rs",
+      [
+        "gradient-image",
+        "bundler"
+      ]
+    ],
+    [
+      "src/values/mod.rs",
+      [
+        "values-numeric"
+      ]
+    ],
+    [
+      "src/rules/container.rs",
+      [
+        "supports-container"
+      ]
+    ],
+    [
+      "src/rules/counter_style.rs",
+      [
+        "at-rules-other"
+      ]
+    ],
+    [
+      "src/rules/custom_media.rs",
+      [
+        "media-queries"
+      ]
+    ],
+    [
+      "src/rules/document.rs",
+      [
+        "at-rules-other"
+      ]
+    ],
+    [
+      "src/rules/font_face.rs",
+      [
+        "font"
+      ]
+    ],
+    [
+      "src/rules/font_feature_values.rs",
+      [
+        "font"
+      ]
+    ],
+    [
+      "src/rules/font_palette_values.rs",
+      [
+        "font"
+      ]
+    ],
+    [
+      "src/rules/import.rs",
+      [
+        "bundler",
+        "cascade-layers-scope"
+      ]
+    ],
+    [
+      "src/rules/keyframes.rs",
+      [
+        "transition-animation"
+      ]
+    ],
+    [
+      "src/rules/layer.rs",
+      [
+        "cascade-layers-scope"
+      ]
+    ],
+    [
+      "src/rules/media.rs",
+      [
+        "media-queries"
+      ]
+    ],
+    [
+      "src/rules/mod.rs",
+      [
+        "rule-merging"
+      ]
+    ],
+    [
+      "src/rules/namespace.rs",
+      [
+        "at-rules-other"
+      ]
+    ],
+    [
+      "src/rules/nesting.rs",
+      [
+        "nesting"
+      ]
+    ],
+    [
+      "src/rules/page.rs",
+      [
+        "at-rules-other"
+      ]
+    ],
+    [
+      "src/rules/position_try.rs",
+      [
+        "at-rules-other"
+      ]
+    ],
+    [
+      "src/rules/property.rs",
+      [
+        "custom-properties"
+      ]
+    ],
+    [
+      "src/rules/scope.rs",
+      [
+        "cascade-layers-scope"
+      ]
+    ],
+    [
+      "src/rules/starting_style.rs",
+      [
+        "transition-animation"
+      ]
+    ],
+    [
+      "src/rules/style.rs",
+      [
+        "rule-merging",
+        "nesting",
+        "selectors"
+      ]
+    ],
+    [
+      "src/rules/supports.rs",
+      [
+        "supports-container"
+      ]
+    ],
+    [
+      "src/rules/unknown.rs",
+      [
+        "at-rules-other"
+      ]
+    ],
+    [
+      "src/rules/viewport.rs",
+      [
+        "at-rules-other"
+      ]
+    ],
+    [
+      "src/rules/view_transition.rs",
+      [
+        "transition-animation"
+      ]
+    ],
+    [
+      "src/rules/*",
+      [
+        "rule-merging"
+      ]
+    ],
+    [
+      "src/bundler.rs",
+      [
+        "bundler"
+      ]
+    ],
+    [
+      "src/compat.rs",
+      [
+        "prefixing-compat"
+      ]
+    ],
+    [
+      "src/context.rs",
+      [
+        "logical",
+        "rule-merging"
+      ]
+    ],
+    [
+      "src/css_modules.rs",
+      [
+        "css-modules"
+      ]
+    ],
+    [
+      "src/declaration.rs",
+      [
+        "rule-merging"
+      ]
+    ],
+    [
+      "src/dependencies.rs",
+      [
+        "bundler"
+      ]
+    ],
+    [
+      "src/error.rs",
+      [
+        "parser-syntax",
+        "bindings-api"
+      ]
+    ],
+    [
+      "src/logical.rs",
+      [
+        "logical"
+      ]
+    ],
+    [
+      "src/macros.rs",
+      [
+        "rule-merging",
+        "printer-serialization"
+      ]
+    ],
+    [
+      "src/main.rs",
+      [
+        "bindings-api"
+      ]
+    ],
+    [
+      "src/media_query.rs",
+      [
+        "media-queries"
+      ]
+    ],
+    [
+      "src/parser.rs",
+      [
+        "parser-syntax",
+        "nesting"
+      ]
+    ],
+    [
+      "src/prefixes.rs",
+      [
+        "prefixing-compat"
+      ]
+    ],
+    [
+      "src/printer.rs",
+      [
+        "printer-serialization"
+      ]
+    ],
+    [
+      "src/selector.rs",
+      [
+        "selectors"
+      ]
+    ],
+    [
+      "src/serialization.rs",
+      [
+        "printer-serialization"
+      ]
+    ],
+    [
+      "src/stylesheet.rs",
+      [
+        "bindings-api",
+        "rule-merging"
+      ]
+    ],
+    [
+      "src/targets.rs",
+      [
+        "prefixing-compat"
+      ]
+    ],
+    [
+      "src/traits.rs",
+      [
+        "rule-merging"
+      ]
+    ],
+    [
+      "src/vendor_prefix.rs",
+      [
+        "prefixing-compat"
+      ]
+    ],
+    [
+      "src/visitor.rs",
+      [
+        "visitor-api"
+      ]
+    ],
+    [
+      "src/*",
+      [
+        "rule-merging"
+      ]
+    ],
+    [
+      "selectors/*",
+      [
+        "selectors"
+      ]
+    ],
+    [
+      "scripts/build-prefixes.js",
+      [
+        "prefixing-compat"
+      ]
+    ],
+    [
+      "scripts/build-ast.js",
+      [
+        "bindings-api"
+      ]
+    ],
+    [
+      "scripts/*",
+      [
+        "build-release"
+      ]
+    ],
+    [
+      "node/*",
+      [
+        "bindings-api"
+      ]
+    ],
+    [
+      "napi/*",
+      [
+        "bindings-api"
+      ]
+    ],
+    [
+      "c/*",
+      [
+        "bindings-api"
+      ]
+    ],
+    [
+      "wasm/*",
+      [
+        "bindings-api"
+      ]
+    ],
+    [
+      "cli/*",
+      [
+        "bindings-api"
+      ]
+    ],
+    [
+      "derive/*",
+      [
+        "visitor-api",
+        "bindings-api"
+      ]
+    ],
+    [
+      "static-self*",
+      [
+        "bindings-api"
+      ]
+    ],
+    [
+      "examples/*",
+      [
+        "bindings-api"
+      ]
+    ],
+    [
+      "tests/*",
+      [
+        "tests"
+      ]
+    ],
+    [
+      "benches/*",
+      [
+        "perf"
+      ]
+    ],
+    [
+      "bench.js",
+      [
+        "perf"
+      ]
+    ],
+    [
+      "website/*",
+      [
+        "docs"
+      ]
+    ],
+    [
+      "README.md",
+      [
+        "docs"
+      ]
+    ],
+    [
+      "CONTRIBUTING.md",
+      [
+        "docs"
+      ]
+    ],
+    [
+      ".github/*",
+      [
+        "build-release"
+      ]
+    ],
+    [
+      "Cargo.toml",
+      [
+        "build-release"
+      ]
+    ],
+    [
+      "Cargo.lock",
+      [
+        "build-release"
+      ]
+    ],
+    [
+      "package.json",
+      [
+        "build-release"
+      ]
+    ],
+    [
+      "yarn.lock",
+      [
+        "build-release"
+      ]
+    ],
+    [
+      "rust-toolchain.toml",
+      [
+        "build-release"
+      ]
+    ],
+    [
+      "*",
+      [
+        "other"
+      ]
+    ]
+  ],
+  "core_files": [
+    "src/declaration.rs",
+    "src/rules/mod.rs",
+    "src/rules/style.rs",
+    "src/printer.rs",
+    "src/context.rs",
+    "src/macros.rs",
+    "src/traits.rs",
+    "src/targets.rs",
+    "src/properties/mod.rs",
+    "src/properties/custom.rs",
+    "src/properties/prefix_handler.rs",
+    "src/values/color.rs",
+    "src/values/calc.rs",
+    "src/values/length.rs",
+    "src/selector.rs",
+    "src/parser.rs",
+    "src/stylesheet.rs",
+    "src/compat.rs",
+    "selectors/parser.rs"
+  ],
+  "generated_files": {
+    "src/compat.rs": "node scripts/build-prefixes.js",
+    "src/prefixes.rs": "node scripts/build-prefixes.js",
+    "node/ast.d.ts": "yarn build-ast"
+  },
+  "areas": {
+    "parser-syntax": {
+      "wpt": [
+        "css/css-syntax"
+      ],
+      "tests": [],
+      "visual": false
+    },
+    "values-numeric": {
+      "wpt": [
+        "css/css-values"
+      ],
+      "tests": [
+        "test_length",
+        "test_size",
+        "test_opacity"
+      ],
+      "visual": false
+    },
+    "calc-math": {
+      "wpt": [
+        "css/css-values"
+      ],
+      "tests": [
+        "test_calc",
+        "test_trig",
+        "test_exp",
+        "test_sign"
+      ],
+      "visual": false
+    },
+    "color": {
+      "wpt": [
+        "css/css-color"
+      ],
+      "tests": [
+        "test_color",
+        "test_relative_color",
+        "test_relative_alpha_color_fallbacks",
+        "test_color_mix"
+      ],
+      "visual": true
+    },
+    "gradient-image": {
+      "wpt": [
+        "css/css-images"
+      ],
+      "tests": [
+        "test_gradients",
+        "test_image_set"
+      ],
+      "visual": true
+    },
+    "background": {
+      "wpt": [
+        "css/css-backgrounds"
+      ],
+      "tests": [
+        "test_background"
+      ],
+      "visual": true
+    },
+    "border-outline": {
+      "wpt": [
+        "css/css-backgrounds",
+        "css/css-borders",
+        "css/css-ui"
+      ],
+      "tests": [
+        "test_border",
+        "test_border_image",
+        "test_border_radius",
+        "test_outline"
+      ],
+      "visual": true
+    },
+    "box-model-size": {
+      "wpt": [
+        "css/css-box",
+        "css/css-sizing",
+        "css/css-position"
+      ],
+      "tests": [
+        "test_margin",
+        "test_padding",
+        "test_size"
+      ],
+      "visual": false
+    },
+    "logical": {
+      "wpt": [
+        "css/css-logical"
+      ],
+      "tests": [
+        "test_margin",
+        "test_padding",
+        "test_border_radius"
+      ],
+      "visual": false
+    },
+    "display-layout": {
+      "wpt": [
+        "css/css-display",
+        "css/css-overflow",
+        "css/css-position",
+        "css/css-contain"
+      ],
+      "tests": [
+        "test_display",
+        "test_overflow",
+        "test_position",
+        "test_visibility"
+      ],
+      "visual": false
+    },
+    "flex-grid-align": {
+      "wpt": [
+        "css/css-flexbox",
+        "css/css-grid",
+        "css/css-align"
+      ],
+      "tests": [
+        "test_flex",
+        "test_grid"
+      ],
+      "visual": false
+    },
+    "font": {
+      "wpt": [
+        "css/css-fonts"
+      ],
+      "tests": [
+        "test_font",
+        "test_font_face",
+        "test_font_palette_values",
+        "test_font_feature_values"
+      ],
+      "visual": false
+    },
+    "text": {
+      "wpt": [
+        "css/css-text",
+        "css/css-text-decor"
+      ],
+      "tests": [
+        "test_text_decoration",
+        "test_text_emphasis",
+        "test_text_shadow",
+        "test_whitespace",
+        "test_text_align"
+      ],
+      "visual": false
+    },
+    "transform": {
+      "wpt": [
+        "css/css-transforms"
+      ],
+      "tests": [
+        "test_transform",
+        "test_individual_transforms"
+      ],
+      "visual": true
+    },
+    "transition-animation": {
+      "wpt": [
+        "css/css-transitions",
+        "css/css-animations",
+        "css/css-easing",
+        "scroll-animations",
+        "css/css-view-transitions"
+      ],
+      "tests": [
+        "test_transitions",
+        "test_animation",
+        "test_keyframes"
+      ],
+      "visual": false
+    },
+    "effects-masking": {
+      "wpt": [
+        "css/filter-effects",
+        "css/css-masking",
+        "css/compositing"
+      ],
+      "tests": [
+        "test_box_shadow"
+      ],
+      "visual": true
+    },
+    "ui-misc": {
+      "wpt": [
+        "css/css-ui",
+        "css/css-lists",
+        "css/css-color-adjust"
+      ],
+      "tests": [
+        "test_ui",
+        "test_list"
+      ],
+      "visual": false
+    },
+    "custom-properties": {
+      "wpt": [
+        "css/css-variables",
+        "css/css-properties-values-api"
+      ],
+      "tests": [
+        "test_custom_properties",
+        "test_property"
+      ],
+      "visual": false
+    },
+    "selectors": {
+      "wpt": [
+        "css/selectors"
+      ],
+      "tests": [
+        "test_selectors",
+        "test_selector_compatibility"
+      ],
+      "visual": false
+    },
+    "nesting": {
+      "wpt": [
+        "css/css-nesting"
+      ],
+      "tests": [
+        "test_nesting"
+      ],
+      "visual": false
+    },
+    "media-queries": {
+      "wpt": [
+        "css/mediaqueries"
+      ],
+      "tests": [
+        "test_media",
+        "test_custom_media",
+        "test_merge_media_rules"
+      ],
+      "visual": false
+    },
+    "supports-container": {
+      "wpt": [
+        "css/css-conditional",
+        "css/css-contain"
+      ],
+      "tests": [
+        "test_supports_rule",
+        "test_container_queries",
+        "test_merge_supports"
+      ],
+      "visual": false
+    },
+    "cascade-layers-scope": {
+      "wpt": [
+        "css/css-cascade"
+      ],
+      "tests": [
+        "test_merge_layers",
+        "test_layer_order_across_rules",
+        "test_at_scope"
+      ],
+      "visual": false
+    },
+    "at-rules-other": {
+      "wpt": [
+        "css/css-page",
+        "css/css-counter-styles",
+        "css/css-namespaces"
+      ],
+      "tests": [
+        "test_page_rule",
+        "test_counter_style",
+        "test_namespace",
+        "test_position_try"
+      ],
+      "visual": false
+    },
+    "rule-merging": {
+      "wpt": [],
+      "tests": [
+        "test_merge_rules",
+        "test_important",
+        "test_duplicate_rules_preserve_importance"
+      ],
+      "visual": false
+    },
+    "properties-registry": {
+      "wpt": [],
+      "tests": [],
+      "visual": false
+    },
+    "prefixing-compat": {
+      "wpt": [],
+      "tests": [
+        "test_prefixes"
+      ],
+      "visual": false
+    },
+    "printer-serialization": {
+      "wpt": [],
+      "tests": [],
+      "visual": false
+    },
+    "css-modules": {
+      "wpt": [],
+      "tests": [
+        "test_css_modules",
+        "test_css_module_order"
+      ],
+      "visual": false
+    },
+    "bundler": {
+      "wpt": [],
+      "tests": [],
+      "visual": false
+    },
+    "sourcemap": {
+      "wpt": [],
+      "tests": [],
+      "visual": false
+    },
+    "visitor-api": {
+      "wpt": [],
+      "tests": [],
+      "visual": false
+    },
+    "bindings-api": {
+      "wpt": [],
+      "tests": [],
+      "visual": false
+    },
+    "perf": {
+      "wpt": [],
+      "tests": [],
+      "visual": false
+    },
+    "build-release": {
+      "wpt": [],
+      "tests": [],
+      "visual": false
+    },
+    "tests": {
+      "wpt": [],
+      "tests": [],
+      "visual": false
+    },
+    "docs": {
+      "wpt": [],
+      "tests": [],
+      "visual": false
+    },
+    "other": {
+      "wpt": [],
+      "tests": [],
+      "visual": false
+    }
+  }
+}

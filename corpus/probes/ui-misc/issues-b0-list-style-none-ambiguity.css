@@ -1,0 +1,15 @@
+/*! lcr-probe
+id: ui-misc/issues-b0-list-style-none-ambiguity
+area: ui-misc
+title: `none` in list-style applies to whichever of list-style-image/list-style-type is not otherwise set
+mode: minify
+targets: none
+expect: equivalent, idempotent
+known: fixed-by#e3b1e88
+ref: https://drafts.csswg.org/css-lists-3/#list-style-property https://github.com/parcel-bundler/lightningcss/issues/890
+dom: <ul class="a"><li>a</li></ul><ul class="b"><li>b</li></ul><ul class="c"><li>c</li></ul>
+note: 1.29.0 (97891d8) printed `list-style:none` as `outside` (type became disc); 1.28.2 printed `inside none` as `inside`; fixed by commit e3b1e88 in 1.29.1 (no PR)
+*/
+.a { list-style: none; }
+.b { list-style: inside none; }
+.c { list-style: none square; }

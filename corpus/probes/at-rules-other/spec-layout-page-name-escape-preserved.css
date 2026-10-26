@@ -1,0 +1,14 @@
+/*! lcr-probe
+id: at-rules-other/spec-layout-page-name-escape-preserved
+area: at-rules-other
+title: Escaped @page type names must be re-escaped on output
+mode: minify
+targets: none
+expect: idempotent, output-not-contains:"@page 1a", output-not-contains:"@page a:b"
+known: open-bug
+ref: https://drafts.csswg.org/css-page-3/#typedef-page-selector https://drafts.csswg.org/cssom-1/#serialize-an-identifier
+note: MASTER FAILS (no issue filed yet). PageSelector::to_css writes the name with write_str (src/rules/page.rs:289-291), so `\31 a` becomes the dimension `1a` (rule invalid, LightningCSS errors on re-parse) and `a\:b` becomes page `a` + unknown pseudo `:b`
+*/
+@page \31 a { margin: 1cm; }
+@page a\:b { margin: 2cm; }
+.t { page: \31 a; }

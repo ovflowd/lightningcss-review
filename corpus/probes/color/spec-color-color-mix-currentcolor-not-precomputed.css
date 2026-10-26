@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: color/spec-color-color-mix-currentcolor-not-precomputed
+area: color
+title: color-mix() with currentcolor computes to itself and resolves per element
+mode: minify
+targets: none
+expect: equivalent
+known: none
+ref: https://drafts.csswg.org/css-color-5/#resolving-mix
+dom: <div class="t" contenteditable>a<span style="color: lime">b</span></div>
+note: guard: caret-color is inherited; the span must mix lime, not red
+*/
+.t { color: red; caret-color: color-mix(in srgb, currentcolor 50%, blue); }

@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: gradient-image/sie-conic-unitless-zero-stop
+area: gradient-image
+title: Unitless 0 angular stop positions in conic gradients are valid and must round-trip
+mode: minify
+targets: none
+expect: equivalent, idempotent
+known: none
+ref: https://drafts.csswg.org/css-images-4/#typedef-color-stop-angle https://drafts.csswg.org/css-images-4/#changes-20230217
+note: guard. css-images-4 (post-2023) allows <zero> in <color-stop-angle> and <angular-color-hint>; master keeps this declaration as unparsed tokens (AnglePercentage rejects bare 0), so a future typed parser must accept it and must not print 0% or drop the second stop
+*/
+.t { width: 100px; height: 100px; background: conic-gradient(red 0 25%, blue 0 50%, red 0); }

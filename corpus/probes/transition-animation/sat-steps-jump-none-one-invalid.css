@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: transition-animation/sat-steps-jump-none-one-invalid
+area: transition-animation
+title: steps(1, jump-none) is invalid (jump-none needs at least 2 steps)
+mode: minify
+targets: none
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/css-easing-2/#funcdef-steps https://github.com/web-platform-tests/wpt/blob/master/css/css-easing/timing-functions-syntax-invalid.html
+note: MASTER FAILS (no issue filed). master keeps only steps(1,jump-none); engines compute ease instead of the linear fallback
+*/
+.t { animation-timing-function: linear; animation-timing-function: steps(1, jump-none); }

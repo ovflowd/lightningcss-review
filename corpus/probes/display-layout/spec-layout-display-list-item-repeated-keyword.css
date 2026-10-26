@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: display-layout/spec-layout-display-list-item-repeated-keyword
+area: display-layout
+title: A display value repeating `list-item` is invalid and must not replace an earlier valid display
+mode: minify
+targets: none
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/css-display-3/#typedef-display-listitem https://github.com/web-platform-tests/wpt/blob/master/css/css-display/parsing/display-invalid.html
+note: MASTER FAILS (no issue filed yet). DisplayPair::parse sets list_item on every `list-item` keyword without a repeat check (src/properties/display.rs:135-138), so `list-item list-item` prints as `list-item`; 7 WPT invalid cases are flagged invalid-became-valid by the PR 1328 browser oracle
+*/
+.t { display: grid; display: list-item list-item; }
+.u { display: flow-root; display: list-item block list-item; }

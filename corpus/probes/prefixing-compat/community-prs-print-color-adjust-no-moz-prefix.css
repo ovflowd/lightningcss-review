@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: prefixing-compat/community-prs-print-color-adjust-no-moz-prefix
+area: prefixing-compat
+title: Firefox 48-96 support `color-adjust`, not `-moz-print-color-adjust`; the prefixer must not invent the latter
+mode: lower-minify
+targets: firefox 90
+expect: output-not-contains:"-moz-print-color-adjust"
+known: open-bug
+ref: https://drafts.csswg.org/css-color-adjust-1/#propdef-print-color-adjust https://github.com/mdn/browser-compat-data/blob/main/css/properties/print-color-adjust.json https://github.com/postcss/autoprefixer/blob/main/lib/hacks/print-color-adjust.js https://github.com/parcel-bundler/lightningcss/pull/1102
+note: MASTER FAILS (no issue filed). Since #1102 (v1.31.0) the generic define_prefixes path emits -moz-print-color-adjust from autoprefixer data without autoprefixer's hack that renames the Moz prefix to color-adjust
+*/
+.t { print-color-adjust: exact; }

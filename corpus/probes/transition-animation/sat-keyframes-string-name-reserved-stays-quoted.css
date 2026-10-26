@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: transition-animation/sat-keyframes-string-name-reserved-stays-quoted
+area: transition-animation
+title: @keyframes "none" and animation-name "none" must stay strings
+mode: minify
+targets: none
+expect: equivalent
+known: none
+ref: https://drafts.csswg.org/css-animations-1/#typedef-keyframes-name
+note: guard. Names serialize as idents unless they are a disallowed keyword (none, CSS-wide keywords, default), which stay strings; unquoting yields an invalid @keyframes and animation-name:none (verified in all three engines). Master keeps the quotes (src/rules/keyframes.rs:104-113, src/properties/animation.rs:73-82)
+*/
+@keyframes "none" { from, to { color: rgb(0, 128, 0); } }
+.t { animation-name: "none"; animation-duration: 10s; animation-play-state: paused; }

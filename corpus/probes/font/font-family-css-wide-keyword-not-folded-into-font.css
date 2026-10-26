@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: font/font-family-css-wide-keyword-not-folded-into-font
+area: font
+title: font-family:inherit after a font shorthand must not produce `font:12px inherit`
+mode: minify
+targets: none
+expect: equivalent, output-not-contains:"font:12px inherit"
+known: open-bug
+ref: https://drafts.csswg.org/css-fonts-4/#font-family-prop https://drafts.csswg.org/css-values-4/#common-keywords https://github.com/oven-sh/bun/pull/42022
+note: same class as #1214 (CSS-wide keyword parsed as an identifier, then merged); no dedicated upstream issue found (UNVERIFIED). Chrome 156: font-size 12px -> 16px
+*/
+.t { font: 12px serif; font-family: inherit; }

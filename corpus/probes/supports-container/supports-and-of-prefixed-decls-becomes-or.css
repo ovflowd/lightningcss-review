@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: supports-container/supports-and-of-prefixed-decls-becomes-or
+area: supports-container
+title: `@supports (-ms-transform: none) and (transform: none)` must stay a conjunction
+mode: print
+targets: none
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/css-conditional-3/#typedef-supports-condition https://drafts.csswg.org/css-conditional-3/#at-supports
+dom: <p class="t">x</p>
+note: master fails (no issue filed); SupportsCondition::parse merges same-value declarations across vendor prefixes for and as well as or (src/rules/supports.rs:237-252) and prints them as an or-list; no engine supports -ms-transform, so the input is false and the output true
+*/
+@supports (-ms-transform: none) and (transform: none) { .t { color: rgb(255, 0, 0); } }

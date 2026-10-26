@@ -1,0 +1,14 @@
+/*! lcr-probe
+id: font/sft-line-height-percentage-not-number
+area: font
+title: line-height 100% must not be rewritten as the number 1
+mode: minify
+targets: none
+expect: equivalent, output-contains:"100%"
+known: none
+ref: https://drafts.csswg.org/css-inline-3/#line-height-property
+dom: <div class="p">x<div class="c">y</div></div>
+note: a percentage computes to an absolute length that children inherit, a number is inherited as a factor; the child gets 10px vs 20px
+*/
+.p { font: 10px/100% serif; }
+.c { font-size: 20px; }

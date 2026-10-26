@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: transition-animation/pr1306-timeline-not-folded
+area: transition-animation
+title: animation-timeline must stay a longhand for targets with reset-only shorthand support
+mode: lower-minify
+targets: chrome 120
+expect: equivalent, output-contains:"animation-timeline:"
+known: open-issue#1283
+ref: https://github.com/parcel-bundler/lightningcss/issues/1283 https://github.com/parcel-bundler/lightningcss/pull/1306 https://drafts.csswg.org/css-animations-2/#animation-shorthand
+note: MDN marks animation-timeline_included as partial (reset-only) for Chrome 115+; 1.33.0 folds view() into the shorthand and every engine drops the declaration
+*/
+.t { animation: k 1s linear both; animation-timeline: view(); }
+@keyframes k { from { opacity: 0; } to { opacity: 1; } }

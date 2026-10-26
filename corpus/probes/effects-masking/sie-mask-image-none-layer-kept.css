@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: effects-masking/sie-mask-image-none-layer-kept
+area: effects-masking
+title: `none` entries in mask-image are real (transparent black) layers and must be kept
+mode: minify
+targets: none
+expect: equivalent
+known: none
+ref: https://drafts.csswg.org/css-masking-1/#the-mask-image https://drafts.csswg.org/css-masking-1/#layering
+note: guard. With intersect the `none` layer makes the whole mask transparent; dropping it (or the matching mask-composite entry) would show the element. Lists match up by index, so also mask-composite must keep its length
+*/
+.t { width: 50px; height: 50px; background: red; mask-image: linear-gradient(#000, #000), none; mask-composite: intersect, add; }

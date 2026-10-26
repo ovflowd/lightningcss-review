@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: media-queries/min-prefix-in-boolean-context-is-invalid
+area: media-queries
+title: `(min-width)` without a value is a syntax error (not all), not `(width)`
+mode: minify
+targets: none
+expect: equivalent
+known: open-issue#1366
+ref: https://drafts.csswg.org/mediaqueries-4/#mq-min-max https://drafts.csswg.org/mediaqueries-4/#error-handling https://github.com/parcel-bundler/lightningcss/issues/1366
+dom: <p class="t">x</p>
+note: master fails (tracked issue); parse_name_first returns QueryFeature::Boolean and discards the legacy min-/max- operator (src/media_query.rs:1044-1047)
+*/
+@media (min-width) { .t { color: rgb(255, 0, 0); } }

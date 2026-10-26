@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: effects-masking/sie-clip-path-border-box-not-inset
+area: effects-masking
+title: clip-path `border-box` follows border-radius; it is not equivalent to inset(0)
+mode: minify
+targets: none
+expect: equivalent
+known: none
+ref: https://drafts.csswg.org/css-masking-1/#the-clip-path https://drafts.csswg.org/css-shapes-1/#shapes-from-box-values
+note: guard. A <geometry-box> alone uses the box edges including corner shaping, while inset(0) has square corners unless `round` is given; likewise inset(0) is not none (it clips ink overflow)
+*/
+.t { width: 50px; height: 50px; background: red; border-radius: 25px; box-shadow: 0 0 0 10px blue; clip-path: border-box; }

@@ -1,0 +1,14 @@
+/*! lcr-probe
+id: transition-animation/issues-b3-transition-property-inherit-not-folded
+area: transition-animation
+title: A CSS-wide keyword longhand must not be folded into the transition shorthand
+mode: minify
+targets: none
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/css-values-4/#common-keywords https://drafts.csswg.org/css-transitions-1/#transition-shorthand-property
+dom: <div class="p"><div class="t"></div></div>
+note: MASTER FAILS (no issue filed; found via oven-sh/bun#42022). transition-property parses `inherit` as a <custom-ident> and master prints `transition:inherit 1s`, which browsers reject
+*/
+.p { transition-property: color; }
+.t { transition: opacity 1s; transition-property: inherit; }

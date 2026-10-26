@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: transform/issues-important-individual-transform-preserved
+area: transform
+title: Individual transform properties must not be merged into transform
+mode: minify
+targets: none
+expect: equivalent
+known: fixed-by#1340
+ref: https://github.com/parcel-bundler/lightningcss/issues/426 https://github.com/parcel-bundler/lightningcss/issues/1099 https://drafts.csswg.org/css-transforms-2/#individual-transforms https://github.com/parcel-bundler/lightningcss/pull/1340
+note: 1.14..1.33.0 folded scale/translate into transform (wrong order and breaks later `scale:` overrides); master keeps them
+*/
+.m { transform: translateX(-50%); scale: .8; }
+.bar { transform: skew(10deg); scale: 1.5; translate: 1em; }

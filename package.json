@@ -1,0 +1,14 @@
+{
+  "name": "lightningcss-review-dev",
+  "private": true,
+  "description": "Dev dependencies for running the oracle unit tests outside Docker. The Docker images pin the same versions (config/engines.json).",
+  "license": "MPL-2.0",
+  "scripts": {
+    "test": "node --test oracle/test/oracle.test.mjs"
+  },
+  "devDependencies": {
+    "colorjs.io": "0.7.1",
+    "css-tree": "3.2.1",
+    "pngjs": "7.0.0"
+  }
+}

@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: css-modules/view-transition-name-match-element-not-scoped
+area: css-modules
+title: CSS modules must not hash the `match-element` keyword of view-transition-name
+mode: minify
+targets: none
+flags: css-modules
+expect: output-contains:"view-transition-name:match-element"
+known: fixed-by#1274
+ref: https://drafts.csswg.org/css-view-transitions-2/#view-transition-name-prop https://github.com/parcel-bundler/lightningcss/issues/1256 https://github.com/parcel-bundler/lightningcss/pull/1274 https://drafts.csswg.org/css-view-transitions-2/#propdef-view-transition-name
+note: v1.33.0 still prints `<hash>_match-element`; fixed on master by 2b7f9e9 (unreleased as of 2026-10-25)
+*/
+.t { view-transition-name: match-element; }

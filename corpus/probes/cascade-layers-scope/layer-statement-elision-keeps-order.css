@@ -1,0 +1,14 @@
+/*! lcr-probe
+id: cascade-layers-scope/layer-statement-elision-keeps-order
+area: cascade-layers-scope
+title: Dropping an @layer statement must keep the declared layer order
+mode: minify
+targets: none
+expect: equivalent
+known: none
+ref: https://drafts.csswg.org/css-cascade-5/#layer-ordering https://github.com/parcel-bundler/lightningcss/issues/1222
+note: guards the by-design optimization from #1222: blocks are merged into placeholders created at the statement, so b still beats a
+*/
+@layer a, b;
+@layer b { .t { color: green; } }
+@layer a { .t { color: red; } }

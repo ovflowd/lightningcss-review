@@ -1,0 +1,15 @@
+/*! lcr-probe
+id: rule-merging/no-media-merge-across-intervening-rule
+area: rule-merging
+title: Identical @media blocks separated by a conflicting rule must not be merged
+mode: minify
+targets: none
+expect: equivalent
+known: none
+ref: https://drafts.csswg.org/css-cascade-5/#cascade-sort https://drafts.csswg.org/css-conditional-3/#processing
+dom: <p class="t">x</p>
+note: guard, master passes; merging the second block into the first moves the green rule before the magenta one
+*/
+@media (min-width: 1px) { .t { color: rgb(255, 0, 0); } }
+.t { color: rgb(255, 0, 255); }
+@media (min-width: 1px) { .t { color: rgb(0, 128, 0); } }

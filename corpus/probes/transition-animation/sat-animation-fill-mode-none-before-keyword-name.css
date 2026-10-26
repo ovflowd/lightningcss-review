@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: transition-animation/sat-animation-fill-mode-none-before-keyword-name
+area: transition-animation
+title: animation:3s none backwards (fill-mode none, name backwards) must keep the none
+mode: minify
+targets: none
+expect: equivalent, output-contains:"none backwards"
+known: none
+ref: https://drafts.csswg.org/css-animations-1/#animation
+note: guard. This is the spec's own serialization example; dropping the default fill-mode makes backwards the fill-mode and the name none
+*/
+.t { animation: 3s none backwards; }

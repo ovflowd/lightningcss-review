@@ -1,0 +1,15 @@
+/*! lcr-probe
+id: flex-grid-align/spec-layout-grid-excluded-idents-override-valid
+area: flex-grid-align
+title: `span` and `auto` are not valid grid line names and must not replace earlier valid values
+mode: minify
+targets: none
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/css-grid-2/#typedef-grid-row-start-grid-line https://drafts.csswg.org/css-grid-2/#named-lines https://github.com/web-platform-tests/wpt/blob/master/css/css-grid/parsing/grid-area-invalid.html
+note: MASTER FAILS (no issue filed yet). GridLine::parse and parse_line_names use CustomIdent::parse (src/values/ident.rs:30-45), which only excludes CSS-wide keywords and `default`; `span 1 auto` is even reprinted as `span auto`
+*/
+.t { grid-template-columns: [a] 50px; grid-template-columns: [auto] 50px; }
+.u { grid-row-start: 2; grid-row-start: span auto; }
+.v { grid-row: 1 / 3; grid-row: span 1 auto; }
+.w { grid-column-start: 1; grid-column-start: 2 span; }

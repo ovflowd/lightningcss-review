@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: flex-grid-align/arch-props-values-grid-gap-alias-reordered-before-gap
+area: flex-grid-align
+title: Legacy alias `grid-gap` after `gap` must keep winning
+mode: minify
+targets: none
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/css-align-3/#gap-legacy
+note: grid-gap is an unknown property (passthrough) while gap is deferred by AlignHandler; 1.33.0 emits grid-gap:20px;gap:10px
+*/
+.t { display: grid; gap: 10px; grid-gap: 20px; }

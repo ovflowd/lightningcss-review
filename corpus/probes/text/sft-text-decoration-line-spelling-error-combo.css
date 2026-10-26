@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: text/sft-text-decoration-line-spelling-error-combo
+area: text
+title: spelling-error combined with another line keyword is invalid and must not become spelling-error
+mode: minify
+targets: none
+expect: equivalent, output-contains:"overline"
+known: open-bug
+ref: https://drafts.csswg.org/css-text-decor-4/#text-decoration-line-property https://github.com/web-platform-tests/wpt/blob/b89af32bc8f42d678f444eb0703bca015ddcf240/css/css-text-decor/parsing/text-decoration-line-invalid.html
+note: spelling-error and grammar-error must be alone; master ORs in the trailing keyword and prints only spelling-error (text.rs:510 and ToCss :537), an invalid-to-valid change
+*/
+.t { text-decoration-line: overline; text-decoration-line: spelling-error underline; }

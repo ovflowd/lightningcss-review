@@ -1,0 +1,14 @@
+/*! lcr-probe
+id: supports-container/issues-b0-style-query-boolean-custom-property
+area: supports-container
+title: A style() container query with a bare custom property name must parse and round-trip
+mode: minify
+targets: none
+expect: equivalent, idempotent
+known: fixed-by#22846530a
+ref: https://drafts.csswg.org/css-conditional-5/#style-container https://github.com/parcel-bundler/lightningcss/issues/915
+dom: <div class="p"><div class="foo">x</div></div>
+note: <=1.29.1 errored ("Unexpected end of input") or dropped the rule with errorRecovery; fixed by commit 2284653 (1.29.2)
+*/
+.p { --variable: 1; }
+.foo { @container style(--variable) { color: rgb(255, 0, 0); } }

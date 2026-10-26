@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: calc-math/ssv-min-percentages-negative-basis
+area: calc-math
+title: min() of percentages cannot be resolved when the basis may be negative
+mode: minify
+targets: none
+expect: equivalent, output-contains:"min("
+known: open-bug
+ref: https://drafts.csswg.org/css-values-4/#calc-simplification https://drafts.csswg.org/css-values-5/#position
+note: UNFILED master failure; image 300px in a 100px box gives basis -200px, so min(10%,20%) is 20% (-40px); master folds it to 10% (reduce_args, calc.rs:658)
+*/
+.t { width: 100px; height: 100px; background-image: linear-gradient(red, blue); background-size: 300px 300px; background-repeat: no-repeat; background-position: min(10%, 20%) 0; }

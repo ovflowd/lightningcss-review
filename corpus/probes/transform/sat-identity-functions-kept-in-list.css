@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: transform/sat-identity-functions-kept-in-list
+area: transform
+title: Identity transform functions inside a list must be kept (they align function lists for interpolation)
+mode: minify
+targets: none
+expect: equivalent, output-contains:"rotate(360deg)"
+known: none
+ref: https://drafts.csswg.org/css-transforms-1/#interpolation-of-transforms https://drafts.csswg.org/css-transforms-1/#identity-transform-function
+note: guard. Dropping translateX(0) misaligns the lists and forces matrix interpolation: matrix(1, 0, 0, 1, 25, 0) instead of matrix(0, 1, -1, 0, 25, 0) at 25% in all three engines
+*/
+@keyframes sat-id { from { transform: translateX(0) rotate(0deg); } to { transform: translateX(100px) rotate(360deg); } }
+.t { animation: sat-id 1s linear -0.25s paused; }

@@ -1,0 +1,28 @@
+name: Wrong verdict or finding
+description: The report flagged something that is fine, or missed something that is broken.
+labels: [oracle]
+body:
+  - type: input
+    id: pr
+    attributes:
+      label: Lightning CSS PR or range
+      placeholder: parcel-bundler/lightningcss#1385
+    validations:
+      required: true
+  - type: input
+    id: check
+    attributes:
+      label: Check or case id
+      description: e.g. O1, S1, or a case id like m-t-23970d40ef50704f-important
+  - type: textarea
+    id: what
+    attributes:
+      label: What the report says and what is actually true
+      description: Include the spec anchor, browser behavior, or maintainer comment that shows it.
+    validations:
+      required: true
+  - type: textarea
+    id: show
+    attributes:
+      label: Output of `lcr show <run> <case>`
+      render: text

@@ -1,0 +1,15 @@
+/*! lcr-probe
+id: cascade-layers-scope/import-valid-after-invalid-style-rule
+area: cascade-layers-scope
+title: An @import after a dropped (invalid) style rule is still valid and must be kept
+mode: minify
+targets: none
+flags: error-recovery
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/css-cascade-5/#at-import https://drafts.csswg.org/css-syntax-3/#consume-qualified-rule
+dom: <p class="t">x</p>
+note: master fails (no issue filed); QualifiedRuleParser::parse_prelude sets State::Body before the selector is validated (src/parser.rs:447), so the @import is reported as misplaced and dropped; WPT css/CSS2/cascade/at-import-010.xht; needs data: URL @import support in the harness
+*/
+..bad { color: red; }
+@import url("data:text/css,.t%7Bcolor:rgb(0,128,0)%7D");

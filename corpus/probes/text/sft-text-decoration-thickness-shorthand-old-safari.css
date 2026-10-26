@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: text/sft-text-decoration-thickness-shorthand-old-safari
+area: text
+title: text-decoration-thickness must not be folded into the shorthand for Safari before 26.2
+mode: lower-minify
+targets: safari 18
+expect: equivalent, output-not-contains:"underline 3px"
+known: none
+ref: https://drafts.csswg.org/css-text-decor-4/#text-decoration-property https://drafts.csswg.org/css-text-decor-3/#text-decoration-property
+note: the Level 3 shorthand has no thickness; Safari before 26.2 drops text-decoration:underline 3px entirely (BCD); guards TextDecorationThicknessShorthand (98bc465)
+*/
+.t { text-decoration: underline; text-decoration-thickness: 3px; }

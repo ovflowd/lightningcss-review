@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: color/spec-color-rcs-origin-not-gamut-mapped
+area: color
+title: relative color syntax keeps out-of-gamut origin values (no clamping/gamut mapping)
+mode: minify
+targets: none
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/css-color-5/#rcs-intro https://github.com/web-platform-tests/wpt/blob/master/css/css-color/parsing/color-computed-relative-color.html
+note: engines round-trip to color(xyz-d65 0.99 0.88 0.77); master resolves the origin with resolve() which gamut-maps (src/values/color.rs:1011-1013)
+*/
+.t { color: color(from rgb(from color(xyz-d65 0.99 0.88 0.77) r g b) xyz-d65 x y z); }

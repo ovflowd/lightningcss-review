@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: transition-animation/sat-animation-name-auto-keeps-duration
+area: transition-animation
+title: An animation named auto must keep the duration that disambiguates it from animation-duration:auto
+mode: minify
+targets: none
+expect: equivalent, output-not-contains:"animation:auto}"
+known: open-bug
+ref: https://drafts.csswg.org/css-animations-2/#animation-duration https://drafts.csswg.org/css-animations-2/#animation-shorthand https://drafts.csswg.org/css-animations-1/#animation
+note: MASTER FAILS (no issue filed). `0s auto` = duration 0s + name auto; master drops the zero duration and prints `animation:auto`, which Chrome 156/WebKit 27.2 read as animation-duration:auto, animation-name:none (Firefox 157 has no shorthand auto yet). The ToCss conflict list (src/properties/animation.rs:670-705) has no `auto` case
+*/
+.t { animation: 0s auto; }

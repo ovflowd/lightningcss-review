@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: at-rules-other/em-unknown-at-rule-name-escaped
+area: at-rules-other
+title: Unknown at-rule names must be printed as escaped identifiers
+mode: minify
+targets: none
+expect: equivalent, output-not-contains:"@a}z"
+known: open-bug
+ref: https://drafts.csswg.org/css-syntax-3/#consume-at-rule https://drafts.csswg.org/cssom-1/#serialize-an-identifier https://github.com/oven-sh/bun/pull/36165
+note: rules/unknown.rs:40 writes the name raw; master prints `@media screen{@a}z;}.u{...}`: the `}` closes @media and the next prelude becomes `z;}.u` (rule dropped)
+*/
+@media screen { @a\7dz; }
+.u { color: rgb(0, 128, 0); }

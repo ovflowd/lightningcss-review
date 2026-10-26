@@ -1,0 +1,14 @@
+/*! lcr-probe
+id: transform/sat-skewx-keyframe-vs-inline-from
+area: transform
+title: A minified skewX() keyframe must still pair with an unminified skewX() underlying value
+mode: minify
+targets: none
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/css-transforms-1/#interpolation-of-transforms https://drafts.csswg.org/css-transforms-1/#transform-primitives
+dom: <div class="t" style="transform: skewX(10deg)"></div>
+note: MASTER FAILS (no issue filed). The implicit from keyframe is the inline skewX(10deg); master rewrites the keyframe to skew(30deg), so the pair becomes skewX->skew and falls back to matrix interpolation (Chrome 156/Firefox 157: c=0.36397 -> 0.376839 at 50%). Same hazard for transitions to JS-set inline transforms
+*/
+@keyframes sat-skew-inline { to { transform: skewX(30deg); } }
+.t { animation: sat-skew-inline 1s linear -0.5s paused; }

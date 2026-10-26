@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: font/sft-font-shorthand-keeps-css3-caps-out
+area: font
+title: Only normal and small-caps may be folded into the font shorthand
+mode: minify
+targets: none
+expect: equivalent, output-contains:"font-variant-caps:all-small-caps"
+known: none
+ref: https://drafts.csswg.org/css-fonts-4/#font-prop https://drafts.csswg.org/css-fonts-4/#font-variant-caps-prop
+note: <font-variant-css2> is normal | small-caps; folding all-small-caps (or petite-caps, unicase, titling-caps) into font makes it invalid
+*/
+.t { font: 12px serif; font-variant-caps: all-small-caps; }

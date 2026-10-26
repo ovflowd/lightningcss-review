@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: at-rules-other/unknown-at-rule-in-nested-group-keeps-parent-selector
+area: at-rules-other
+title: An unknown at-rule inside a nested @media keeps its parent selector when nesting is lowered
+mode: lower-minify
+targets: chrome 95
+expect: output-contains:".foo{@apply --x"
+known: open-bug
+ref: https://drafts.csswg.org/css-nesting-1/#conditionals https://github.com/parcel-bundler/lightningcss/issues/1232 https://github.com/parcel-bundler/lightningcss/pull/1233
+note: #1232 is closed but #1233 only keeps direct children in place; v1.33.0 prints `@media (min-width:1px){@apply --x;}` with no `.foo` (no open issue for this residual as of 2026-10-25)
+*/
+.foo { @media (min-width: 1px) { @apply --x; } }

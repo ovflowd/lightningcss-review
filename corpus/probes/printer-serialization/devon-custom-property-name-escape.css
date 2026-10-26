@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: printer-serialization/devon-custom-property-name-escape
+area: printer-serialization
+title: escaped characters in custom property names must stay escaped when printed
+mode: minify
+targets: none
+expect: equivalent, idempotent
+known: none
+ref: https://drafts.csswg.org/css-variables-1/#defining-variables https://github.com/parcel-bundler/lightningcss/issues/125
+note: guards 3bdefdc; an unescaped `/` splits the name and drops the declaration, so width falls back to auto
+*/
+.x { --theme-sizes-1\/12: 120px; width: var(--theme-sizes-1\/12); }

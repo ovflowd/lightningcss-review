@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: color/spec-color-mix-longer-hue-equal-hues-full-turn
+area: color
+title: longer hue with equal hues adds 360deg (red + white whose hue is carried forward)
+mode: minify
+targets: none
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/css-color-4/#hue-longer https://github.com/web-platform-tests/wpt/blob/master/css/css-color/parsing/color-computed-color-mix-function.html
+note: engines: hue 209.23; master keeps 29.23 because delta==0 is not adjusted (src/values/color.rs:3811 uses < 0 instead of <= 0)
+*/
+.t { color: color-mix(in oklch longer hue, red, white); }

@@ -1,0 +1,17 @@
+/*! lcr-probe
+id: rule-merging/issues-important-stale-dedupe-key-idempotent
+area: rule-merging
+title: Rule dedupe must see a rule that was mutated by an earlier merge (minify must be idempotent)
+mode: minify
+targets: none
+expect: equivalent, idempotent
+known: open-issue#1235
+ref: https://github.com/parcel-bundler/lightningcss/issues/1235 https://github.com/parcel-bundler/lightningcss/pull/1236
+note: StyleRuleKey hash is computed before merge_style_rules mutates the rule; first pass leaves a duplicate .a rule that a second pass removes (ahash seed makes it nondeterministic across processes)
+*/
+.a { border-top-left-radius: 16px; }
+.a { border-top-right-radius: 16px; }
+.a { border-bottom-left-radius: 16px; }
+.a { border-bottom-right-radius: 16px; }
+.x { color: red; }
+.a { border-radius: 16px; }

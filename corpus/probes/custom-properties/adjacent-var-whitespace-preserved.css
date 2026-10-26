@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: custom-properties/adjacent-var-whitespace-preserved
+area: custom-properties
+title: Whitespace between adjacent var() references must survive minification
+mode: minify
+targets: none
+expect: equivalent, output-contains:"var(--x) var(--y)"
+known: none
+ref: https://www.w3.org/TR/css-variables-1/#substitute-a-var https://github.com/parcel-bundler/lightningcss/issues/1201 https://github.com/parcel-bundler/lightningcss/commit/32f1f52f025fc43887b20448cc9646b09ef96329
+note: fixed in v1.31.0 by 32f1f52 (direct commit, no PR); Firefox drops `translate: 12px0`-style substitutions without the space
+*/
+.t { --x: 12px; --y: 0; translate: var(--x) var(--y); }

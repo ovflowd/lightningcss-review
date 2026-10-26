@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: effects-masking/sie-hue-rotate-not-normalized
+area: effects-masking
+title: hue-rotate() angles above 360deg must not be normalized
+mode: minify
+targets: none
+expect: equivalent
+known: none
+ref: https://drafts.csswg.org/filter-effects-1/#funcdef-filter-hue-rotate https://drafts.csswg.org/filter-effects-1/#interpolation-of-filters
+note: guard. "Implementations must not normalize this value in order to allow animations beyond 360deg": at 50% this animation computes to hue-rotate(360deg), but to hue-rotate(0deg) if 720deg were folded to 0
+*/
+.t { width: 50px; height: 50px; background: red; animation: k 1s linear -0.5s paused; }
+@keyframes k { from { filter: hue-rotate(0deg); } to { filter: hue-rotate(720deg); } }

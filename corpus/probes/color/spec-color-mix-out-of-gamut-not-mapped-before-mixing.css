@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: color/spec-color-mix-out-of-gamut-not-mapped-before-mixing
+area: color
+title: colors outside the interpolation space gamut are interpolated as-is, not gamut-mapped first
+mode: minify
+targets: none
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/css-color-4/#interpolation-space https://github.com/web-platform-tests/wpt/blob/master/css/css-color/parsing/color-mix-out-of-gamut.html
+note: engines: color(srgb -0.5118 1.0183 -0.3107); master gamut-maps the p3 operand into sRGB first (src/values/color.rs:3537)
+*/
+.t { color: color-mix(in hsl, color(display-p3 0 1 0) 100%, black 0%); }

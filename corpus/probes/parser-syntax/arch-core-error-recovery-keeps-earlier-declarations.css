@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: parser-syntax/arch-core-error-recovery-keeps-earlier-declarations
+area: parser-syntax
+title: With errorRecovery, a junk item inside a style block must not drop the declarations before it
+mode: minify
+targets: none
+flags: error-recovery
+expect: equivalent
+known: open-issue#1358
+ref: https://drafts.csswg.org/css-syntax-3/#consume-block-contents https://github.com/parcel-bundler/lightningcss/issues/1358
+note: src/parser.rs:496-498 clears the block's whole declaration list on any item error; master prints `.t{background:#00f}` (color lost). Same root cause as #1358, broader trigger
+*/
+.t { color: red; $$$; background: blue; }

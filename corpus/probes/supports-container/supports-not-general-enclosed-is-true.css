@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: supports-container/supports-not-general-enclosed-is-true
+area: supports-container
+title: In @supports, <general-enclosed> is false (not unknown), so `not (foo bar)` is true
+mode: minify
+targets: none
+expect: equivalent
+known: none
+ref: https://drafts.csswg.org/css-conditional-3/#at-supports https://drafts.csswg.org/mediaqueries-4/#evaluating
+dom: <p class="t">x</p>
+note: guard, master passes; media queries use Kleene logic (not unknown = unknown = false) but supports queries do not, so the two must never share a simplifier
+*/
+@supports not (foo bar) { .t { color: rgb(0, 128, 0); } }

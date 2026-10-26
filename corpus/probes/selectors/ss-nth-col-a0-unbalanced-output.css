@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: selectors/ss-nth-col-a0-unbalanced-output
+area: selectors
+title: `:nth-col(1)` must serialize with its argument and closing paren, not swallow the following rules
+mode: minify
+targets: none
+expect: equivalent, output-contains:":nth-col(1)", output-contains:".t{color:green}"
+known: open-bug
+ref: https://drafts.csswg.org/selectors-5/#the-nth-col-pseudo https://drafts.csswg.org/css-syntax-3/#serializing-anb
+note: NthSelectorData::is_function() is false for A=0,B=1 and write_start(false) still returns ":nth-col(" (selectors/parser.rs:1299-1320,2015-2021), so the output is `:nth-col({color:red}.t{...}` and the unclosed function eats every later rule
+*/
+td:nth-col(1) { color: red; }
+.t { color: green; }

@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: background/issues-important-background-position-three-value
+area: background
+title: Three-value background-position keeps its keyword (center bottom 1px)
+mode: minify
+targets: none
+expect: equivalent
+known: fixed-by#1124
+ref: https://github.com/parcel-bundler/lightningcss/issues/771 https://drafts.csswg.org/css-backgrounds-3/#background-position https://github.com/parcel-bundler/lightningcss/pull/1124
+note: <=1.30.2 printed `50% bottom 1px`, which is invalid (offsets require keywords in the 3/4-value forms)
+*/
+.a { background-position: center bottom 1px; }
+.b { background: url(a.png) center bottom 1px no-repeat; }

@@ -1,0 +1,14 @@
+/*! lcr-probe
+id: rule-merging/incompatible-selector-kept-after-merge
+area: rule-merging
+title: Selectors split off for targets must keep their declarations when the compatible part merges
+mode: lower-minify
+targets: chrome 104
+expect: equivalent, output-contains:":has(+.b)"
+known: open-issue#1260
+ref: https://github.com/parcel-bundler/lightningcss/issues/1260 https://github.com/parcel-bundler/lightningcss/pull/1275 https://github.com/parcel-bundler/lightningcss/blob/cbeaf83/src/rules/mod.rs#L1057-L1075 https://github.com/parcel-bundler/lightningcss/issues/1310 https://drafts.csswg.org/selectors-4/#relational
+dom: <div><div class="a">1</div><div class="b">2</div></div>
+note: merge_style_rules drains declarations before the incompatible clones are made (src/rules/mod.rs:796-838); regression since v1.21.0 (5c105fb). Chrome 156: display flex -> block
+*/
+.a:last-child { border-bottom: none; }
+.a:last-child, .a:has(+ .b) { display: flex; }

@@ -1,0 +1,15 @@
+/*! lcr-probe
+id: selectors/ss-custom-ident-pseudo-arguments-keep-case
+area: selectors
+title: Case-sensitive pseudo arguments (`::highlight()`, `:state()`, `::part()`, view-transition names) keep their case
+mode: minify
+targets: none
+expect: output-contains:"::highlight(Foo)", output-contains:":state(Bar)", output-contains:"::part(Baz)", output-contains:"::view-transition-group(Qux)"
+known: none
+ref: https://drafts.csswg.org/css-pseudo-4/#selectordef-highlight-highlight-name-selector https://drafts.csswg.org/selectors-5/#custom-state https://drafts.csswg.org/css-shadow-1/#part https://drafts.csswg.org/css-view-transitions-1/#typedef-pt-name-selector https://drafts.csswg.org/css-values-4/#custom-idents
+note: pseudo-class/element names are ASCII case-insensitive and may be lowercased, but <custom-ident>/<ident> arguments are matched case-sensitively (":state(FOO) will not match"); lowercasing them silently breaks matching
+*/
+::highlight(Foo) { color: red; }
+x-a:state(Bar) { color: green; }
+x-a::part(Baz) { color: blue; }
+::view-transition-group(Qux) { animation-duration: 1s; }

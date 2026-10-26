@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: font/issues-important-font-longhand-after-shorthand
+area: font
+title: A font-variant-* longhand after the font shorthand must stay after it
+mode: minify
+targets: none
+expect: equivalent
+known: open-issue#1207
+ref: https://github.com/parcel-bundler/lightningcss/issues/1207 https://github.com/parcel-bundler/lightningcss/pull/1209 https://drafts.csswg.org/css-fonts-4/#font-prop
+note: output `font-variant-numeric:oldstyle-nums;font:12px serif`; the shorthand resets font-variant-numeric to normal
+*/
+p { font: 12px serif; font-variant-numeric: oldstyle-nums; }

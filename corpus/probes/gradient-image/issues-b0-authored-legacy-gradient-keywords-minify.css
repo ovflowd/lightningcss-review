@@ -1,0 +1,14 @@
+/*! lcr-probe
+id: gradient-image/issues-b0-authored-legacy-gradient-keywords-minify
+area: gradient-image
+title: Minifying authored -webkit-linear-gradient(left|top, ...) must not flip or rotate the gradient
+mode: minify
+targets: none
+expect: equivalent
+known: open-issue#1107
+ref: https://compat.spec.whatwg.org/#css-gradients-webkit-linear-gradient https://www.w3.org/TR/2011/WD-css3-images-20110217/#linear-gradients https://github.com/parcel-bundler/lightningcss/issues/1107
+dom: <div class="l">x</div><div class="u">y</div>
+note: minify prints legacy `left` as `270deg` (legacy 270deg points down) and treats legacy `top` like standard `to top`, reversing the stops; the minifier ignores that prefixed gradients use start-side keywords and math angles
+*/
+.l { background-image: -webkit-linear-gradient(left, red, blue); }
+.u { background-image: -webkit-linear-gradient(top, red, blue); }

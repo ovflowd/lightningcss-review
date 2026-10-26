@@ -1,0 +1,14 @@
+/*! lcr-probe
+id: rule-merging/asr-attr-s-flag-merge
+area: rule-merging
+title: A selector using the `s` attribute flag must not be merged into a supported rule's selector list
+mode: minify
+targets: chrome 120
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/selectors-4/#attribute-case https://github.com/parcel-bundler/lightningcss/blob/cbeaf83/src/selector.rs#L1856-L1857
+dom: <div class="x"></div><div data-q="b"></div>
+note: is_compatible maps both `i` and `s` to Feature::CaseInsensitive; Chrome supports `i` but not `s` (querySelector('[a=b s]') throws in Chrome 156), so `.x,[data-q=b s]{...}` drops .x's style in Chrome (also happens with no targets)
+*/
+.x { color: red }
+[data-q=b s] { color: red }

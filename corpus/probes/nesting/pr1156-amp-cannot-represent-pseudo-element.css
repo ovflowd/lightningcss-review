@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: nesting/pr1156-amp-cannot-represent-pseudo-element
+area: nesting
+title: & cannot represent a pseudo-element, so `.parent &` under ::after matches nothing
+mode: lower-minify
+targets: chrome 100
+expect: equivalent, output-not-contains:".parent .element:after", output-not-contains:".parent .element::after"
+known: none
+ref: https://drafts.csswg.org/css-nesting-1/#nest-selector https://github.com/parcel-bundler/lightningcss/pull/1156 https://github.com/parcel-bundler/lightningcss/issues/352
+dom: <div class="parent"><div class="element"></div></div>
+note: compare getComputedStyle(.element, '::after').color; master emits .parent :is(.element:after) which is inert like native nesting; #1156 would make it match
+*/
+.element::after { content: 'x'; .parent & { color: red; } }

@@ -1,0 +1,15 @@
+/*! lcr-probe
+id: cascade-layers-scope/layer-statement-before-import-keeps-order
+area: cascade-layers-scope
+title: An @layer statement before @import declares its layer first
+mode: minify
+targets: none
+expect: equivalent
+known: none
+ref: https://drafts.csswg.org/css-cascade-5/#layer-empty https://drafts.csswg.org/css-cascade-5/#layer-ordering
+dom: <p class="t">x</p>
+note: guard, master passes; order is b then a, so the imported (layer a) rule wins; dropping or merging away the statement flips it; needs data: URL @import support in the harness
+*/
+@layer b;
+@import url("data:text/css,.t%7Bcolor:rgb(255,0,0)%7D") layer(a);
+@layer b { .t { color: rgb(0, 128, 0); } }

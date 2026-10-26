@@ -1,0 +1,15 @@
+/*! lcr-probe
+id: media-queries/custom-media-negation-with-media-type
+area: media-queries
+title: `not (--x)` where --x has a media type must negate the whole query
+mode: lower-minify
+targets: chrome 120
+flags: custom-media
+expect: output-not-contains:"screen and not"
+known: open-issue#213
+ref: https://drafts.csswg.org/mediaqueries-5/#custom-mq https://drafts.csswg.org/mediaqueries-4/#mq-not https://github.com/parcel-bundler/lightningcss/issues/213
+dom: <p class="t">x</p>
+note: master fails (tracked issue); custom media is evaluated logically, so not(screen and fine) is `not screen and (pointer: fine)`; master emits `screen and not (pointer:fine)`
+*/
+@custom-media --fine-screen screen and (pointer: fine);
+@media not (--fine-screen) { .t { color: rgb(0, 128, 0); } }

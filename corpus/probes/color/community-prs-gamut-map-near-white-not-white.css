@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: color/community-prs-gamut-map-near-white-not-white
+area: color
+title: Gamut mapping must keep a near-white oklch() color off pure white when building the sRGB fallback
+mode: lower-minify
+targets: chrome 100
+expect: output-not-contains:"color:#fff;"
+known: fixed-by#1323
+ref: https://drafts.csswg.org/css-color-4/#pseudo-binsearch https://github.com/parcel-bundler/lightningcss/pull/1323
+note: caught in review of #1323: widening EPSILON for the binary search also widened the L>=100% cutoff and mapped this to #fff; expected #fffcff
+*/
+.t { color: oklch(99.995% .01 0); }

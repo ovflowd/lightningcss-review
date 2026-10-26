@@ -1,0 +1,14 @@
+/*! lcr-probe
+id: flex-grid-align/place-self-justify-auto-not-collapsed
+area: flex-grid-align
+title: align-self:self-start + justify-self:auto must not collapse to place-self:self-start
+mode: minify
+targets: none
+expect: equivalent, output-not-contains:"place-self:self-start}"
+known: open-issue#1182
+ref: https://drafts.csswg.org/css-align-3/#place-self-property https://github.com/parcel-bundler/lightningcss/issues/1182 https://github.com/parcel-bundler/lightningcss/pull/1302
+dom: <div class="g"><div class="t">x</div></div>
+note: PlaceSelf::to_css treats JustifySelf::Auto as equal to any align value (src/properties/align.rs:510); Chrome 156 width 200px -> 8px
+*/
+.g { display: grid; grid-template-columns: 200px; }
+.t { align-self: self-start; justify-self: auto; }

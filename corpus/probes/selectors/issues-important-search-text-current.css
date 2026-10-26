@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: selectors/issues-important-search-text-current
+area: selectors
+title: ::search-text:current and ::search-text:not(:current) must parse
+mode: print
+targets: none
+expect: no-panic, output-contains:"::search-text:current", output-contains:"::search-text:not(:current)"
+known: open-issue#1303
+ref: https://github.com/parcel-bundler/lightningcss/issues/1303 https://drafts.csswg.org/css-pseudo-4/#selectordef-search-text
+note: 1.33.0 (e013c45, #1213) made ::search-text a known pseudo-element, so the 'only user-action pseudo-classes after pseudo-elements' rule now rejects :current; 1.21-1.32 accepted it with a warning
+*/
+::search-text:current { color: red; }
+::search-text:not(:current) { color: blue; }

@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: supports-container/issues-b0-scroll-state-container-query
+area: supports-container
+title: scroll-state() container queries must parse and be preserved
+mode: minify
+targets: none
+expect: idempotent, output-contains:"scroll-state("
+known: fixed-by#220b390
+ref: https://drafts.csswg.org/css-conditional-5/#container-scroll-state-query https://github.com/parcel-bundler/lightningcss/issues/887
+note: <=1.30.2 failed with `Unexpected token Function("scroll-state")` (errorRecovery dropped the whole @container); 220b390 (1.31.0) parses it and adds an Unknown query variant kept under errorRecovery
+*/
+.c { container-type: scroll-state; }
+@container scroll-state(stuck: top) { .x { color: red; } }

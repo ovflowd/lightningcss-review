@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: font/em-font-family-revert-rule-stays-quoted
+area: font
+title: A quoted family name "revert-rule" must stay quoted (revert-rule is a CSS-wide keyword)
+mode: minify
+targets: none
+expect: equivalent, output-not-contains:"family:revert-rule"
+known: open-bug
+ref: https://drafts.csswg.org/css-cascade-5/#revert-rule-keyword https://drafts.csswg.org/css-fonts-4/#font-family-name-syntax https://github.com/evanw/esbuild/pull/2135
+note: values/ident.rs:35 excludes initial/inherit/unset/default/revert/revert-layer but not revert-rule; master prints `font-family:revert-rule,monospace`, which is invalid (Chrome 156: Times New Roman instead of monospace). cssnano 9.2.1 fixed the same bug
+*/
+.t { font-family: "revert-rule", monospace; }

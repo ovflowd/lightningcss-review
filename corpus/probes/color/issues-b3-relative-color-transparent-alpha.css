@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: color/issues-b3-relative-color-transparent-alpha
+area: color
+title: Relative color syntax with omitted alpha must keep the origin color's alpha
+mode: minify
+targets: none
+expect: output-not-contains:"color:#000}", output-not-contains:"color:red"
+known: fixed-by#1343
+ref: https://github.com/parcel-bundler/lightningcss/issues/1172 https://drafts.csswg.org/css-color-5/#relative-colors https://github.com/parcel-bundler/lightningcss/pull/1343
+note: 1.33.0 prints #000 and red (alpha lost); fixed on master by a862e39 (#1343, unreleased) while #1172 is still open. Output-based because Chrome serializes the input as color(srgb 0 0 0 / 0) and the output as rgba(0, 0, 0, 0): same color, different computed string
+*/
+.t { color: rgb(from transparent r g b); }
+.u { color: rgb(from rgb(255 0 0 / .5) r g b); }

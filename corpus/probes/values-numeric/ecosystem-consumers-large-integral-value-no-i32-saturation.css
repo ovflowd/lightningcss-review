@@ -1,0 +1,14 @@
+/*! lcr-probe
+id: values-numeric/ecosystem-consumers-large-integral-value-no-i32-saturation
+area: values-numeric
+title: Integral lengths and angles beyond the i32 range must not print as 2147483647 / -2147483648
+mode: minify
+targets: none
+expect: equivalent, output-not-contains:"2147483647", output-not-contains:"2147483648"
+known: open-bug
+ref: https://drafts.csswg.org/css-values-4/#angles https://github.com/parcel-bundler/lightningcss/pull/1200 https://github.com/parcel-bundler/lightningcss/issues/170 https://github.com/tailwindlabs/tailwindcss/pull/20381
+note: regression in v1.33.0 (cssparser 0.37 prints int_value; length.rs serialize_dimension passes Some(value as i32), which saturates); rotate(3000000000deg) is 120deg but 2147483647deg is 127deg; v1.32.0 printed both values unchanged
+*/
+.t { width: 10px; height: 10px; transform: rotate(3000000000deg); }
+.u { width: 10px; height: 10px; rotate: 3000000000deg; }
+.v { text-indent: -9999999999px; }

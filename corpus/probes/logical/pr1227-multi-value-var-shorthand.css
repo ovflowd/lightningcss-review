@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: logical/pr1227-multi-value-var-shorthand
+area: logical
+title: Multi-value unparsed logical shorthands must not be copied into every physical longhand
+mode: lower
+targets: chrome 80
+expect: equivalent
+known: none
+ref: https://drafts.csswg.org/css-logical-1/#propdef-inset https://drafts.csswg.org/css-logical-1/#propdef-margin-block https://github.com/parcel-bundler/lightningcss/pull/1227 https://github.com/parcel-bundler/lightningcss/issues/927
+note: master keeps both shorthands; #1227 treats any token list except a bare var() as one value and would emit top: 0 var(--x) etc. (invalid at computed time; reasoned from the diff)
+*/
+.t { --x: 5px; position: absolute; inset: 0 var(--x); margin-block: 1px var(--x); }

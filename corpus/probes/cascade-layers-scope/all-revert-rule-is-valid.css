@@ -1,0 +1,14 @@
+/*! lcr-probe
+id: cascade-layers-scope/all-revert-rule-is-valid
+area: cascade-layers-scope
+title: `all: revert-rule` is a valid CSS-wide keyword and must not be a parse error
+mode: print
+targets: none
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/css-cascade-5/#propdef-all https://drafts.csswg.org/css-cascade-5/#revert-rule-keyword
+dom: <div style="color: rgb(0, 0, 255)"><p class="t">x</p></div>
+note: master fails (no issue filed); Property::All only accepts CSSWideKeyword::parse (src/properties/mod.rs:714), so the whole stylesheet fails to parse without error recovery
+*/
+.t { color: rgb(0, 128, 0); }
+.t { all: revert-rule; }

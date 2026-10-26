@@ -1,0 +1,14 @@
+/*! lcr-probe
+id: supports-container/container-condition-list
+area: supports-container
+title: @container accepts a comma-separated list of container conditions
+mode: minify
+targets: none
+expect: equivalent
+known: open-issue#1210
+ref: https://drafts.csswg.org/css-conditional-5/#container-rule https://github.com/parcel-bundler/lightningcss/issues/1210
+dom: <div class="c"><div class="t">x</div></div>
+note: v1.33.0 errors "Unexpected token Comma" (hard error; with errorRecovery the rule is dropped); Chrome 156 accepts the list
+*/
+.c { container: card / inline-size; width: 500px; }
+@container card (width > 400px), sidebar (width > 300px) { .t { color: red; } }

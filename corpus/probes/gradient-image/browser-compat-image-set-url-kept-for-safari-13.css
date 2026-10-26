@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: gradient-image/browser-compat-image-set-url-kept-for-safari-13
+area: gradient-image
+title: image-set() images must stay url() for Safari 13.1, whose image-set() rejects bare strings
+mode: lower-minify
+targets: safari 13.1
+expect: equivalent, output-contains:"url("
+known: open-bug
+ref: https://drafts.csswg.org/css-images-4/#image-set-notation https://github.com/WebKit/WebKit/blob/safari-609-branch/Source/WebCore/css/parser/CSSPropertyParserHelpers.cpp
+note: UNFILED master failure; ImageSetOption::to_css (src/values/image.rs:448-468) prints unprefixed options as strings, but Safari 10.1-13.1 parse image-set() items with consumeUrlAsStringView (url() only; strings arrived in Safari 14), so 1.33.0 turns a working declaration into image-set("a.png" 1x,"b.png" 2x), which those versions drop
+*/
+.t { width: 20px; height: 20px; background-image: image-set(url(a.png) 1x, url(b.png) 2x); }

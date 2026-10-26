@@ -1,0 +1,14 @@
+/*! lcr-probe
+id: cascade-layers-scope/scope-ampersand-zero-specificity
+area: cascade-layers-scope
+title: `&` directly inside @scope must keep zero specificity when nesting is lowered
+mode: lower-minify
+targets: chrome 118
+expect: equivalent, output-not-contains:"{:scope{"
+known: open-issue#1189
+ref: https://drafts.csswg.org/css-cascade-6/#scope-effects https://github.com/parcel-bundler/lightningcss/issues/1189
+dom: <div class="s">x</div>
+note: serialize_nesting writes `:scope` (0,1,0) when no parent context (src/selector.rs:1767); spec says & behaves as :where(:scope). Chrome 156: green -> red
+*/
+@scope (.s) { & { color: red; } }
+div { color: green; }

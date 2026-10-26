@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: selectors/ss-is-not-unwrapped-s-flag-chrome
+area: selectors
+title: `:is([a="b" s])` must not be unwrapped for Chrome targets, which reject the `s` flag
+mode: lower-minify
+targets: chrome 120
+expect: equivalent
+known: open-issue#345
+dom: <div class="t"></div>
+ref: https://drafts.csswg.org/selectors-4/#attribute-case https://drafts.csswg.org/selectors-4/#forgiving-selector https://github.com/parcel-bundler/lightningcss/issues/345
+note: BCD attribute.case_sensitive_modifier: Chrome false. is_compatible maps `s` to Feature::CaseInsensitive (src/selector.rs:1856) and should_unwrap_is ignores validity, so `.t,[data-x=b s]` is printed and Chrome drops `.t`
+*/
+.t, :is([data-x="b" s]) { color: red; }

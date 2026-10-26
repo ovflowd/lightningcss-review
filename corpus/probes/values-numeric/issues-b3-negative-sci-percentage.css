@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: values-numeric/issues-b3-negative-sci-percentage
+area: values-numeric
+title: Negative percentages in scientific notation must not gain a second minus sign
+mode: minify
+targets: none
+expect: equivalent, output-not-contains:"--"
+known: open-issue#1219
+ref: https://github.com/parcel-bundler/lightningcss/issues/1219 https://github.com/parcel-bundler/lightningcss/issues/1097 https://drafts.csswg.org/css-syntax-3/#consume-number
+note: master prints background-position-x:--10e-8% (invalid). Percentage::to_css (src/values/percentage.rs:66-70) still uses trim_start_matches("-0") then writes '-'; #1192 only fixed lengths/angles
+*/
+.t { background-position-x: -1e-7%; }

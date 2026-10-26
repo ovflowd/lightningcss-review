@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: transform/sat-individual-identity-not-none
+area: transform
+title: translate: 0 and scale: 1 are not none (they create a stacking context and containing block)
+mode: minify
+targets: none
+expect: equivalent, output-not-contains:"none"
+known: none
+ref: https://drafts.csswg.org/css-transforms-2/#valdef-translate-none https://drafts.csswg.org/css-transforms-2/#individual-transform-serialization https://github.com/parcel-bundler/lightningcss/pull/703
+note: guard (rotate is covered by issues-b3-rotate-zero-not-none). With `translate: none` a position:fixed child is laid out against the viewport instead of the element (verified: left 7px vs 15px)
+*/
+.t { translate: 0; }
+.u { scale: 1; }

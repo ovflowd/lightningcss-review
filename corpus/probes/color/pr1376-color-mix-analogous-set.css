@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: color/pr1376-color-mix-analogous-set
+area: color
+title: color-mix carries forward an all-missing analogous set (oklab a/b none -> oklch c/h missing)
+mode: minify
+targets: none
+expect: equivalent, output-not-contains:"oklch(20% .1 90)"
+known: open-issue#1368
+ref: https://drafts.csswg.org/css-color-4/#interpolation-missing https://github.com/web-platform-tests/wpt/blob/master/css/css-color/parsing/color-computed-color-mix-function.html https://github.com/parcel-bundler/lightningcss/pull/1376 https://github.com/parcel-bundler/lightningcss/issues/1368
+note: WPT expects oklch(0.2 0.2 90); 1.33.0 emits oklch(20% .1 90); engine support of the analogous-set rule is UNVERIFIED so trust WPT over a lagging engine
+*/
+.t { color: color-mix(in oklch, oklab(0.1 none none), oklch(0.3 0.2 90deg)); }

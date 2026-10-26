@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: selectors/ss-is-not-unwrapped-inside-has
+area: selectors
+title: `:has(:is(:has(.v)))` must not be unwrapped to the invalid nested `:has(:has(.v))`
+mode: minify
+targets: none
+expect: equivalent
+known: open-issue#345
+dom: <div class="t"></div>
+ref: https://drafts.csswg.org/selectors-4/#relational https://drafts.csswg.org/selectors-4/#matches https://github.com/parcel-bundler/lightningcss/issues/345
+note: :has() is not valid inside :has(); the forgiving :is() makes the input valid (Chrome serializes :has(:is())), the unwrapped output is invalid and takes `.t` down with it
+*/
+.t, .u:has(:is(:has(.v))) { color: red; }

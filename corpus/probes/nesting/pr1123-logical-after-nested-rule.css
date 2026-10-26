@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: nesting/pr1123-logical-after-nested-rule
+area: nesting
+title: A logical declaration after a nested rule must survive nesting + logical lowering
+mode: lower-minify
+targets: safari 12
+expect: equivalent
+known: open-issue#1049
+ref: https://drafts.csswg.org/css-nesting-1/#nested-declarations-rule https://github.com/parcel-bundler/lightningcss/issues/1049 https://github.com/parcel-bundler/lightningcss/pull/1123 https://github.com/parcel-bundler/lightningcss/pull/1386
+dom: <div class="foo"></div>
+note: 1.33.0 emits only :where(.foo){width:unset} and drops the radius
+*/
+.foo { :where(&) { width: unset; } border-start-start-radius: 10px; }

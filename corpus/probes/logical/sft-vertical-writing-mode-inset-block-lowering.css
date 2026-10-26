@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: logical/sft-vertical-writing-mode-inset-block-lowering
+area: logical
+title: Lowering inset-block-start must respect a vertical writing-mode on the same element
+mode: lower-minify
+targets: chrome 80
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/css-logical-1/#position-properties https://drafts.csswg.org/css-writing-modes-4/#logical-to-physical
+note: in vertical-rl block-start maps to right; master emits top:5px (block axis is always lowered as horizontal-tb); same for block-size to height
+*/
+.t { position: relative; writing-mode: vertical-rl; inset-block-start: 5px; }

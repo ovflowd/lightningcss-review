@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: color/spec-color-mix-in-display-p3-passthrough
+area: color
+title: color-mix(in display-p3, ...) is valid; if evaluated it must not be clamped to an sRGB hex
+mode: minify
+targets: none
+expect: equivalent
+known: none
+ref: https://drafts.csswg.org/css-color-4/#typedef-rectangular-color-space https://drafts.csswg.org/css-color-5/#serial-color-mix
+note: guard: master leaves it unparsed (ColorSpaceName lacks display-p3, src/values/color.rs:250)
+*/
+.t { color: color-mix(in display-p3, color(display-p3 1 0 0), white); }

@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: css-modules/community-prs-state-pseudo-not-hashed
+area: css-modules
+title: `:state()` identifiers belong to the element's CustomStateSet and must not be hashed by CSS modules
+mode: minify
+targets: none
+flags: css-modules
+expect: output-contains:":state(checked)"
+known: open-bug
+ref: https://html.spec.whatwg.org/multipage/semantics-other.html#selector-custom https://github.com/parcel-bundler/lightningcss/pull/1133
+note: MASTER FAILS (no issue filed). Regression from #1133 (v1.31.0): State{state} prints via CustomIdent::to_css (custom_idents=true by default), giving :state(EgL3uq_checked) and a bogus `checked` export; 1.30.x passed it through untouched
+*/
+x-foo:state(checked) { color: red; }

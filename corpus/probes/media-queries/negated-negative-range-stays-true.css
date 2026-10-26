@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: media-queries/negated-negative-range-stays-true
+area: media-queries
+title: `not (width <= -100px)` is true (width is false in the negative range) and must stay true
+mode: minify
+targets: none
+expect: equivalent
+known: none
+ref: https://drafts.csswg.org/mediaqueries-4/#false-in-the-negative-range
+dom: <p class="t">x</p>
+note: guard, master passes; master folds it to `(width>-100px)`, which is also true
+*/
+@media not (width <= -100px) { .t { color: rgb(0, 128, 0); } }

@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: media-queries/issues-b3-range-lowering-parens
+area: media-queries
+title: Range lowering to not (min-*) must stay parenthesized inside and/or
+mode: lower-minify
+targets: chrome 100
+expect: equivalent
+known: fixed-by#1114
+ref: https://github.com/parcel-bundler/lightningcss/issues/1105 https://drafts.csswg.org/mediaqueries-4/#mq-syntax https://github.com/parcel-bundler/lightningcss/pull/1114
+note: both queries are true at any viewport; `not (a) or (b)` without parens is invalid (not all). The original bug needed include=MediaRangeSyntax without MediaIntervalSyntax (Next 16), which probe flags cannot express
+*/
+@media (width < 100000px) or (hover: none) { .t { color: green; } }
+@media (width < 100000px) and (width >= 1px) { .u { color: green; } }

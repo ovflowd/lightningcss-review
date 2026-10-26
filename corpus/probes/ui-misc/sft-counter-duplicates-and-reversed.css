@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: ui-misc/sft-counter-duplicates-and-reversed
+area: ui-misc
+title: Duplicate counter-increment entries and reversed() 0 are meaningful
+mode: minify
+targets: none
+expect: equivalent, output-contains:"a a", output-contains:"reversed(b) 0"
+known: none
+ref: https://drafts.csswg.org/css-lists-3/#propdef-counter-increment https://drafts.csswg.org/css-lists-3/#propdef-counter-reset
+note: counter-increment a a increments twice; reversed(b) without an integer starts at the item count, so the explicit 0 must not be dropped as a default
+*/
+.t { counter-increment: a a; counter-reset: reversed(b) 0; }

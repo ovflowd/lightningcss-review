@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: selectors/prefixed-any-inside-not-preserved-without-targets
+area: selectors
+title: Without targets, :-webkit-any() nested in :not() must not be rewritten to :is() or duplicated
+mode: minify
+targets: none
+expect: output-contains:":not(:-webkit-any(.b,.c))", output-not-contains:":is(#x)"
+known: open-issue#1211
+ref: https://github.com/parcel-bundler/lightningcss/issues/1211 https://developer.mozilla.org/en-US/docs/Web/CSS/:is
+note: get_prefix() returns None at :not()/:is()/:lang() without descending (src/selector.rs:2080), and Any serializes with dest.vendor_prefix.or(prefix) (f782754, v1.22.0) so it prints :is(); a second unprefixed :is(#x) copy is also emitted
+*/
+.a:not(:-webkit-any(.b, .c)) { color: red; }
+:-webkit-any(#x) :not(.c) { color: blue; }

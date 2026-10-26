@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: selectors/host-in-selector-list-preserved
+area: selectors
+title: `:root, :host` must keep :host (guard for the invalid report #1187)
+mode: minify
+targets: none
+expect: output-contains:":host", idempotent
+known: none
+ref: https://drafts.csswg.org/css-scoping-1/#host-selector https://github.com/parcel-bundler/lightningcss/issues/1187
+note: v1.33.0 keeps :host with and without targets (old targets split it into its own rule); the reported stripping was not reproducible in LightningCSS
+*/
+:root, :host { --my-token: blue; }

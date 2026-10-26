@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: cascade-layers-scope/scope-prelude-selector-list-is-unforgiving
+area: cascade-layers-scope
+title: An invalid selector in an @scope prelude invalidates the whole rule
+mode: minify
+targets: none
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/css-cascade-6/#scope-syntax https://github.com/w3c/csswg-drafts/issues/10042
+dom: <div class="a"><p class="t">x</p></div>
+note: master fails (no issue filed); preludes are parsed with ParseErrorRecovery::IgnoreInvalidSelector (src/parser.rs:697,706) so the output is `@scope(.a)`; WPT css/css-cascade/at-scope-parsing.html expects the rule to be dropped (43/43 in all engines)
+*/
+@scope (.a, .c <> .d) { .t { color: rgb(255, 0, 0); } }

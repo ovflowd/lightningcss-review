@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: color/spec-color-light-dark-lowering-with-color-scheme
+area: color
+title: lowered light-dark() follows a color-scheme set on the same element
+mode: lower
+targets: chrome 100
+expect: equivalent
+known: none
+ref: https://drafts.csswg.org/css-color-5/#light-dark https://drafts.csswg.org/css-color-adjust-1/#color-scheme-prop
+note: guard: output sets --lightningcss-light/dark on .t, result blue in both
+*/
+.t { color-scheme: dark; color: light-dark(red, blue); }

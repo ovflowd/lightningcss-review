@@ -1,0 +1,18 @@
+/*! lcr-probe
+id: nesting/ecosystem-consumers-pseudo-element-parent-roundtrip
+area: nesting
+title: Lowered nested rules under a ::before parent must stay re-parseable (Tailwind v4 / basecoat output shape)
+mode: lower-minify
+targets: chrome 111, edge 111, firefox 114, safari 16.4, ios_saf 16.4
+expect: equivalent, idempotent, no-panic
+known: open-issue#982
+ref: https://drafts.csswg.org/css-nesting-1/#nest-selector https://github.com/parcel-bundler/lightningcss/issues/982 https://github.com/tailwindlabs/tailwindcss/issues/20571 https://cdn.jsdelivr.net/npm/basecoat-css@1.0.2/dist/basecoat.cdn.css
+dom: <div class="t"><span class="k">k</span></div>
+note: master emits .t:before .k{} and .t:before:has(.k){}, which a second strict pass (e.g. Vite 8 minify after Tailwind) rejects; & cannot represent pseudo-elements, so these rules match nothing and must not become unparseable output
+*/
+.t::before {
+  content: "x";
+  color: red;
+  & .k { color: blue; }
+  &:has(.k) { color: green; }
+}

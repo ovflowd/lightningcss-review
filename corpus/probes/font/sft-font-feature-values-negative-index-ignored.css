@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: font/sft-font-feature-values-negative-index-ignored
+area: font
+title: A negative feature index is invalid and must not override the earlier valid one
+mode: minify
+targets: none
+expect: output-contains:"flowing:2", output-not-contains:"flowing:-1"
+known: open-bug
+ref: https://drafts.csswg.org/css-fonts-4/#font-feature-values-syntax
+note: the spec's own error-handling example drops flowing:-1; master keeps only flowing:-1 (CSSInteger parse, src/rules/font_feature_values.rs:295), so the name is undefined in browsers
+*/
+@font-feature-values Foo { @swash { flowing: 2; flowing: -1; } }

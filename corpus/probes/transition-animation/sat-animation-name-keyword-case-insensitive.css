@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: transition-animation/sat-animation-name-keyword-case-insensitive
+area: transition-animation
+title: An animation name that case-insensitively matches an easing keyword needs its easing printed before it
+mode: minify
+targets: none
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/css-animations-1/#animation https://drafts.csswg.org/css-values-4/#keywords
+note: MASTER FAILS (no issue filed). Keywords match ASCII case-insensitively, but EasingFunction::is_ident (src/values/easing.rs:186-191) compares case-sensitively; master prints `animation:1s LINEAR`, which every engine parses as timing-function linear with name none
+*/
+.t { animation: 1s ease LINEAR; }

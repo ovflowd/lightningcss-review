@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: ui-misc/issues-important-list-style-none
+area: ui-misc
+title: list-style: none must keep list-style-type none
+mode: minify
+targets: none
+expect: equivalent, output-contains:"none"
+known: fixed-by#e3b1e88
+ref: https://github.com/parcel-bundler/lightningcss/issues/890 https://drafts.csswg.org/css-lists-3/#list-style-property
+note: 1.29.0 printed `list-style:outside` (broke Tailwind preflight); fixed in 1.29.1
+*/
+ul { list-style: none; }

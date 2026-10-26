@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: values-numeric/community-prs-negative-scientific-percentage
+area: values-numeric
+title: A tiny negative percentage must not serialize with a double minus (`--10e-8%`)
+mode: minify
+targets: none
+expect: output-not-contains:"--"
+known: open-issue#1219
+ref: https://drafts.csswg.org/css-syntax-3/#would-start-an-identifier https://github.com/parcel-bundler/lightningcss/issues/1219 https://github.com/parcel-bundler/lightningcss/pull/901 https://github.com/parcel-bundler/lightningcss/pull/1192
+note: #901 fixed CSSNumber and #1192 fixed dimensions, but Percentage::to_css (src/values/percentage.rs) still writes '-' + trim_start_matches("-0"); `--10e-8%` lexes as an ident, so the declaration is dropped. Equivalence cannot see it because the value rounds to 0
+*/
+.t { margin-left: -1e-7%; }

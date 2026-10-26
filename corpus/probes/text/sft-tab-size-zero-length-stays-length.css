@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: text/sft-tab-size-zero-length-stays-length
+area: text
+title: tab-size 0px must not become the number 0
+mode: minify
+targets: none
+expect: equivalent, output-not-contains:"tab-size:0}"
+known: open-bug
+ref: https://drafts.csswg.org/css-text-4/#tab-size-property https://github.com/web-platform-tests/wpt/blob/b89af32bc8f42d678f444eb0703bca015ddcf240/css/css-text/parsing/tab-size-valid.html
+note: <number> (multiples of the space advance) and <length> are different types; computed value 0px vs 0 (Chrome oracle computed-difference); LengthValue::to_css drops the unit for zero (src/values/length.rs:484)
+*/
+.t { tab-size: 0px; }

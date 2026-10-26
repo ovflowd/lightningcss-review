@@ -1,0 +1,17 @@
+/*! lcr-probe
+id: rule-merging/ss-engine-specific-selectors-not-merged
+area: rule-merging
+title: Rules using selectors only some engines accept must not be merged with plain rules
+mode: minify
+targets: none
+expect: equivalent
+known: none
+dom: <div class="t"></div>
+ref: https://drafts.csswg.org/selectors-4/#grouping https://drafts.csswg.org/css-shadow-1/#host-selector https://drafts.csswg.org/selectors-4/#compat
+note: Firefox has no :host-context() and no `::-webkit-scrollbar:horizontal`; Chrome has no :-moz-focusring; :closed/:target-within/:local-link/:blank exist nowhere. Master keeps them apart because is_compatible returns false for these (src/selector.rs:1975-1994,2022); a compat-table change must not flip that
+*/
+.t { color: red; }
+:host-context(.x) .u { color: red; }
+.v::-webkit-scrollbar:horizontal { color: red; }
+.w:-moz-focusring { color: red; }
+.y:closed, .z:target-within { color: red; }

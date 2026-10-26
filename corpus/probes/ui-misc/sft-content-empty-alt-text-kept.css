@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: ui-misc/sft-content-empty-alt-text-kept
+area: ui-misc
+title: An empty alt text in content marks generated content as decorative and must be kept
+mode: minify
+targets: none
+expect: equivalent, output-contains:"/"
+known: none
+ref: https://drafts.csswg.org/css-content-3/#content-property https://drafts.csswg.org/css-content-3/#alt
+note: content:"x" / "" differs from content:"x" for accessibility; the spec also recommends a content fallback pair for older UAs, so content dedupe must stay off
+*/
+.t::before { content: "x" / ""; }
+.u::before { content: "y"; content: "y" / ""; }

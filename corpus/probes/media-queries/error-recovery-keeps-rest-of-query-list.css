@@ -1,0 +1,14 @@
+/*! lcr-probe
+id: media-queries/error-recovery-keeps-rest-of-query-list
+area: media-queries
+title: An invalid query in a list becomes `not all`; the rule still applies through the valid `all`
+mode: minify
+targets: none
+flags: error-recovery
+expect: equivalent
+known: none
+ref: https://drafts.csswg.org/mediaqueries-4/#error-handling
+dom: <p class="t">x</p>
+note: guard, master passes; master keeps the tokens verbatim, which browsers parse as `not all, all`; dropping the rule or the list would change the result
+*/
+@media (example, all,), all { .t { color: rgb(0, 128, 0); } }

@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: selectors/em-custom-pseudo-class-name-escaped
+area: selectors
+title: Unknown pseudo-class names must be printed as escaped identifiers
+mode: minify
+targets: none
+expect: output-not-contains:":hover:focus"
+known: open-bug
+ref: https://drafts.csswg.org/selectors-4/#pseudo-classes https://drafts.csswg.org/cssom-1/#serialize-an-identifier https://github.com/oven-sh/bun/pull/31404
+note: `:hover\:focus` is one unknown pseudo-class (invalid selector, rule dropped); selector.rs:866-870 (and :1305 for pseudo-elements) writes the name raw, so master prints `.t:hover:focus{...}`, a valid selector that now matches hovered+focused elements
+*/
+.t:hover\:focus { color: rgb(255, 0, 0); }

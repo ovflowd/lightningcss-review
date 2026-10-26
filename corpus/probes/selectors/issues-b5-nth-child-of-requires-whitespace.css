@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: selectors/issues-b5-nth-child-of-requires-whitespace
+area: selectors
+title: `:nth-child(2of .x)` is a <dimension-token> "2of", not An+B, so the selector must stay invalid
+mode: print
+targets: none
+expect: parse-error
+known: none
+ref: https://drafts.csswg.org/css-syntax-3/#consume-numeric-token https://drafts.csswg.org/css-syntax-3/#anb-microsyntax https://github.com/parcel-bundler/lightningcss/issues/1273
+note: browsers drop the rule; a "tolerant" parser that printed `:nth-child(2 of .x)` would turn a dead rule into a live one
+*/
+.t :nth-child(2of .x) { color: red; }

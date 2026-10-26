@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: transform/sat-motion-offset-shorthand-passthrough
+area: transform
+title: The offset shorthand (position, path, distance, rotate / anchor) must keep its component order
+mode: minify
+targets: none
+expect: equivalent
+known: none
+ref: https://drafts.csswg.org/motion-1/#offset-shorthand https://drafts.csswg.org/motion-1/#offset-rotate-property
+note: guard. offset-* are untyped in LightningCSS today; a typed implementation must keep position before path, path before distance/rotate, and the slash before the anchor
+*/
+.t { offset: 10px 20px path("M0 0 L100 0") 50% auto 45deg / center; }

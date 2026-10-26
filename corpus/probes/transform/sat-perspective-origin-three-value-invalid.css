@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: transform/sat-perspective-origin-three-value-invalid
+area: transform
+title: perspective-origin with a 3-value <bg-position> is invalid and must not become a valid value
+mode: minify
+targets: none
+expect: equivalent, output-not-contains:"perspective-origin:1px"
+known: open-bug
+ref: https://drafts.csswg.org/css-transforms-2/#perspective-origin-property https://drafts.csswg.org/css-values-4/#position https://github.com/web-platform-tests/wpt/blob/master/css/css-transforms/parsing/perspective-origin-invalid.html
+note: MASTER FAILS (no issue filed). Position::parse accepts the 3-value form; master keeps only `perspective-origin:1px` (valid), so engines compute 1px 50px instead of the 10px 20px fallback (Chrome 156/Firefox 157/WebKit 27.2)
+*/
+.t { width: 100px; height: 100px; perspective-origin: 10px 20px; perspective-origin: center left 1px; }

@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: ui-misc/issues-b5-caret-shorthand-order
+area: ui-misc
+title: interleaved `caret` and `caret-color` must keep source order
+mode: minify
+targets: none
+expect: equivalent
+known: open-issue#1362
+ref: https://drafts.csswg.org/css-ui-4/#propdef-caret https://github.com/parcel-bundler/lightningcss/issues/1362 https://drafts.csswg.org/css-ui-4/#caret
+note: FallbackHandler writes a repeated property back at its first index (src/properties/prefix_handler.rs:120); only observable in engines that implement the `caret` shorthand
+*/
+.t { caret: red; caret-color: blue; caret: green; }

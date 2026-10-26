@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: selectors/asr-ms-input-placeholder-preserved
+area: selectors
+title: ::-ms-input-placeholder must not be rewritten to ::-moz-placeholder
+mode: print
+targets: none
+expect: output-contains:"::-ms-input-placeholder", output-not-contains:"-moz-placeholder"
+known: open-bug
+ref: https://drafts.csswg.org/css-pseudo-4/#placeholder-pseudo https://github.com/parcel-bundler/lightningcss/blob/cbeaf83/src/selector.rs#L291
+note: the parser maps "-ms-input-placeholder" to Placeholder(VendorPrefix::Moz) (typo for Ms), retargeting the rule from EdgeHTML to Firefox
+*/
+.t::-ms-input-placeholder { color: red }

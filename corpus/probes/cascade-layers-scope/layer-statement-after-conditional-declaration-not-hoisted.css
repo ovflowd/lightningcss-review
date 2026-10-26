@@ -1,0 +1,16 @@
+/*! lcr-probe
+id: cascade-layers-scope/layer-statement-after-conditional-declaration-not-hoisted
+area: cascade-layers-scope
+title: A layer first declared inside a matching @media keeps its position ahead of a later @layer statement
+mode: minify
+targets: none
+expect: equivalent
+known: none
+ref: https://drafts.csswg.org/css-cascade-5/#layer-ordering https://github.com/parcel-bundler/lightningcss/issues/974
+dom: <p class="t">x</p>
+note: guard, master passes; guard for the layer-merging fix in commit 32aecd9; hoisting or merging `@layer b, a` above the @media flips the order to c,b,a
+*/
+@layer c;
+@media (min-width: 1px) { @layer a { .t { color: rgb(255, 0, 0); } } }
+@layer b, a;
+@layer b { .t { color: rgb(0, 128, 0); } }

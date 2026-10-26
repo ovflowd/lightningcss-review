@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: selectors/asr-has-scope-only-argument
+area: selectors
+title: :has(:scope) must not serialize as an empty :has()
+mode: print
+targets: none
+expect: equivalent, output-not-contains:":has()"
+known: open-bug
+ref: https://drafts.csswg.org/selectors-4/#relational https://drafts.csswg.org/selectors-4/#the-scope-pseudo
+dom: <div class="t"></div><div class="u"><span></span></div>
+note: serialize_selector (selector.rs:1465) strips a leading :scope in relative selectors and leaves nothing, so `.t, .u:has(:scope)` becomes `.t, .u:has()` and the whole rule (including .t) is dropped by browsers
+*/
+.t, .u:has(:scope) { color: red }

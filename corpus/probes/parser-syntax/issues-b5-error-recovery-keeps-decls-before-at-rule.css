@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: parser-syntax/issues-b5-error-recovery-keeps-decls-before-at-rule
+area: parser-syntax
+title: with errorRecovery, an at-rule not allowed in a style rule drops only itself, not the declarations before it
+mode: minify
+targets: none
+flags: error-recovery
+expect: equivalent
+known: open-issue#1358
+ref: https://drafts.csswg.org/css-syntax-3/#consume-block-contents https://github.com/parcel-bundler/lightningcss/issues/1358
+note: NestedRuleParser::parse_nested clears iter.parser.declarations on any error (src/parser.rs:494-498); regression since v1.22.0 (a8b7ea0)
+*/
+.t { color: red; width: 10px; @keyframes k { from { opacity: 0; } } height: 20px; }

@@ -1,0 +1,14 @@
+/*! lcr-probe
+id: text/sft-text-emphasis-none-keeps-color
+area: text
+title: text-emphasis none red must keep its (inherited) color component
+mode: minify
+targets: none
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/css-text-decor-4/#text-emphasis-property https://drafts.csswg.org/css-text-decor-4/#text-emphasis-color-property
+dom: <div class="t"><span class="c">x</span></div>
+note: master prints text-emphasis:none (src/properties/text.rs:998), so the child's inherited text-emphasis-color becomes currentcolor instead of red
+*/
+.t { text-emphasis: none red; }
+.c { text-emphasis-style: dot; }

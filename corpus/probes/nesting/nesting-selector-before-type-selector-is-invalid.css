@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: nesting/nesting-selector-before-type-selector-is-invalid
+area: nesting
+title: `&div` is invalid; lowering must not turn it into a matching `div.a`
+mode: lower-minify
+targets: chrome 100
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/css-nesting-1/#nest-selector https://drafts.csswg.org/css-nesting-1/#changes
+dom: <div class="a t">x</div>
+note: master fails (no issue filed); the printer swaps `&div` to `div&` when compiling nesting (src/selector.rs:1547-1560); WPT css/css-nesting/parsing.html testInvalidNestingSelector("&div") passes in all engines
+*/
+.a { &div { color: rgb(255, 0, 0); } }

@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: supports-container/supports-selector-argument-kept-verbatim
+area: supports-container
+title: selector() with an unknown pseudo inside a forgiving list is unsupported and must not be simplified
+mode: minify
+targets: none
+expect: equivalent
+known: none
+ref: https://drafts.csswg.org/css-conditional-4/#dfn-support-selector https://drafts.csswg.org/css-conditional-4/#typedef-supports-selector-fn
+dom: <p class="t">x</p>
+note: guard, master passes; master stores the selector() argument as raw text (src/rules/supports.rs:281-291); dropping `:not-a-real-pseudo` from :is() would flip the result to true
+*/
+@supports selector(:is(.t, :not-a-real-pseudo)) { .t { color: rgb(255, 0, 0); } }

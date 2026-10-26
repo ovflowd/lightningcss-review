@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: supports-container/container-query-general-enclosed
+area: supports-container
+title: Unknown container-query functions are <general-enclosed>, not a parse error
+mode: minify
+targets: none
+expect: equivalent
+known: open-issue#1176
+ref: https://drafts.csswg.org/css-conditional-5/#container-rule https://drafts.csswg.org/mediaqueries-5/#typedef-general-enclosed https://github.com/parcel-bundler/lightningcss/issues/1228 https://github.com/parcel-bundler/lightningcss/issues/1176
+note: `anchored(...)` throws "Unexpected token Function" in v1.33.0 (#1228 closed as duplicate of #1176); Chrome 156 accepts it
+*/
+@container anchored(fallback: flip-block flip-inline) { .t { color: red; } }

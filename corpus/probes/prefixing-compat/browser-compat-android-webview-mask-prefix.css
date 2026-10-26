@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: prefixing-compat/browser-compat-android-webview-mask-prefix
+area: prefixing-compat
+title: Android WebView 95 (Chromium 95) needs -webkit-mask-image just like chrome 95
+mode: lower
+targets: android 95
+expect: output-contains:"-webkit-mask-image"
+known: open-bug
+ref: https://drafts.fxtf.org/css-masking-1/#the-mask-image https://github.com/parcel-bundler/lightningcss/issues/1180 https://github.com/mdn/browser-compat-data/blob/main/css/properties/mask-image.json
+note: UNFILED residual of #1180; caniuse squashes Android WebView into 2.1-4.4.4 plus the latest version, so prefixes.rs gives android only 2.1..=4.4.3 for MaskImage; 1.33.0 prints bare mask-image for android 95 while chrome 95 gets -webkit-mask-image
+*/
+.t { width: 20px; height: 20px; background: red; mask-image: url(a.svg); }

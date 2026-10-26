@@ -1,0 +1,14 @@
+/*! lcr-probe
+id: at-rules-other/sft-counter-style-same-name-not-merged
+area: at-rules-other
+title: Same-name @counter-style rules replace each other atomically and must not be merged
+mode: minify
+targets: none
+expect: idempotent, output-contains:"{system:cyclic;symbols:b}"
+known: none
+ref: https://drafts.csswg.org/css-counter-styles-3/#the-counter-style-rule
+note: only the last rule defines x, so no prefix; a descriptor merge like the @font-feature-values one would add the earlier prefix to the winning rule
+*/
+@counter-style x { system: cyclic; symbols: a; prefix: "("; }
+@counter-style x { system: cyclic; symbols: b; }
+.t { list-style-type: x; }

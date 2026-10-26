@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: text/sft-text-emphasis-style-fill-only
+area: text
+title: text-emphasis-style filled must not gain a shape keyword
+mode: minify
+targets: none
+expect: equivalent, output-not-contains:"circle", output-not-contains:"sesame"
+known: none
+ref: https://drafts.csswg.org/css-text-decor-4/#text-emphasis-style-property
+note: a fill without a shape means circle in horizontal and sesame in vertical writing modes, so filled is not filled circle; open alone likewise
+*/
+.t { writing-mode: vertical-rl; text-emphasis-style: filled; }
+.u { text-emphasis-style: open; }

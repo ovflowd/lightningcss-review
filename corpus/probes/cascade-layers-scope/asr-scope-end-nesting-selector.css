@@ -1,0 +1,15 @@
+/*! lcr-probe
+id: cascade-layers-scope/asr-scope-end-nesting-selector
+area: cascade-layers-scope
+title: `&` in <scope-end> means :where(:scope), not the <scope-start> selector
+mode: print
+targets: none
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/css-cascade-6/#scope-limits https://drafts.csswg.org/css-nesting-1/#nesting-at-scope
+dom: <div class="a"><div class="b"><span class="c"></span></div></div>
+note: ScopeRule::to_css (scope.rs:89) prints scope_end with_context(scope_start), producing `to (.a > .b)`; without & the browser treats the limit as relative (:scope .a > .b), so .b stops being a limit and .c turns red (verified in Chrome 156)
+*/
+@scope (.a) to (& > .b) {
+  .c { color: red }
+}

@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: selectors/issues-b5-legacy-ms-input-placeholder
+area: selectors
+title: `:-ms-input-placeholder` must not be turned into an unprefixed `:placeholder-shown` for modern targets
+mode: lower-minify
+targets: chrome 111
+expect: equivalent, output-not-contains:"-ms-placeholder-shown"
+known: open-issue#1351
+dom: <input class="t" placeholder="a"><input class="u" placeholder="b">
+ref: https://github.com/parcel-bundler/lightningcss/issues/1351 https://drafts.csswg.org/selectors-4/#placeholder-shown-pseudo
+note: since #929 (v1.29.3) the IE/old-Firefox placeholder pseudo-classes parse as PlaceholderShown(prefix); output prints the nonexistent `:-ms-placeholder-shown` plus an unprefixed copy that matches the inputs in every modern browser
+*/
+.t:-ms-input-placeholder, .u:-ms-input-placeholder { visibility: hidden; }

@@ -1,0 +1,15 @@
+/*! lcr-probe
+id: cascade-layers-scope/empty-layer-block-in-matching-media-sets-order
+area: cascade-layers-scope
+title: An empty @layer block inside a matching @media still establishes layer order
+mode: minify
+targets: none
+expect: equivalent
+known: none
+ref: https://drafts.csswg.org/css-cascade-5/#layer-ordering https://drafts.csswg.org/css-cascade-5/#layer-empty
+dom: <p class="t">x</p>
+note: guard, master passes; removing the "empty" rule (or the @media around it) changes the order from b,a to a,b
+*/
+@media (min-width: 1px) { @layer b {} }
+@layer a { .t { color: rgb(0, 128, 0); } }
+@layer b { .t { color: rgb(255, 0, 0); } }

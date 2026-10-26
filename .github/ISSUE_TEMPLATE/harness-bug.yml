@@ -1,0 +1,24 @@
+name: Harness bug
+description: A stage fails, crashes, or produces inconsistent output.
+labels: [bug]
+body:
+  - type: input
+    id: command
+    attributes:
+      label: Command
+      placeholder: lcr build 1385
+    validations:
+      required: true
+  - type: textarea
+    id: output
+    attributes:
+      label: Error output (last lines)
+      render: text
+    validations:
+      required: true
+  - type: textarea
+    id: env
+    attributes:
+      label: Environment
+      description: Output of `lcr doctor`
+      render: text

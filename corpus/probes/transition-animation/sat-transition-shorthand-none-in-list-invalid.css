@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: transition-animation/sat-transition-shorthand-none-in-list-invalid
+area: transition-animation
+title: A transition list where one item has property none is invalid and must not replace the fallback
+mode: minify
+targets: none
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/css-transitions-1/#transition-shorthand-property https://github.com/web-platform-tests/wpt/blob/master/css/css-transitions/parsing/transition-invalid.html
+note: MASTER FAILS (no issue filed). master keeps only `transition:none,opacity 1s`; engines drop it and compute all/0s instead of opacity/2s. `transition: opacity 1s, initial` fails the same way
+*/
+.t { transition: opacity 2s; transition: none, opacity 1s; }

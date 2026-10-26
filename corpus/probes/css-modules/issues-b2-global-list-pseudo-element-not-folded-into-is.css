@@ -1,0 +1,14 @@
+/*! lcr-probe
+id: css-modules/issues-b2-global-list-pseudo-element-not-folded-into-is
+area: css-modules
+title: A list of :global() selectors containing pseudo-elements must not be folded into :is()
+mode: lower-minify
+targets: chrome 120
+flags: css-modules
+expect: no-panic, output-not-contains:":is("
+known: open-issue#1032
+ref: https://github.com/parcel-bundler/lightningcss/issues/1032 https://github.com/parcel-bundler/lightningcss/issues/1079 https://drafts.csswg.org/selectors-4/#matches
+note: PseudoClass::Global hides the inner pseudo-element from has_pseudo_element() and makes is_compatible() false, so CssRuleList::minify wraps the list in :is(); browsers drop the rule. Correct output is a plain list
+*/
+:global(.a:before), :global(.a:after) { color: red; }
+.pre { :global(.line:before), :global(.hl:before) { content: "x"; } }

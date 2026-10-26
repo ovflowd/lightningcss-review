@@ -1,0 +1,14 @@
+/*! lcr-probe
+id: transition-animation/transition-inherit-not-merged-with-longhand
+area: transition-animation
+title: transition:inherit followed by transition-property must not merge into one shorthand
+mode: minify
+targets: none
+expect: equivalent
+known: open-issue#1214
+ref: https://drafts.csswg.org/css-transitions-1/#transition-shorthand-property https://drafts.csswg.org/css-values-4/#common-keywords https://github.com/parcel-bundler/lightningcss/issues/1214
+dom: <div class="p"><div class="t">x</div></div>
+note: `inherit` parses as a <custom-ident> transition-property, so TransitionHandler merges it (output `transition:color`); Chrome 156 duration 2s -> 0s
+*/
+.p { transition: opacity 2s ease-in 1s; }
+.t { transition: inherit; transition-property: color; }

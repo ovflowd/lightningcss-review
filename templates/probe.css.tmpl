@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: <area>/<kebab-slug>
+area: <area id from references/areas.md>
+title: <one line: the behavior this probe pins down>
+mode: <print | minify | lower | lower-minify>
+targets: <none | chrome 80, safari 13.1, firefox 78 ...>
+expect: <equivalent[, idempotent][, no-panic][, output-contains:"…"][, output-not-contains:"…"][, output-equals:"…"][, parse-error]>
+known: <none | open-issue#N | fixed-by#PR>
+ref: <spec URL#anchor and/or issue/PR URL>
+note: <optional: why a plausible-looking change would break this>
+*/
+.t { /* CSS input: simple, matchable selectors unless the probe is about selectors */ }

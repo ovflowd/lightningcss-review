@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: selectors/pr1352-ms-input-placeholder-stays-inert
+area: selectors
+title: Legacy :-ms-input-placeholder must not be turned into a live :placeholder-shown rule
+mode: lower-minify
+targets: chrome 111
+expect: equivalent, output-not-contains:"placeholder-shown"
+known: open-issue#1351
+ref: https://github.com/parcel-bundler/lightningcss/issues/1351 https://github.com/parcel-bundler/lightningcss/pull/1352 https://github.com/parcel-bundler/lightningcss/pull/929
+dom: <input placeholder="p"><textarea placeholder="p"></textarea>
+note: input selector is invalid in current engines (rule inert); 1.33.0 emits :is(input:placeholder-shown,...) which applies; regression from #929
+*/
+input:-ms-input-placeholder, textarea:-ms-input-placeholder { color: red; }

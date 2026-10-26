@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: text/spec-layout-text-overflow-two-value-keeps-fallback
+area: text
+title: A one-value text-overflow fallback must survive a later two-value text-overflow
+mode: minify
+targets: none
+expect: equivalent, output-contains:"text-overflow:ellipsis;"
+known: none
+ref: https://drafts.csswg.org/css-overflow-4/#text-overflow
+note: guard (passes on master): only Gecko parses the two-value form; Blink and WebKit drop it and keep the earlier `ellipsis`. TextOverflow is typed with clip|ellipsis only, so the two-value form is Unparsed
+*/
+.t { overflow: hidden; white-space: nowrap; width: 50px; text-overflow: ellipsis; text-overflow: clip ellipsis; }

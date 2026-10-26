@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: at-rules-other/em-font-face-unknown-descriptor-escaped
+area: at-rules-other
+title: Unknown @font-face descriptor names must be printed as escaped identifiers
+mode: minify
+targets: none
+expect: equivalent, output-not-contains:"fake}name"
+known: open-bug
+ref: https://drafts.csswg.org/css-fonts-4/#font-face-rule https://drafts.csswg.org/cssom-1/#serialize-an-identifier https://github.com/oven-sh/bun/pull/36165
+note: master prints `@font-face{font-family:x;fake}name:1}.u{...}`; the `}` ends @font-face early and `.u` is swallowed into an invalid prelude (unknown style-rule declarations and @supports names are escaped correctly)
+*/
+@font-face { font-family: x; fake\7d name: 1; }
+.u { color: rgb(0, 128, 0); }

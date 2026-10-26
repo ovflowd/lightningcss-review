@@ -1,0 +1,15 @@
+/*! lcr-probe
+id: prefixing-compat/issues-b1-mask-image-var-duplicate
+area: prefixing-compat
+title: An authored -webkit-mask-image/mask-image pair with var() must not gain a duplicate prefixed declaration
+mode: lower-minify
+targets: chrome 95
+expect: equivalent, idempotent, output-not-contains:"-webkit-mask-image:var(--foo);-webkit-mask-image:var(--foo)"
+known: open-issue#969
+ref: https://github.com/parcel-bundler/lightningcss/issues/969 https://github.com/parcel-bundler/lightningcss/pull/1295
+note: each run adds another `-webkit-mask-image:var(--foo)` (1, 2, 3...), so the output is not idempotent
+*/
+.bar {
+  -webkit-mask-image: var(--foo);
+  mask-image: var(--foo);
+}

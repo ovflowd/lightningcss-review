@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: calc-math/ssv-typed-division-passthrough
+area: calc-math
+title: Typed arithmetic (dimension / dimension) passes through untouched
+mode: minify
+targets: none
+expect: equivalent, no-panic
+known: none
+ref: https://drafts.csswg.org/css-values-4/#calc-type-checking https://github.com/parcel-bundler/lightningcss/issues/1279
+note: guard; parse_product rejects dimension divisors (calc.rs:597) so the value stays an unparsed token list
+*/
+.t { width: calc(10px * (20px / 10px)); }

@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: custom-properties/ssv-if-passthrough
+area: custom-properties
+title: if() is an arbitrary substitution function and passes through
+mode: minify
+targets: none
+expect: equivalent, no-panic
+known: none
+ref: https://drafts.csswg.org/css-values-5/#if-notation https://drafts.csswg.org/css-values-5/#resolve-property
+note: guard; the spaces around >= and after ; must survive
+*/
+.t { width: if(media(width >= 1px): 10px; else: 20px); }

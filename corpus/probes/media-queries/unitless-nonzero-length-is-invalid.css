@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: media-queries/unitless-nonzero-length-is-invalid
+area: media-queries
+title: `(min-width: 10)` is invalid (a non-zero <number> is not a <length>) and must not become `(width>=10px)`
+mode: minify
+targets: none
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/mediaqueries-4/#width https://drafts.csswg.org/mediaqueries-4/#error-handling https://drafts.csswg.org/css-values-4/#lengths
+dom: <p class="t">x</p>
+note: master fails (no issue filed); LengthValue::parse_with_range accepts any unitless number as px ("TODO: quirks mode only?", src/values/length.rs:145-148), turning a never-matching query into a matching one in standards mode; same root cause as the `column-gap: 10` finding in PR #1328
+*/
+@media (min-width: 10) { .t { color: rgb(255, 0, 0); } }

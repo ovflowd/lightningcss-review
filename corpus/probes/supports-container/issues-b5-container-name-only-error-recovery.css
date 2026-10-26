@@ -1,0 +1,14 @@
+/*! lcr-probe
+id: supports-container/issues-b5-container-name-only-error-recovery
+area: supports-container
+title: errorRecovery must not change the output of a valid name-only @container rule
+mode: minify
+targets: none
+flags: error-recovery
+expect: output-contains:"@container sidebar{", equivalent
+known: open-issue#1370
+dom: <div style="container-name: sidebar; container-type: inline-size"><div class="t"></div></div>
+ref: https://drafts.csswg.org/css-conditional-5/#typedef-container-condition https://github.com/parcel-bundler/lightningcss/issues/1370
+note: in recovery mode ContainerCondition::parse_with_options never errors, so the name-only branch in src/parser.rs:669-682 is unreachable; output gets a spurious EndOfInput warning and `@container sidebar  {`
+*/
+@container sidebar { .t { color: red; } }

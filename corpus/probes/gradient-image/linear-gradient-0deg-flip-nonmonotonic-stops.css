@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: gradient-image/linear-gradient-0deg-flip-nonmonotonic-stops
+area: gradient-image
+title: Flipping a 0deg gradient must apply color-stop fixup first
+mode: minify
+targets: none
+expect: output-not-contains:"#00f 100%,red 0%"
+known: open-issue#1220
+ref: https://drafts.csswg.org/css-images-3/#color-stop-fixup https://github.com/parcel-bundler/lightningcss/issues/1220
+note: src/values/gradient.rs:283-319 reverses stops and maps p->1-p assuming monotonic positions; computed background-image strings differ for any flip, so compare pixels, not strings
+*/
+.t { width: 100px; height: 100px; background-image: linear-gradient(0deg, red 100%, blue 0%); }

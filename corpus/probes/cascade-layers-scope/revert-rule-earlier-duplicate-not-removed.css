@@ -1,0 +1,15 @@
+/*! lcr-probe
+id: cascade-layers-scope/revert-rule-earlier-duplicate-not-removed
+area: cascade-layers-scope
+title: An earlier rule is not redundant when a later same-selector rule sets revert-rule
+mode: minify
+targets: none
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/css-cascade-5/#revert-rule-keyword
+dom: <div style="color: rgb(0, 0, 255)"><p class="t">x</p></div>
+note: master fails (no issue filed); the StyleRuleKey duplicate removal (src/rules/mod.rs:870-889) drops the first `.t` because the property ids match; revert-rule then has nothing to roll back to
+*/
+.t { color: rgb(0, 128, 0); }
+.u { color: rgb(255, 0, 0); }
+.t { color: revert-rule; }

@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: transform/sat-rotate-unitless-zero-stays-invalid
+area: transform
+title: rotate: 0 is invalid (unitless zero angles are only allowed in legacy transform functions)
+mode: minify
+targets: none
+expect: equivalent
+known: none
+ref: https://drafts.csswg.org/css-transforms-2/#propdef-rotate https://drafts.csswg.org/css-transforms-1/#transform-functions https://drafts.csswg.org/css-values-4/#angles
+note: guard. Engines ignore `rotate: 0` and keep the 45deg fallback; master passes it through untyped. A parser that accepted unitless 0 here would drop the fallback
+*/
+.t { rotate: 45deg; rotate: 0; }

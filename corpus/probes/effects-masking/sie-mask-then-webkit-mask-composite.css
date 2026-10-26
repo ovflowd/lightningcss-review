@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: effects-masking/sie-mask-then-webkit-mask-composite
+area: effects-masking
+title: `-webkit-mask-composite` after the unprefixed `mask` shorthand must stay after it
+mode: minify
+targets: none
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/css-masking-1/#the-mask https://drafts.csswg.org/css-masking-1/#the-mask-composite
+note: MASTER FAILS (no issue filed yet). Chrome 156 stores -webkit-mask-composite in mask-composite (computed "xor, xor"); master hoists it before the deferred mask, which resets it to add
+*/
+.t { width: 50px; height: 50px; padding: 10px; background: red; mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite: xor; }

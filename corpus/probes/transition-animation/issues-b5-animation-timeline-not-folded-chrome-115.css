@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: transition-animation/issues-b5-animation-timeline-not-folded-chrome-115
+area: transition-animation
+title: MDN's partial "reset-only" support for animation-timeline in the shorthand must not count as support
+mode: lower-minify
+targets: chrome 115
+expect: output-contains:"animation-timeline:view()", equivalent
+known: open-issue#1283
+ref: https://drafts.csswg.org/css-animations-2/#animation-shorthand https://github.com/parcel-bundler/lightningcss/issues/1283
+note: scripts/build-prefixes.js:337 takes animation-timeline_included without filtering partial_implementation
+*/
+.t { animation: x 1s linear both; animation-timeline: view(); }
+@keyframes x { from { opacity: 0; } to { opacity: 1; } }

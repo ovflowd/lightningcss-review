@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: flex-grid-align/arch-props-values-webkit-box-orient-dropped-with-flex-direction
+area: flex-grid-align
+title: `-webkit-box-orient: vertical` must survive next to flex-direction (line-clamp)
+mode: lower-minify
+targets: chrome 100
+expect: equivalent, output-contains:"-webkit-box-orient:vertical"
+known: open-bug
+ref: https://drafts.csswg.org/css-overflow-4/#webkit-line-clamp
+note: FlexHandler clears box_orient when a standard flex-direction is seen with targets (src/properties/flex.rs:530-536) and only regenerates it for 2009-flexbox targets
+*/
+.t { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; flex-direction: column; }

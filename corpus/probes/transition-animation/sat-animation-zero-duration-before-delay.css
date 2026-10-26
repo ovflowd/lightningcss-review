@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: transition-animation/sat-animation-zero-duration-before-delay
+area: transition-animation
+title: A 0s duration must be printed when a delay follows (the first time is always the duration)
+mode: minify
+targets: none
+expect: equivalent, output-contains:"0s 2s"
+known: none
+ref: https://drafts.csswg.org/css-animations-1/#animation https://drafts.csswg.org/css-transitions-1/#transition-shorthand-property
+note: guard. Omitting the default 0s turns the delay into the duration; master prints `animation:0s 2s x` and `transition:opacity 0s 2s`
+*/
+.t { animation: x 0s 2s; }
+.u { transition: opacity 0s 2s; }

@@ -1,0 +1,14 @@
+/*! lcr-probe
+id: supports-container/arch-core-supports-and-prefixed-stays-and
+area: supports-container
+title: `(-webkit-x: v) and (x: v)` in @supports must stay a conjunction, not become `or`
+mode: minify
+targets: none
+expect: equivalent, output-not-contains:" or "
+known: open-bug
+ref: https://drafts.csswg.org/css-conditional-3/#at-supports https://github.com/parcel-bundler/lightningcss/blob/cbeaf83/src/rules/supports.rs#L236-L252
+note: MASTER FAILS (no issue filed yet). SupportsCondition::parse merges same-value declarations across prefixes without checking the operator (6bd2761); the merged Declaration prints as `(...) or (...)`, true in engines that support only one spelling
+*/
+@supports (-webkit-backdrop-filter: blur(1px)) and (backdrop-filter: blur(1px)) {
+  .t { color: green; }
+}

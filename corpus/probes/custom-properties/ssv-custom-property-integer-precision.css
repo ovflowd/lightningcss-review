@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: custom-properties/ssv-custom-property-integer-precision
+area: custom-properties
+title: Integers in custom properties must not be rounded to 6 significant digits
+mode: minify
+targets: none
+expect: equivalent, output-contains:"1234567"
+known: open-issue#949
+ref: https://drafts.csswg.org/css-variables-1/#serializing-custom-props https://drafts.csswg.org/cssom-1/#serialize-a-css-component-value https://github.com/parcel-bundler/lightningcss/issues/949
+note: master prints --z:1234570 (CSSNumber::to_css, dtoa 6 significant digits) so z-index changes
+*/
+.t { position: relative; --z: 1234567; z-index: var(--z); }

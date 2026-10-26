@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: supports-container/style-query-range-syntax
+area: supports-container
+title: Range syntax in style() container queries must parse
+mode: minify
+targets: none
+expect: equivalent
+known: open-issue#1069
+ref: https://drafts.csswg.org/css-conditional-5/#typedef-style-range https://drafts.csswg.org/css-conditional-5/#evaluate-a-style-range https://github.com/parcel-bundler/lightningcss/issues/1069
+dom: <div style="--n: 10"><p class="t">x</p></div>
+note: master fails (tracked issue); shipped in Chrome 142 and Firefox 151 (BCD style_queries_for_custom_properties.range_syntax); LightningCSS errors on the `>` token
+*/
+@container style(--n > 5) { .t { color: rgb(0, 128, 0); } }

@@ -1,0 +1,21 @@
+/*! lcr-probe
+id: cascade-layers-scope/tests-tooling-layer-statement-not-hoisted-past-conditional-layer
+area: cascade-layers-scope
+title: `@layer b, a;` after a matching conditional `@layer a {}` must not be merged into an earlier statement
+mode: minify
+targets: none
+expect: equivalent, idempotent
+known: none
+ref: https://drafts.csswg.org/css-cascade-5/#layer-ordering https://github.com/parcel-bundler/lightningcss/issues/974 https://github.com/parcel-bundler/lightningcss/commit/32aecd9568da1256770c3bfce3ff699b89c1f296
+note: observable form of lib.rs:10266; the unconditional `@layer b {}` is merged into the empty block minify() creates from `@layer b, a;` (src/rules/mod.rs:731-750), so this covers a different path than probes wrapping b in @media; hoisting to `@layer c,b,a` makes a win (red) over b (green)
+*/
+@layer c;
+@media (min-width: 1px) {
+  @layer a {
+    .t { color: red; }
+  }
+}
+@layer b, a;
+@layer b {
+  .t { color: green; }
+}

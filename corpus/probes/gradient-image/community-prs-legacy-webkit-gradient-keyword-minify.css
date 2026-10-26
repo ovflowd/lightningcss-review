@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: gradient-image/community-prs-legacy-webkit-gradient-keyword-minify
+area: gradient-image
+title: Minifying an authored `-webkit-linear-gradient(top, ...)` must keep its 2011 legacy meaning
+mode: minify
+targets: none
+expect: equivalent
+known: open-issue#1107
+ref: https://compat.spec.whatwg.org/#css-gradients-webkit-linear-gradient https://www.w3.org/TR/2011/WD-css3-images-20110217/#linear-gradients https://github.com/parcel-bundler/lightningcss/issues/1107
+note: pre-existing printer bug that #936 widened: `top` becomes reversed stops with no direction and `left` becomes 270deg (legacy angles: 0deg=east, counter-clockwise). All current engines still implement -webkit-linear-gradient, so computed values differ
+*/
+.t { background-image: -webkit-linear-gradient(top, red, blue); }
+.u { background-image: -webkit-linear-gradient(left, red, blue); }

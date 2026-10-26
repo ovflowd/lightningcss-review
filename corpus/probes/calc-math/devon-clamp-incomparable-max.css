@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: calc-math/devon-clamp-incomparable-max
+area: calc-math
+title: clamp() must not drop its minimum when the center and maximum have incomparable units
+mode: minify
+targets: none
+expect: equivalent
+known: none
+ref: https://drafts.csswg.org/css-values-4/#funcdef-clamp https://github.com/parcel-bundler/lightningcss/issues/836
+note: guards ddc9ce8; clamp(100px, 200px, 1vh) is 100px on normal viewports, min(200px, 1vh) is about 6-11px
+*/
+.x { width: clamp(100px, 200px, 1vh); }

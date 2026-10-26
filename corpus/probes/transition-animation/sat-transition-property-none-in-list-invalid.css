@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: transition-animation/sat-transition-property-none-in-list-invalid
+area: transition-animation
+title: none inside a transition-property list is invalid and must not replace the fallback
+mode: minify
+targets: none
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/css-transitions-1/#transition-property-property https://github.com/web-platform-tests/wpt/blob/master/css/css-transitions/parsing/transition-property-invalid.html
+note: MASTER FAILS (no issue filed). The same holds for CSS-wide keywords and `default` in a list (13 WPT invalid cases); master keeps only `opacity,none`, so engines compute all instead of color
+*/
+.t { transition-property: color; transition-property: opacity, none; }

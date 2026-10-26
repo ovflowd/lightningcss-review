@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: transition-animation/animation-range-end-keyword-default-100
+area: transition-animation
+title: `animation-range: entry exit` keeps the end offset at 100% and minification is idempotent
+mode: minify
+targets: none
+expect: equivalent, idempotent, output-not-contains:"exit 0%"
+known: open-issue#1226
+ref: https://drafts.csswg.org/scroll-animations-1/#animation-range https://github.com/parcel-bundler/lightningcss/issues/1226
+note: AnimationRange::parse reads the end with AnimationRangeStart::parse (default 0%, src/properties/animation.rs:539); `entry 0% exit 100%` -> `entry exit` -> `entry exit 0%` on a second pass
+*/
+.t { animation-range: entry exit; }
+.u { animation-range: entry 0% exit 100%; }

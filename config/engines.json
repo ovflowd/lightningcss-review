@@ -1,0 +1,66 @@
+{
+  "$comment": "Engine profiles. Each profile is one Docker image (Playwright release => exact browser builds). `expected` versions come from playwright-core/browsers.json and the release notes (research: wpt-engines \u00a73.2); `lcr setup` records the versions the container actually reports in env.json and reports print those. `lightningcss` maps an engine to the LightningCSS Browsers key used to decide whether an engine is inside a case's targets. Playwright WebKit is a WPE/GTK build, not Safari: treat it as Safari of the same WebKit version, minus Apple-only features. Legacy sets were chosen from BCD so that each lacks the features LightningCSS lowers (wpt-engines \u00a73.3).",
+  "default_profiles": [
+    "latest",
+    "legacy-2023",
+    "legacy-2021"
+  ],
+  "profiles": {
+    "latest": {
+      "playwright": "1.64.1",
+      "distro": "noble",
+      "role": "reference",
+      "analysis": true,
+      "expected": {
+        "chromium": "156.0.8078.4",
+        "firefox": "157.0",
+        "webkit": "27.2"
+      }
+    },
+    "legacy-2023": {
+      "playwright": "1.30.0",
+      "distro": "focal",
+      "role": "legacy",
+      "expected": {
+        "chromium": "110.0.5481.38",
+        "firefox": "108.0.2",
+        "webkit": "16.4"
+      },
+      "lacks": "nesting, lab/lch/oklab/oklch/color() and color-mix() in Chromium/Firefox, relative color, light-dark(), gradient interpolation spaces in Chromium/Firefox, :dir() in Chromium, round()/mod()/abs()/sign(), @scope, @starting-style, :has() and @container in Firefox"
+    },
+    "legacy-2021": {
+      "playwright": "1.16.3",
+      "distro": "focal",
+      "role": "legacy",
+      "expected": {
+        "chromium": "97.0.4666.0",
+        "firefox": "93.0",
+        "webkit": "15.4"
+      },
+      "lacks": "everything legacy-2023 lacks, plus @layer, :has(), @container, dvh units in Chromium/Firefox, media range syntax in Chromium/WebKit, individual transforms in Chromium, color-mix() and :dir() in WebKit"
+    },
+    "legacy-2020": {
+      "playwright": "1.4.2",
+      "distro": "",
+      "role": "legacy",
+      "optional": true,
+      "expected": {
+        "chromium": "86.0.4238.0",
+        "firefox": "80.0b8",
+        "webkit": "14.0"
+      },
+      "lacks": ":is()/:where() and :not(a, b) in Chromium, logical shorthands, inset, aspect-ratio, system-ui in Firefox. Image is bionic with Node 12 and browsers under /root/.cache/ms-playwright: not supported by browsers.Dockerfile yet"
+    }
+  },
+  "engine_to_target": {
+    "chromium": "chrome",
+    "firefox": "firefox",
+    "webkit": "safari"
+  },
+  "analysis_packages": [
+    "css-tree@3.2.1",
+    "colorjs.io@0.7.1",
+    "@webref/css@8.7.8",
+    "pngjs@7.0.0"
+  ]
+}

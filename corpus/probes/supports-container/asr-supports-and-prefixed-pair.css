@@ -1,0 +1,14 @@
+/*! lcr-probe
+id: supports-container/asr-supports-and-prefixed-pair
+area: supports-container
+title: @supports (a) and (prefixed-a) must not be rewritten to an `or`
+mode: print
+targets: none
+expect: equivalent, output-not-contains:" or "
+known: open-bug
+ref: https://drafts.csswg.org/css-conditional-3/#at-supports https://github.com/parcel-bundler/lightningcss/commit/6bd2761badb9d5434783acffcae35ef6c3311e06
+note: SupportsCondition::parse (supports.rs:204-260) merges same-property declarations regardless of and/or, and Declaration::to_css always joins prefixes with `or` (supports.rs:399); engines supporting only one spelling of backdrop-filter evaluate differently
+*/
+@supports (-webkit-backdrop-filter: blur(1px)) and (backdrop-filter: blur(1px)) {
+  .t { color: red }
+}

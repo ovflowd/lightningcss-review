@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: selectors/ss-dir-unknown-ident-is-valid
+area: selectors
+title: `:dir()` with an identifier other than ltr/rtl is valid (matches nothing) and must not invalidate its selector list
+mode: minify
+targets: none
+expect: equivalent
+known: open-bug
+dom: <div class="t"></div>
+ref: https://drafts.csswg.org/selectors-4/#the-dir-pseudo
+note: spec: "Values other than ltr and rtl are not invalid, but do not match anything"; Chrome 156 and Firefox 157 accept :dir(auto). LightningCSS parses Direction as an ltr|rtl enum (src/selector.rs:234,392-401) and errors, so the rule (and with errorRecovery the whole list) is lost
+*/
+.u:dir(auto), .t { color: red; }

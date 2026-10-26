@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: font/sft-font-family-leading-space-stays-quoted
+area: font
+title: A quoted family name with leading or trailing spaces must stay quoted
+mode: minify
+targets: none
+expect: equivalent, output-not-contains:"font-family: lead"
+known: open-bug
+ref: https://drafts.csswg.org/css-fonts-4/#font-family-name-syntax https://github.com/parcel-bundler/lightningcss/issues/1054 https://github.com/parcel-bundler/lightningcss/pull/1064
+note: master prints font-family: lead,serif and the parser trims the whitespace, so the family becomes lead; #1064 only quotes names containing two consecutive spaces (src/properties/font.rs:414)
+*/
+.t { font-family: " lead", serif; }
+.u { font-family: "trail ", serif; }

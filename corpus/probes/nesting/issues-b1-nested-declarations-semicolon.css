@@ -1,0 +1,44 @@
+/*! lcr-probe
+id: nesting/issues-b1-nested-declarations-semicolon
+area: nesting
+title: Declarations interleaved with nested rules keep their terminating semicolon in minified output
+mode: minify
+targets: none
+expect: equivalent, idempotent
+known: none
+ref: https://github.com/parcel-bundler/lightningcss/issues/989 https://github.com/parcel-bundler/lightningcss/issues/1002 https://github.com/parcel-bundler/lightningcss/issues/1003 https://github.com/parcel-bundler/lightningcss/commit/9e04c0112da0d614a437ff5903066607c50bc6f9 https://drafts.csswg.org/css-nesting-1/#nested-declarations-rule
+dom: <div class="foo bar">a</div><div class="foo">b</div><div class="bar"><div>c</div></div><div class="Foo"><div class="Bar">d</div><div class="Baz">e</div></div><div class="case-one"><div>f</div><div>g</div></div>
+note: regression in v1.30.0 (6c465c1, nested declarations rule) printed `margin:autodiv &{..}` / `border-color:#00f&:hover{..}`; fixed in v1.31.0 by 9e04c01
+*/
+.foo {
+  &.bar { color: red; }
+  border-color: blue;
+  &:hover { background: green; }
+}
+
+.bar {
+  @media (width > 10em) {
+    margin: auto;
+
+    div & {
+      color: red;
+    }
+  }
+}
+
+.Foo {
+  color: red;
+  .Bar { color: blue; }
+  --some-var: 100%;
+  .Baz { color: green; }
+}
+
+.case-one {
+  display: grid;
+  grid-template-columns: 1fr;
+  & > :nth-child(1) { grid-row: 3; }
+  @media (width >= 1px) {
+    grid-template-columns: repeat(3, 1fr);
+    & > :nth-child(1) { grid-row: 1; }
+  }
+}

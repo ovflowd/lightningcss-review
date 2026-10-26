@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: media-queries/not-range-equality-negation-dropped
+area: media-queries
+title: `not (width = X)` must keep its negation when the range feature is printed
+mode: minify
+targets: none
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/mediaqueries-4/#typedef-media-not https://drafts.csswg.org/mediaqueries-4/#mq-range-context
+dom: <p class="t">x</p>
+note: master fails (no issue filed); MediaFeatureComparison::negate maps Equal to Equal (src/media_query.rs:950), so MediaCondition::to_css folds `not (width = 100px)` into `(width=100px)`; also reproduces in print mode
+*/
+@media not (width = 100px) { .t { color: rgb(0, 128, 0); } }

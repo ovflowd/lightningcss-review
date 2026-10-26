@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: logical/arch-props-values-transition-inline-size-rtl-maps-to-height
+area: logical
+title: Lowering `transition: inline-size` for RTL must not target `height`
+mode: lower-minify
+targets: chrome 50
+expect: output-not-contains:"height"
+known: open-bug
+ref: https://drafts.csswg.org/css-logical/#dimension-properties
+note: get_logical_properties maps InlineSize/MinInlineSize/MaxInlineSize to height in the RTL branch (src/properties/transition.rs:493-497); direction never swaps axes
+*/
+.t { transition: inline-size 1s; }

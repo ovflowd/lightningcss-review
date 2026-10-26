@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: logical/sft-dir-attribute-without-lang
+area: logical
+title: Lowered margin-inline-start must follow direction, not language
+mode: lower-minify
+targets: chrome 60
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/css-logical-1/#box https://drafts.csswg.org/css-writing-modes-4/#logical-to-physical
+dom: <div dir="rtl"><div class="t">x</div></div>
+note: the mapping uses the element's computed direction; master's fallback uses a fixed :lang() list (ar, he, fa, ...) so dir=rtl without lang gets margin-left; a known design limitation, listed so reviewers see it
+*/
+.t { margin-inline-start: 20px; }

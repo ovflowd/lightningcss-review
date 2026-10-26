@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: font/sft-oblique-calc-out-of-range-clamped
+area: font
+title: oblique calc(100deg) is valid (clamped to 90deg) and must not be unwrapped to the invalid literal
+mode: minify
+targets: none
+expect: equivalent, output-not-contains:"oblique 100deg"
+known: open-bug
+ref: https://drafts.csswg.org/css-fonts-4/#font-style-prop https://drafts.csswg.org/css-values-4/#calc-range https://github.com/web-platform-tests/wpt/blob/b89af32bc8f42d678f444eb0703bca015ddcf240/css/css-fonts/parsing/font-style-valid.html
+note: WPT font-style-valid case flagged valid-became-invalid by the Chrome oracle (1.33.0 and master); same class as font-weight calc(0) and calc(1001)
+*/
+.t { font-style: oblique calc(100deg); }

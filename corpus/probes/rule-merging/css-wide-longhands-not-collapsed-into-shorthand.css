@@ -1,0 +1,14 @@
+/*! lcr-probe
+id: rule-merging/css-wide-longhands-not-collapsed-into-shorthand
+area: rule-merging
+title: border-width/style/color: inherit must not become `border: inherit` (that also inherits border-image)
+mode: minify
+targets: none
+expect: equivalent
+known: none
+ref: https://drafts.csswg.org/css-cascade-5/#shorthand https://drafts.csswg.org/css-cascade-5/#reset-only-sub-property
+dom: <div class="p"><p class="t">x</p></div>
+note: guard, master passes; a CSS-wide keyword on a shorthand sets every sub-property, reset-only ones included
+*/
+.p { border: 4px solid rgb(0, 0, 255); border-image: linear-gradient(red, blue) 1; }
+.t { border-width: inherit; border-style: inherit; border-color: inherit; }

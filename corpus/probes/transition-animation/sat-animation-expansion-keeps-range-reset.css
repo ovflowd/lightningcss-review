@@ -1,0 +1,14 @@
+/*! lcr-probe
+id: transition-animation/sat-animation-expansion-keeps-range-reset
+area: transition-animation
+title: Expanding the animation shorthand into longhands must keep its reset of animation-range
+mode: minify
+targets: none
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/scroll-animations-1/#named-range-animation-declaration https://drafts.csswg.org/css-cascade-5/#reset-only-sub-property
+dom: <div class="b a"></div>
+note: MASTER FAILS (no issue filed). The list lengths differ, so master replaces `.a`'s shorthand with 9 longhands (incl. animation-timeline:auto,auto) but no animation-range; .b's range then leaks through: entry 10%/exit 90% instead of normal/normal in Chrome 156 and WebKit 27.2
+*/
+.b { animation-range: entry 10% exit 90%; }
+.a { animation: x 1s, y 2s; animation-name: z; }

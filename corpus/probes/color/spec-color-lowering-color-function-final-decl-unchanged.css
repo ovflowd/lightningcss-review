@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: color/spec-color-lowering-color-function-final-decl-unchanged
+area: color
+title: lowering color(display-p3) for old targets keeps the authored value as the final declaration
+mode: lower
+targets: safari 9, chrome 80
+expect: equivalent
+known: none
+ref: https://drafts.csswg.org/css-color-4/#color-function https://github.com/parcel-bundler/lightningcss/blob/master/website/pages/transpilation.md
+note: guard: fallbacks (#rrggbb) precede the original; modern engines must still compute the p3 color
+*/
+.t { color: color(display-p3 1 0.5 0); border: 2px solid color(display-p3 0 0.5 1); }

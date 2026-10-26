@@ -1,0 +1,14 @@
+/*! lcr-probe
+id: cascade-layers-scope/scope-nesting-selector-zero-specificity-when-lowering
+area: cascade-layers-scope
+title: Lowering `&` inside @scope must produce :where(:scope), not :scope
+mode: lower-minify
+targets: chrome 118
+expect: equivalent
+known: open-issue#1189
+ref: https://drafts.csswg.org/css-cascade-6/#scope-effects https://drafts.csswg.org/css-nesting-1/#nesting-at-scope https://github.com/parcel-bundler/lightningcss/issues/700 https://github.com/parcel-bundler/lightningcss/issues/1189
+dom: <div class="card"><p class="b c">x</p></div>
+note: master fails (tracked issue); Chrome 118-119 support @scope but not relaxed nesting, so this target config is real; serialize_nesting writes `:scope` (src/selector.rs:1767-1768), adding (0,1,0) and letting scope proximity beat `.b.c`
+*/
+@scope (.card) { & .b { color: rgb(255, 0, 0); } }
+.b.c { color: rgb(0, 128, 0); }

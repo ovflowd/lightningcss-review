@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: at-rules-other/unknown-at-rule-stays-in-style-rule-when-nesting-lowered
+area: at-rules-other
+title: Unknown at-rules nested in a style rule stay inside it when nesting is lowered
+mode: lower-minify
+targets: chrome 95
+expect: output-contains:".foo{text-decoration-line:underline;@apply --m1", no-panic
+known: fixed-by#1233
+ref: https://drafts.csswg.org/css-mixins-1/#apply-rule https://github.com/parcel-bundler/lightningcss/issues/1232 https://github.com/parcel-bundler/lightningcss/pull/1233
+note: v1.32.0 hoisted `@apply --m1;` to the top level; fixed in v1.33.0
+*/
+.foo { text-decoration-line: underline; @apply --m1; }

@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: supports-container/style-query-custom-property-value-not-minified
+area: supports-container
+title: style(--x: #ff0000) compares token sequences; minifying the value to `red` breaks matching
+mode: minify
+targets: none
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/css-conditional-5/#style-container https://drafts.csswg.org/css-conditional-5/#typedef-style-feature-plain
+dom: <div style="--x: #ff0000"><p class="t">x</p></div>
+note: master fails (no issue filed); StyleQuery::Declaration re-parses the value as a property (src/rules/container.rs:298) and prints it minified; the value set inline (or from JS / another sheet) is untouched, so the query stops matching
+*/
+@container style(--x: #ff0000) { .t { color: rgb(0, 128, 0); } }

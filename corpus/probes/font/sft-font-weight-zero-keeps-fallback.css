@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: font/sft-font-weight-zero-keeps-fallback
+area: font
+title: font-weight 0 is invalid and must not replace the preceding valid declaration
+mode: minify
+targets: none
+expect: equivalent, output-contains:"font-weight:100"
+known: open-bug
+ref: https://drafts.csswg.org/css-fonts-4/#font-weight-prop https://drafts.csswg.org/css-fonts-4/#font-weight-absolute-values
+note: <number [1,1000]>; master parses 0 and 1001 as valid, dedupes the 100 away, browsers then drop 0 and use 400 (FontWeight parse, src/properties/font.rs:32)
+*/
+.t { font-weight: 100; font-weight: 0; }

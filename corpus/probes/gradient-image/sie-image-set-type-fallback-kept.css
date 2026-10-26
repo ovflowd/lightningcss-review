@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: gradient-image/sie-image-set-type-fallback-kept
+area: gradient-image
+title: The url() fallback before an image-set() using type() must survive for targets without type() support
+mode: lower-minify
+targets: chrome 100, safari 15
+expect: output-contains:"background-image:url(a.jpg)"
+known: open-bug
+ref: https://drafts.csswg.org/css-images-4/#image-set-notation https://github.com/parcel-bundler/lightningcss/issues/252 https://github.com/mdn/browser-compat-data/blob/main/css/types/image.json
+note: MASTER FAILS (no issue filed yet; #252 fixed only the no-image-set case). BCD: -webkit-image-set in Chrome 20-112 supports url images and x only, and Safari 14-16 lacks type(); Feature::ImageSet (src/compat.rs:2766) treats both as supporting image-set, so the handler drops url(a.jpg) and those browsers render no image
+*/
+.t { width: 50px; height: 50px; background-image: url(a.jpg); background-image: image-set("a.avif" type("image/avif"), "a.jpg" type("image/jpeg")); }

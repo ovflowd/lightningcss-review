@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: font/sft-font-feature-values-value-count-ignored
+area: font
+title: Feature values with too many or out-of-range indexes are invalid and must not override valid ones
+mode: minify
+targets: none
+expect: output-contains:"swishy:1", output-contains:"cv:1 2"
+known: open-bug
+ref: https://drafts.csswg.org/css-fonts-4/#font-feature-values-syntax
+note: @swash takes exactly one index and @character-variant a first index in [0,99] plus at most one more; master keeps swishy:3 5 and cv:100 1
+*/
+@font-feature-values Foo { @swash { swishy: 1; swishy: 3 5; } @character-variant { cv: 1 2; cv: 100 1; } }

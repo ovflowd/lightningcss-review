@@ -1,0 +1,14 @@
+/*! lcr-probe
+id: cascade-layers-scope/revert-rule-adjacent-rules-not-merged
+area: cascade-layers-scope
+title: Adjacent same-selector rules must not be merged when the later one uses revert-rule
+mode: minify
+targets: none
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/css-cascade-5/#revert-rule-keyword https://github.com/w3c/csswg-drafts/issues/10443
+dom: <div style="color: rgb(0, 0, 255)"><p class="t">x</p></div>
+note: master fails (no issue filed); revert-rule (Chrome 148, Firefox 150, Safari 27) is not in CSSWideKeyword (src/properties/mod.rs:1684-1695); merge_style_rules folds both rules so revert-rule reverts past the green declaration to the inherited blue
+*/
+.t { color: rgb(0, 128, 0); }
+.t { color: revert-rule; }

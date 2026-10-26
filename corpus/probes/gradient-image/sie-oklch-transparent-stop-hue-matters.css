@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: gradient-image/sie-oklch-transparent-stop-hue-matters
+area: gradient-image
+title: In a polar interpolation space a fully transparent stop keeps its hue, so it is not interchangeable with `transparent`
+mode: minify
+targets: none
+expect: equivalent
+known: none
+ref: https://drafts.csswg.org/css-color-4/#interpolation-missing https://drafts.csswg.org/css-color-4/#interpolation-alpha https://drafts.csswg.org/css-images-4/#coloring-gradient-line
+note: guard. Premultiplication makes rgb(255 0 0 / 0) and transparent identical in rectangular spaces (srgb/oklab, Chrome 156 maxdiff 1), but in oklch transparent (black) has a powerless hue and the red one does not (maxdiff 88). A "rgba(...,0) -> transparent" rewrite is only safe outside polar spaces. Needs pixel comparison
+*/
+.t { width: 100px; height: 50px; background: linear-gradient(in oklch 90deg, rgba(255, 0, 0, 0), blue); }

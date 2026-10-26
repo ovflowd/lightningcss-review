@@ -1,0 +1,14 @@
+/*! lcr-probe
+id: css-modules/issues-b0-nth-child-of-selector-renamed
+area: css-modules
+title: Class selectors inside :nth-child(An+B of S) must be renamed by CSS modules
+mode: minify
+targets: none
+flags: css-modules
+expect: output-not-contains:"of .foo)"
+known: fixed-by#ed9e659
+ref: https://drafts.csswg.org/selectors/#the-nth-child-pseudo https://github.com/parcel-bundler/lightningcss/issues/883
+note: <=1.28.2 the selector printer had no NthOf arm and fell back to the selectors crate's ToCss, bypassing renaming; fixed by commit ed9e659 (1.29.0)
+*/
+.foo { color: red; }
+:nth-child(1 of .foo) { color: blue; }

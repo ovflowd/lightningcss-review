@@ -1,0 +1,21 @@
+/*! lcr-probe
+id: media-queries/issues-b1-general-enclosed-calc-error-recovery
+area: media-queries
+title: A media feature with an unparseable calc() is <general-enclosed>; the rule must survive with errorRecovery
+mode: minify
+targets: none
+flags: error-recovery
+expect: equivalent, output-contains:".className"
+known: none
+ref: https://github.com/parcel-bundler/lightningcss/issues/987 https://drafts.csswg.org/mediaqueries-4/#typedef-general-enclosed https://drafts.csswg.org/mediaqueries-4/#evaluating
+note: v1.30.x dropped the whole @media rule even with errorRecovery; v1.31.0 (220b390) keeps it as MediaCondition::Unknown; without errorRecovery it is still a hard error
+*/
+@media (min-width: calc(baseUnit * 1)) {
+  .className {
+    color: red;
+  }
+}
+
+.other {
+  color: blue;
+}

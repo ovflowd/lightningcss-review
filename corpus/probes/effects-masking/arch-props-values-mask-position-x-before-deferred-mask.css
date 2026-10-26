@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: effects-masking/arch-props-values-mask-position-x-before-deferred-mask
+area: effects-masking
+title: `mask-position-x` after `mask` must stay after it
+mode: minify
+targets: none
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/css-masking-1/#the-mask
+note: mask-position-x/-y are typed but not handled by MaskHandler, so they are emitted before the deferred mask shorthand; non-standard longhand (Gecko only)
+*/
+.t { mask: linear-gradient(#000, #000); mask-position-x: 10px; }

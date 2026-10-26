@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: media-queries/exclusive-range-lowering-must-be-mq3-parsable
+area: media-queries
+title: Lowering `(width > X)` for Safari 15 must not use the MQ4-only `not (...)` condition
+mode: lower-minify
+targets: safari 15
+expect: equivalent, output-not-contains:"not ("
+known: open-issue#1361
+ref: https://drafts.csswg.org/mediaqueries-4/#mq-syntax https://drafts.csswg.org/mediaqueries-4/#mq-min-max https://github.com/parcel-bundler/lightningcss/issues/1361
+dom: <p class="t">x</p>
+note: master fails (tracked issue); Safari < 16.4 / Chrome < 104 parse neither range syntax nor `not (cond)` (BCD css.at-rules.media.or_syntax); `not all and (max-width: 100px)` is exact and MQ3-valid
+*/
+@media (width > 100px) { .t { color: rgb(0, 128, 0); } }

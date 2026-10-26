@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: color/spec-color-mix-lightness-clamped-at-parse-time
+area: color
+title: oklab L>1 is clamped at parsed-value time before mixing
+mode: minify
+targets: none
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/css-color-4/#specifying-oklab-oklch
+note: engines: oklab(0.5 0 0); master mixes the unclamped L (oklab(75% 0 0)); parse_lab clamps only at 0 (src/values/color.rs:1205)
+*/
+.t { color: color-mix(in oklab, oklab(1.5 0 0), black); }

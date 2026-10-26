@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: transform/sat-transform-origin-four-value-invalid
+area: transform
+title: transform-origin has no 4-value form; the invalid value must not replace the fallback
+mode: minify
+targets: none
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/css-transforms-1/#transform-origin-property https://github.com/web-platform-tests/wpt/blob/master/css/css-transforms/parsing/transform-origin-invalid.html
+note: MASTER FAILS (no issue filed). transform-origin is typed as Position (src/properties/mod.rs:1474), which accepts the 4-value form; master keeps only the invalid declaration, so engines compute 50px 50px instead of 10px 20px
+*/
+.t { width: 100px; height: 100px; transform-origin: 10px 20px; transform-origin: bottom 10% right 20%; }

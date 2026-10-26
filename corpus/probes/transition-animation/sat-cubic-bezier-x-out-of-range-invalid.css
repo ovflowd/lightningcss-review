@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: transition-animation/sat-cubic-bezier-x-out-of-range-invalid
+area: transition-animation
+title: cubic-bezier() with an x outside [0,1] is invalid and must not replace the fallback
+mode: minify
+targets: none
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/css-easing-1/#cubic-bezier-easing-functions https://drafts.csswg.org/css-easing-2/#funcdef-cubic-bezier https://github.com/web-platform-tests/wpt/blob/master/css/css-easing/timing-functions-syntax-invalid.html
+note: MASTER FAILS (no issue filed). EasingFunction::parse (src/values/easing.rs:88-96) has no range check; master keeps only cubic-bezier(2,0,0,1), so engines compute ease (initial) instead of linear
+*/
+.t { transition-timing-function: linear; transition-timing-function: cubic-bezier(2, 0, 0, 1); }

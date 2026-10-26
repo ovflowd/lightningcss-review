@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: text/sft-text-shadow-spread-keeps-fallback
+area: text
+title: A text-shadow with spread (unsupported in every engine) must not delete the preceding fallback
+mode: minify
+targets: none
+expect: equivalent, output-contains:"text-shadow:1px 1px red"
+known: open-bug
+ref: https://drafts.csswg.org/css-text-decor-4/#text-shadow-property https://drafts.csswg.org/css-text-decor-3/#text-shadow-property
+note: spread and inset are Text Decoration 4 additions with no BCD support entry; master parses them as typed TextShadow and dedupes the 2-length fallback away (src/properties/text.rs:1369)
+*/
+.t { text-shadow: 1px 1px red; text-shadow: 1px 1px 2px 3px red; }

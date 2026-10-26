@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: values-numeric/issues-important-negative-scientific-angle
+area: values-numeric
+title: Negative numbers in scientific notation must not be printed with a double minus
+mode: minify
+targets: none
+expect: equivalent, output-not-contains:"--1"
+known: fixed-by#1192
+ref: https://github.com/parcel-bundler/lightningcss/issues/1097 https://github.com/parcel-bundler/lightningcss/issues/899 https://drafts.csswg.org/css-syntax-3/#consume-number https://github.com/parcel-bundler/lightningcss/pull/1192
+note: <=1.32.0 printed `--1.42109e-14deg` (invalid; whole background dropped)
+*/
+.foo { background: linear-gradient(-1.42109e-14deg, red 0%, blue 100%); }

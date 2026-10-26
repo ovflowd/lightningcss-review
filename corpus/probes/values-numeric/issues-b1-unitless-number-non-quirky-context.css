@@ -1,0 +1,20 @@
+/*! lcr-probe
+id: values-numeric/issues-b1-unitless-number-non-quirky-context
+area: values-numeric
+title: Unitless numbers must not become px lengths in shorthands or functions, where no quirk allows them
+mode: minify
+targets: none
+expect: equivalent, output-not-contains:"333333px", output-not-contains:"translate(10px"
+known: open-issue#682
+ref: https://github.com/parcel-bundler/lightningcss/issues/1006 https://github.com/parcel-bundler/lightningcss/issues/682 https://drafts.csswg.org/css-values-4/#deprecated-quirky-length https://drafts.csswg.org/css-color-4/#quirky-color
+dom: <div class="t">t</div><div class="u">u</div>
+note: src/values/length.rs parses any <number-token> as px ("TODO: quirks mode only?"); even in quirks mode the background shorthand and functional notations reject quirky lengths/colors
+*/
+.t {
+  background-color: red;
+  background: 333333;
+}
+
+.u {
+  transform: translate(10, 20);
+}

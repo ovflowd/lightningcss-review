@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: transition-animation/issues-b5-animation-timeline-none-not-folded
+area: transition-animation
+title: `animation-timeline:none` folded into the shorthand is re-read as a fill-mode
+mode: minify
+targets: none
+expect: output-contains:"animation-timeline:none", equivalent
+known: open-issue#1369
+ref: https://drafts.csswg.org/css-animations-2/#propdef-animation-timeline https://github.com/parcel-bundler/lightningcss/issues/1369
+note: from the #1369 thread — `animation:1s x none` parses in Chromium with fill-mode none and timeline auto, so the animation runs instead of being inactive
+*/
+.t { animation: x 1s; animation-timeline: none; }
+@keyframes x { from { opacity: 0; } to { opacity: 1; } }

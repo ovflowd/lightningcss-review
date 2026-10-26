@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: font/font-shorthand-reset-only-longhands-keep-order
+area: font
+title: Reset-only font longhands written after `font` must stay after it
+mode: minify
+targets: none
+expect: equivalent
+known: open-issue#1207
+ref: https://drafts.csswg.org/css-fonts-4/#font-prop https://github.com/parcel-bundler/lightningcss/issues/1207 https://github.com/parcel-bundler/lightningcss/pull/1209
+note: FontHandler buffers `font` until finalize but passes unknown font-* longhands through immediately ("TODO: reset other properties", src/properties/font.rs:879). Chrome 156: oldstyle-nums -> normal
+*/
+.t { font: 12px serif; font-variant-numeric: oldstyle-nums; font-kerning: none; font-feature-settings: "liga" 0; font-variation-settings: "wght" 500; }

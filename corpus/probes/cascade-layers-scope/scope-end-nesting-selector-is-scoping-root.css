@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: cascade-layers-scope/scope-end-nesting-selector-is-scoping-root
+area: cascade-layers-scope
+title: `&` in <scope-end> means :where(:scope) and must not be replaced by the <scope-start> selector
+mode: minify
+targets: none
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/css-cascade-6/#scope-limits https://drafts.csswg.org/css-cascade-6/#scope-effects https://github.com/w3c/csswg-drafts/issues/9740
+dom: <div class="a"><p class="b t">one</p></div><div class="a"><div class="a"><p class="b t">two</p></div></div>
+note: master fails (no issue filed); ScopeRule::to_css prints <scope-end> with <scope-start> as nesting context (src/rules/scope.rs:86-90), giving `to (.a>.b)`; the limit set then differs for the first p (if relative scope-end selectors get the implied `:scope ` prefix) or the second p (if not); WPT css/css-cascade/scope-nesting.html
+*/
+@scope (.a) to (& > .b) { .t { color: rgb(255, 0, 0); } }

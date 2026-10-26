@@ -1,0 +1,14 @@
+/*! lcr-probe
+id: media-queries/asr-empty-media-list-print
+area: media-queries
+title: An empty @media query list must not print as `not all`
+mode: print
+targets: none
+expect: equivalent, output-not-contains:"not all"
+known: open-bug
+ref: https://drafts.csswg.org/mediaqueries-4/#mq-list
+note: MediaList::to_css (media_query.rs:167-170) writes `not all` for an empty list while always_matches() treats it as true; minify mode unwraps it (lib.rs:9350), print mode turns an always-true block into a never-true one
+*/
+@media {
+  .t { color: red }
+}

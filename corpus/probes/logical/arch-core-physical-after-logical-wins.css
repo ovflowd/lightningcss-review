@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: logical/arch-core-physical-after-logical-wins
+area: logical
+title: A physical longhand declared after its logical counterpart must still win after :lang()/:dir() lowering
+mode: lower-minify
+targets: safari 11
+expect: equivalent
+known: open-issue#1179
+ref: https://drafts.csswg.org/css-logical-1/#logical-property-group https://github.com/parcel-bundler/lightningcss/issues/1179
+note: master emits `.t{margin-left:2px}.t:not(:lang(...)){margin-left:1px}...`; the generated rule is later and more specific, so LTR gets 1px instead of 2px
+*/
+.t { margin-inline-start: 1px; margin-left: 2px; }

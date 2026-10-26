@@ -1,0 +1,11 @@
+/*! lcr-probe
+id: color/spec-color-light-dark-equal-arms-collapse
+area: color
+title: light-dark(x, x) may collapse to x
+mode: minify
+targets: none
+expect: equivalent
+known: fixed-by#1183
+ref: https://drafts.csswg.org/css-color-5/#light-dark https://github.com/parcel-bundler/lightningcss/pull/1183
+*/
+.t { color: light-dark(red, red); background-color: light-dark(rgb(0 0 255), blue); }

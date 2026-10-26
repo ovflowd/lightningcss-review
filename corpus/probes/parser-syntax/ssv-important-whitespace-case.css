@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: parser-syntax/ssv-important-whitespace-case
+area: parser-syntax
+title: "! IMPORTANT" with whitespace and any case is an important flag
+mode: minify
+targets: none
+expect: equivalent
+known: none
+ref: https://drafts.csswg.org/css-syntax-3/#consume-declaration
+note: guard; the last two non-whitespace tokens are `!` and an ASCII case-insensitive `important`
+*/
+.t { color: red; color: green ! IMPORTANT; color: blue; }

@@ -1,0 +1,15 @@
+/*! lcr-probe
+id: media-queries/custom-media-true-keyword
+area: media-queries
+title: `@custom-media --x true` must compile to an always-true query, not the media type `true`
+mode: lower-minify
+targets: chrome 120
+flags: custom-media
+expect: output-not-contains:"@media true"
+known: open-bug
+ref: https://drafts.csswg.org/mediaqueries-5/#at-ruledef-custom-media https://drafts.csswg.org/mediaqueries-5/#valdef-custom-media-true
+dom: <p class="t">x</p>
+note: master fails (no issue filed); `true`/`false` are parsed by MediaList::parse as an unknown media type and propagated by process_condition (src/media_query.rs:1827-1837), so the compiled rule never matches
+*/
+@custom-media --always true;
+@media (--always) { .t { color: rgb(0, 128, 0); } }

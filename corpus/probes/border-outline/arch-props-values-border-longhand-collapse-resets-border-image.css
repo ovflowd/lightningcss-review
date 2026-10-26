@@ -1,0 +1,18 @@
+/*! lcr-probe
+id: border-outline/arch-props-values-border-longhand-collapse-resets-border-image
+area: border-outline
+title: Collapsing side shorthands into `border` must not reset an earlier border-image
+mode: minify
+targets: none
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/css-backgrounds-3/#border-shorthands
+note: the border shorthand resets border-image; the four border-* sides do not. 1.33.0 emits border-image:...;border:4px solid #00f
+*/
+.t {
+  border-image: var(--bi, linear-gradient(red, red) 1);
+  border-top: 4px solid blue;
+  border-right: 4px solid blue;
+  border-bottom: 4px solid blue;
+  border-left: 4px solid blue;
+}

@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: supports-container/issues-b3-scroll-state-query
+area: supports-container
+title: scroll-state() container queries must parse and round-trip
+mode: print
+targets: none
+expect: no-panic, idempotent, output-contains:"scroll-state("
+known: fixed-by#220b390
+ref: https://github.com/parcel-bundler/lightningcss/issues/1135 https://github.com/parcel-bundler/lightningcss/issues/1128 https://drafts.csswg.org/css-conditional-5/#scroll-state-container
+note: fixed by commit 220b390 (v1.31.0, no PR); the same commit added MediaCondition::Unknown error recovery that caused the #1137 regression
+*/
+@container scroll-state(scrollable: x) { .t { color: red; } }
+@container card scroll-state((stuck: top) and (not (snapped: x))) { .u { color: red; } }

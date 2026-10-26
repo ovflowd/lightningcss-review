@@ -1,0 +1,14 @@
+/*! lcr-probe
+id: text/sft-white-space-text-wrap-order
+area: text
+title: white-space and text-wrap share text-wrap-mode, so their order must be kept
+mode: minify
+targets: none
+expect: equivalent
+known: none
+ref: https://drafts.csswg.org/css-text-4/#white-space-property https://drafts.csswg.org/css-text-4/#text-wrap-shorthand https://drafts.csswg.org/css-text-4/#text-wrap-mode
+note: text-wrap-mode is a longhand of both shorthands; white-space is typed (L3 keywords) and text-wrap untyped, so buffering either one reorders them
+*/
+.a { text-wrap: balance; white-space: nowrap; }
+.b { white-space: nowrap; text-wrap: balance; }
+.c { white-space: pre; text-wrap-mode: wrap; }

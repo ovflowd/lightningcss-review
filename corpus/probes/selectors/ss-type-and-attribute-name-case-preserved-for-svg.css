@@ -1,0 +1,14 @@
+/*! lcr-probe
+id: selectors/ss-type-and-attribute-name-case-preserved-for-svg
+area: selectors
+title: Type selectors and attribute names must keep their case (SVG names are matched case-sensitively in HTML documents)
+mode: minify
+targets: none
+expect: equivalent, output-contains:"foreignObject", output-contains:"[viewBox]"
+known: none
+dom: <svg viewBox="0 0 10 10"><foreignObject class="f" width="5" height="5"></foreignObject></svg>
+ref: https://html.spec.whatwg.org/multipage/semantics-other.html#case-sensitivity-of-selectors https://drafts.csswg.org/selectors-4/#case-sensitive
+note: selectors are lowercased only when compared against HTML elements/attributes; in Firefox 157 and WebKit 27.2 `foreignobject` and `[viewbox]` do not match the SVG nodes (Chrome 156 matches them case-insensitively, so only non-Chrome engines catch a lowercasing bug)
+*/
+svg foreignObject { color: red; }
+svg[viewBox] { color: blue; }

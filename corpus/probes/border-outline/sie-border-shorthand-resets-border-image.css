@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: border-outline/sie-border-shorthand-resets-border-image
+area: border-outline
+title: `border` after `border-image` resets it; the border-image must not survive or move after
+mode: minify
+targets: none
+expect: equivalent, output-not-contains:"border-image"
+known: none
+ref: https://drafts.csswg.org/css-backgrounds-3/#border-shorthands https://drafts.csswg.org/css-borders-4/#border-shorthands
+note: guard. border is the only border shorthand that resets border-image (border-top, border-width, ... do not); master correctly drops the dead border-image here
+*/
+.t { width: 50px; height: 50px; border-image: linear-gradient(blue, blue) 1; border: 10px solid red; }

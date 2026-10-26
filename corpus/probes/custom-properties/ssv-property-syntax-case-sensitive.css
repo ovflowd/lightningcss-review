@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: custom-properties/ssv-property-syntax-case-sensitive
+area: custom-properties
+title: Syntax data type names are case-sensitive ("<LENGTH>" is invalid)
+mode: minify
+targets: none
+expect: equivalent, output-not-contains:"<length>"
+known: open-bug
+ref: https://drafts.css-houdini.org/css-properties-values-api-1/#consume-data-type-name https://github.com/web-platform-tests/wpt/blob/master/css/css-properties-values-api/register-property-syntax-parsing.html
+note: UNFILED master failure; WPT asserts "<LENGTH>" and "<Number>" invalid; master parses names ASCII case-insensitively (syntax.rs:346) and prints "<length>", creating a registration
+*/
+@property --ssv-b { syntax: "<LENGTH>"; inherits: false; initial-value: 5px; }
+.t { width: var(--ssv-b); }

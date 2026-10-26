@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: selectors/issues-important-pseudo-element-not-wrapped-in-is
+area: selectors
+title: Selector lists containing pseudo-elements must never be wrapped in :is()
+mode: lower-minify
+targets: chrome 100
+expect: equivalent, output-not-contains:":is("
+known: fixed-by#284debf
+ref: https://github.com/parcel-bundler/lightningcss/issues/536 https://github.com/parcel-bundler/lightningcss/issues/975 https://github.com/parcel-bundler/lightningcss/issues/1032 https://drafts.csswg.org/selectors-4/#matches
+note: :is() cannot contain pseudo-elements; 1.21.0-1.21.5 and (with nested @media) <=1.29.3 produced dead :is(...::...) rules; #1032 (CSS modules :global) still does
+*/
+.q::-webkit-inner-spin-button, .q::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+.foo::after, .bar::after { @media screen { color: red; } }

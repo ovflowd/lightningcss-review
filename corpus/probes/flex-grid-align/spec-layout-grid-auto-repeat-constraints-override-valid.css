@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: flex-grid-align/spec-layout-grid-auto-repeat-constraints-override-valid
+area: flex-grid-align
+title: A track list with two auto-repeats or a flexible track beside an auto-repeat must not replace an earlier valid value
+mode: minify
+targets: none
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/css-grid-2/#typedef-auto-track-list https://drafts.csswg.org/css-grid-2/#repeat-syntax https://github.com/web-platform-tests/wpt/blob/master/css/css-grid/parsing/grid-template-columns-invalid.html
+note: MASTER FAILS (no issue filed yet). TrackList::parse (src/properties/grid.rs:425-451) does not enforce the <auto-track-list> grammar (exactly one <auto-repeat>, only <fixed-size>/<fixed-repeat> around it); 48 WPT invalid grid-template-columns/rows values drop an earlier valid declaration. grid-3 relaxes only the contents of <auto-repeat> (grid lanes, Issue 10915), not these cases
+*/
+.t { display: grid; grid-template-columns: 50px; grid-template-columns: repeat(auto-fill, 10px) repeat(auto-fit, 20px); }
+.u { display: grid; grid-template-columns: 50px; grid-template-columns: repeat(auto-fill, 10px) 1fr; }

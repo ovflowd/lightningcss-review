@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: media-queries/devon-not-range-interval-lowering
+area: media-queries
+title: `not` around a lowered range interval must stay parenthesized
+mode: lower
+targets: firefox 85
+expect: equivalent
+known: fixed-by#343
+ref: https://drafts.csswg.org/mediaqueries-4/#mq-range-context https://github.com/parcel-bundler/lightningcss/issues/320 https://github.com/parcel-bundler/lightningcss/pull/343
+note: expected lowering is `not ((min-width: 100px) and (max-width: 200px))`; without parens the query is invalid and never matches
+*/
+@media not (100px <= width <= 200px) { .x { color: green; } }

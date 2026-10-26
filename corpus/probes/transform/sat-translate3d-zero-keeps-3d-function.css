@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: transform/sat-translate3d-zero-keeps-3d-function
+area: transform
+title: translate3d(0, 0, 0) must stay a 3D transform function
+mode: minify
+targets: none
+expect: equivalent, output-not-contains:"translate(0", idempotent
+known: open-issue#239
+ref: https://drafts.csswg.org/css-transforms-2/#3d-transformed-element https://drafts.csswg.org/css-transforms-2/#changes-recent https://github.com/parcel-bundler/lightningcss/issues/239 https://drafts.csswg.org/css-transforms-2/#funcdef-translate3d https://github.com/parcel-bundler/lightningcss/pull/1335
+note: master prints translate(0,0) (src/properties/transform.rs:1071-1075). The computed matrix is the same, but the element stops being a 3D transformed element (css-transforms-2 has not made 2D-collapse apply to functions), Typed OM is2D flips in Chrome/WebKit, and the translate3d compositing hack (animate.css) stops working
+*/
+.t { transform: translate3d(0, 0, 0); }

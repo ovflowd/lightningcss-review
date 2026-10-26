@@ -1,0 +1,15 @@
+/*! lcr-probe
+id: rule-merging/duplicate-rule-with-important-not-removed
+area: rule-merging
+title: An earlier rule with an !important declaration is not a removable duplicate of a later normal one
+mode: minify
+targets: none
+expect: equivalent
+known: none
+ref: https://drafts.csswg.org/css-cascade-5/#importance https://drafts.csswg.org/css-cascade-5/#cascade-sort
+dom: <p class="t">x</p>
+note: guard, master passes; guard for commit 93b9e66 (is_duplicate now compares importance, src/rules/style.rs:165-171)
+*/
+.t { color: rgb(0, 128, 0) !important; }
+.u { color: rgb(255, 0, 0); }
+.t { color: rgb(255, 0, 0); }

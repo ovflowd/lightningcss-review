@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: media-queries/empty-media-query-list-print-not-all
+area: media-queries
+title: `@media {}` (empty list, always true) must not be printed as `@media not all`
+mode: print
+targets: none
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/mediaqueries-4/#mq-list https://github.com/parcel-bundler/lightningcss/issues/84
+dom: <p class="t">x</p>
+note: master fails (no issue filed); MediaList::to_css writes "not all" for an empty list (src/media_query.rs:167-169); minify mode unwraps the rule so only print/lower modes invert it
+*/
+@media { .t { color: rgb(0, 128, 0); } }

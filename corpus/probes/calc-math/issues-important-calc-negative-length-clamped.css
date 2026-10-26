@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: calc-math/issues-important-calc-negative-length-clamped
+area: calc-math
+title: calc() that resolves below a non-negative range must clamp, not emit an invalid negative literal
+mode: minify
+targets: none
+expect: equivalent
+known: fixed-by#1329
+ref: https://github.com/parcel-bundler/lightningcss/issues/1000 https://drafts.csswg.org/css-values-4/#calc-range https://github.com/parcel-bundler/lightningcss/pull/1329
+note: 1.14..1.33.0 emitted `width:-5px` (invalid, declaration dropped); master emits `width:0`
+*/
+.foo { width: calc(5px - 10px); }
