@@ -14,7 +14,7 @@
     "skipLibCheck": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["lib/**/*.js", "oracle/**/*.mjs", "oracle/**/*.cjs", "scripts/**/*.js", "test/**/*.js", "types/**/*.d.ts"],
+  "include": ["lib/**/*.js", "docker/**/*.mjs", "oracle/**/*.mjs", "oracle/**/*.cjs", "scripts/**/*.js", "test/**/*.js", "types/**/*.d.ts"],
   "exclude": [
     "node_modules",
     // Vendored from upstream Lightning CSS; not ours to annotate.

@@ -1,9 +1,11 @@
 # The harness's Docker images and the containers its stages run, driven by bin/lcr through
 # lib/setup/images.js (`docker compose build` and `docker compose run --rm`).
 #
-# - builder, builder-offline: the Rust toolchain image that builds and tests a Lightning CSS tree,
-#   one image per Rust channel (read from the reviewed tree's rust-toolchain file). `builder` has
-#   network access for cargo; `builder-offline` has none (rustfmt).
+# - builder, builder-offline, builder-sandbox: the Rust toolchain image that builds and tests a
+#   Lightning CSS tree, one image per Rust channel (read from the reviewed tree's rust-toolchain
+#   file). `builder` has the network, for `cargo fetch` and the JS lane's dependency install only;
+#   `builder-offline` has none and runs everything that executes the tree's code (builds, tests,
+#   lanes); `builder-sandbox` runs a built adapter or release CLI, with limits on top (SECURITY.md).
 # - browsers-<profile>: one browser image per engine profile in config/engines.json, all offline.
 #   The latest profile is also the analysis image (css-tree, colorjs.io, @webref/css, pngjs).
 # - Playwright pins: which Playwright image each profile builds on. The pin is the only place a
@@ -61,6 +63,26 @@ services:
     <<: *container
     image: lcr-builder:rust-${LCR_RUST_CHANNEL:-stable}
     network_mode: none
+
+  builder-sandbox:
+    <<: *container
+    image: lcr-builder:rust-${LCR_RUST_CHANNEL:-stable}
+    network_mode: none
+    # A built binary (an adapter or the release CLI) needs one process and no writes, so a
+    # reviewed tree's library code gets no more than that: no fork bombs, bounded memory, no
+    # capabilities, a read-only root.
+    pids_limit: 64
+    mem_limit: 4g
+    read_only: true
+    tmpfs: [/tmp]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    # The host's stack limit (lcr passes it in bytes, -1 for unlimited): the main thread's stack
+    # decides where deep nesting overflows, and a stack overflow is a recorded result.
+    ulimits:
+      stack:
+        soft: ${LCR_STACK_SOFT:-8388608}
+        hard: ${LCR_STACK_HARD:-8388608}
 
   browsers-latest:
     <<: *browsers

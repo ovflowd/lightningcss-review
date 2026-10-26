@@ -8,13 +8,13 @@ Every stage can be re-run on its own; later stages read only the files listed he
 | Stage | Reads | Writes |
 |---|---|---|
 | `prepare <PR>` | GitHub (read-only), the Lightning CSS clone | `prepare.json`, `diff.patch`, `src/base/`, `src/head/`, `issues/<n>.json` |
-| `build` | `src/*` | `build/<side>/` (instrumented tree, logs, `tuples.jsonl`, `tests.json`), `bin/<side>-adapter`, `build.json` |
+| `build` | `src/*` | `build/<side>/` (instrumented tree, logs including `fetch.log`, `tuples.jsonl`, `tests.json`), `bin/<side>-adapter`, `build.json` |
 | `corpus` | adapters, probes, WPT fixtures, real-world files | `corpus/cases.jsonl`, `corpus/outputs-{base,head}.jsonl`, `corpus/deltas.jsonl`, `corpus.json` |
 | `probe` | `probes/*.css` in the run | merges PR probes (and their mutations) into the corpus files |
 | `oracle` | corpus files, `env.json` | `oracle/` (jobs, raw engine results, screenshots), `oracle.json`, `spec-cards.json` |
 | `worklist` | everything above | `analysis.json` skeleton with the open slots |
 | `report` | everything above + `analysis.json` | `report.md`, `report.json` |
-| `perf` (optional) | `src/*`, real-world files | `perf/`, `perf.json` (with `skip_reason` when the release binaries look stale: P1/P2 SKIP) |
+| `perf` (optional) | `src/*`, real-world files | `perf/` (release binaries, `<side>-fetch.log`), `perf.json` (with `skip_reason` when the release binaries look stale: P1/P2 SKIP) |
 
 Every command that works on a run takes the run id (or `latest`, or a PR number) explicitly and
 prints the run it resolved to; nothing falls back to an implicit "last run".
@@ -54,6 +54,36 @@ features and flags as the tests. It reads one JSON request per line (`sheet`, `a
 `value` kinds) and answers with the output or the failing stage; panics are caught, aborts and
 timeouts restart the process. It uses only public API so the same file compiles against old and
 new revisions.
+
+The head adapter is the pull request's code, so every adapter process runs in its own
+`builder-sandbox` container of its side's builder image (`lib/adapter/sandbox.js`), with only the
+binary mounted, read-only. The container prints a ready line before it runs the adapter, so its
+start never counts against a request's timeout; a timeout, crash or close kills the container by
+name. An adapter killed by a signal used to report minus the signal number; through tini it exits
+with 128 plus the number, which the client maps back, so `adapter exited (-6); stack overflow or
+abort` reads as before. An adapter that exits with a status above 128 by itself reads the same way
+(the two cannot be told apart through a container). The container gets the host's stack limit,
+so a stack overflow happens at the same nesting depth. `LCR_BUILD=host` runs the adapters on the
+host instead, and an adapter built that way is refused in a container (its libc is the host's).
+
+## Containers and caches
+
+Three services share the builder image (`compose.yaml`). `builder` has the network and runs only
+`cargo fetch` (on a throwaway copy of the tree without `.cargo/` or the toolchain file) and the JS
+lane's `yarn install --ignore-scripts --no-default-rc`. `builder-offline` runs everything that
+executes the tree's code, with `CARGO_NET_OFFLINE` and the Cargo home read-only: `cargo fmt`, the
+tests, the adapter build, the lanes, the JS lane's other steps and perf's release build.
+`builder-sandbox` runs built binaries: the adapters, and perf's timing runner
+(`docker/cli-runner.mjs`, base and head interleaved in one container, timed inside it). See
+[SECURITY.md](../SECURITY.md) for what each one mounts.
+
+Cargo target directories live in `<cache>/targets/` (`lib/build/target-dirs.js`). Base's (`base`,
+`base-nowarn`, `base-release`, `js-base`) are shared by every run. Before head builds, each head
+directory is replaced by a copy of its base counterpart (`cp --reflink=auto`, so on btrfs or XFS
+it takes a fraction of a second), under head's lock and, while copying, base's: `build` seeds
+`head` and `head-nowarn` before the two sides start, `perf` seeds `head-release` after building
+base, and the JS lane runs base first and seeds `js-head` from `js-base`. Head therefore starts
+warm, and nothing a pull request built survives into another run.
 
 Lightning CSS itself is not always deterministic: on a few very large real-world sheets, and on
 rule deduplication whose result depends on hash order (the curated probe
@@ -131,12 +161,13 @@ after its stage, with its unit tests in a `test/` directory next to it:
 | `lib/cli/` | `bin/lcr`'s command table, argument parsing, run resolution, `lcr clean` |
 | `lib/core/` | shared foundation: errors, logging, paths, subprocesses (`proc.js`), Docker Compose, locks, disk checks, stage-file I/O, JSON and other value semantics (below) |
 | `lib/setup/` | `doctor`, `setup` (`--update`), image tags and the compose service runners |
-| `lib/prepare/`, `lib/build/` | the prepare stage; build, tuple recording and mapping, `perf` |
+| `lib/prepare/`, `lib/build/` | the prepare stage; build, tuple recording and mapping, crate fetching (`fetch.js`), target directories (`target-dirs.js`), `perf` and its release CLIs (`release-cli.js`) |
 | `lib/corpus/` | case sources, the base/head differential, probes, mutations |
 | `lib/oracle-driver/` | case selection and the oracle pipeline, `selftest`, `baseline` |
 | `lib/report/` | check evaluation, findings, verdict, report rendering, `summary` |
 | `lib/inspect/` | `status`, `worklist`, `brief`, `show`, `table` |
-| `lib/adapter/`, `lib/targets/`, `lib/fixtures/`, `lib/spec/` | adapter client, browser targets, WPT and real-world fixtures, spec cards and coverage |
+| `lib/adapter/`, `lib/targets/`, `lib/fixtures/`, `lib/spec/` | adapter client and where its processes run (`sandbox.js`), browser targets, WPT and real-world fixtures, spec cards and coverage |
+| `docker/` | the builder and browser Dockerfiles, and `cli-runner.mjs`, which times the release CLIs inside a sandbox container |
 | `lib/types.js` | every shared data shape (stage files, config, adapter protocol) as `@typedef` |
 | `oracle/*.mjs`, `oracle/lib/` | the analysis-image scripts (`prepare-jobs`, `compare`, `spec-cards`) and their modules: DOM synthesis, value normalization, per-engine verdicts, transitions; shapes in `oracle/lib/types.mjs` |
 | `oracle/engine-runner.cjs`, `oracle/runner/` | the engine runner and its in-page functions (CommonJS, ES2020: it also runs on the legacy images' Node 14 and 16) |

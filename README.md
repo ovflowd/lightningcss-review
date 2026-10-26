@@ -71,7 +71,9 @@ report. It never posts to GitHub unless you ask it to.
 `LCR_REPO` points the harness at an existing Lightning CSS checkout (otherwise it uses
 `~/GitHub/lightningcss` if present, or clones one into the cache). `LCR_CACHE` moves the cache
 (default `~/.cache/lightningcss-review`). `LCR_BUILD=host` builds with a local Rust toolchain
-instead of the builder image; browsers always run in Docker.
+instead of the builder image and runs the adapters on the host too, outside any container, so use
+it only for trees you trust; browsers always run in Docker. [SECURITY.md](SECURITY.md) says what
+runs where.
 
 ## Layout
 
