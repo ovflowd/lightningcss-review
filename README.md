@@ -83,15 +83,14 @@ instead of the builder image; browsers always run in Docker.
 | `config/` | areas, transform modes and targets, engine profiles, check catalog, test and property maps, pins |
 | `corpus/probes/` | curated probes by area (spec invariants, past regressions, issue repros) |
 | `references/` | what the reviewing agent loads: per-area checklists, spec digests, architecture, conventions, browsers, ecosystem, oracle (size-budgeted, mechanisms only) |
-| `docs/` | how the harness works, and findings about Lightning CSS from building this (`docs/findings/`) |
+| `docs/` | how the harness works |
 | `tests/`, `oracle/test/` | unit tests and the oracle's known-answer cases |
 
 ## Status
 
 Early. The harness, oracle and references are complete enough to review real PRs; expect the
-check catalog and the probe corpus to keep changing. Findings about Lightning CSS itself that came
-out of building this (bugs reproducible on `master` with no issue filed yet) are listed in
-[`docs/findings/issues.md`](docs/findings/issues.md#3-unfiled-bugs-found-during-this-research-verified-on-master-cbeaf83).
+check catalog and the probe corpus to keep changing. Bugs on `master` that the curated probes
+reproduce carry `known: open-bug` or `known: open-issue#N`; `lcr baseline` lists them.
 
 ## Credits
 

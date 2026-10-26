@@ -40,8 +40,8 @@ Everything under `references/` and `SKILL.md` is loaded into the reviewing agent
 must stay small and timeless: explain the mechanism (what the code does, why it breaks CSS
 semantics, how to spot it in a diff), not the history. No issue or PR numbers, commit hashes,
 release versions or line numbers, and only judgment the harness cannot make itself.
-`python3 -I scripts/lint_context.py` enforces this and the per-file size budgets. History and
-research notes go in `docs/findings/`.
+`python3 -I scripts/lint_context.py` enforces this and the per-file size budgets. History belongs
+in commit messages, not in the context.
 
 ## Harness and oracle
 
