@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: selectors/all-selectors-incompatible-no-empty-supports-rule
+area: selectors
+title: Color @supports fallbacks must not be emitted for a selector list emptied by target splitting
+mode: lower-minify
+targets: ie 8, safari 15
+expect: idempotent, output-not-contains:"{{"
+known: open-issue#907
+ref: https://github.com/parcel-bundler/lightningcss/issues/907 https://github.com/parcel-bundler/lightningcss/issues/1010 https://drafts.csswg.org/selectors/#grouping
+note: every selector is incompatible (:root in IE8, :host), so rules/mod.rs empties style.selectors but still pushes get_supports_rules(&style) -> `@supports (color:lab(0% 0 0)){{...}}`, which fails to re-parse ("Invalid empty selector")
+*/
+:root, :host { --c: oklch(100% 0 0); }

@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: calc-math/mod-zero-step-nan
+area: calc-math
+title: mod(A, 0) is NaN and a top-level NaN is censored to 0
+mode: minify
+targets: none
+expect: equivalent, output-not-contains:"e38"
+known: open-bug
+ref: https://drafts.csswg.org/css-values-4/#round-infinities https://drafts.csswg.org/css-values-4/#calc-ieee
+note: UNFILED master failure; master evaluates NaN at build time and prints a garbage huge value (5.10424e38px); same for round(5px,0px) and rem(5px,0px)
+*/
+.t { margin-left: mod(5px, 0px); }

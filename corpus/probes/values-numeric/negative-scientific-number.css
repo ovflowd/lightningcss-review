@@ -1,0 +1,11 @@
+/*! lcr-probe
+id: values-numeric/negative-scientific-number
+area: values-numeric
+title: A tiny negative <number> must not serialize as `--1e-7`
+mode: minify
+targets: none
+expect: equivalent, output-not-contains:"--1e-7"
+known: fixed-by#901
+ref: https://drafts.csswg.org/css-syntax-3/#would-start-an-identifier https://github.com/parcel-bundler/lightningcss/issues/899 https://github.com/parcel-bundler/lightningcss/pull/901
+*/
+.t { transform: scale(-1e-7); }

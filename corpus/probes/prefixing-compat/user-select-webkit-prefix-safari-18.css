@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: prefixing-compat/user-select-webkit-prefix-safari-18
+area: prefixing-compat
+title: user-select keeps the -webkit- prefix for Safari versions newer than the prefix data snapshot
+mode: lower
+targets: safari 18.2
+expect: output-contains:"-webkit-user-select"
+known: fixed-by#eccb673
+ref: https://github.com/parcel-bundler/lightningcss/issues/925 https://drafts.csswg.org/css-ui-4/#content-selection
+note: <=1.29.1 the generated range ended at safari 18.1 (autoprefixer data older than caniuse agents), so 18.2 targets lost the prefix; fixed by data bump eccb673 (1.29.2)
+*/
+pre { user-select: all; }

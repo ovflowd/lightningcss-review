@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: transition-animation/animation-timeline-not-folded-2
+area: transition-animation
+title: animation-timeline must not be folded into the animation shorthand
+mode: minify
+targets: none
+expect: equivalent
+known: open-issue#1283
+ref: https://github.com/parcel-bundler/lightningcss/issues/1283 https://github.com/parcel-bundler/lightningcss/issues/572 https://drafts.csswg.org/css-animations-2/#animation-shorthand
+note: since 1.25.0 (f4408c7) output `animation:linear both x scroll(root)`; Chrome only resets animation-timeline in the shorthand, so the whole declaration is invalid there
+*/
+.a { animation: x 1s linear both; animation-timeline: scroll(root); }

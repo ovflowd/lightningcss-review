@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: selectors/nth-child-of-not-lowered-to-compound
+area: selectors
+title: `:nth-child(An+B of S)` must not be lowered to `S:nth-child(An+B)` for targets without `of` support
+mode: lower
+targets: chrome 100, safari 14
+expect: equivalent
+known: none
+dom: <ul><li class="x"></li><li class="y"></li><li class="x t"></li></ul>
+ref: https://drafts.csswg.org/selectors-4/#the-nth-child-pseudo
+note: the spec example: `:nth-child(-n+3 of li.important)` differs from `li.important:nth-child(-n+3)`; here only the third li is the 2nd `.x`, while `.x:nth-child(2)` matches nothing. There is no exact fallback
+*/
+li:nth-child(2 of .x) { color: red; }

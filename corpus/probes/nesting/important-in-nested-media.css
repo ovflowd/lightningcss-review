@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: nesting/important-in-nested-media
+area: nesting
+title: !important declarations directly inside a nested @media must survive nesting lowering
+mode: lower
+targets: chrome 95
+expect: equivalent, output-contains:"!important"
+known: none
+ref: https://drafts.csswg.org/css-nesting-1/#nested-group-rules https://github.com/parcel-bundler/lightningcss/issues/356
+note: guards 6a7d19e (a block with only important declarations was dropped)
+*/
+.x { @media (min-width: 1px) { color: green !important; } }
+.x { color: red; }

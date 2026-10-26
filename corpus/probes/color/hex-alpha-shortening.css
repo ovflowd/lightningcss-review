@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: color/hex-alpha-shortening
+area: color
+title: 8-digit hex colors shorten to 4 digits only when each pair repeats
+mode: minify
+targets: none
+expect: equivalent,output-contains:"#abcd",output-contains:"#abcdefab"
+known: none
+ref: https://drafts.csswg.org/css-color-4/#hex-notation
+note: guard
+*/
+.t { color: #AABBCCDD; background-color: #11223344; border-color: #abcdefab; border-style: solid; }

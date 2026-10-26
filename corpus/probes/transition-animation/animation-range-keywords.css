@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: transition-animation/animation-range-keywords
+area: transition-animation
+title: animation-range: entry exit must not become `entry exit 0%`
+mode: minify
+targets: none
+expect: equivalent
+known: open-issue#1226
+ref: https://github.com/parcel-bundler/lightningcss/issues/1226 https://drafts.csswg.org/scroll-animations-1/#animation-range
+note: a range name without a percentage means 0% for start and 100% for end; since 1.26.0 (39964f1) the end is serialized as `exit 0%`
+*/
+.a { animation-timeline: view(); animation-range: entry exit; }

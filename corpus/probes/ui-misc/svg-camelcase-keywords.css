@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: ui-misc/svg-camelcase-keywords
+area: ui-misc
+title: Camel-cased SVG keywords parse case-insensitively
+mode: minify
+targets: none
+expect: equivalent
+known: fixed-by#1108
+ref: https://github.com/parcel-bundler/lightningcss/issues/1106 https://drafts.csswg.org/css-values-4/#keywords https://github.com/parcel-bundler/lightningcss/pull/1108
+note: since v1.31.0 these are typed and printed lowercase (geometricprecision); CSS keywords are ASCII case-insensitive
+*/
+.t { text-rendering: geometricPrecision; shape-rendering: crispEdges; color-interpolation: linearRGB; }

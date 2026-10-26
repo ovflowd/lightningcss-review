@@ -1,0 +1,14 @@
+/*! lcr-probe
+id: rule-merging/dedupe-keeps-important
+area: rule-merging
+title: duplicate-rule removal must not delete an earlier !important declaration
+mode: minify
+targets: none
+expect: equivalent
+known: fixed-by#93b9e66
+ref: https://drafts.csswg.org/css-cascade-5/#importance https://github.com/parcel-bundler/lightningcss/issues/1347 https://github.com/parcel-bundler/lightningcss/commit/93b9e66d18c261169c86053195c9639cd460cc45
+note: fixed on master by commit 93b9e66 (no PR; #1347 is the issue); broken since v1.20.0 (aa083a7)
+*/
+.t { color: green !important; }
+.u { color: red; }
+.t { color: blue; }

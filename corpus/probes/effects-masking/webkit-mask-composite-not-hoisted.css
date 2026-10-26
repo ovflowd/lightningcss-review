@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: effects-masking/webkit-mask-composite-not-hoisted
+area: effects-masking
+title: `-webkit-mask-composite` written after `-webkit-mask` must stay after it (gradient-border pattern)
+mode: minify
+targets: none
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/css-masking-1/#the-mask https://compat.spec.whatwg.org/#propdef--webkit-mask-composite
+note: MASTER FAILS (no issue filed yet). MaskHandler defers -webkit-mask but has no arm for WebKitMaskComposite (src/properties/masking.rs:662-749), so master prints -webkit-mask-composite:xor before -webkit-mask; in Chrome both map to mask-composite and the shorthand resets it to add, filling the box (pixel maxdiff 255)
+*/
+.t { width: 50px; height: 50px; padding: 10px; background: red; -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite: xor; }

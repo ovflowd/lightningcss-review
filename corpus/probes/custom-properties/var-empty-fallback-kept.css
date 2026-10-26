@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: custom-properties/var-empty-fallback-kept
+area: custom-properties
+title: var(--x,) (empty fallback) differs from var(--x)
+mode: minify
+targets: none
+expect: equivalent, output-not-contains:"var(--ssv-undefined)"
+known: none
+ref: https://drafts.csswg.org/css-variables-1/#using-variables
+note: guard; with the bare comma the value is `5px` (valid), without it the declaration is invalid at computed-value time
+*/
+.t { margin: 5px var(--ssv-undefined,); }

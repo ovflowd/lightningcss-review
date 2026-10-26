@@ -1,0 +1,14 @@
+/*! lcr-probe
+id: rule-merging/split-selector-list-not-dropped
+area: rule-merging
+title: a selector split off for compatibility must not vanish when the compatible half merges into an earlier rule
+mode: lower-minify
+targets: chrome 140
+expect: output-contains:".u:defined", equivalent
+known: open-issue#1310
+dom: <div class="t"></div><div class="u"></div>
+ref: https://github.com/parcel-bundler/lightningcss/issues/1310
+note: merge_style_rules drains the declarations before incompatible_rules clones the rule (src/rules/mod.rs:798-838); :defined has no compat data so it is always "incompatible"
+*/
+.t { background: blue; }
+.t, .u:defined:not(.x) { color: red; }

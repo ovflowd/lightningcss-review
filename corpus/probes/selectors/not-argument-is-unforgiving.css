@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: selectors/not-argument-is-unforgiving
+area: selectors
+title: An invalid item inside `:not()` invalidates the selector (unforgiving), it is not dropped
+mode: print
+targets: none
+expect: parse-error
+known: none
+ref: https://drafts.csswg.org/selectors-4/#negation https://drafts.csswg.org/selectors-4/#forgiving-selector
+note: :not() takes <complex-real-selector-list>; only :is()/:where() are forgiving. Chrome 156 and Firefox 157 reject `:not(.a, 1)`; master errors (DiscardList), a forgiving refactor of the list parser must keep :not()/:has()/:nth-child(of) strict
+*/
+.t:not(.a, 1) { color: red; }

@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: color/gradient-rgb-none-not-zeroed
+area: color
+title: rgb(none 0 0) keeps its missing red component in a gradient (filled from the other stop)
+mode: minify
+targets: none
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/css-color-4/#interpolation-missing https://drafts.csswg.org/css-color-4/#css-serialization-of-srgb https://github.com/web-platform-tests/wpt/blob/master/css/css-images/gradient/gradient-none-interpolation.html
+note: master prints #000 (FloatColor serialized via RGB->hex, src/values/color.rs:702-706); visible in engines that implement none in gradients (Chrome)
+*/
+.t { background-image: linear-gradient(90deg, rgb(none 0 0), red); }

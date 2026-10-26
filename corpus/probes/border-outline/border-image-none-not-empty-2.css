@@ -1,0 +1,14 @@
+/*! lcr-probe
+id: border-outline/border-image-none-not-empty-2
+area: border-outline
+title: border-image: none must not serialize as an empty value
+mode: minify
+targets: none
+expect: equivalent, idempotent, output-not-contains:"border-image:}"
+known: open-issue#1146
+ref: https://github.com/parcel-bundler/lightningcss/pull/1336 https://github.com/parcel-bundler/lightningcss/issues/1146 https://drafts.csswg.org/css-backgrounds-3/#propdef-border-image
+dom: <div class="box active"></div>
+note: 1.33.0 prints .box.active{border-image:} which browsers drop so the gradient border-image wins; #1336 (approved, open) prints none
+*/
+.box { border: 10px solid; border-image: linear-gradient(red, blue) 30; }
+.box.active { border-image: none; }

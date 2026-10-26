@@ -1,0 +1,14 @@
+/*! lcr-probe
+id: calc-math/percentage-math-no-panic
+area: calc-math
+title: math functions in percentage slots (opacity, hsl channels) must not panic
+mode: minify
+targets: none
+expect: no-panic, equivalent
+known: fixed-by#1329
+ref: https://drafts.csswg.org/css-values-4/#calc-type-checking https://github.com/parcel-bundler/lightningcss/issues/1312 https://github.com/parcel-bundler/lightningcss/issues/1129 https://drafts.csswg.org/css-values-4/#sign-funcs https://github.com/parcel-bundler/lightningcss/pull/1329
+note: 1.33.0 hit unreachable!() in Percentage::parse (src/values/percentage.rs:30); master returns InvalidValue and keeps the raw tokens
+*/
+.t { opacity: abs(-50%); }
+.u { opacity: sign(-50%); }
+.v { color: hsl(0 abs(-50%) 50%); }

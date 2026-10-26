@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: custom-properties/property-initial-value-unitless
+area: custom-properties
+title: @property initial-value 10 is not a <length>; the registration must stay invalid
+mode: minify
+targets: none
+expect: equivalent, output-not-contains:"initial-value:10px"
+known: open-issue#1199
+ref: https://drafts.css-houdini.org/css-properties-values-api-1/#initial-value-descriptor https://drafts.csswg.org/css-values-4/#lengths https://github.com/parcel-bundler/lightningcss/issues/1199
+note: engines treat the rule as invalid (unregistered, width IACVT); master rewrites it to a valid registration with 10px
+*/
+@property --ssv-a { syntax: "<length>"; inherits: false; initial-value: 10; }
+.t { width: var(--ssv-a); }

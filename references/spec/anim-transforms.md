@@ -34,14 +34,14 @@ the shorthand). Merged: PR #13306 (`scroll` range, 2026-01-07).
 
 ### Invariants (INV-TRF)
 - **INV-TRF-001** Never collapse a list into `matrix()`/`matrix3d()` or decompose one (`tf1#matrix-interpolation`): pairs keep
-  turns (`rotate(0)` → `rotate(360deg)`). ✅ disabled by #694 (`transform.rs:60-119`, #288). Probe `transform/devon-rotate-over-360-not-matrix`.
+  turns (`rotate(0)` → `rotate(360deg)`). ✅ disabled by #694 (`transform.rs:60-119`, #288). Probe `transform/rotate-over-360-not-matrix`.
 - **INV-TRF-002** Rename only within one primitive. ❌ **NEW** `skewX(a)` → `skew(a)`, `skew(0,a)` → `skewY(a)`
   (`transform.rs:1204-1222`, asserted at `src/lib.rs:13612-13613`): 50% of `skewX(10deg)` → `skew(20deg,30deg)` goes from
   `matrix(1.04064, 0.278839, …)` to `matrix(1, 0.267949, 0.267949, 1, 0, 0)`, also against unminified endpoints. Probes
   `sat-skewx-not-rewritten-as-skew`, `sat-skew-zero-x-not-rewritten-as-skewy`, `sat-skewx-keyframe-vs-inline-from`.
 - **INV-TRF-003** Keep identity functions in lists (`tf1#identity-transform-function`). ✅ Probe `sat-identity-functions-kept-in-list`.
 - **INV-TRF-004** `none` ≠ identity (`tf2#valdef-translate-none`; a fixed child moved 7px → 15px). ✅ since #703 (translate/scale)
-  and #1147 (`rotate: 0deg`, #1136). Probes `sat-individual-identity-not-none`, `transform/community-prs-translate-scale-none-kept`.
+  and #1147 (`rotate: 0deg`, #1136). Probes `sat-individual-identity-not-none`, `transform/translate-scale-none-kept`.
 - **INV-TRF-005** 3D stays 3D: `translate3d(x,y,0)` → `translate(x,y)`, `scale3d(x,x,1)` → `scale(x)`, `rotate3d(0,0,1,a)`/
   `rotateZ(a)` → `rotate(a)` keep matrix and interpolation but drop the 3D-transformed status (`tf2#3d-transformed-element`;
   #3305's specced 2D rule covers only individual properties), flip `is2D` and kill the `translateZ(0)` hack. ❌ print-time collapse
@@ -49,9 +49,9 @@ the shorthand). Merged: PR #13306 (`scroll` range, 2026-01-07).
   fine); master needs two passes to reach `translate(0)` (integ; PR #1335 open fixes it). ✅ `translate3d(0,0,1px)` →
   `translateZ(1px)`. Probe `sat-translate3d-zero-keeps-3d-function` (also `idempotent`).
 - **INV-TRF-006** Never fold `translate`/`rotate`/`scale` into `transform` or let `transform` reset them. ✅ since #1340 (40fb4ea,
-  unreleased; `transform.rs:1742-1749`), fixing #426 (still open)/#1053/#1099. Probe `transform/issues-important-individual-transform-preserved`.
+  unreleased; `transform.rs:1742-1749`), fixing #426 (still open)/#1053/#1099. Probe `transform/individual-transform-preserved`.
 - **INV-TRF-007** Unitless numbers stay invalid (`val4#lengths`). ✅ `rotate: 0`. ❌ `perspective(1000)` → `1000px`,
-  `translateZ(9)` → `9px` (#1199, #682; `src/values/length.rs:145-148`). Probe `values-numeric/ssv-unitless-translate-invalid`.
+  `translateZ(9)` → `9px` (#1199, #682; `src/values/length.rs:145-148`). Probe `values-numeric/unitless-translate-invalid`.
 - **INV-TRF-008** Keep `perspective(none)` (`tf2#funcdef-perspective`). ✅ by accident: `transform.rs:1013-1016` parses only
   `<length>`, so the list stays Unparsed.
 - **INV-TRF-009** Safe rewrites: `translate(x,0)` → `translate(x)`, `translateX` → `translate`, `scale(x,x)` → `scale(x)`,
@@ -63,7 +63,7 @@ the shorthand). Merged: PR #13306 (`scroll` range, 2026-01-07).
   → singular (not rendered; discrete); `rotate(1rad)` → `57.2958deg`; `scale(calc(100% / 3))` → `.333333`.
 - **INV-TRF-012** `transform-origin`'s third value is z. ❌ typed as `Position` (`mod.rs:1474` TODO): `left top 5px` → `0 5px`,
   `top left 30px` → `30px 0`, `center left 6px` → `6px`, `bottom right 7px` → invalid `right 7px bottom`; invalid `left 10px
-  top 20px` → valid `10px 20px` (integ). Probes `transform/ssv-transform-origin-keywords-z`, `sat-transform-origin-four-value-invalid`.
+  top 20px` → valid `10px 20px` (integ). Probes `transform/transform-origin-keywords-z`, `sat-transform-origin-four-value-invalid`.
 - **INV-TRF-013** `perspective-origin` has no 3-value form. ❌ `center left 1px` → `1px`, `center top 2px` → `50% 2px` (8 WPT
   invalid cases). Probe `sat-perspective-origin-three-value-invalid`.
 - **INV-TRF-014** `perspective: 0` stays 0, negatives invalid (`tf2#valdef-perspective-length-0`) ✅ (#1329).
@@ -79,7 +79,7 @@ the shorthand). Merged: PR #13306 (`scroll` range, 2026-01-07).
 - PrefixHandler (`prefix_handler.rs:59-63`): transform-origin/-style, backface-visibility, perspective(-origin). Pushed
   immediately; a later equal value or same prefix overwrites the earlier slot (`:24-38`). ❌ integ
   `perspective:10px;perspective:var(--p);perspective:20px` → `perspective:20px;perspective:var(--p)` (probe
-  `rule-merging/arch-props-values-prefix-handler-in-place-update-reorders-unparsed`).
+  `rule-merging/prefix-handler-in-place-update-reorders-unparsed`).
 - `translate`/`rotate`/`scale` typed (`:1437`, `:1523`, `:1634`), never lowered; `offset*`, `will-change` pass through.
 
 ### Engine divergences (oracle)
@@ -122,7 +122,7 @@ the shorthand). Merged: PR #13306 (`scroll` range, 2026-01-07).
   ❌ in all three engines (opacity's used duration 2000ms → 1000ms):
   1. **NEW regression from #850** (33265a2, v1.28.2): `merge_properties` (`:383-398`) merges duplicate, case-variant and
      prefixed names at the **first** index: `opacity 1s,opacity 2s` → `opacity 1s`; `opacity 1s,color 2s,opacity 3s` →
-     `opacity 1s,color 2s`; prefixed pairs (probes `transition-animation/community-prs-transition-*`); a second pass over
+     `opacity 1s,color 2s`; prefixed pairs (probes `transition-animation/transition-*`); a second pass over
      a correct prefixed output: `transform 1s,opacity 2s` (safari 8) → `…,opacity 2s` → `…,opacity 1s`.
   2. **NEW** (≤ 1.16.1) `expand_properties` (`:400-470`) inserts names without re-indexing the other lists:
      `inset 1s,opacity 2s` (chrome 80) → `top 1s,bottom 2s,left 1s,right 2s,opacity 1s`;
@@ -143,10 +143,10 @@ the shorthand). Merged: PR #13306 (`scroll` range, 2026-01-07).
   `PropertyId::parse` (`:69`, `mod.rs:240-244`) accepts CSS-wide keywords (#1214); the shorthand needs all four longhands
   with a common prefix. `transition-behavior` is unknown (pushed immediately); `… allow-discrete` stays Unparsed.
 - `transition-property` names print as raw text (`PropertyId::to_css`, `mod.rs:265`): ❌ **NEW** (EM-04) `fake\7d name` →
-  `fake}name`, closing the block (next rule lost). Probe `printer-serialization/em-transition-property-ident-escaped`.
+  `fake}name`, closing the block (next rule lost). Probe `printer-serialization/transition-property-ident-escaped`.
   With `dashedIdents`, `transition: --x 1s` is not renamed while `--x` is (F19, integ).
 - Logical names: RTL of `inline-size`/`min-`/`max-inline-size` → `height` (`transition.rs:493-497`, wrong axis; probe
-  `logical/arch-props-values-transition-inline-size-rtl-maps-to-height`).
+  `logical/transition-inline-size-rtl-maps-to-height`).
 
 ### Lowering
 - `transition: opacity 1s allow-discrete` (invalid pre-L2) lowers exactly to `transition: opacity 1s;
@@ -182,7 +182,7 @@ the shorthand). Merged: PR #13306 (`scroll` range, 2026-01-07).
   `sat-animation-string-name-not-unquoted-to-keyword`; guard `sat-animation-fill-mode-none-before-keyword-name`.
 - **INV-ANI-002** Print `0s` when a delay follows (also `transition`). ✅ Probe `sat-animation-zero-duration-before-delay`.
 - **INV-ANI-003** `animation: none <values>` keeps the other components. ❌ #337/#1095 (`animation.rs:668`; `animation:.5s
-  ease-out both` → `animation:none`); PR #879 open. Probe `transition-animation/issues-important-animation-shorthand-without-name`.
+  ease-out both` → `animation:none`); PR #879 open. Probe `transition-animation/animation-shorthand-without-name-2`.
 - **INV-ANI-004** Reset-only sub-properties: never fold into `animation`, keep them after it, emit their resets when expanding.
   ❌ timeline folded (#815, #1115, #1283, #1342, #1369; f4408c7, v1.25.0): `animation.rs:957-965` folds when
   `AnimationTimelineShorthand` is compatible: always without targets (`targets.rs:226-228`), from Chrome 115 because
@@ -192,15 +192,15 @@ the shorthand). Merged: PR #13306 (`scroll` range, 2026-01-07).
   same-selector rule merge an earlier `animation-range` even lands last). ✅ `sat-animation-range-after-shorthand`.
   `animation-composition`/`-trigger` move before the shorthand: no engine resets them yet, wrong per #6946.
 - **INV-ANI-005** `animation-duration: auto` (L2 initial) is invalid in Firefox < 159 and Safari < 18.4; expansion must not write
-  `0s` for an omitted duration. ❌ #1012 (`animation.rs:650`). Probe `transition-animation/issues-b1-animation-duration-auto-expansion`.
+  `0s` for an omitted duration. ❌ #1012 (`animation.rs:650`). Probe `transition-animation/animation-duration-auto-expansion`.
 - **INV-ANI-006** Names: `""` invalid; reserved names (none, CSS-wide, `default`) stay strings. ❌ `animation-name:"",b` →
   `animation-name:,b` (probe `sat-animation-name-empty-string-invalid`); integ `@keyframes ""` → `@keyframes {` (does not
   re-parse); `revert-rule` missing from the keep-quoted lists (`animation.rs:75`, `keyframes.rs:76,106`; EM-80 **NEW**,
-  probe `transition-animation/em-keyframes-string-name-revert-rule`). ✅ `sat-keyframes-string-name-reserved-stays-quoted`.
+  probe `transition-animation/keyframes-string-name-revert-rule`). ✅ `sat-keyframes-string-name-reserved-stays-quoted`.
 - **INV-ANI-007** `@keyframes` resolve to the last applicable rule in document order (layers by layer order). ❌ **NEW**
   (N2/N3): a later same-name rule replaces the earlier **in place** (`rules/mod.rs:643-648`): the winner moves
   before an intervening conditional same-name rule, and the replaced rule's `@supports` fallbacks stay (`:662-664`).
-  ✅ layers kept apart. Probes `rule-merging/arch-core-keyframes-replacement-*`.
+  ✅ layers kept apart. Probes `rule-merging/keyframes-replacement-*`.
 - **INV-ANI-008** An empty `@keyframes` wins over earlier same-name rules, fires events. ✅ Probe `sat-empty-keyframes-last-wins`.
 - **INV-ANI-009** Selectors: `from`/`to` ↔ `0%`/`100%` exact. `calc()` selectors: WebKit accepts, Chrome/Firefox reject; master
   simplifies `calc(50%)` → `50%` (integ), activating the block there. ❌ `scroll 50%` dropped (`TimelineRangeName` lacks
@@ -223,7 +223,7 @@ the shorthand). Merged: PR #13306 (`scroll` range, 2026-01-07).
 - `animation-range` (`:379-582`): ❌ #1226 (39964f1, v1.26.0) parses the end with the start parser, default 0% (`:535-540`):
   `entry exit` → `entry exit 0%`; `entry 0% exit 100%` → `entry exit` → `entry exit 0%` next pass.
 - `@keyframes` (`rules/keyframes.rs`): prints webkit/moz/o/none only (`:261-264`): **`@-ms-keyframes` vanishes** (**NEW**,
-  probe `transition-animation/asr-ms-keyframes-not-dropped`); no [0,100] check; one invalid item or nested at-rule
+  probe `transition-animation/ms-keyframes-not-dropped`); no [0,100] check; one invalid item or nested at-rule
   deletes the keyframe (#1103: `ParserOptions::default()` at `:410`, `filter_map(Result::ok)` at `parser.rs:884`).
 - Keyframe declarations run the shared handlers in `DeclarationContext::Keyframes` (`keyframes.rs:120-130`). ❌ **NEW**
   (integ, ≤ 1.16.1): logical lowering stays on there (`context.rs:73-80`) and nothing drains the side lists:

@@ -1,0 +1,14 @@
+/*! lcr-probe
+id: font/font-longhands-not-folded
+area: font
+title: Folding the seven font longhands into a font shorthand must not reset the other font sub-properties
+mode: minify
+targets: none
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/css-fonts-4/#font-prop https://github.com/web-platform-tests/wpt/blob/master/css/css-fonts/font-shorthand-subproperties-reset.html
+dom: <div class="p"><div class="t">x</div></div>
+note: MASTER FAILS (no issue filed; found via oven-sh/bun#45459). master prints .t{font:700 20px/1.25 serif}, which resets font-kerning/font-feature-settings to initial instead of inheriting them from .p (Chrome 156: none vs auto)
+*/
+.p { font-kerning: none; font-feature-settings: "tnum"; }
+.t { font-family: serif; font-size: 20px; font-style: normal; font-weight: 700; font-stretch: normal; font-variant-caps: normal; line-height: 1.25; }

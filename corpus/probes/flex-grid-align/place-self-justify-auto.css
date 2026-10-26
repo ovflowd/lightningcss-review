@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: flex-grid-align/place-self-justify-auto
+area: flex-grid-align
+title: place-self/place-items may only collapse to one value when both longhands are equal
+mode: minify
+targets: none
+expect: equivalent, idempotent
+known: open-issue#1182
+ref: https://drafts.csswg.org/css-align-3/#place-self-property https://drafts.csswg.org/css-align-3/#place-items-property https://github.com/parcel-bundler/lightningcss/issues/1182 https://github.com/parcel-bundler/lightningcss/pull/1302
+note: omitted second value copies the first; 1.33.0 emits place-self:self-start (justify-self becomes self-start) and place-items:normal (justify-items becomes normal)
+*/
+.a { align-self: self-start; justify-self: auto; }
+.b { align-items: normal; justify-items: stretch; }

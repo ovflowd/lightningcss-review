@@ -1,0 +1,14 @@
+/*! lcr-probe
+id: css-modules/counter-function-style-argument-renamed
+area: css-modules
+title: CSS modules must rename the counter-style argument of counter() and counters()
+mode: minify
+targets: none
+flags: css-modules
+expect: output-not-contains:", stars)"
+known: open-bug
+ref: https://drafts.csswg.org/css-lists-3/#counter-functions https://drafts.csswg.org/css-counter-styles-3/#the-counter-style-rule https://github.com/cssnano/cssnano/blob/main/packages/cssnano/changelogs/postcss-reduce-idents.md
+note: master hashes `@counter-style stars` but keeps `counter(c, stars)` and `counters(d, ".", stars)` (content is an unparsed token list), so the generated content falls back to decimal
+*/
+@counter-style stars { system: cyclic; symbols: "*"; }
+.t::before { content: counter(c, stars) counters(d, ".", stars); }

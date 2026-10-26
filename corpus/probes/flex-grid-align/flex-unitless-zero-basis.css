@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: flex-grid-align/flex-unitless-zero-basis
+area: flex-grid-align
+title: flex longhands with flex-basis 0 must not collapse to `flex: 1` (which means a 0% basis)
+mode: minify
+targets: none
+expect: equivalent
+known: none
+ref: https://drafts.csswg.org/css-flexbox-1/#flex-property https://github.com/parcel-bundler/lightningcss/issues/283
+note: guards 84298d2; computed flex-basis must stay 0px, not 0%
+*/
+.x { flex-grow: 1; flex-shrink: 1; flex-basis: 0; }

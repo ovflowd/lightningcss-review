@@ -1,0 +1,14 @@
+/*! lcr-probe
+id: display-layout/position-anchor-after-position
+area: display-layout
+title: position-anchor must stay after `position`, which now resets it
+mode: minify
+targets: none
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/css-anchor-position-1/#propdef-position-anchor https://github.com/parcel-bundler/lightningcss/issues/1225
+dom: <div class="a">anchor</div><div class="t">box</div>
+note: MASTER FAILS (no issue filed yet; same mechanism as #1225). css-anchor-position-1 makes position-anchor a reset-only sub-property of position; PositionHandler emits position at finalize, so the output is `position-anchor:--a;position:absolute`. UNVERIFIED which engines already implement the reset; until they do, this only fails per spec
+*/
+.a { anchor-name: --a; }
+.t { position: absolute; position-anchor: --a; top: anchor(bottom); }

@@ -1,0 +1,14 @@
+/*! lcr-probe
+id: media-queries/not-equal-range
+area: media-queries
+title: `not (width = X)` must keep its negation
+mode: print
+targets: none
+expect: equivalent, output-contains:"not"
+known: open-bug
+ref: https://drafts.csswg.org/mediaqueries-4/#mq-range-context https://drafts.csswg.org/mediaqueries-4/#mq-not
+note: MediaFeatureComparison::negate (media_query.rs:950) maps Equal to Equal and MediaCondition::to_css (media_query.rs:869-871) prints the "negated" feature, so the output is `(width = 1px)`; regression since v1.29.0 (7f29035)
+*/
+@media not (width = 1px) {
+  .t { color: red }
+}

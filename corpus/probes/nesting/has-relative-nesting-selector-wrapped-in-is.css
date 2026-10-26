@@ -1,0 +1,15 @@
+/*! lcr-probe
+id: nesting/has-relative-nesting-selector-wrapped-in-is
+area: nesting
+title: & after a relative combinator inside :has() must be replaced by :is(parent), not inlined
+mode: lower-minify
+targets: chrome 100
+expect: equivalent
+known: open-issue#1073
+ref: https://github.com/parcel-bundler/lightningcss/issues/1073 https://drafts.csswg.org/css-nesting-1/#nest-selector https://drafts.csswg.org/selectors-4/#relational
+dom: <div class="outer">o</div><div class="container"><div class="y">y</div><div class="style-previous">p</div></div>
+note: master prints :has(+.container .style-previous) (selects .outer) instead of :has(+:is(.container .style-previous)) (selects .y); serialize_selector keeps first=true after skipping the implicit :scope of a relative selector (src/selector.rs:1464-1479)
+*/
+.container .style-previous {
+  :has(+ &) { background: red; }
+}

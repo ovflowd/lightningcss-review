@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: font/generic-family-name-quoted
+area: font
+title: a quoted family name equal to a generic keyword must stay quoted
+mode: minify
+targets: none
+expect: equivalent, idempotent
+known: none
+ref: https://drafts.csswg.org/css-fonts-4/#font-family-name-syntax https://github.com/parcel-bundler/lightningcss/issues/120
+note: guards facbffd; unquoting turns a font named "sans-serif" into the generic family
+*/
+.x { font-family: 'sans-serif'; }
+.y { font-family: 'inherit', serif; }

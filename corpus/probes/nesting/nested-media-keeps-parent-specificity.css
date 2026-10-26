@@ -1,0 +1,14 @@
+/*! lcr-probe
+id: nesting/nested-media-keeps-parent-specificity
+area: nesting
+title: Declarations nested in @media keep each parent selector's own specificity when nesting is lowered
+mode: lower
+targets: chrome 100
+expect: equivalent
+known: fixed-by#6c465c1
+ref: https://drafts.csswg.org/css-nesting/#nested-declarations-rule https://github.com/parcel-bundler/lightningcss/issues/891
+dom: <h2 class="h1">x</h2>
+note: <=1.29.3 emitted `:is(h2, .h2)` inside @media, giving the h2 match class specificity (10px wins); spec CSSNestedDeclarations gives 20px; fixed by commit 6c465c1 (1.30.0); needs engines with CSSNestedDeclarations (Chrome 130+, Firefox 132+)
+*/
+h1, .h1 { @media (min-width: 1px) { font-size: 20px; } }
+h2, .h2 { @media (min-width: 1px) { font-size: 10px; } }

@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: color/gamut-map-max-chroma
+area: color
+title: sRGB fallback from gamut mapping keeps the largest in-JND chroma (CSS Color 4 binary search)
+mode: lower-minify
+targets: chrome 80
+expect: output-contains:"#fffc44"
+known: fixed-by#1323
+ref: https://drafts.csswg.org/css-color-4/#pseudo-binsearch https://github.com/parcel-bundler/lightningcss/issues/1298 https://github.com/parcel-bundler/lightningcss/pull/1323
+note: 1.33.0 prints #fffbac (stopped at the first under-JND chroma); value matches colorjs.io method "css" and the #1323 test
+*/
+.t { color: lab(98.2504% -7.697 88.7581); }

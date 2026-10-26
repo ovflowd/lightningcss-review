@@ -26,7 +26,7 @@ reach Vite 8 users): #1388 (`engines.node >= 24`, C17), #1355 (module export ord
 
 | Consumer | Call and exact options | Stresses | Must preserve (§3) |
 |---|---|---|---|
-| Tailwind v4 4.3.3 (`packages/@tailwindcss-node/src/optimize.ts:29-147`) | `transform` **twice**, only pass-1 warnings shown (regex filter L63-76): `drafts.customMedia`, `nonStandard.deepSelectorCombinator`, `include: Nesting\|MediaQueries`, `exclude: LogicalProperties\|DirSelector\|LightDark`, targets chrome 111, firefox 128, safari 16.4, ios_saf 16.4, `errorRecovery: true`; then `@media not (` -> `@media not all and (` (L128). Prod builds only (CLI, vite, postcss, webpack, turbopack) | nesting, media-queries, cascade-layers-scope, supports-container, color, custom-properties, selectors, prefixing-compat, calc-math | C2-C4, C14, C16, C18; `@property` polyfill `@supports` gate verbatim (`supports-container/ecosystem-consumers-tailwind-property-polyfill-gates`); the space in `var(--x, )` (tw#20373); prefixed duplicates must not grow per pass (#872, #969) |
+| Tailwind v4 4.3.3 (`packages/@tailwindcss-node/src/optimize.ts:29-147`) | `transform` **twice**, only pass-1 warnings shown (regex filter L63-76): `drafts.customMedia`, `nonStandard.deepSelectorCombinator`, `include: Nesting\|MediaQueries`, `exclude: LogicalProperties\|DirSelector\|LightDark`, targets chrome 111, firefox 128, safari 16.4, ios_saf 16.4, `errorRecovery: true`; then `@media not (` -> `@media not all and (` (L128). Prod builds only (CLI, vite, postcss, webpack, turbopack) | nesting, media-queries, cascade-layers-scope, supports-container, color, custom-properties, selectors, prefixing-compat, calc-math | C2-C4, C14, C16, C18; `@property` polyfill `@supports` gate verbatim (`supports-container/tailwind-property-polyfill-gates`); the space in `var(--x, )` (tw#20373); prefixed duplicates must not grow per pass (#872, #969) |
 | Vite 8 minifier 8.3.5 (`packages/vite/src/node/plugins/css.ts:2289-2368`) | `transform({...css.lightningcss, targets: convertTargets(build.cssTarget), minify: true})`, **strict** unless the user sets `errorRecovery`; targets chrome 111, edge 111, firefox 114, safari 16.4, ios_saf 16.4; empty targets -> `undefined` (L3662) | all user CSS | no new parse error on valid CSS (fails the build); C1, C6, C17 |
 | Vite transformer (experimental, L3288-3519) | `bundleAsync` (resolver runs Sass/Less/Stylus), `analyzeDependencies.preserveImports`, `cssModules` for `*.module.*`, `transformStyleAttribute` | bundler, css-modules | C8, C9 |
 | Next 16.4 Turbopack (`turbopack/crates/turbopack-css/src/process.rs`) | strip BOM; parse with `error_recovery: true`, modules `[hash]_[local]` with `dashed_idents/grid/container: false`, `CUSTOM_MEDIA` only if included; warnings -> issues by kind (L543-557); `minify(targets)` always, dev too; pure-selector lint (L719-740). `include = MediaRangeSyntax\|Nesting\|user`, `exclude` = user only (L84-89); default chrome 111, edge 111, firefox 111, safari 16.4 | css-modules, selectors, logical, color | C2, C5, C10-C13 |
@@ -73,9 +73,9 @@ LightningCSS's tests pin none of these. A change to one needs a probe or NEEDS_M
 | C11 | `selectors/parser.rs:1392` | `Component` variants (public Rust API) | Turbopack's pure-selector lint matches them (`process.rs:719-740`); tw#15614 | B7, semver |
 | C12 | stylesheet entry | a leading BOM fails to parse | Next strips it and asserts that (`process.rs:1011-1016`); PR #1301 flips the test (benign) | - |
 | C13 | `StyleSheet::minify` | `minify()` performs the CSS-modules transform | Turbopack, also in dev (#935, #1118) | - |
-| C14 | printer, lowering | output re-parses strictly with the same options | Tailwind pass 2, then Vite 8; styled-jsx; basecoat fails today (#982, §7) | R2, `nesting/ecosystem-consumers-pseudo-element-parent-roundtrip` |
+| C14 | printer, lowering | output re-parses strictly with the same options | Tailwind pass 2, then Vite 8; styled-jsx; basecoat fails today (#982, §7) | R2, `nesting/pseudo-element-parent-roundtrip` |
 | C15 | printer | output parses in other tools | `[data-theme*=" "]` -> `[data-theme*=\ ]` broke postcss-selector-parser (next#76269) | flag new serializations |
-| C16 | `src/selector.rs` | unknown pseudos pass through verbatim with a warning (`:deep()`, `::v-deep`, `:global()`, `::ng-deep`, `:host-context()`) | Tailwind (Vue/Angular), Vite, rspack#8695 | `selectors/ecosystem-consumers-framework-pseudo-verbatim` |
+| C16 | `src/selector.rs` | unknown pseudos pass through verbatim with a warning (`:deep()`, `::v-deep`, `:global()`, `::ng-deep`, `:host-context()`) | Tailwind (Vue/Angular), Vite, rspack#8695 | `selectors/framework-pseudo-verbatim` |
 | C17 | `package.json` | `engines`, `exports`, `optionalDependencies`; master has node `>= 24.0.0` (#1388; npm 1.33.0 `>= 12.0.0`) | Vite 8 (node `^20.19 \|\| >=22.12`), Parcel (>= 16) take it via caret; Yarn 1 fails on mismatch, npm/pnpm warn | NEEDS_MAINTAINER_DECISION |
 | C18 | `node/index.js` | native-binary loader structure | Tailwind's pnpm patch replaces it; tw#14919 reverted an upgrade when it stopped applying | flag any diff |
 
@@ -103,26 +103,26 @@ confirmed in Chrome 156 only).
 
 | EM | Input -> master output (seen in) | LC site | Probe |
 |---|---|---|---|
-| 01 | `line-height:1e\32` -> `1e2` (invalid became valid; esbuild#2677) | cssparser `serializer.rs:103-112` via `values/length.rs:513`, `properties/custom.rs:541-546` | `printer-serialization/em-dimension-unit-e-digit-not-exponent` |
-| 03 | `--a: x//**/*y` -> `--a:x/*y}...`, the rest of the sheet is a comment (bun#33683) | `custom.rs:898-902` | `custom-properties/em-comment-removal-creates-comment-opener` |
-| 04 | raw names: `transition-property:fake\7d name` -> `fake}name`, next rule lost; same for unknown at-rule names, `@font-face` descriptors, `@page`, `:hover\:focus` -> `:hover:focus`, media types (bun#31404) | `write_str` at `properties/mod.rs:265`, `rules/unknown.rs:40`, `rules/font_face.rs:571`, `rules/page.rs:290`, `selector.rs:866,870,1305`, `media_query.rs:443` | `printer-serialization/em-transition-property-ident-escaped`, `at-rules-other/em-unknown-at-rule-name-escaped`, `at-rules-other/em-font-face-unknown-descriptor-escaped`, `selectors/em-custom-pseudo-class-name-escaped`, `media-queries/em-custom-media-type-name-escaped`, `at-rules-other/spec-layout-page-name-escape-preserved` |
-| 05 | `content:"<\/style>"` -> `"</style>"` (inline `<style>`; esbuild#1509) | strings re-serialized unguarded | `printer-serialization/em-style-end-tag-not-emitted-in-strings` |
-| 36 | `light-dark()` in `@property initial-value` lowered to `var()`: registration invalid (csstools) | `values/color.rs:707-716` lowers in any context (`rules/property.rs:40`) | `custom-properties/em-light-dark-not-lowered-in-property-initial-value` |
-| 70 | `font-family:"revert-rule",monospace` -> keyword (esbuild#2135, cssnano 9.2.1) | `properties/font.rs:312-325`, `:423` | `font/em-font-family-revert-rule-stays-quoted` |
-| 80 | `@keyframes "revert-rule"` -> invalid ident prelude (cssnano 9.2.0) | `rules/keyframes.rs:76,106`, `properties/animation.rs:75` | `transition-animation/em-keyframes-string-name-revert-rule` |
-| 81 | `-webkit-animation:k 1s;animation-name:k` -> `animation-name:}` | `animation.rs:968-978` drains `names`, `:1038` prints the leftover | `transition-animation/em-prefixed-animation-shorthand-unprefixed-longhand-not-emptied` |
-| 101 | `::selection{}` + `::-moz-selection{}` -> `::selection` twice, prefix lost, not idempotent; same for every prefixed pseudo pair (clean-css#814) | `rules/mod.rs:1082-1094`, `selector.rs:1189-1197` | `selectors/em-prefixed-pseudo-merge-keeps-prefix` |
-| 110 | `.foo{> &a{}}` -> `.foo>.fooa` (esbuild#3096) | `selector.rs:1478` handles only the first compound | `nesting/em-relative-amp-type-selector-not-concatenated` |
-| 111 | `:host(&){.b{}}`, `::slotted(&)` at chrome 95 -> stack overflow abort (bun#46270) | likely `selector.rs:1702-1714` (argument printed in the printer's context) | `nesting/em-host-amp-nested-rule-no-stack-overflow` |
-| 112 | `:fullscreen{` x 20 at safari 8 -> 357 MB (bun#31270) | `rules/style.rs:212-238` reprints nested rules per prefix | `nesting/em-prefixed-nested-selector-no-duplication` |
+| 01 | `line-height:1e\32` -> `1e2` (invalid became valid; esbuild#2677) | cssparser `serializer.rs:103-112` via `values/length.rs:513`, `properties/custom.rs:541-546` | `printer-serialization/dimension-unit-e-digit-not-exponent` |
+| 03 | `--a: x//**/*y` -> `--a:x/*y}...`, the rest of the sheet is a comment (bun#33683) | `custom.rs:898-902` | `custom-properties/comment-removal-creates-comment-opener` |
+| 04 | raw names: `transition-property:fake\7d name` -> `fake}name`, next rule lost; same for unknown at-rule names, `@font-face` descriptors, `@page`, `:hover\:focus` -> `:hover:focus`, media types (bun#31404) | `write_str` at `properties/mod.rs:265`, `rules/unknown.rs:40`, `rules/font_face.rs:571`, `rules/page.rs:290`, `selector.rs:866,870,1305`, `media_query.rs:443` | `printer-serialization/transition-property-ident-escaped`, `at-rules-other/unknown-at-rule-name-escaped`, `at-rules-other/font-face-unknown-descriptor-escaped`, `selectors/custom-pseudo-class-name-escaped`, `media-queries/custom-media-type-name-escaped`, `at-rules-other/page-name-escape-preserved` |
+| 05 | `content:"<\/style>"` -> `"</style>"` (inline `<style>`; esbuild#1509) | strings re-serialized unguarded | `printer-serialization/style-end-tag-not-emitted-in-strings` |
+| 36 | `light-dark()` in `@property initial-value` lowered to `var()`: registration invalid (csstools) | `values/color.rs:707-716` lowers in any context (`rules/property.rs:40`) | `custom-properties/light-dark-not-lowered-in-property-initial-value` |
+| 70 | `font-family:"revert-rule",monospace` -> keyword (esbuild#2135, cssnano 9.2.1) | `properties/font.rs:312-325`, `:423` | `font/font-family-revert-rule-stays-quoted` |
+| 80 | `@keyframes "revert-rule"` -> invalid ident prelude (cssnano 9.2.0) | `rules/keyframes.rs:76,106`, `properties/animation.rs:75` | `transition-animation/keyframes-string-name-revert-rule` |
+| 81 | `-webkit-animation:k 1s;animation-name:k` -> `animation-name:}` | `animation.rs:968-978` drains `names`, `:1038` prints the leftover | `transition-animation/prefixed-animation-shorthand-unprefixed-longhand-not-emptied` |
+| 101 | `::selection{}` + `::-moz-selection{}` -> `::selection` twice, prefix lost, not idempotent; same for every prefixed pseudo pair (clean-css#814) | `rules/mod.rs:1082-1094`, `selector.rs:1189-1197` | `selectors/prefixed-pseudo-merge-keeps-prefix` |
+| 110 | `.foo{> &a{}}` -> `.foo>.fooa` (esbuild#3096) | `selector.rs:1478` handles only the first compound | `nesting/relative-amp-type-selector-not-concatenated` |
+| 111 | `:host(&){.b{}}`, `::slotted(&)` at chrome 95 -> stack overflow abort (bun#46270) | likely `selector.rs:1702-1714` (argument printed in the printer's context) | `nesting/host-amp-nested-rule-no-stack-overflow` |
+| 112 | `:fullscreen{` x 20 at safari 8 -> 357 MB (bun#31270) | `rules/style.rs:212-238` reprints nested rules per prefix | `nesting/prefixed-nested-selector-no-duplication` |
 | 113 | `a,b{` x 20 at chrome 100 -> 9.4 MB, exponential where `:is()` would be linear (esbuild#4114) | nesting lowering | - (§5.4) |
-| 132 | `color-scheme` lowering repeats `--lightningcss-*` on every pass; cubic merging (cssnano#1747) | `properties/ui.rs:556-580` | `ui-misc/em-color-scheme-lowering-idempotent` |
-| 140 | CSS modules leave `system: extends X`, `fallback: X`, `counter(c, X)` unrenamed (cssnano 8.0.6) | - | `css-modules/em-counter-style-descriptor-references-renamed`, `css-modules/em-counter-function-style-argument-renamed` |
+| 132 | `color-scheme` lowering repeats `--lightningcss-*` on every pass; cubic merging (cssnano#1747) | `properties/ui.rs:556-580` | `ui-misc/color-scheme-lowering-idempotent` |
+| 140 | CSS modules leave `system: extends X`, `fallback: X`, `counter(c, X)` unrenamed (cssnano 8.0.6) | - | `css-modules/counter-style-descriptor-references-renamed`, `css-modules/counter-function-style-argument-renamed` |
 
 ### 5.2 KNOWN, DESIGN, LOW, OK
 
 - KNOWN (issue or probe exists): EM-02 `+` dropped in token lists
-  (`custom-properties/ssv-plus-sign-token-boundary`); 06 BOM (#338); 08 recovery drops earlier declarations (#1358);
+  (`custom-properties/plus-sign-token-boundary`); 06 BOM (#338); 08 recovery drops earlier declarations (#1358);
   10 precision (#949, #12) and i32 saturation (§7); 21 `line-height:0px`, `flex:1 1 0%`; 22 invalid repaired (#1199);
   23 `calc(-1px)` folded out of range; 26 nested-function backtracking (#1382; calc, `rgb( / `, atan2 paths NEW); 31
   colors rewritten in custom properties; 33 out-of-range `color-mix()` %; 40/41 legacy gradient direction and
@@ -199,7 +199,7 @@ bun#42948 merged (#1235/#1236), #45210 merged (#1340), #46806 (#1361), #46787 (#
   `values/length.rs:518` has passed `Some(value as i32)` since c976374 (2021); cssparser 0.33 `write_numeric` used
   `int_value` only to drop `.0`, 0.37 (#1200, ae0e516) prints it. `rotate(3000000000deg)` -> `2147483647deg`
   (120deg becomes 127deg), custom properties too. Probe
-  `values-numeric/ecosystem-consumers-large-integral-value-no-i32-saturation`: fails on master, passes on 1.32.0.
+  `values-numeric/large-integral-value-no-i32-saturation`: fails on master, passes on 1.32.0.
 - legacy-2020 grows daisyui 1.14 -> 2.84 MB, carbon 1.37 -> 2.58 MB; S2 compares head with base, so no PR cost.
 - No CSS-module, source-map or BOM inputs (a BOM needs a file-level case, not a probe).
 

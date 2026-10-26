@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: custom-properties/custom-property-name-case
+area: custom-properties
+title: Custom property names are case-sensitive
+mode: minify
+targets: none
+expect: equivalent
+known: none
+ref: https://drafts.csswg.org/css-variables-1/#defining-variables
+note: guard; --X and --x are distinct properties and must not be deduplicated or lowercased
+*/
+.t { --X: green; --x: red; color: var(--X); }

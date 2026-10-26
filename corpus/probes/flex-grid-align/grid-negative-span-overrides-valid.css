@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: flex-grid-align/grid-negative-span-overrides-valid
+area: flex-grid-align
+title: `span` with a negative integer is invalid and must not replace an earlier valid line
+mode: minify
+targets: none
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/css-grid-2/#typedef-grid-row-start-grid-line https://github.com/web-platform-tests/wpt/blob/master/css/css-grid/parsing/grid-area-invalid.html
+note: MASTER FAILS (no issue filed yet). GridLine::parse only rejects `span 0` (src/properties/grid.rs:1403); the grammar is span && [ <integer [1,inf]> || <custom-ident> ]
+*/
+.t { grid-row-end: 2; grid-row-end: span -1; }
+.u { grid-row: 1 / 2; grid-row: -3 / span -4; }

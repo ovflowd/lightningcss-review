@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: text/empty-text-transform-becomes-none
+area: text
+title: An empty `text-transform:` must not override an earlier valid value
+mode: minify
+targets: none
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/css2/#parsing-errors https://drafts.csswg.org/css-text-3/#text-transform-property
+note: TextTransform::parse accepts empty input (src/properties/text.rs:167-197); 1.33.0 emits text-transform:none
+*/
+.t { text-transform: uppercase; text-transform: ; }

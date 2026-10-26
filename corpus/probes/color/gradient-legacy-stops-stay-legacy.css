@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: color/gradient-legacy-stops-stay-legacy
+area: color
+title: legacy stops (hsl, rgb) may be rewritten to hex but must not become color(srgb ...)
+mode: minify
+targets: none
+expect: equivalent
+known: none
+ref: https://drafts.csswg.org/css-color-4/#interpolation-space https://github.com/web-platform-tests/wpt/blob/master/css/css-images/gradient/legacy-color-gradient.html
+note: guard: hex and named colors are legacy too, so this is safe today
+*/
+.t { background-image: linear-gradient(90deg, hsl(0 100% 50%), rgb(0 0 255)); }

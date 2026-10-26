@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: calc-math/clamp-lowering
+area: calc-math
+title: clamp() lowers to max(MIN, min(VAL, MAX)) exactly
+mode: lower
+targets: safari 13
+expect: equivalent, output-contains:"max("
+known: none
+ref: https://drafts.csswg.org/css-values-4/#comp-func
+note: guard; Safari 13 has min()/max() (11.1) but not clamp() (13.1); the min-wins ordering must be kept
+*/
+.t { width: clamp(10px, 50%, 300px); }

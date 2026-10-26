@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: font/font-shorthand-stretch-keyword-to-percentage
+area: font
+title: `font: condensed 12px serif` must stay valid (no percentage in the font shorthand)
+mode: minify
+targets: none
+expect: equivalent, output-not-contains:"font:75%"
+known: open-issue#1140
+ref: https://drafts.csswg.org/css-fonts-4/#font-prop https://github.com/parcel-bundler/lightningcss/issues/1140
+note: FontStretch::to_css prints a percentage when minifying (src/properties/font.rs:264-279); only <font-width-css3> keywords are valid in font
+*/
+.t { font: condensed 12px serif; }

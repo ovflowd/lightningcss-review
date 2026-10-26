@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: color/light-dark-lowering-in-custom-property
+area: color
+title: lowered light-dark() inside a custom property is evaluated where the property is used
+mode: lower
+targets: chrome 100
+expect: equivalent
+known: open-issue#821
+ref: https://drafts.csswg.org/css-color-5/#light-dark https://drafts.csswg.org/css-color-adjust-1/#color-scheme-effect https://github.com/parcel-bundler/lightningcss/issues/821
+note: native: .t is dark => black; lowered var() fallbacks are substituted at :root, so .t gets "#fff #000" (invalid at computed-value time)
+*/
+:root { --bg: light-dark(white, black); }
+.t { color-scheme: dark; background-color: var(--bg); }

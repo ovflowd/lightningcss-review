@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: transform/transform-origin-keywords-z
+area: transform
+title: transform-origin "left top 5px" keeps 5px as the z offset
+mode: print
+targets: none
+expect: equivalent, output-not-contains:"origin: 0 5px"
+known: open-bug
+ref: https://drafts.csswg.org/css-transforms-1/#transform-origin-property https://drafts.csswg.org/css-values-4/#position https://drafts.csswg.org/css-values-4/#position-serialization
+note: UNFILED master failure; transform-origin is typed as a 2D Position (mod.rs:1474 "TODO: handle z offset"), which accepts the 3-value <bg-position> form, so `left top 5px` becomes x=0 y=5px (z lost); also `center top 5px` -> `50% 5px`
+*/
+.t { transform-origin: left top 5px; }

@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: calc-math/nan-must-be-censored-to-zero
+area: calc-math
+title: A top-level NaN calculation must be censored to 0, not printed as a huge number
+mode: minify
+targets: none
+expect: equivalent, output-not-contains:"e38"
+known: none
+ref: https://drafts.csswg.org/css-values-4/#calc-ieee
+note: 1.33.0 emits width:5.10424e38px; same for mod(5px,0px), rem(5px,0px), round(5px,0px), sqrt(-1)
+*/
+.t { width: calc(NaN * 1px); }

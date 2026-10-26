@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: flex-grid-align/display-flex-before-ms-flexbox
+area: flex-grid-align
+title: `display:flex` must survive a later `display:-ms-flexbox` for targets that do not understand -ms-flexbox
+mode: lower-minify
+targets: chrome 100
+expect: equivalent
+known: open-issue#1291
+ref: https://github.com/parcel-bundler/lightningcss/issues/1291 https://drafts.csswg.org/css-display-3/#the-display-properties
+note: DisplayHandler (src/properties/display.rs:388-392) drops the unprefixed value; Chrome ignores -ms-flexbox so the element stops being a flex container
+*/
+.t { display: flex; display: -ms-flexbox; }

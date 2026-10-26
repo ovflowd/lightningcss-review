@@ -1,0 +1,15 @@
+/*! lcr-probe
+id: nesting/nth-child-of-ampersand-not-relative
+area: nesting
+title: A nested selector whose only `&` is inside :nth-child(of S) is not relative
+mode: print
+targets: none
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/css-nesting-1/#syntax https://drafts.csswg.org/selectors-4/#the-nth-child-pseudo
+dom: <div><div class="a"></div><div class="a"></div></div>
+note: parse_nth_pseudo_class (selectors/parser.rs:2898) takes the parsing state by value, so AFTER_NESTING from `of &` never reaches parse_selector and an implicit `& ` prefix is added (`& :nth-child(2 of &)`)
+*/
+.a {
+  :nth-child(2 of &) { color: red }
+}

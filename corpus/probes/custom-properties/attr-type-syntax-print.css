@@ -1,0 +1,15 @@
+/*! lcr-probe
+id: custom-properties/attr-type-syntax-print
+area: custom-properties
+title: attr() type(<length>) must not gain a space after `<` when printed unminified
+mode: print
+targets: none
+expect: equivalent, idempotent, output-not-contains:"< length"
+known: none
+ref: https://github.com/parcel-bundler/lightningcss/issues/980 https://github.com/parcel-bundler/lightningcss/commit/32f1f52f025fc43887b20448cc9646b09ef96329 https://drafts.csswg.org/css-values-5/#attr-notation
+dom: <div class="foo" data-max-width="40px">x</div>
+note: v1.30.2 and earlier printed `type(< length> | fit-content)` (invalid, declaration dropped); fixed in v1.31.0 when token lists stopped dropping/reinserting whitespace
+*/
+.foo {
+  max-width: attr(data-max-width type(<length> | fit-content));
+}

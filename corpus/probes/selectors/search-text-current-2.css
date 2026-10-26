@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: selectors/search-text-current-2
+area: selectors
+title: `::search-text:current` is valid and must not be a hard error
+mode: minify
+targets: none
+expect: output-contains:"::search-text:current", idempotent
+known: open-issue#1303
+ref: https://drafts.csswg.org/css-pseudo-4/#selectordef-search-text https://github.com/parcel-bundler/lightningcss/issues/1303
+note: regression in 1.33.0 (#1213) — known pseudo-elements only accept user-action pseudo-classes after them (selectors/parser.rs:3129)
+*/
+::search-text:current { color: red; }

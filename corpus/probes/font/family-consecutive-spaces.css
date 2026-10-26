@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: font/family-consecutive-spaces
+area: font
+title: a quoted family name with consecutive spaces must not be unquoted (identifiers join with single spaces)
+mode: minify
+targets: none
+expect: equivalent
+known: fixed-by#1064
+ref: https://drafts.csswg.org/css-fonts-4/#font-family-name-syntax https://github.com/parcel-bundler/lightningcss/issues/1054 https://github.com/parcel-bundler/lightningcss/pull/1064
+note: unquoted `Foo  Bar` computes to "Foo Bar"; 4e6492b fixed the compile error introduced when the review suggestion was applied
+*/
+.x { font-family: "Foo  Bar", serif; }

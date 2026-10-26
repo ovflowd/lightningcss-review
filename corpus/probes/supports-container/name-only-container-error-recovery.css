@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: supports-container/name-only-container-error-recovery
+area: supports-container
+title: Name-only `@container foo` must parse cleanly with errorRecovery (no condition, no stray whitespace)
+mode: print
+targets: none
+flags: error-recovery
+expect: output-contains:"@container sidebar {"
+known: open-issue#1370
+ref: https://drafts.csswg.org/css-conditional-5/#container-rule https://github.com/parcel-bundler/lightningcss/issues/1370 https://github.com/parcel-bundler/lightningcss/pull/1125 https://github.com/parcel-bundler/lightningcss/pull/1379
+note: #1125 detects 'name only' by the condition parse failing, but in errorRecovery mode the query parser (220b390) recovers into MediaCondition::Unknown and warns EndOfInput; output is `@container sidebar   {`
+*/
+@container sidebar { .t { color: red; } }

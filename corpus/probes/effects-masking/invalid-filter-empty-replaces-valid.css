@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: effects-masking/invalid-filter-empty-replaces-valid
+area: effects-masking
+title: An empty `filter:` must not replace an earlier valid filter
+mode: minify
+targets: none
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/css2/#parsing-errors https://drafts.fxtf.org/filter-effects-1/#FilterProperty
+note: FilterList::parse accepts zero filters (src/properties/effects.rs:338) and FallbackHandler replaces in place; 1.33.0 emits .t{filter:}
+*/
+.t { filter: blur(2px); filter: ; }

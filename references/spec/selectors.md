@@ -59,20 +59,20 @@ classes/IDs case-sensitive outside quirks; 46 HTML attributes have case-insensit
 - **INV-SEL-002** Validity is per engine (#invalid, #w3c-partial). ✗ no targets ⇒ `Targets::is_compatible` is true
   (`src/targets.rs:226-228`): `:has()`, `[a=b s]`, `:lang(a,b)` merge (`.x{c}.y:lang(de,fr){c}` → `.x,.y:lang(de,fr)`,
   `.x` dies in Chrome); only `Custom`, prefixed and "experimental" pseudos are protected (`src/selector.rs:1975-1994,2022`).
-  Probes `rule-merging/ss-engine-specific-selectors-not-merged` (guard), `rule-merging/asr-attr-s-flag-merge` (F11).
+  Probes `rule-merging/engine-specific-selectors-not-merged` (guard), `rule-merging/attr-s-flag-merge` (F11).
 - **INV-SEL-003** A spec-invalid selector may be accepted only if it is never merged, split or unwrapped. ✗ accepted and
   merged: `.u::before:hover`, undeclared `ns|a`, `SVG|a`, `:has(:has())`, `:has(::before)`, top-level `&div`,
-  `::picker(foo)` (S2; WPT: 219 invalid accepted, 94 merge; 34 valid rejected). Probes `rule-merging/ss-no-merge-*` (5).
+  `::picker(foo)` (S2; WPT: 219 invalid accepted, 94 merge; 34 valid rejected). Probes `rule-merging/no-merge-*` (5).
 - **INV-SEL-004** What may follow a pseudo-element is per pseudo-element and engine (A.4). ✗ `accepts_state_pseudo_classes`
   is true for all (`src/selector.rs:1316-1319`); `is_compatible` ignores the combination.
 - **INV-SEL-005** Only `:is()`/`:where()` forgive (#forgiving-selector). ✗ `:has()` (`selectors/parser.rs:2846`) and
   `of S` (`:2934`) use `IgnoreInvalidSelector`: `:has(.x, 1)` → `:has(.x)`, `:nth-child(1 of .t, 1)` → `(1 of .t)`
-  revive dropped rules (F8). Probes `ss-not-argument-is-unforgiving` (guard), `asr-*-unforgiving*` (2),
+  revive dropped rules (F8). Probes `not-argument-is-unforgiving` (guard), `asr-*-unforgiving*` (2),
   `has-pseudo-element-argument-not-emptied`.
 - **INV-SEL-006** `:is(X)` → `X` only if X is valid there in every target engine (#matches). ✗ `should_unwrap_is`
   (`src/selector.rs:1731-1740`) checks one selector, no type, no combinator: `:is(:unknown),p` → `:unknown,p` (#345);
   unwrapped `::before:is(:hover)`, `:has(:is(:has(.a)))`, `::part(x):is(:first-child)` are invalid in C/F/W,
-  `:is(:lang(de,fr))`, `:is([a=b s])` in Chrome. Probes `ss-is-not-unwrapped-*` (4), `issues-important-is-unwrap-forgiving-list`.
+  `:is(:lang(de,fr))`, `:is([a=b s])` in Chrome. Probes `ss-is-not-unwrapped-*` (4), `is-unwrap-forgiving-list`.
 - **INV-SEL-007** An empty or emptied forgiving list is valid and matches nothing: print `:is()`, never drop the compound
   or emit `:is(`. ✓ (`.u:is(::before)` → `.u:is()` like browsers, #906).
 - **INV-SEL-008** Non-functional `::-webkit-*` is valid in every engine (#compat, normative); `::-webkit-x()` and other
@@ -83,17 +83,17 @@ classes/IDs case-sensitive outside quirks; 46 HTML attributes have case-insensit
 
 **Pseudo-elements**
 - **INV-SEL-010** Only the four CSS2 pseudo-elements may lose a colon (css-pseudo-4 #css2-compat). ✓
-  (`src/selector.rs:1212-1215`). Probe `ss-single-colon-only-for-css2-pseudo-elements`.
+  (`src/selector.rs:1212-1215`). Probe `single-colon-only-for-css2-pseudo-elements`.
 - **INV-SEL-011** Whitespace before a pseudo-element is a combinator. ✓ Probe `ss-descendant-whitespace-*`.
 - **INV-SEL-012** Sub-pseudo-element chains are valid exactly where defined (A.1, #sub-pseudo-elements). ✗ hard errors:
   `::before::marker` (#990), `::details-content::before` (#1244), `::slotted(details)::details-content`
-  (`valid_after_slotted`, `src/selector.rs:1321-1333`); `::marker::marker` rejected ✓. Probes `issues-b1-before-marker`,
+  (`valid_after_slotted`, `src/selector.rs:1321-1333`); `::marker::marker` rejected ✓. Probes `before-marker`,
   `details-content-pseudo-element-chain`.
 - **INV-SEL-013** Element-backed pseudo-elements allow every pseudo-class syntactically. ✗ `:state()`/`:dir()`/`:lang()`
   after `::part()` are hard errors (`allows_custom_functional_pseudo_classes`, `selectors/parser.rs:165-167`); structural
-  ones become `Custom` with a misleading warning (#1348). Probe `ss-part-followed-by-state-pseudo-class`.
+  ones become `Custom` with a misleading warning (#1348). Probe `part-followed-by-state-pseudo-class`.
 - **INV-SEL-014** `::part(<ident>+)` keeps every name (css-shadow-1 #part). ✓ (`selectors/parser.rs:3033-3046`). Probe
-  `ss-part-multiple-names-and-sub-pseudo`.
+  `part-multiple-names-and-sub-pseudo`.
 - **INV-SEL-015** `:has()` holds no pseudo-elements and no `:has()` (#relational): never accept-and-merge such a
   selector or reduce it to `:has()`. ✗ `parse_has` sets no `DISALLOW_PSEUDOS` (`selectors/parser.rs:2832-2853`): top
   level keeps and merges `:has(:before)`; inside `:not()` the inherited flag drops it: `video:not(:has(::backdrop))` →
@@ -108,7 +108,7 @@ classes/IDs case-sensitive outside quirks; 46 HTML attributes have case-insensit
 - **INV-SEL-017** The host is featureless: `:host(.a)` ≠ `:host.a` ≠ `.a:host`; never rewrite `:host(X)` into a compound
   or descendant (css-shadow-1 #host-element-in-tree, selectors-4 #featureless).
 - **INV-SEL-018** `:host()`, `:host-context()`, `::slotted()` take one compound (css-shadow-1 #host-selector,
-  #slotted-pseudo). ✓ `:host()`/`::slotted()`; `:host-context()` is a raw `CustomFunction`. Probe `ss-host-argument-is-compound-only`.
+  #slotted-pseudo). ✓ `:host()`/`::slotted()`; `:host-context()` is a raw `CustomFunction`. Probe `host-argument-is-compound-only`.
 - **INV-SEL-019** `:host-context()` is Chrome-only (BCD deprecated): never merge it. ✓ pass-through (typing it was
   rejected, PR #1299).
 
@@ -116,49 +116,49 @@ classes/IDs case-sensitive outside quirks; 46 HTML attributes have case-insensit
 - **INV-SEL-020** Specificity per A.1; `:is(#a,.b) .c` → `#a .c, .b .c` changes it. ✗ `:has()` and `&` count 0
   (`selectors/builder.rs:357-358`, `:366-368`); sole consumer: the `:is()` wrap (`src/rules/mod.rs:769`) → #1324
   (`.a, .b:has(> i){red} .c{blue}`, chrome 111 + firefox 114 → `:is(.a,.b:has(>i))`, `.a` beats `.c`). Probes
-  `issues-b5-is-wrap-has-specificity`, `rule-merging/asr-is-wrap-has-specificity`.
+  `is-wrap-has-specificity`, `rule-merging/is-wrap-has-specificity`.
 - **INV-SEL-021** `:only-child` < `:first-child:last-child`; `:first-child` = `:nth-child(1)`. ✓ (`:nth-child(1)` →
-  `:first-child`; pair kept). Probe `ss-first-last-child-not-collapsed-to-only-child`.
+  `:first-child`; pair kept). Probe `first-last-child-not-collapsed-to-only-child`.
 - **INV-SEL-022** Repeated simple selectors count again (`.a.a`, `&&`): never dedupe inside a compound. ✓
-- **INV-SEL-023** Never unwrap `:where()`; unwrap `:is()` only for one-selector arguments. ✓ Probe `ss-where-not-unwrapped`.
+- **INV-SEL-023** Never unwrap `:where()`; unwrap `:is()` only for one-selector arguments. ✓ Probe `where-not-unwrapped`.
 - **INV-SEL-025** `:-webkit-any()` is (0,1,0) in C and W (`:-webkit-any(#a)` loses to `.t.t`), unforgiving and
   compound-only in Chrome; Firefox `:-moz-any()` = `:is()`. Lowering `:is()` to it is exact only for valid compound
   arguments of max specificity (0,1,0). ✗ #997: `:not(a,block)` (chrome 87) → `:not(:-webkit-any(a,block))` beats an
-  earlier `.x` in current Chromium. Probe `issues-b1-webkit-any-fallback-specificity`.
+  earlier `.x` in current Chromium. Probe `webkit-any-fallback-specificity`.
 
 **Case, escaping, serialization**
 - **INV-SEL-026** Keep the case of type selectors and attribute names: F/W follow HTML LS (`svg foreignobject`,
   `svg[viewbox]` do not match), C matches anyway, so a lowercasing bug shows only in F/W (O9). ✓ Probe
-  `ss-type-and-attribute-name-case-preserved-for-svg`.
+  `type-and-attribute-name-case-preserved-for-svg`.
 - **INV-SEL-027** Ident arguments (`::highlight()`, `:state()`, `::part()`, view-transition names,
-  `:active-view-transition-type()`) are case-sensitive. ✓ Probe `ss-custom-ident-pseudo-arguments-keep-case`. CSS
+  `:active-view-transition-type()`) are case-sensitive. ✓ Probe `custom-ident-pseudo-arguments-keep-case`. CSS
   modules ✗: `:state()` names are hashed (unreported, since #1133 v1.31.0, which also made `:state(initial)` an error;
-  probe `css-modules/community-prs-state-pseudo-not-hashed`), `::highlight()` too (intent UNVERIFIED), `::part()` not;
+  probe `css-modules/state-pseudo-not-hashed`), `::highlight()` too (intent UNVERIFIED), `::part()` not;
   view-transition names are scoped by design (#885).
 - **INV-SEL-028** `i`/`s` change matching (#attribute-case); Chrome 156 rejects `s` (WebKit 27.2 accepts; Safari
   UNVERIFIED). ✓ kept; ✗ compat maps `s` to `Feature::CaseInsensitive` (`src/selector.rs:1856-1857,1876-1877`) → F11.
-  Probe `ss-attribute-case-flags-preserved`.
+  Probe `attribute-case-flags-preserved`.
 - **INV-SEL-029** Attribute values are ident or string tokens: unquote only valid identifiers. ✓
-  (`src/selector.rs:1622-1636`: `[a="1"]`, `[a=""]` kept, `[a="-"]` → `[a=\-]`). Probe `ss-attribute-value-keeps-quotes-when-not-ident`.
+  (`src/selector.rs:1622-1636`: `[a="1"]`, `[a=""]` kept, `[a="-"]` → `[a=\-]`). Probe `attribute-value-keeps-quotes-when-not-ident`.
 - **INV-SEL-030** Escapes are part of the name (`.\31 0` keeps its space; `.md\:w-1\/2`). ✓ classes/IDs; ✗ unknown
   pseudo names are written raw (`src/selector.rs:865-875`, `:1299-1309`): invalid `.t:hover\:focus` → valid
-  `.t:hover:focus` (EM-04). Probes `ss-escaped-identifiers-roundtrip`, `em-custom-pseudo-class-name-escaped`.
+  `.t:hover:focus` (EM-04). Probes `escaped-identifiers-roundtrip`, `custom-pseudo-class-name-escaped`.
 - **INV-SEL-031** An+B output re-parses to the same set (css-syntax-3 #serializing-anb; overflow clamps to
   2147483647 everywhere) and the function closes. ✗ `:nth-col(1)`/`:nth-last-col(1)` print `:nth-col(` (no argument,
   no `)`), which swallows every later rule in C/F/W (S1; `is_function()` false for A=0,B=1, `selectors/parser.rs:1299-1320`,
-  `:2015-2021`). Probes `ss-nth-col-a0-unbalanced-output`, `ss-an-plus-b-serialization-roundtrip`.
+  `:2015-2021`). Probes `nth-col-a0-unbalanced-output`, `an-plus-b-serialization-roundtrip`.
 - **INV-SEL-032** A minified selector re-parses to an equivalent one in every engine (idempotence + normalized
   `selectorText`, cssom #serialize-a-selector): of 869 WPT cases master accepts, 3 (C/F) and 6 (W) turn invalid.
 
 **Linguistic**
 - **INV-SEL-033** `:dir()` accepts any ident (#the-dir-pseudo). ✗ `Direction` is ltr|rtl (`src/selector.rs:234`,
-  `:392-401`): `:dir(auto)` is a hard error. Probe `ss-dir-unknown-ident-is-valid`.
+  `:392-401`): `:dir(auto)` is a hard error. Probe `dir-unknown-ident-is-valid`.
 - **INV-SEL-034** `:lang()` ranges are idents or strings; `*` quoted or escaped; `:lang("")` valid (#the-lang-pseudo).
   ✗ `serialize_identifier` (`src/selector.rs:687-699`): `""` → `:lang()` (invalid, F17); `"*-Latn"` → `\*-Latn`
-  (fine). Probe `asr-lang-empty-string`.
+  (fine). Probe `lang-empty-string`.
 - **INV-SEL-035** `:lang(a, b)` → `:is(:lang(a), :lang(b))` is exact and needed for Chrome (no lists, strings,
   wildcards; Firefox ≥114, Safari ≥9 have them). ✓ lowered wherever `LangSelectorList` is unsupported: every Chrome
-  and Firefox (`compat.rs`: Safari ≥10.1 only; safe for Firefox). Probe `ss-lang-list-lowered-for-chrome`.
+  and Firefox (`compat.rs`: Safari ≥10.1 only; safe for Firefox). Probe `lang-list-lowered-for-chrome`.
 - **INV-SEL-036** `:dir()` → `:lang(<19 RTL languages>)` (`downlevel_dir`, `src/selector.rs:2206-2224`) is a
   documented heuristic (`website/pages/transpilation.md`), never equivalent, and raises logical-fallback specificity
   (#1018, F20, `src/context.rs:94`). No probe may expect `equivalent`.
@@ -168,8 +168,8 @@ classes/IDs case-sensitive outside quirks; 46 HTML attributes have case-insensit
   `merge_style_rules` ORs prefixes into the earlier rule (`src/rules/mod.rs:1082-1093`) and the printer writes
   `(dest.vendor_prefix & own).or_none()` (`src/selector.rs:767-780`, `:1187-1198`): `.t::selection{x}.t::-moz-selection{x}`
   → `.t::selection{x}` twice (not idempotent, EM-101); `::-webkit-input-placeholder` + `::-moz-placeholder` with
-  `firefox 40` → `::placeholder` (absent before Firefox 51, S6). Probes `em-prefixed-pseudo-merge-keeps-prefix`,
-  `prefixing-compat/ss-merged-prefixed-rules-keep-each-prefix`.
+  `firefox 40` → `::placeholder` (absent before Firefox 51, S6). Probes `prefixed-pseudo-merge-keeps-prefix`,
+  `prefixing-compat/merged-prefixed-rules-keep-each-prefix`.
 - **INV-SEL-046** Prefixed spellings are not interchangeable: `:-moz-placeholder` (pseudo-class, Firefox 4–18) ≠
   `::-moz-placeholder` (19–50); `:-ms-input-placeholder` (IE 10–11) ≠ `::-ms-input-placeholder` (Edge 12–18);
   `:-webkit-full-screen`/`:-moz-full-screen` vs `:-ms-fullscreen`. ✗ `::-ms-input-placeholder` is stored as Moz, prints
@@ -185,7 +185,7 @@ classes/IDs case-sensitive outside quirks; 46 HTML attributes have case-insensit
 **Tree-structural and scoping**
 - **INV-SEL-048** `:nth-child(An+B of S)` ≠ `S:nth-child(An+B)`; no exact fallback for C < 111, F < 113. ✓ never
   lowered. `:nth-child(2of.x)` is a `<dimension-token>`, stays invalid (#1273). Probes
-  `ss-nth-child-of-not-lowered-to-compound`, `issues-b5-nth-child-of-requires-whitespace`.
+  `nth-child-of-not-lowered-to-compound`, `nth-child-of-requires-whitespace`.
 - **INV-SEL-049** `:root` ≠ `html` ((0,1,0) vs (0,0,1)); `:scope` ≠ `:root` inside `@scope`; `:empty` ≠ `:blank`:
   never swap them (#the-root-pseudo, #the-scope-pseudo).
 - **INV-SEL-050** An explicit `:scope` inside `:has()`/`:nth-child(of)` is the outer scoping root, not the anchor (ED
@@ -193,7 +193,7 @@ classes/IDs case-sensitive outside quirks; 46 HTML attributes have case-insensit
   stripped in relative lists (`src/selector.rs:1464-1471`, comment: `:has(:scope > foo)` → `:has(> foo)`; explicit and
   implicit `:scope` are stored alike; `:has()` `:1688`, `of S` `:1721`): `.u:has(:scope)` → `.u:has()` (invalid,
   kills a merged `.t`); `.a:has(:scope .b)` → `:has( .b)` and `.c:nth-child(1 of :scope.c)` → `(1 of .c)` start
-  matching in C/F/W (`:has(:scope > .b)` → `:has(>.b)` too; engines UNVERIFIED). Probe `asr-has-scope-only-argument` (F7).
+  matching in C/F/W (`:has(:scope > .b)` → `:has(>.b)` too; engines UNVERIFIED). Probe `has-scope-only-argument` (F7).
 
 ### A.3 Conformance (typed = own variant; pass = `Custom`/`CustomFunction` raw tokens, warning, never merged)
 
@@ -266,17 +266,17 @@ Nested preludes are `<relative-selector-list>`; `&` ≡ `:is(<parent list>)`; CS
 - **INV-SEL-041** `&` has the parent list's max specificity and cannot represent pseudo-elements; single-parent
   substitution is exact; top-level `&` and `&` in an `@scope` body are `:where(:scope)` (#nesting-at-scope). ✗ both
   lower to `:scope` (`src/selector.rs:1765-1771`): `& .t{red} .t{blue}` → `:scope .t{red}.t{blue}` (red wins; native
-  blue; S7 = INV-NEST-006; `@scope`: #1189). Probes `nesting/ss-top-level-amp-zero-specificity-lowered`,
-  `cascade-layers-scope/asr-scope-nesting-selector-specificity`.
+  blue; S7 = INV-NEST-006; `@scope`: #1189). Probes `nesting/top-level-amp-zero-specificity-lowered`,
+  `cascade-layers-scope/scope-nesting-selector-specificity`.
 - **INV-SEL-042** `&div` is invalid in C/F/W: never accept-and-merge it or "fix" it into `div.a`. ✗ `&` is accepted before a
   type selector (`selectors/parser.rs:2709-2713`); top-level `&div` merges (`.t,&div`); the `&div` → `div&` swap only
   runs for the first compound (`src/selector.rs:1478`, `:1547-1560`), so `.foo{> &a{}}` → `.foo>.fooa` (#489, EM-110).
-  Probes `rule-merging/ss-no-merge-top-level-amp-before-type`, `nesting/nesting-selector-before-type-selector-is-invalid`,
-  `nesting/em-relative-amp-*`.
+  Probes `rule-merging/no-merge-top-level-amp-before-type`, `nesting/nesting-selector-before-type-selector-is-invalid`,
+  `nesting/relative-amp-*`.
 - **INV-SEL-043** "Contains the nesting selector" = an `&` anywhere, incl. `:nth-child(of)` and raw unknown pseudo-class
   arguments (#contain-the-nesting-selector). ✗ `AFTER_NESTING` is not propagated out of `parse_nth_pseudo_class` (state by
   value, `selectors/parser.rs:2898`) or raw tokens: `.a{:nth-child(2 of &){}}` → `& :nth-child(2 of &)` (F9). Probe
-  `nesting/asr-nth-child-of-ampersand-not-relative`.
+  `nesting/nth-child-of-ampersand-not-relative`.
 - **INV-SEL-044** Relative nested selectors carry the implied `&` specificity; nested declarations keep the parent's
   elements, pseudo-elements and specificity (INV-NEST-001…011).
 
@@ -296,11 +296,11 @@ case-sensitive and scoped to their sheet; the last redeclaration wins; the defau
 
 - **INV-SEL-037** An undeclared prefix invalidates the selector (and list); prefixes are case-sensitive. ✗
   `namespace_for_prefix` returns `Some(prefix)` for anything (`src/selector.rs:378-380`): `.t{x} ns|div{x}` →
-  `.t,ns|div{x}`. Probes `rule-merging/ss-no-merge-undeclared-namespace-prefix`, `rule-merging/ss-no-merge-namespace-prefix-wrong-case`.
+  `.t,ns|div{x}`. Probes `rule-merging/no-merge-undeclared-namespace-prefix`, `rule-merging/no-merge-namespace-prefix-wrong-case`.
 - **INV-SEL-038** The default namespace skips the subject compound inside `:is()/:where()/:not()/:has()` unless it has an
   explicit `*` or type selector (#matches, #negation): `:not(*.a)` ≠ `:not(.a)`. ✗ `default_namespace()` is `None`
   (`src/selector.rs:374-376`) and `*` is elided (`:1492-1498`, `:1573`): `svg|rect:not(*.a)` → `svg|rect:not(.a)` (S5,
-  matching changes in C/F/W). Probe `ss-default-namespace-explicit-universal-in-not`.
+  matching changes in C/F/W). Probe `default-namespace-explicit-universal-in-not`.
 - **INV-SEL-039** Bundling must not hoist an imported sheet's `@namespace` over the importer; error recovery must not merge
   selectors whose prefix became undeclared. ✗ `@import "d.css"; .a{}` (d.css: `@namespace url(svg)`) bundles to
   `@namespace "…svg";rect{…}.a{…}`: `.a` now matches only SVG (S8, C/F/W; multi-file, no probe).
@@ -310,12 +310,12 @@ case-sensitive and scoped to their sheet; the last redeclaration wins; the defau
 ## D. Harness notes (`lcr baseline`, master `cbeaf83`, 2026-10-25)
 
 - Every probe cited with ✗ fails in the baseline except four that expect only `equivalent` against a master parse error
-  (`ss-dir-unknown-ident-is-valid`, `ss-part-followed-by-state-pseudo-class`, `details-content-pseudo-element-chain`,
+  (`dir-unknown-ident-is-valid`, `part-followed-by-state-pseudo-class`, `details-content-pseudo-element-chain`,
   `search-text-current-pseudo-class`): `stage: parse`, no failing assertion; a PR that newly accepts or rejects such
   input is `unverified`. Judge the pair with `lcr show`.
 - `idempotent` is not evaluated by `lcr baseline`: EM-112 passes there, yet the CLI reproduces it.
-- `different` by design (`still-different`): `ss-lang-list-lowered-for-chrome` (Chromium rejects the input),
-  `ss-nth-child-of-not-lowered-to-compound` in legacy-2023 (Chromium 110 lacks `of`), `logical/asr-dir-fallback-specificity`.
+- `different` by design (`still-different`): `lang-list-lowered-for-chrome` (Chromium rejects the input),
+  `nth-child-of-not-lowered-to-compound` in legacy-2023 (Chromium 110 lacks `of`), `logical/dir-fallback-specificity`.
 - Oracle limits: shadow DOM (L1, no `shadowRoot` walk), `:hover` family (L2), CSS modules (L8); selectors with `&` are
   not validity-probed (`oracle/dom.mjs:461`); no selector WPT lane (O7 = values).
 - B7 is red on master since 37c4f4d (#930): `test_parsing` asserts `parse("foo::details-content").is_ok()`

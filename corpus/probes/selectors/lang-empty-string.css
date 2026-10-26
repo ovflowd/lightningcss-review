@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: selectors/lang-empty-string
+area: selectors
+title: :lang("") must not serialize as the invalid :lang()
+mode: print
+targets: none
+expect: equivalent, output-not-contains:":lang()"
+known: open-bug
+ref: https://drafts.csswg.org/selectors-4/#the-lang-pseudo
+dom: <div class="t"></div>
+note: serialize_pseudo_class (selector.rs:696) always uses serialize_identifier, which writes nothing for an empty string; the invalid :lang() then drops .t from the rule too
+*/
+.t, .u:lang("") { color: red }

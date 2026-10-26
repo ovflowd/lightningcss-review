@@ -1,0 +1,14 @@
+/*! lcr-probe
+id: flex-grid-align/flex-zero-basis-two-values
+area: flex-grid-align
+title: `flex: <grow> 0px` must not print a unitless 0 that would be read as flex-shrink
+mode: minify
+targets: none
+expect: equivalent
+known: none
+ref: https://drafts.csswg.org/css-flexbox-1/#flex-property
+note: guard (passes on master, prints `flex:1 1 0`): a unitless zero not preceded by two flex factors is a flex factor, so `flex:1 0` means shrink 0 and basis 0%
+*/
+.t { flex: 1 0px; }
+.u { flex: 2 0px; }
+.v { flex: 0px; }

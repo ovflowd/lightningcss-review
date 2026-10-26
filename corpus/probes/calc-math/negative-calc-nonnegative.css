@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: calc-math/negative-calc-nonnegative
+area: calc-math
+title: width:calc(-5px) is valid (clamps to 0) but width:-5px is not
+mode: minify
+targets: none
+expect: equivalent, output-not-contains:"-5px"
+known: fixed-by#1329
+ref: https://drafts.csswg.org/css-values-4/#functional-numeric https://github.com/parcel-bundler/lightningcss/issues/1000 https://github.com/parcel-bundler/lightningcss/pull/1329
+note: guard for the NonNegative wrapper; master emits width:0
+*/
+.t { width: 10px; width: calc(-5px); }

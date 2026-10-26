@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: color/android-95-hex-alpha-minified
+area: color
+title: Explicit android 95 targets support #rrggbbaa, so transparent minifies to #0000
+mode: lower-minify
+targets: android 95
+expect: equivalent, output-contains:"#0000"
+known: fixed-by#1198
+ref: https://drafts.csswg.org/css-color-4/#hex-notation https://github.com/parcel-bundler/lightningcss/issues/1180 https://github.com/parcel-bundler/lightningcss/pull/1198
+note: guards #1198 (HexAlphaColors taken from BCD webview_android 62 instead of caniuse's squashed android data); 1.32.0 printed transparent, 1.33.0 prints #0000; android 4.4.3 must keep transparent
+*/
+.t { color: transparent; }

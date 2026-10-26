@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: gradient-image/prefixed-gradient-print
+area: gradient-image
+title: Printing a prefixed linear gradient must not drop a non-default direction
+mode: print
+targets: none
+expect: output-not-contains:"gradient(#ff0", output-not-contains:"gradient(#0f0"
+known: open-issue#1107
+ref: https://github.com/parcel-bundler/lightningcss/issues/1107 https://www.w3.org/TR/2011/WD-css3-images-20110217/#linear-gradients
+note: even without minify, `bottom` and `180deg` are omitted as if they were the standard default (to bottom). The test at src/lib.rs:14210-14212 codifies this wrong output. Legacy default is `top`
+*/
+.c { background: -webkit-linear-gradient(bottom, yellow, blue); }
+.d { background: -webkit-linear-gradient(180deg, lime, black); }

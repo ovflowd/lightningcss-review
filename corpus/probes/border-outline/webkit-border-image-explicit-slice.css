@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: border-outline/webkit-border-image-explicit-slice
+area: border-outline
+title: An explicit slice in -webkit-border-image must not be dropped
+mode: minify
+targets: none
+expect: equivalent
+known: open-bug
+ref: https://github.com/parcel-bundler/lightningcss/issues/1146 https://drafts.csswg.org/css-backgrounds-3/#border-image-slice
+note: MASTER FAILS (no issue filed). Legacy -webkit-border-image fills the middle when a slice is given: Chrome 156 computes border-image-slice `100% fill` for `url() 100%` but `100%` for `url()`; master drops the slice
+*/
+.t { border: 10px solid; -webkit-border-image: url(x.png) 100%; }

@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: color/rcs-hue-keyword-is-a-number
+area: color
+title: relative-color channel keyword h is a <number>; calc(h + 1deg) is invalid
+mode: minify
+targets: none
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/css-color-5/#relative-syntax https://github.com/web-platform-tests/wpt/blob/master/css/css-color/parsing/color-invalid-relative-color.html
+note: master types h as an angle (ChannelType::Angle, src/values/color.rs:1956) so number+angle is accepted and resolved
+*/
+.t { color: red; color: hsl(from rebeccapurple calc(h + 1deg) s l); }

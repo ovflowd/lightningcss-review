@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: background/background-color-in-non-final-layer-is-invalid
+area: background
+title: A background color in a non-final layer makes the declaration invalid
+mode: minify
+targets: none
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/css-backgrounds-3/#background
+note: Background::parse accepts a color in any layer (TODO at src/properties/background.rs:364) and the handler keeps only the last layer's color, producing a valid declaration
+*/
+.t { width: 50px; height: 50px; background: linear-gradient(red, red) blue, linear-gradient(green, green); }

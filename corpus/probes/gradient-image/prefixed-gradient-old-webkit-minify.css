@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: gradient-image/prefixed-gradient-old-webkit-minify
+area: gradient-image
+title: Lowering `linear-gradient(red, blue)` for old WebKit must not emit a reversed `-webkit-linear-gradient(#00f,red)`
+mode: lower-minify
+targets: safari 5.1
+expect: output-not-contains:"-webkit-linear-gradient(#00f,red)"
+known: open-issue#1107
+ref: https://compat.spec.whatwg.org/#css-gradients-webkit-linear-gradient https://github.com/parcel-bundler/lightningcss/pull/936 https://github.com/parcel-bundler/lightningcss/issues/1107
+note: 1.29.3 printed -webkit-linear-gradient(red,#00f) (correct); 1.30.0+ prints (#00f,red). Non-minified output (`top, red, #00f`) is correct, so only minify-mode tests catch it
+*/
+.t { background: linear-gradient(red, blue); }

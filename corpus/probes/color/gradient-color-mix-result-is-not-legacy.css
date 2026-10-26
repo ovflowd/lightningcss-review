@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: color/gradient-color-mix-result-is-not-legacy
+area: color
+title: color-mix(in srgb) computes to color(srgb ...); minifying it to hex switches the gradient to sRGB interpolation
+mode: minify
+targets: none
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/css-color-4/#interpolation-space https://drafts.csswg.org/css-color-5/#serial-color-mix https://github.com/web-platform-tests/wpt/blob/master/css/css-images/gradient/css-color-4-colors-default-to-oklab-gradient.html
+note: master emits linear-gradient(90deg,purple,#fff): both stops legacy => sRGB; input has a non-legacy stop => Oklab (visible midpoint change)
+*/
+.t { background-image: linear-gradient(90deg, color-mix(in srgb, red, blue), white); }

@@ -14,7 +14,7 @@ Top failure modes: (1) tests that do not exercise the change or cover one varian
 - [TESTS-05] (MAJOR) Lowered and prefixed output is also tested in compact mode, because the minifying printer applies standard-syntax shortcuts to legacy forms.
   verify: a compact case (`minify_test_with_options_and_browsers` or a `lower-minify` probe) for each new `prefix_test` (#936 had only pretty expectations, and its compact `-webkit-linear-gradient(#00f,red)` is flipped).
 - [TESTS-06] (MAJOR) List-valued and multi-part inputs use a distinct value per entry, so misalignment is visible: transition, animation, background and mask lists, selector lists, number chains in `calc()`.
-  verify: the PR's test inputs; probe transition-animation/community-prs-transition-property-prefixed-alignment (#850's equal durations hid the re-indexing bug; #832 calc chains; #1156 multiple selectors).
+  verify: the PR's test inputs; probe transition-animation/transition-property-prefixed-alignment (#850's equal durations hid the re-indexing bug; #832 calc chains; #1156 multiple selectors).
 - [TESTS-07] (MAJOR) Valid inputs for new or changed syntax also run with `errorRecovery: true` and give the same output with an empty warnings list (`error_recovery_test` returns the warnings, src/lib.rs:432-456).
   verify: PR tests; a probe with `flags: error-recovery` on the same inputs; warnings via `lcr show`, since deltas do not compare them (#1125 caused #1370, a false `EndOfInput` warning that fails `next build`; #1137).
 - [TESTS-08] (MAJOR) A new or changed ident printer has a `css_modules_test` that shows whether the name is hashed, at the definition and at the references.

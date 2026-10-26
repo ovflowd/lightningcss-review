@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: flex-grid-align/box-ordinal-group-offset-by-one
+area: flex-grid-align
+title: order:1 must map to -webkit-box-ordinal-group:2 for 2009-flexbox targets (ordinal groups start at 1)
+mode: lower
+targets: chrome 20
+expect: output-contains:"-webkit-box-ordinal-group: 2"
+known: open-bug
+ref: https://www.w3.org/TR/2009/WD-css3-flexbox-20090723/#displayorder https://drafts.csswg.org/css-flexbox-1/#order-property
+note: UNFILED master failure; BoxOrdinalGroup::from_standard (src/properties/flex.rs:354-357) copies the order value, but box-ordinal-group's initial value is 1 and Chrome/WebKit accept only positive integers, so order:1 lands in the default group (no reordering) and order:0/-1 become invalid; autoprefixer emits order+1
+*/
+.t { order: 1; }

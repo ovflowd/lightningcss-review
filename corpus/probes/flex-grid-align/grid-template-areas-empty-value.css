@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: flex-grid-align/grid-template-areas-empty-value
+area: flex-grid-align
+title: An empty grid-template-areas value is invalid and must not replace an earlier valid value
+mode: minify
+targets: none
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/css-grid-2/#grid-template-areas-property
+note: MASTER FAILS (no issue filed yet). GridTemplateAreas::parse (src/properties/grid.rs:561-585) returns Areas with no rows for zero strings and prints `grid-template-areas:`, dropping the earlier value
+*/
+.t { display: grid; grid-template-areas: "a"; grid-template-areas: ; }

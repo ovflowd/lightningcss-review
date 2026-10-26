@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: nesting/prefixed-nested-selector-no-duplication
+area: nesting
+title: Lowering nested rules whose selectors need vendor prefixes must not duplicate rules per ancestor prefix pass
+mode: lower-minify
+targets: safari 8
+expect: equivalent, idempotent
+known: open-bug
+ref: https://drafts.csswg.org/css-nesting-1/#nesting https://github.com/oven-sh/bun/pull/31270
+note: master emits each prefixed variant once per ancestor prefix pass (477 bytes for depth 3 instead of 2 rules; depth 16 = 18 MB, depth 20 = 357 MB in 1.1 s); a second pass dedupes, so output is not idempotent
+*/
+:fullscreen { :fullscreen { :fullscreen { color: red; } } }

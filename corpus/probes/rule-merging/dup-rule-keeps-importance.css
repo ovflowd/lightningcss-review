@@ -1,0 +1,14 @@
+/*! lcr-probe
+id: rule-merging/dup-rule-keeps-importance
+area: rule-merging
+title: deduplicating a repeated rule must not drop an earlier !important declaration
+mode: minify
+targets: none
+expect: equivalent, output-contains:"!important"
+known: none
+ref: https://github.com/parcel-bundler/lightningcss/issues/1347 https://github.com/parcel-bundler/lightningcss/issues/1109 https://drafts.csswg.org/css-cascade-5/#importance
+note: guards 93b9e66 (StyleRule hash/is_duplicate now include importance); before it .x rendered red instead of green
+*/
+.x { color: green !important; }
+.y { color: blue; }
+.x { color: red; }

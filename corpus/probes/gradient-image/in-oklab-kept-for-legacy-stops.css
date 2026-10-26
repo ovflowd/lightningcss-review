@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: gradient-image/in-oklab-kept-for-legacy-stops
+area: gradient-image
+title: `in oklab` is not redundant when every stop is a legacy sRGB color
+mode: minify
+targets: none
+expect: equivalent, idempotent, output-contains:"in oklab"
+known: none
+ref: https://drafts.csswg.org/css-color-4/#interpolation-space https://drafts.csswg.org/css-images-4/#linear-gradients https://github.com/parcel-bundler/lightningcss/issues/1272
+note: guard for #1272 (typed <color-interpolation-method>): legacy-only stops default to sRGB, so only `in srgb` may be dropped here; WPT gradient-interpolation-method-computed.html encodes the same rule. Passes today because the value stays unparsed
+*/
+.t { width: 100px; height: 50px; background-image: linear-gradient(in oklab 90deg, red, blue); }

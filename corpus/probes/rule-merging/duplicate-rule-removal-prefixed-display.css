@@ -1,0 +1,14 @@
+/*! lcr-probe
+id: rule-merging/duplicate-rule-removal-prefixed-display
+area: rule-merging
+title: removing an "overridden" duplicate rule must not drop `display:flex` when the later rule only has `display:-ms-flexbox`
+mode: minify
+targets: none
+expect: equivalent
+known: open-issue#1291
+ref: https://github.com/parcel-bundler/lightningcss/issues/1291
+note: cross-rule variant found while triaging #1291; StyleRule::is_duplicate compares property ids only (src/rules/style.rs), so a prefixed fallback value replaces the real one
+*/
+.t { display: flex; }
+.u { color: red; }
+.t { display: -ms-flexbox; }

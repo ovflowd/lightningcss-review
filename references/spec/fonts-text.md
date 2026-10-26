@@ -74,14 +74,14 @@ Typed grammars follow old drafts (`src/properties/mod.rs`): css-text-3 CRD 2021 
 ### 2.2 Invariants (master status, probes)
 - **INV-FONT-001** Fold longhands into `font` only if each reset-only longhand is set later or initial everywhere
   (`#font-prop`). **FAIL**: the 7 longhands → `font:400 12px serif` (verified). Probe
-  `font/arch-props-values-font-longhands-merge-resets-variant-numeric`.
+  `font/font-longhands-merge-resets-variant-numeric`.
 - **INV-FONT-002** A reset-only longhand after `font` stays after it, typed or not. **FAIL** #1207 (cf. #1084/#572 transition/animation; PR #1209:
   untyped only): `font:12px serif;font-variant-numeric:oldstyle-nums` → longhand first (verified). Probe
   `font/font-shorthand-reset-only-longhands-keep-order`.
 - **INV-FONT-003** font-variant longhands before `font-variant` stay before it. **FAIL** (verified;
   `font/sft-font-variant-shorthand-after-caps`).
 - **INV-FONT-004** `font` holds only CSS2 caps and keyword widths. Caps PASS (`font.rs:952-964`); width **FAIL** #1140:
-  `font:condensed 12px serif` → `font:75% 12px serif` (verified). Probe `font/issues-important-font-shorthand-stretch-keyword`.
+  `font:condensed 12px serif` → `font:75% 12px serif` (verified). Probe `font/font-shorthand-stretch-keyword-2`.
 - **INV-FONT-005** Out-of-range values (`#font-weight-prop` [1,1000], `#font-style-prop` [-90deg,90deg]) stay invalid
   and never delete the previous declaration. **FAIL**: `font-weight:100;font-weight:0` → `font-weight:0`;
   `italic;oblique 100deg` → `oblique 100deg` (verified). Probe `font/sft-font-weight-zero-keeps-fallback`.
@@ -101,7 +101,7 @@ Typed grammars follow old drafts (`src/properties/mod.rs`): css-text-3 CRD 2021 
 - **INV-FONT-010** System font keywords only as the whole `font` (`font: 12px menu` = family "menu"). PASS (`font:menu`
   stays `Unparsed`). Probe `font/sft-system-font-keyword-as-family`.
 - **INV-FONT-011** line-height number ≠ %/length; `0px` ≠ `0`. `100%` PASS; `0px` → `0` **FAIL** (also in @keyframes).
-  Probe `values-numeric/ssv-line-height-zero-interpolation`.
+  Probe `values-numeric/line-height-zero-interpolation`.
 - **INV-FONT-012** `@font-face` descriptors are not deduped; repeated `src` is a fallback chain. PASS
   (`font/sft-font-face-src-fallback-kept`). **INV-FONT-013** unicode-range normalization keeps the code point set. PASS.
 - **INV-FONT-014** `@font-feature-values` accepts `font-display`. **FAIL**: `parse_declarations` is false
@@ -174,7 +174,7 @@ fonts-4: `font-style: left|right` (9392), `oblique-only` (9390), `khmer-mul`, `p
 - **INV-TEXT-001** `text-decoration` prints every non-initial component, also with line `none`/omitted. **FAIL**:
   `ToCss` returns after an empty line (`text.rs:780-783`): `none red`, `dotted red`, `from-font`, `10px` → `none`
   (verified). Merges keep the color (`none red;text-decoration-line:underline` → `underline red`); the loss shows in
-  the computed color/style/thickness. Probe `text/arch-props-values-text-decoration-none-drops-color`.
+  the computed color/style/thickness. Probe `text/text-decoration-none-drops-color`.
 - **INV-TEXT-002** `text-emphasis` keeps the (inherited) color with style `none`. **FAIL** (`text.rs:998`). Probe
   `text/sft-text-emphasis-none-keeps-color`.
 - **INV-TEXT-003** Line keywords once each; `none`/error values alone. **FAIL**: bitflag OR (`text.rs:495-532`), `ToCss`
@@ -193,7 +193,7 @@ fonts-4: `font-style: left|right` (9392), `oblique-only` (9390), `khmer-mul`, `p
 - **INV-TEXT-011** `text-emphasis-position: over` ≡ `over right` only where one keyword parses. Master always shortens
   (`:1086-1098`; firefox 78 → `over`, verified). No probe.
 - Also (class A, verified): `text-transform:` → `none` (`:167-197`; probe
-  `text/arch-props-values-empty-text-transform-becomes-none`); `text-decoration:` → `none`, deleting an earlier
+  `text/empty-text-transform-becomes-none`); `text-decoration:` → `none`, deleting an earlier
   `text-decoration:underline` (zero components accepted, `:740-773`). #981: a non-px zero blur/spread is printed
   (`!= NonNegative::zero()`, `:1438-1446`), giving a 4-length shadow Chrome rejects.
 
@@ -308,7 +308,7 @@ nested rules or attached to a sibling); (5) var() shorthands untouched unless pr
   `inside`/`outside`. **FAIL** (default position omitted, `list.rs:414-447`): `outside outside` → `outside`,
   `outside inside` → `inside`, also from longhands (verified). Probe
   `ui-misc/sft-list-style-type-named-like-position`. **INV-LISTS-002** `none` ambiguity PASS since e3b1e88 (#890,
-  regression 97891d8 v1.29.0). Probe `ui-misc/issues-b0-list-style-none-ambiguity`.
+  regression 97891d8 v1.29.0). Probe `ui-misc/list-style-none-ambiguity`.
 - **INV-LISTS-003** Counter duplicates are meaningful (`a a` = +2), `reversed(x)` ≠ `reversed(x) 0`
   (`lists-3#propdef-counter-increment`). PASS, untyped (`ui-misc/sft-counter-duplicates-and-reversed`).
 - PASS on master: **INV-COUNTER-001** same-name `@counter-style` rules replace atomically, custom names are

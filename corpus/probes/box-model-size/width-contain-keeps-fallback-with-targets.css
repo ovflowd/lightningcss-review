@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: box-model-size/width-contain-keeps-fallback-with-targets
+area: box-model-size
+title: A fallback before an unsupported sizing keyword (`contain`) must survive when targets are set
+mode: lower-minify
+targets: chrome 130, firefox 130, safari 18
+expect: output-contains:"width:100px"
+known: none
+ref: https://drafts.csswg.org/css-sizing-4/#valdef-width-contain https://github.com/parcel-bundler/lightningcss/issues/826
+note: guard (passes on master): Size::Contain is never compatible (src/properties/size.rs); without targets the fallback is dropped by design (#826)
+*/
+.t { width: 100px; width: contain; }

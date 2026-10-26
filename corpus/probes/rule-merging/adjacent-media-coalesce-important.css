@@ -1,0 +1,15 @@
+/*! lcr-probe
+id: rule-merging/adjacent-media-coalesce-important
+area: rule-merging
+title: Coalescing adjacent identical @media/@supports blocks must keep !important winning
+mode: minify
+targets: none
+expect: equivalent
+known: none
+ref: https://drafts.csswg.org/css-cascade-5/#importance https://github.com/parcel-bundler/lightningcss/pull/1263 https://github.com/oven-sh/bun/pull/46733
+note: guard for the #1263 pre-pass (unreleased) and the duplicate-rule check bun#46733 describes; 1.33.0 prints .t{color:#00f;color:red!important}
+*/
+@media (min-width: 1px) { .t { color: red !important; } }
+@media (min-width: 1px) { .t { color: blue; } }
+@supports (color: red) { .u { color: red !important; } }
+@supports (color: red) { .u { color: blue; } }

@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: custom-properties/hex-color-custom-property-verbatim
+area: custom-properties
+title: Custom property values keep author casing and spelling
+mode: minify
+targets: none
+expect: output-contains:"#FF0000"
+known: open-bug
+ref: https://drafts.csswg.org/css-variables-1/#syntax https://drafts.csswg.org/css-variables-1/#serializing-custom-props
+note: UNFILED master failure; low severity; observable via getPropertyValue('--c') and cross-stylesheet style() queries; master prints --c:red
+*/
+.t { --c: #FF0000; color: var(--c); }

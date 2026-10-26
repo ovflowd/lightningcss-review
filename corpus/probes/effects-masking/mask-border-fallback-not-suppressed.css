@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: effects-masking/mask-border-fallback-not-suppressed
+area: effects-masking
+title: A preceding `mask` must not suppress the color fallback of a later mask-border
+mode: lower-minify
+targets: chrome 100
+expect: output-contains:"-webkit-mask-box-image:linear-gradient(#"
+known: open-bug
+ref: https://drafts.csswg.org/css-masking-1/#the-mask-border https://drafts.csswg.org/css-color-4/#specifying-lab-lch
+note: MASTER FAILS (no issue filed yet). MaskProperty::MaskMode and MaskBorderSource are both 1 << 7 (src/properties/masking.rs:566,569), so flushing mask marks mask-border as already flushed and skips its RGB fallback; without the preceding mask master does emit -webkit-mask-box-image:linear-gradient(#a16945,red) 30
+*/
+.t { width: 50px; height: 50px; mask: linear-gradient(#000, #000); mask-border: linear-gradient(lab(50% 20 30), red) 30; }

@@ -20,31 +20,31 @@ All verified on master (cbeaf83). "no" = no issue filed.
 
 | # | Defect | Where | Tracked | Probe |
 |---|---|---|---|---|
-| D1 | `-webkit-mask-composite` after `-webkit-mask`/`mask` hoisted before the deferred shorthand that resets it in Blink (gradient-border pattern: filled box) | masking.rs:663-749 (no arm); parsed as unknown (mod.rs:216-229) | no | effects-masking/sie-webkit-mask-composite-not-hoisted |
-| D2 | `border:var(--b)` does not reset the deferred border-image; nor do sides collapsed into `border` after a flushed one | border.rs:710-728 | no | border-outline/sie-border-var-shorthand-resets-border-image |
-| D3 | `mask-border` written before `mask` is printed after it | masking.rs:763-772 | no | effects-masking/arch-props-values-mask-shorthand-must-reset-mask-border |
-| D4 | `MaskMode` = `MaskBorderSource` = `1 << 7`: a `mask` flush suppresses later mask-border fallbacks and vice versa | masking.rs:566,569; checks :838, :1035, :1086 | no | effects-masking/sie-mask-border-fallback-not-suppressed |
-| D5 | Invalid made valid, then deduped over the valid one: 3-value `<position>` outside bg-position; `background-clip:border`; `mask-clip/-origin:margin-box`; color in a non-final layer; empty `filter:`/`background:`; `outline-style:hidden`; unitless px (`background:333333`) | position.rs:59-140; background.rs:236, :364; masking.rs:83-99; effects.rs:332-344; outline.rs:27-32; length.rs:145-148 | #682 (unitless) | `*/sie-*-invalid`, `*/*invalid*`, `values-numeric/*unitless*` |
-| D6 | `to top`/`0deg` flip reverses stops without fixup and mirrors hints (curve asymmetric) | gradient.rs:282-319 | #1220 (unordered stops) | gradient-image/sie-to-top-flip-asymmetric-hint |
-| D7 | Every `Hint(50%)` dropped, also off-midpoint (linear, radial, conic) | gradient.rs:1038-1041 | no | gradient-image/sie-conic-hint-50pct-not-midpoint |
-| D8 | Stops `rgb(from red r g b)` → `red`, `color-mix(in srgb,red,blue)` → `purple`: Oklab → sRGB (maxdiff 84/37) | color resolution | no | gradient-image/sie-gradient-relative-color-stays-nonlegacy |
+| D1 | `-webkit-mask-composite` after `-webkit-mask`/`mask` hoisted before the deferred shorthand that resets it in Blink (gradient-border pattern: filled box) | masking.rs:663-749 (no arm); parsed as unknown (mod.rs:216-229) | no | effects-masking/webkit-mask-composite-not-hoisted |
+| D2 | `border:var(--b)` does not reset the deferred border-image; nor do sides collapsed into `border` after a flushed one | border.rs:710-728 | no | border-outline/border-var-shorthand-resets-border-image |
+| D3 | `mask-border` written before `mask` is printed after it | masking.rs:763-772 | no | effects-masking/mask-shorthand-must-reset-mask-border |
+| D4 | `MaskMode` = `MaskBorderSource` = `1 << 7`: a `mask` flush suppresses later mask-border fallbacks and vice versa | masking.rs:566,569; checks :838, :1035, :1086 | no | effects-masking/mask-border-fallback-not-suppressed |
+| D5 | Invalid made valid, then deduped over the valid one: 3-value `<position>` outside bg-position; `background-clip:border`; `mask-clip/-origin:margin-box`; color in a non-final layer; empty `filter:`/`background:`; `outline-style:hidden`; unitless px (`background:333333`) | position.rs:59-140; background.rs:236, :364; masking.rs:83-99; effects.rs:332-344; outline.rs:27-32; length.rs:145-148 | #682 (unitless) | `*/*-invalid`, `*/*invalid*`, `values-numeric/*unitless*` |
+| D6 | `to top`/`0deg` flip reverses stops without fixup and mirrors hints (curve asymmetric) | gradient.rs:282-319 | #1220 (unordered stops) | gradient-image/to-top-flip-asymmetric-hint |
+| D7 | Every `Hint(50%)` dropped, also off-midpoint (linear, radial, conic) | gradient.rs:1038-1041 | no | gradient-image/conic-hint-50pct-not-midpoint |
+| D8 | Stops `rgb(from red r g b)` → `red`, `color-mix(in srgb,red,blue)` → `purple`: Oklab → sRGB (maxdiff 84/37) | color resolution | no | gradient-image/gradient-relative-color-stays-nonlegacy |
 | D9 | Prefixed linear gradients printed with standard rules: minify maps `left`→`270deg`, flips `top`; `bottom`/`180deg` dropped even unminified; since #936 (v1.30.0) minified generated fallbacks flip | gradient.rs:268-330, 501-543 | #1107 (#918 fixed by #936) | `gradient-image/*legacy*`, `*/*prefixed-gradient*` |
-| D10 | Standard → legacy angle is `abs(450-d) mod 360`: wrong above 450deg (`540deg` → `90deg`, not `270deg`) | gradient.rs:597-602 | no | gradient-image/sie-legacy-angle-over-450deg |
-| D11 | Generated `-webkit-radial-gradient(circle at …)` uses modern syntax that every engine rejects | gradient.rs:368-417 | no | gradient-image/browser-compat-webkit-radial-gradient-legacy-position |
-| D12 | The `-webkit-gradient()` fallback keeps non-monotonic stops (WebKit sorts) | gradient.rs:1495-1525 | no | gradient-image/sie-webkit-gradient-nonmonotonic-stops |
-| D13 | image-set: `url()` fallback dropped before `image-set(… type())` for Chrome 25-112, Safari 6-16 (BCD partial counted); unprefixed options printed as strings (Safari 10.1-13.1 need `url()`); `x` → `dppx` in token lists | image.rs:390-395, 447-485; custom.rs:442; build-prefixes.js:434-436 | #1286 (dppx; dcbb9b8, v1.17.0; PR #1384) | gradient-image/sie-image-set-type-fallback-kept |
-| D14 | `url("a" cross-origin(anonymous))` is a hard parse error, also in custom/unparsed properties | url.rs:33-38, custom.rs:383 | no | gradient-image/ssv-url-request-modifier |
-| D15 | `border-image:none` (also `mask-border`, `-webkit-mask-box-image`) prints empty; the shared serializer applies border-image defaults to all three (INV-MASK-007; drops the `-webkit-border-image` slice that implies `fill`) | border_image.rs:295-335 | #1146 (dup #1052; PR #1336 approved) | border-outline/issues-b3-border-image-none-not-empty |
-| D16 | `border-image-width/-outset: 0px` → `0` (`<number>`): Chrome animates `0→10px` as 10px at 50%, not 5px | zero printing (length.rs:493) | no | border-outline/sie-border-image-width-zero-length-stays-length |
-| D17 | FallbackHandler: a later `-webkit-(backdrop-)filter` overwrites the unprefixed slot (lost in Chrome/Firefox); a later `filter` overwrites an author fallback (`is_compatible` = `true`) | prefix_handler.rs:116-121; effects.rs:410-414 | #695 #1086 #1229 #1327 #977 #1360 (2694a18, v1.21.0; PRs #1259 #1284 #1364) | effects-masking/issues-b5-backdrop-filter-unprefixed-kept |
-| D18 | `-webkit-mask-image:var(--a);mask-image:var(--a)` gains another prefixed copy each pass | masking.rs:700-707 | #969 (PRs #1295, #1339) | prefixing-compat/issues-b1-mask-image-var-duplicate |
-| D19 | Color fallback panics on `currentColor` (gradients, border-color, text-shadow) | color.rs:517-519, text.rs | PR #1311 | color/pr1311-currentcolor-gradient-fallback |
-| D20 | Logical border-radius after a nested rule dropped or moved to the next sibling | nesting.rs:73-84 | #1049, #1246 (6c465c1, v1.30.0) | nesting/issues-important-nested-decl-logical-* |
-| D21 | `background:-webkit-linear-gradient(…)` then an unprefixed `background`: re-appended at finalize after a later `background-image:var(…)` | background.rs:818-831, 915-923 | no | background/arch-props-values-prefixed-gradient-decl-moved-after-var |
+| D10 | Standard → legacy angle is `abs(450-d) mod 360`: wrong above 450deg (`540deg` → `90deg`, not `270deg`) | gradient.rs:597-602 | no | gradient-image/legacy-angle-over-450deg |
+| D11 | Generated `-webkit-radial-gradient(circle at …)` uses modern syntax that every engine rejects | gradient.rs:368-417 | no | gradient-image/webkit-radial-gradient-legacy-position |
+| D12 | The `-webkit-gradient()` fallback keeps non-monotonic stops (WebKit sorts) | gradient.rs:1495-1525 | no | gradient-image/webkit-gradient-nonmonotonic-stops |
+| D13 | image-set: `url()` fallback dropped before `image-set(… type())` for Chrome 25-112, Safari 6-16 (BCD partial counted); unprefixed options printed as strings (Safari 10.1-13.1 need `url()`); `x` → `dppx` in token lists | image.rs:390-395, 447-485; custom.rs:442; build-prefixes.js:434-436 | #1286 (dppx; dcbb9b8, v1.17.0; PR #1384) | gradient-image/image-set-type-fallback-kept |
+| D14 | `url("a" cross-origin(anonymous))` is a hard parse error, also in custom/unparsed properties | url.rs:33-38, custom.rs:383 | no | gradient-image/url-request-modifier |
+| D15 | `border-image:none` (also `mask-border`, `-webkit-mask-box-image`) prints empty; the shared serializer applies border-image defaults to all three (INV-MASK-007; drops the `-webkit-border-image` slice that implies `fill`) | border_image.rs:295-335 | #1146 (dup #1052; PR #1336 approved) | border-outline/border-image-none-not-empty |
+| D16 | `border-image-width/-outset: 0px` → `0` (`<number>`): Chrome animates `0→10px` as 10px at 50%, not 5px | zero printing (length.rs:493) | no | border-outline/border-image-width-zero-length-stays-length |
+| D17 | FallbackHandler: a later `-webkit-(backdrop-)filter` overwrites the unprefixed slot (lost in Chrome/Firefox); a later `filter` overwrites an author fallback (`is_compatible` = `true`) | prefix_handler.rs:116-121; effects.rs:410-414 | #695 #1086 #1229 #1327 #977 #1360 (2694a18, v1.21.0; PRs #1259 #1284 #1364) | effects-masking/backdrop-filter-unprefixed-kept |
+| D18 | `-webkit-mask-image:var(--a);mask-image:var(--a)` gains another prefixed copy each pass | masking.rs:700-707 | #969 (PRs #1295, #1339) | prefixing-compat/mask-image-var-duplicate |
+| D19 | Color fallback panics on `currentColor` (gradients, border-color, text-shadow) | color.rs:517-519, text.rs | PR #1311 | color/currentcolor-gradient-fallback |
+| D20 | Logical border-radius after a nested rule dropped or moved to the next sibling | nesting.rs:73-84 | #1049, #1246 (6c465c1, v1.30.0) | nesting/nested-decl-logical-* |
+| D21 | `background:-webkit-linear-gradient(…)` then an unprefixed `background`: re-appended at finalize after a later `background-image:var(…)` | background.rs:818-831, 915-923 | no | background/prefixed-gradient-decl-moved-after-var |
 | D22 | An unparsed `box-shadow` (incl. `none`, never typed) sets `flushed`: a later typed one gets no fallback | box_shadow.rs:177-183, 258 | no | none |
 | D23 | With targets, a compat flush prints an earlier `border-image` before the pending `border` (Chrome 50); `-webkit-border-image:url(a) 30;border-image:url(b) 30` → both `b` | border_image.rs:416-443 | no | none |
 | D24 | Filter default arguments omitted (`brightness(1)` → `brightness()`): wrong in old Chrome (CEF 49) | effects.rs:119-203 | #251 (PR #1121) | none |
-| D25 | `opacity:0.9999999` → `1` (stacking context lost) | number printing | no | color/spec-color-opacity-below-one-not-rounded-to-one |
+| D25 | `opacity:0.9999999` → `1` (stacking context lost) | number printing | no | color/opacity-below-one-not-rounded-to-one |
 
 ## 2. Cross-cutting
 
@@ -77,23 +77,23 @@ sRGB when every stop is legacy syntax (hex, named, rgb/hsl/hwb); premultiplied; 
 omit `in srgb` iff all stops legacy, `in oklab` iff any non-legacy, `shorter hue` always; `xyz` = `xyz-d65`.
 
 Invariants (failing probes in §1; guards named here):
-- **INV-GRAD-001** Side keywords = fixed angles; corners are not (`to bottom right` ≠ `135deg` off-square, Chrome 42/255). Guard `sie-corner-direction-not-angle`. images-3#linear-gradient-syntax
+- **INV-GRAD-001** Side keywords = fixed angles; corners are not (`to bottom right` ≠ `135deg` off-square, Chrome 42/255). Guard `corner-direction-not-angle`. images-3#linear-gradient-syntax
 - **INV-GRAD-002** Unitless `0` only for linear direction, conic `from`, conic stops/hints (post-2023), `hue-rotate()`.
-  Master leaves `0` conic stops unparsed (safe). Guard `sie-conic-unitless-zero-stop`. images-4#typedef-color-stop-angle
+  Master leaves `0` conic stops unparsed (safe). Guard `conic-unitless-zero-stop`. images-4#typedef-color-stop-angle
 - **INV-GRAD-003** First `0%`/last `100%` omittable; an interior position only if it equals its fixup value in the same units. images-3#color-stop-fixup
 - **INV-GRAD-004/005** Reversing stops is exact only for positions non-decreasing after fixup and no off-midpoint hint (D6). images-3#color-stop-fixup
 - **INV-GRAD-006** A hint is a no-op only at the midpoint of its neighbours' resolved positions, not when it reads `50%` (D7). images-4#color-transition-hint
 - **INV-GRAD-007** `c p1 p2` ≡ `c p1, c p2`, but stop count is interpolation-visible; never merge across a hint. images-3#color-stop-syntax
 - **INV-GRAD-008/009** Legacy ↔ non-legacy stop rewrites switch sRGB ↔ Oklab (D8); `in srgb`/`in oklab` redundant only as
-  above. Guards `sie-in-oklab-kept-for-legacy-stops`, `sie-in-srgb-kept-for-nonlegacy-stops` (for #1272). color-4#interpolation-space
-- **INV-GRAD-010** Under `in oklch` a transparent stop keeps its hue: `rgb(255 0 0/0)` ≠ `transparent` (maxdiff 88; equal in rectangular spaces). Guard `sie-oklch-transparent-stop-hue-matters`. color-4#interpolation-alpha
+  above. Guards `in-oklab-kept-for-legacy-stops`, `in-srgb-kept-for-nonlegacy-stops` (for #1272). color-4#interpolation-space
+- **INV-GRAD-010** Under `in oklch` a transparent stop keeps its hue: `rgb(255 0 0/0)` ≠ `transparent` (maxdiff 88; equal in rectangular spaces). Guard `oklch-transparent-stop-hue-matters`. color-4#interpolation-alpha
 - **INV-GRAD-011** A single stop ≡ `c, c` ≡ `image(c)`, never `background-color`. images-3#color-stop-syntax
 - **INV-GRAD-012/013/014** `circle` is not the default; `from` cannot fold into stops; repeat period = last − first. images-4#radial-size, #conic-gradient-examples, images-3#repeating-gradients
 - **INV-GRAD-015** `-webkit-/-moz-/-o-*-gradient()` = 2011 syntax: keyword = start side (`top` = `to bottom`), angles
   `legacy = (90deg − std) mod 360`, default `top`; no standard minify rules (D9-D11). WD-css3-images-20110217#linear-gradient-syntax
 - **INV-GRAD-016** `-webkit-gradient()` sorts stops; exact only for monotonic percentage stops, no hints, default space (D12).
 - **INV-GRAD-017** CSSOM gradient strings are no equivalence oracle (Chrome keeps the first `0%`, drops `in srgb`): use O6 pixels.
-- **INV-IMG-001** `image-set()` option order and duplicates are semantic. Guard `sie-image-set-option-order-preserved`. images-4#image-set-notation
+- **INV-IMG-001** `image-set()` option order and duplicates are semantic. Guard `image-set-option-order-preserved`. images-4#image-set-notation
 - **INV-IMG-002** Omitted resolution ≠ `1x` in the spec, but Chrome 104 and Safari 14.1 rejected the omission (#262, #264): master always prints `1x`.
 - **INV-IMG-003** A lowering that cannot express the value keeps the author's earlier fallback (D13; #252, fixed cb69f33, covered only the no-image-set case).
 - **INV-IMG-004** `cross-fade()` and `-webkit-cross-fade()` differ; never convert without remapping; percentage always serialized. images-4#cross-fade-function
@@ -163,7 +163,7 @@ border-width), outset `[<length>|<number>]{1,4}` (initial 0). `outline-style: au
 `outline-color` initial `auto` = accent color under `outline-style:auto`, else currentcolor (ui-4#outline-color).
 
 Invariants:
-- **INV-BORDER-001** `border` resets border-image, also as `border:var()` (D2). Guard `sie-border-shorthand-resets-border-image`. History #103 (28bf5af), #187 (957b1cd). backgrounds-3#border-shorthands
+- **INV-BORDER-001** `border` resets border-image, also as `border:var()` (D2). Guard `border-shorthand-resets-border-image`. History #103 (28bf5af), #187 (957b1cd). backgrounds-3#border-shorthands
 - **INV-BORDER-002** In border-image-width/-outset and mask-border-*, `<number>` multiplies border-width: never strip units (D16). values-4#lengths, backgrounds-3#border-image-width
 - **INV-BORDER-003** border-image-slice `0` vs `0%` interpolate differently (Chrome discrete); `fill` anywhere. Master keeps `0%`. backgrounds-3#border-image-slice
 - **INV-BORDER-004/005** All-initial border-image prints `none`, never empty (D15, #1146); width-omitted form keeps `//`. backgrounds-3#border-image
@@ -200,16 +200,16 @@ Invariants:
 - **INV-MASK-001** `mask` resets mask-border; one written after `mask` stays after (D3). masking-1#the-mask
 - **INV-MASK-002** Blink: `-webkit-mask-composite` = `mask-composite` with legacy keywords, reset by `mask`/`-webkit-mask` (D1). masking-1#the-mask, compat#propdef--webkit-mask-composite
 - **INV-MASK-003** mask-clip/origin take `<coord-box>`; clip-path `<geometry-box>` (D5). **INV-MASK-004** box keyword rules as background, plus `<box> no-clip`. masking-1#the-mask-clip
-- **INV-MASK-005** `none` layers participate in compositing. Guard `sie-mask-image-none-layer-kept`. masking-1#the-mask-image
-- **INV-MASK-006** add/subtract/intersect/exclude = source-over/source-out/source-in/xor. Guard `sie-mask-composite-porter-duff-mapping`. masking-1#the-mask-composite
+- **INV-MASK-005** `none` layers participate in compositing. Guard `mask-image-none-layer-kept`. masking-1#the-mask-image
+- **INV-MASK-006** add/subtract/intersect/exclude = source-over/source-out/source-in/xor. Guard `mask-composite-porter-duff-mapping`. masking-1#the-mask-composite
 - **INV-MASK-007** mask-border, `-webkit-mask-box-image` (Blink initial `0 fill`, auto) and border-image defaults all differ (D15). masking-1#the-mask-border-slice
 - **INV-MASK-008** mask and mask-border fallbacks never depend on each other's flush (D4). **INV-MASK-009** `mask-mode` lowers only for Safari; `mask-border-mode:luminance` has no prefixed form. masking-1#the-mask-mode
-- **INV-CLIP-001** `clip-path:border-box` ≠ `inset(0)` (corners); `inset(0)` ≠ `none` (stacking, ink overflow). Guard `sie-clip-path-border-box-not-inset`. masking-1#the-clip-path
+- **INV-CLIP-001** `clip-path:border-box` ≠ `inset(0)` (corners); `inset(0)` ≠ `none` (stacking, ink overflow). Guard `clip-path-border-box-not-inset`. masking-1#the-clip-path
 - **INV-CLIP-002..005** `rect()/xywh()` → `inset()` exact; circle/ellipse defaults omittable, keyword radii do not interpolate, 3-value `at` invalid (D5); polygon points never deduped; `clip: rect()` ≠ `inset()`. shapes-1#basic-shape-computed-values
 - **INV-FILTER-001** Functions apply in order, never merge (`brightness(2) brightness(.5)` ≠ identity). filter-effects-1#FilterProperty
-- **INV-FILTER-002** An identity list never becomes `none`. Guard `sie-filter-identity-not-none`.
-- **INV-FILTER-003** `grayscale()` = `grayscale(1)`, `drop-shadow(… currentcolor)` = `drop-shadow(…)`; old Chrome mis-defaulted (#251, D24). Guard `sie-drop-shadow-default-color-currentcolor`. filter-effects-1#supported-filter-functions
-- **INV-FILTER-004/005/006** grayscale/invert/opacity/sepia clamp to 1; `hue-rotate()` not normalized (guard `sie-hue-rotate-not-normalized`); drop-shadow blur is a std deviation, no spread. filter-effects-1#funcdef-filter-hue-rotate, #funcdef-filter-drop-shadow
+- **INV-FILTER-002** An identity list never becomes `none`. Guard `filter-identity-not-none`.
+- **INV-FILTER-003** `grayscale()` = `grayscale(1)`, `drop-shadow(… currentcolor)` = `drop-shadow(…)`; old Chrome mis-defaulted (#251, D24). Guard `drop-shadow-default-color-currentcolor`. filter-effects-1#supported-filter-functions
+- **INV-FILTER-004/005/006** grayscale/invert/opacity/sepia clamp to 1; `hue-rotate()` not normalized (guard `hue-rotate-not-normalized`); drop-shadow blur is a std deviation, no spread. filter-effects-1#funcdef-filter-hue-rotate, #funcdef-filter-drop-shadow
 - **INV-FILTER-007** Chrome/Firefox never supported `-webkit-backdrop-filter`: never drop the unprefixed one (D17). filter-effects-2#BackdropFilterProperty
 - **INV-FILTER-008** Empty or partly invalid filter lists are invalid and must not replace an earlier one (D5). filter-effects-1#typedef-filter-value-list
 - **INV-BLEND-001/002** `plus-darker` never wins a dedupe over a standard value; `background-blend-mode` is layer-aligned; `isolation:isolate` ≠ `auto`. compositing-2#mix-blend-mode, compositing-1#isolation

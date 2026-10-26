@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: color/light-dark-lowering-without-color-scheme
+area: color
+title: lowered light-dark() with no color-scheme declaration anywhere
+mode: lower
+targets: chrome 100
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/css-color-5/#light-dark https://drafts.csswg.org/css-color-adjust-1/#color-scheme-prop https://github.com/parcel-bundler/lightningcss/issues/1196
+note: native: red (page color scheme is light); lowered: both --lightningcss-* unset => invalid at computed-value time => inherited color. Documented requirement in website/pages/transpilation.md:336; #1196 closed
+*/
+.t { color: light-dark(red, blue); }

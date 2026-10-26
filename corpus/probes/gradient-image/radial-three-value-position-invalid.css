@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: gradient-image/radial-three-value-position-invalid
+area: gradient-image
+title: A three-value position in radial-gradient(at ...) is invalid and must not override a valid earlier declaration
+mode: minify
+targets: none
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/css-values-4/#position https://drafts.csswg.org/css-images-3/#radial-gradient-syntax https://github.com/web-platform-tests/wpt/blob/master/css/css-images/parsing/gradient-position-invalid.html
+note: MASTER FAILS (no issue filed yet). Position::parse (src/values/position.rs:60) accepts the background-only <position-three> forms everywhere; master prints only radial-gradient(at 10px 0,red,#00f), turning an invalid declaration valid and dropping the green fallback
+*/
+.t { width: 100px; height: 100px; background-image: linear-gradient(green, green); background-image: radial-gradient(at left 10px top, red, blue); }

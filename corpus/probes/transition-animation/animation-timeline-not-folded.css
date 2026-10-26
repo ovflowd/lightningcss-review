@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: transition-animation/animation-timeline-not-folded
+area: transition-animation
+title: animation-timeline must not be folded into the animation shorthand for engines that treat it as reset-only
+mode: lower-minify
+targets: chrome 120
+expect: equivalent
+known: open-bug
+ref: https://github.com/parcel-bundler/lightningcss/issues/1115 https://drafts.csswg.org/css-animations-2/#animation-shorthand
+note: MASTER FAILS (#1115 was closed before the Chrome follow-up). BCD marks animation.animation-timeline_included in Chrome 115 as partial_implementation ("reset-only") but scripts/build-prefixes.js does not filter it; Chrome 156 rejects `animation: ... fade scroll(root)` (CSS.supports false), losing the whole animation
+*/
+@keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+.t { animation: fade 1s; animation-timeline: scroll(root); }

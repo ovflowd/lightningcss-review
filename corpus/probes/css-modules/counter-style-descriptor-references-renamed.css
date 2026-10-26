@@ -1,0 +1,17 @@
+/*! lcr-probe
+id: css-modules/counter-style-descriptor-references-renamed
+area: css-modules
+title: CSS modules must rename counter-style names used by other @counter-style rules (system: extends, fallback)
+mode: minify
+targets: none
+flags: css-modules
+expect: output-not-contains:"extends stars", output-not-contains:"fallback:stars"
+known: open-bug
+ref: https://drafts.csswg.org/css-counter-styles-3/#extends-system https://drafts.csswg.org/css-counter-styles-3/#counter-style-fallback https://github.com/cssnano/cssnano/blob/main/packages/cssnano/changelogs/postcss-reduce-idents.md
+note: master renames `@counter-style stars` and `list-style: plus` but prints `system:extends stars` and `fallback:stars` verbatim, so `plus` extends an undefined style (treated as decimal) and the fallback dangles. cssnano's reduce-idents had the same bug (fixed 8.0.6)
+*/
+@counter-style stars { system: cyclic; symbols: "*"; suffix: " "; }
+@counter-style plus { system: extends stars; }
+@counter-style dash { system: cyclic; symbols: "-"; fallback: stars; }
+.t { list-style: plus; }
+.u { list-style: dash; }

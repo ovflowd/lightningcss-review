@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: display-layout/position-var-order
+area: display-layout
+title: A var() position declaration after a static fallback must stay last
+mode: minify
+targets: none
+expect: equivalent
+known: open-issue#1225
+ref: https://github.com/parcel-bundler/lightningcss/issues/1225 https://github.com/parcel-bundler/lightningcss/pull/1387 https://www.w3.org/TR/css-variables-1/#substitute-a-var
+note: PositionHandler buffers the parsed value until finalize while the unparsed var() one is pushed immediately (same for direction/unicode-bidi since 1.25.0)
+*/
+.x { position: relative; position: var(--p, absolute); }
+.y { direction: rtl; direction: var(--d, ltr); }

@@ -1,0 +1,16 @@
+/*! lcr-probe
+id: nesting/nested-decl-logical-fallback-hoisted
+area: nesting
+title: Logical fallback rules for declarations after a nested rule must stay on the parent selector
+mode: lower
+targets: safari 14
+expect: equivalent
+known: open-issue#1246
+ref: https://github.com/parcel-bundler/lightningcss/issues/1246 https://drafts.csswg.org/css-nesting-1/#nested-declarations-rule
+note: since 1.30.0 the pending logical rules leak into the next sibling style rule (`.btn:hover:not(:lang(...))`), so the base element loses its radius
+*/
+.btn {
+  @media (prefers-reduced-motion: reduce) { transition: none; }
+  border-start-start-radius: 8px;
+  &:hover { color: red; }
+}

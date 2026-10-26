@@ -1,0 +1,14 @@
+/*! lcr-probe
+id: rule-merging/no-merge-user-action-after-pseudo-element
+area: rule-merging
+title: A rule with `::before:hover` must not be merged into another rule's selector list
+mode: minify
+targets: none
+expect: equivalent
+known: open-bug
+dom: <div class="t"></div>
+ref: https://drafts.csswg.org/selectors-4/#pseudo-element-states https://drafts.csswg.org/selectors-4/#grouping
+note: the spec allows user-action pseudo-classes after any pseudo-element (at risk), but Chrome 156 and Firefox 157 reject `::before:hover`; is_compatible (src/selector.rs:1836) checks components one by one, so `.t,.u:before:hover` is emitted and `.t` loses its color
+*/
+.t { color: red; }
+.u::before:hover { color: red; }

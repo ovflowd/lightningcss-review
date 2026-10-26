@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: flex-grid-align/grid-template-areas-keeps-row-sizes
+area: flex-grid-align
+title: Folding grid longhands into grid-template must not drop row track sizes when areas has fewer rows
+mode: minify
+targets: none
+expect: output-contains:"80px"
+known: fixed-by#1132
+ref: https://drafts.csswg.org/css-grid-2/#explicit-grid-shorthand https://github.com/parcel-bundler/lightningcss/issues/1096 https://github.com/parcel-bundler/lightningcss/pull/1132
+note: <=1.30.2 printed `grid-template:"one"/1fr 90px` (80px row lost). #1132 pads with "." rows, which changes the computed grid-template-areas string but not layout, so do not use `equivalent` here
+*/
+.t { display: grid; grid-template-columns: 1fr 90px; grid-template-rows: auto 80px; grid-template-areas: "one"; }

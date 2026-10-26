@@ -1,0 +1,16 @@
+/*! lcr-probe
+id: nesting/nested-split-selector-not-dropped
+area: nesting
+title: nested variant of #1310 — `&.b:defined:not(.x)` must keep its declarations after `&.a` merges into the earlier sibling
+mode: lower-minify
+targets: chrome 140
+expect: output-contains:":defined", equivalent
+known: open-issue#1318
+dom: <div class="t a"></div><div class="t b"></div>
+ref: https://github.com/parcel-bundler/lightningcss/issues/1318
+note: same root cause as #1310 inside a nested rule list
+*/
+.t {
+  &.a { color: blue; }
+  &.a, &.b:defined:not(.x) { background-color: red; }
+}

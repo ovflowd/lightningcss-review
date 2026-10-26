@@ -1,0 +1,16 @@
+/*! lcr-probe
+id: transform/individual-transforms-not-merged
+area: transform
+title: translate/rotate/scale must not be folded into transform (independent cascade and fixed composition order)
+mode: minify
+targets: none
+expect: equivalent
+known: fixed-by#1340
+ref: https://github.com/parcel-bundler/lightningcss/issues/1099 https://github.com/parcel-bundler/lightningcss/issues/426 https://drafts.csswg.org/css-transforms-2/#ctm https://github.com/parcel-bundler/lightningcss/pull/1340
+dom: <div class="t u"></div><div class="v"></div><div class="w"></div>
+note: <=1.33.0 printed .t{transform:translate(-50%)scale(.8)} (override by .t.u lost), .v{transform:scale(2)translate(10px)} (translation doubled), .w{transform:translate(0,0)} (none became identity); fixed on master (unreleased)
+*/
+.t { transform: translateX(-50%); scale: 0.8; }
+.t.u { scale: 1; }
+.v { transform: scale(2); translate: 10px; }
+.w { transform: none; translate: none; }

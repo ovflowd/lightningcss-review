@@ -127,14 +127,14 @@ Reorder classes (the most frequent breakage):
   font-width…; #1207, font.rs:879 TODO), `transition`+`transition-behavior`
   (#1084), `overflow(-x)`+`overflow-inline/-block` (N8), `mask-border; mask`, `-webkit-mask` +
   `-webkit-mask-composite`, `grid-gap`, `position`+Unparsed (#1225). Probes
-  `rule-merging/arch-core-font-reset-only-subproperties-stay-after-font`,
-  `rule-merging/arch-core-overflow-inline-after-overflow`.
+  `rule-merging/font-reset-only-subproperties-stay-after-font`,
+  `rule-merging/overflow-inline-after-overflow`.
 - **C, in-place overwrite**: `user-select:none;user-select:var(--x);user-select:text` →
   `user-select:text;user-select:var(--x)`; `-webkit-backdrop-filter` rewritten by a later unprefixed
   value (#1327, #695).
 - **A, invalid typed value wins**: empty/invalid input parses as typed (`filter:`, `text-transform:`,
   `flex:`, unitless px #1199, unchecked ranges) and replaces the valid earlier declaration
-  (`rule-merging/arch-props-values-invalid-color-replaces-valid`).
+  (`rule-merging/invalid-color-replaces-valid`).
 
 ## 4. Rule-list minification (`CssRuleList::minify`, mod.rs:599-1048)
 
@@ -156,7 +156,7 @@ Layer post-pass only `if has_layers` (:986-1044): minifies each block, empty nam
 `@layer a,b;`, empty anonymous blocks removed. `has_layers` is set only for **named** layers
 (:716-729), so anonymous `@layer{}` contents are not minified or lowered unless the same list also has
 a named layer block or statement (N6, verified both ways;
-`cascade-layers-scope/arch-core-anonymous-layer-contents-lowered`).
+`cascade-layers-scope/anonymous-layer-contents-lowered`).
 
 ### 4.1 One style rule
 
@@ -215,7 +215,7 @@ layers and dedupe (#225); merges are re-minified at :676, :689, :703, :894, :905
   size, border, border-radius, `text-align:start/end`, transition-property, inset). Block axis is
   renamed in place (ignores writing-mode); inline axis → `add_logical_rule` → `get_additional_rules`
   appends `:dir(ltr|rtl)` to each selector with **normal-only** declarations (context.rs:93-156; N5,
-  `logical/arch-core-important-logical-lowering-keeps-important`). Minified as a list, so
+  `logical/important-logical-lowering-keeps-important`). Minified as a list, so
   `:dir(rtl)` → `:lang(ae,ar,arc,bcc,bqi,ckb,dv,fa,glk,he,ku,mzn,nqo,pnb,ps,sd,ug,ur,yi)` and
   `:dir(ltr)` → `:not(:lang(…))` (selector.rs:2108). A documented heuristic, **not equivalent**
   (website/pages/transpilation.md:412-430): `dir=rtl` without an RTL `lang` gets LTR values. Specificity +(0,1,0)
@@ -227,7 +227,7 @@ layers and dedupe (#225); merges are re-minified at :676, :689, :703, :894, :905
   the dark rule normal, so dark mode never applies (N5).
 - **Side-rule leaks**: only the Style arm drains side lists. `NestedDeclarationsRule::minify`
   (nesting.rs:73-84) leaks them onto the next sibling or drops them (#1023/#1381/#1246/#1049;
-  `nesting/arch-core-nested-declarations-side-rules-leak-to-sibling`). **RA1 (verified, no issue
+  `nesting/nested-declarations-side-rules-leak-to-sibling`). **RA1 (verified, no issue
   found):** keyframes (keyframes.rs:120-130) too: `@keyframes k{from{margin-inline-start:1px}}
   .x{color:red}` (safari 11) → `@keyframes k{0%{}}` plus `.x:not(:lang(…)){margin-left:1px}…`; a
   keyframe `color-scheme:light dark` (chrome 90) attaches its dark rule to `.x`.
@@ -273,7 +273,7 @@ layers and dedupe (#225); merges are re-minified at :676, :689, :703, :894, :905
   :1522-1573); relies on old engines accepting MQ4 `not (…)` (UNVERIFIED Chrome < 104, Safari < 16.4).
 - `resolution` gains `-webkit-`/`-moz-device-pixel-ratio` copies (:95-115). Custom media
   (:1758-1890) hoists the custom query's type/qualifier to the outer query: wrong under `not`/`or`
-  (#213, `media-queries/asr-custom-media-or-media-type`).
+  (#213, `media-queries/custom-media-or-media-type`).
 - `MediaList::and` (:132-149, :367-417; bundler): `not print` ∧ `(min-width)` → ¬(print ∧ …) (F4d).
 - `@supports`: operand bugs in §5; `selector()` kept raw. `@container`: `style()` values go through
   the property printer (minified).
@@ -335,13 +335,13 @@ probes for those. Dependent counts = files importing the unit (grep at cbeaf83),
 | `define_properties!` (properties/mod.rs:172-1623) | declaration.rs:524, container.rs:298, handlers | Unparsed fallback, prefixes, logical groups, AST | name the new property's owner or test `shorthand; new-longhand`; O7, B11 |
 | `PropertyHandlerContext` (context.rs:84-226) | 31 files | side rules, importance, context gating | `important`, `wrap-supports`, `retarget-legacy`, `engine-legacy-2021`; `logical/*`, `nesting/*nested-decl*`; O1, O4 |
 | `CssRuleList::minify` (mod.rs:599-1048) | 11 call sites (stylesheet, style, media, supports, layer…) | every rule list | `duplicate-nonadjacent`, `wrap-*`, `nest`, `important`, `retarget-*`; `rule-merging/*`; R2, S1, O1 |
-| merge + cascade (mod.rs:796-816, :1051-1108) | mod.rs:800, :808 | cascade order, per-engine selector validity | `prefixed-sibling`, `retarget-legacy`; `rule-merging/*stale*`, `*incompatible*`, `asr-attr-s-flag-merge`; O1, O3 |
+| merge + cascade (mod.rs:796-816, :1051-1108) | mod.rs:800, :808 | cascade order, per-engine selector validity | `prefixed-sibling`, `retarget-legacy`; `rule-merging/*stale*`, `*incompatible*`, `attr-s-flag-merge`; O1, O3 |
 | dedupe (mod.rs:864-890, :1212-1259; style.rs:152-171) | mod.rs:875, :1232 | deletes earlier rules | `duplicate-nonadjacent`, `important`, `nest`; `rule-merging/*stale-dedup*`; R2; run twice |
-| keyframes, `@property`, layer, conditional merging (mod.rs:544-750, :968-1044) | parser.rs:409, :879; bundler | winning definitions, layer order | `wrap-media`, `wrap-layer`, `wrap-supports`, `important`; `rule-merging/arch-core-keyframes-*`, `cascade-layers-scope/*layer*`; R2; L5 |
-| side-rule placement (mod.rs:822-913) | — | order, empty selectors (#907), clones (#1260) | `nest`, `retarget-legacy`; `rule-merging/arch-core-all-selectors-*`; R2 |
+| keyframes, `@property`, layer, conditional merging (mod.rs:544-750, :968-1044) | parser.rs:409, :879; bundler | winning definitions, layer order | `wrap-media`, `wrap-layer`, `wrap-supports`, `important`; `rule-merging/keyframes-*`, `cascade-layers-scope/*layer*`; R2; L5 |
+| side-rule placement (mod.rs:822-913) | — | order, empty selectors (#907), clones (#1260) | `nest`, `retarget-legacy`; `rule-merging/all-selectors-*`; R2 |
 | `StyleRule::to_css`/`update_prefix`, `NestedDeclarationsRule` (style.rs:173-333, nesting.rs:73-123) | mod.rs:795, :832, :929 | print-time nesting, prefixed copies, side-rule leaks | `nest` × `retarget-none`/`engine-legacy-2023`; `nesting/*`; O1, O3, O4 |
-| selector compat/downlevel (selector.rs:1836-2226) | mod.rs:761, :786, :1058, :1097; style.rs:117, :174 | merging, `:is()` wrap, `:dir`, prefixed rules | `retarget-*`, `engine-legacy-*`; `rule-merging/asr-*`, `selectors/*`; O3, O4 |
-| selector printing (selector.rs:1433-1834), `selectors/parser.rs`, `builder.rs` | printer; 13 files; mod.rs:769 | every selector, recovery, wrap choice | `nest`; `selectors/asr-*`; B7, O3 |
+| selector compat/downlevel (selector.rs:1836-2226) | mod.rs:761, :786, :1058, :1097; style.rs:117, :174 | merging, `:is()` wrap, `:dir`, prefixed rules | `retarget-*`, `engine-legacy-*`; `rule-merging/*`, `selectors/*`; O3, O4 |
+| selector printing (selector.rs:1433-1834), `selectors/parser.rs`, `builder.rs` | printer; 13 files; mod.rs:769 | every selector, recovery, wrap choice | `nest`; `selectors/*`; B7, O3 |
 | `media_query.rs` | 9 files | conditions, negation, print lowering | `wrap-media`, `retarget-legacy`, `engine-legacy-2021`, print + minify modes; `media-queries/*`; O3 |
 | `supports.rs` | parser.rs:322, :583; context.rs; import.rs | operand prefixes, feature scope | `wrap-supports`, `prefixed-sibling`; `supports-container/*prefixed*`; O3 |
 | targets, compat, prefixes, `build-prefixes.js`, `vendor_prefix.rs` | 41 / 22 / 23 / 29 files | every lowering and merge decision; JS `Features` | `retarget-*`, `engine-legacy-*`, `prefixed-sibling`; regenerate + diff (B11); O4, S2 |

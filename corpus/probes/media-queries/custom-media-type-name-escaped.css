@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: media-queries/custom-media-type-name-escaped
+area: media-queries
+title: Unknown media type names must be printed as escaped identifiers
+mode: minify
+targets: none
+expect: output-not-contains:"fake}name"
+known: open-bug
+ref: https://drafts.csswg.org/mediaqueries-4/#media-types https://drafts.csswg.org/cssom-1/#serialize-an-identifier https://github.com/oven-sh/bun/pull/36165
+note: master prints `@media fake}name{...}`; harmless at top level (still matches nothing) but breaks the enclosing block when the @media is nested
+*/
+@media fake\7d name { .t { color: rgb(255, 0, 0); } }

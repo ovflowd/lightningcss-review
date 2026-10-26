@@ -1,0 +1,14 @@
+/*! lcr-probe
+id: nesting/top-level-amp-zero-specificity-lowered
+area: nesting
+title: A top-level `&` has zero specificity, so lowering it to `:scope` (0,1,0) changes the cascade
+mode: lower-minify
+targets: chrome 100
+expect: equivalent
+known: open-bug
+dom: <div class="t"></div>
+ref: https://drafts.csswg.org/css-nesting-1/#nest-selector https://drafts.csswg.org/selectors-4/#the-scope-pseudo
+note: "The specificity of the nesting selector is ... or zero if no such selector list exists"; serialize_nesting prints `:scope` with no context (src/selector.rs:1764-1768), making `:scope .t` (0,2,0) beat the later `.t`. `:where(:scope)` would be exact (INV-NEST-006 in spec-cascade-conditional)
+*/
+& .t { color: red; }
+.t { color: blue; }

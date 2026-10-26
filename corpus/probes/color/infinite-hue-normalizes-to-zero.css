@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: color/infinite-hue-normalizes-to-zero
+area: color
+title: hsl(calc(infinity) ...) normalizes the hue to 0deg (red), not NaN/black
+mode: minify
+targets: none
+expect: equivalent, no-panic
+known: open-bug
+ref: https://drafts.csswg.org/css-color-4/#hue-syntax
+note: master prints #000 and #1a1a1a: inf - 360*floor(inf/360) = NaN in From<HSL> for SRGB (src/values/color.rs:2804)
+*/
+.t { color: hsl(calc(infinity) 100% 50%); background-color: hwb(calc(-infinity) 10% 10%); }

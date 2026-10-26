@@ -1,0 +1,17 @@
+/*! lcr-probe
+id: rule-merging/stale-dedupe-key-drops-rule-in-media
+area: rule-merging
+title: Stale dedupe key after backward merge must not delete a later override inside @media
+mode: minify
+targets: none
+expect: equivalent, idempotent
+known: open-bug
+ref: https://drafts.csswg.org/css-cascade-5/#cascade-order https://github.com/parcel-bundler/lightningcss/blob/cbeaf83/src/rules/mod.rs#L804-L889
+note: MASTER FAILS (no issue filed yet). master prints `@media (width>=0){.card,.title{margin:0;padding:0}}`; the final `.title{margin:8px;padding:4px}` disappears (same root cause, nested CssRuleList::minify)
+*/
+@media (min-width: 0px) {
+  .card { margin: 0; padding: 0; }
+  .title { margin: 4px; padding: 2px; }
+  .title { margin: 0; padding: 0; }
+  .title { margin: 8px; padding: 4px; }
+}

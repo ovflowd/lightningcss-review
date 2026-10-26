@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: selectors/has-unforgiving-argument
+area: selectors
+title: An invalid item inside :has() must keep the rule invalid instead of being dropped
+mode: print
+targets: none
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/selectors-4/#relational https://drafts.csswg.org/selectors-4/#forgiving-selector https://github.com/w3c/csswg-drafts/issues/7676
+dom: <div class="t"><span class="x"></span></div>
+note: parse_has (selectors/parser.rs:2846) uses the forgiving IgnoreInvalidSelector recovery, so `:has(.x, 1)` becomes `:has(.x)`; per spec only :is()/:where() are forgiving, browsers drop this rule
+*/
+.t:has(.x, 1) { color: red }

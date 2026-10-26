@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: box-model-size/inset-not-merged-for-old-targets
+area: box-model-size
+title: Physical offsets must not be merged into `inset` for targets without the shorthand
+mode: lower-minify
+targets: safari 13, chrome 86
+expect: output-not-contains:"inset"
+known: none
+ref: https://drafts.csswg.org/css-position-3/#inset-shorthands https://developer.mozilla.org/en-US/docs/Web/CSS/inset#browser_compatibility
+note: guard (passes on master): inset needs Chrome 87, Safari 14.1, Firefox 66; an `inset:0` input is expanded to top/bottom/left/right for these targets too
+*/
+.t { position: absolute; top: 0; right: 0; bottom: 0; left: 0; }
+.u { position: absolute; inset: 0; }

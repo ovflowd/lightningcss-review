@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: gradient-image/transition-hint-50pct-not-midpoint
+area: gradient-image
+title: A 50% transition hint is only useless when it is the midpoint of its stops
+mode: minify
+targets: none
+expect: equivalent, output-contains:"50%"
+known: open-bug
+ref: https://drafts.csswg.org/css-images-4/#color-transition-hint
+note: serialize_items skips every Hint(50%) (src/values/gradient.rs:1038-1041); here the midpoint is 30%. Also affects radial/conic gradients
+*/
+.t { width: 100px; height: 100px; background-image: linear-gradient(red 0%, 50%, blue 60%); }

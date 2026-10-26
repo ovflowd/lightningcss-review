@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: printer-serialization/style-end-tag-not-emitted-in-strings
+area: printer-serialization
+title: Re-serialized strings must not contain the sequence </style (CSS inlined in HTML would be cut off)
+mode: minify
+targets: none
+expect: equivalent, output-not-contains:"</style"
+known: open-bug
+ref: https://html.spec.whatwg.org/multipage/parsing.html#rawtext-end-tag-name-state https://drafts.csswg.org/cssom-1/#serialize-a-string https://github.com/evanw/esbuild/issues/1509
+note: input `"<\/style>"` is safe inside an HTML <style>; master decodes the escape and prints `"</style>"`, which ends a <style> element early when the output is inlined (Parcel/Vite HTML inlining). esbuild escapes it as `<\/style`
+*/
+.t::after { content: "<\/style>"; }

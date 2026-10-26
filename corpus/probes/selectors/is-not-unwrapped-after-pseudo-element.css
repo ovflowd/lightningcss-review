@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: selectors/is-not-unwrapped-after-pseudo-element
+area: selectors
+title: `::before:is(:hover)` must not be unwrapped to `::before:hover`, which engines reject
+mode: minify
+targets: none
+expect: equivalent
+known: open-issue#345
+dom: <div class="t"></div>
+ref: https://drafts.csswg.org/selectors-4/#matches https://drafts.csswg.org/selectors-4/#forgiving-selector https://github.com/parcel-bundler/lightningcss/issues/345
+note: :is() is forgiving, so the input list is valid in Chrome 156 (::before:is()) and Firefox 157; should_unwrap_is (src/selector.rs:1731) prints `.u:before:hover`, which both reject, dropping `.t`
+*/
+.t, .u::before:is(:hover) { color: red; }

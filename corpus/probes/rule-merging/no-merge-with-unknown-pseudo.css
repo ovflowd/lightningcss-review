@@ -1,0 +1,19 @@
+/*! lcr-probe
+id: rule-merging/no-merge-with-unknown-pseudo
+area: rule-merging
+title: Rules must not be merged into one selector list with a selector the browser may reject
+mode: minify
+targets: none
+expect: equivalent, output-not-contains:"a,:unknown"
+known: none
+ref: https://github.com/parcel-bundler/lightningcss/issues/998 https://drafts.csswg.org/selectors-4/#invalid
+dom: <a href="#x">link</a>
+note: an invalid selector invalidates the whole list; #998 proposes :where()/:is() wrapping, which changes specificity unless all selectors have the same specificity
+*/
+a {
+  color: blue;
+}
+
+:unknown {
+  color: blue;
+}

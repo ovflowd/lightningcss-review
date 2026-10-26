@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: media-queries/min-width-boolean-context
+area: media-queries
+title: (min-width) in a boolean context is a syntax error and must not become (width)
+mode: minify
+targets: none
+flags: error-recovery
+expect: equivalent, output-not-contains:"(width)"
+known: open-issue#1366
+ref: https://drafts.csswg.org/mediaqueries-4/#mq-min-max https://github.com/parcel-bundler/lightningcss/issues/1366 https://github.com/parcel-bundler/lightningcss/pull/1380
+note: input never matches (invalid query); 1.33.0 emits @media (width) which always matches; without error-recovery #1380 makes it a parse error
+*/
+@media (min-width) { .t { color: red; } }

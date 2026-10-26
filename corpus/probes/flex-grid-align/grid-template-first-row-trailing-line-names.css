@@ -1,0 +1,16 @@
+/*! lcr-probe
+id: flex-grid-align/grid-template-first-row-trailing-line-names
+area: flex-grid-align
+title: Line names after the first area row must stay on line 2 in grid-template/grid
+mode: minify
+targets: none
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/css-grid-2/#explicit-grid-shorthand https://drafts.csswg.org/css-grid-2/#grid-shorthand https://github.com/web-platform-tests/wpt/blob/master/css/css-grid/parsing/grid-template-shorthand-valid.html https://github.com/web-platform-tests/wpt/blob/master/css/css-grid/parsing/grid-shorthand-valid.html
+dom: <div class="t"><div class="i">x</div></div><div class="u"><div class="i">y</div></div>
+note: MASTER FAILS (no issue filed yet). GridTemplate::parse only pushes a line-name slot for the first row when it has leading names (src/properties/grid.rs:747-770, since 79b00f9/v1.0.1), so every name shifts up one line: `[mid]"a"10px"b"20px/100px`; also in print mode; 23 WPT valid cases differ in the PR 1328 browser oracle
+*/
+.t { display: grid; grid-template: "a" 10px [mid] "b" 20px / 100px; }
+.u { display: grid; grid: "a" [x] "b" [y] / 100px; }
+.i { grid-row-start: mid; }
+.u .i { grid-row-start: y; }

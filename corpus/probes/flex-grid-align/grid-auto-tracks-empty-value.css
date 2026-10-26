@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: flex-grid-align/grid-auto-tracks-empty-value
+area: flex-grid-align
+title: An empty grid-auto-rows/grid-auto-columns value is invalid and must not become `auto`
+mode: minify
+targets: none
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/css-grid-2/#auto-tracks https://drafts.csswg.org/css-syntax-3/#consume-declaration
+note: MASTER FAILS (no issue filed yet). TrackSizeList::parse (src/properties/grid.rs:502-513) succeeds on zero tokens, so `grid-auto-rows:10px;grid-auto-rows:` prints `grid-auto-rows:auto`
+*/
+.t { display: grid; grid-auto-rows: 10px; grid-auto-rows: ; }
+.u { display: grid; grid-auto-flow: column; grid-auto-columns: 10px; grid-auto-columns: ; }

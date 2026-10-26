@@ -5,7 +5,7 @@ Areas: `color` (`src/values/color.rs`, `src/values/alpha.rs`) and the color path
 `src/properties/custom.rs`) and `prefixing-compat` (fallback ladder). Sources: research `spec-color` (master build +
 headless Chrome 156), issue/PR records, the code. `file:line` at `cbeaf83` (`color.rs` = `src/values/color.rs`);
 "verified" = seen on a master build; `#N` = LightningCSS, `Issue N` = w3c/csswg-drafts. Probe ids without a prefix
-are `color/spec-color-<slug>`. Checklist: `references/checklists/color.md`.
+are `color/<slug>`. Checklist: `references/checklists/color.md`.
 
 ## 0. Specs read (drafts.csswg.org, 2026-10-25)
 
@@ -25,21 +25,21 @@ Pre-existing: never count them against a PR; credit a PR that fixes one (`fixed`
 | # | Input → master output | Where | Tracked | Probe |
 |---|---|---|---|---|
 | C1 | `light-dark(currentcolor, oklch(.5 .1 200))`, chrome 90 → **panic** (`color`/`fill` :585, `border-color` :517, `--x` :519) | `color.rs:511-521`, `:579-597` | no (new) | none yet |
-| C2 | `rgb(none 0 0)` → `#000`; `--c:hsl(none 50% 50%)` → `#bf4040` (also in print mode) | `color.rs:701-705` | no | `gradient-rgb-none-not-zeroed`, `color/arch-props-values-hsl-none-hue-lost-in-hsl-gradient` |
-| C3 | `color-mix(in hsl, lch(none none 180), hsl(11 33 44))` → `#4b2d26` (WPT `#95594b`) | `color.rs:3534-3556` | #1368, PR #1376 | `color/issues-b5-color-mix-none-cross-space` |
+| C2 | `rgb(none 0 0)` → `#000`; `--c:hsl(none 50% 50%)` → `#bf4040` (also in print mode) | `color.rs:701-705` | no | `gradient-rgb-none-not-zeroed`, `color/hsl-none-hue-lost-in-hsl-gradient` |
+| C3 | `color-mix(in hsl, lch(none none 180), hsl(11 33 44))` → `#4b2d26` (WPT `#95594b`) | `color.rs:3534-3556` | #1368, PR #1376 | `color/color-mix-none-cross-space` |
 | C4 | `color-mix(in oklch, oklch(.5 .2 120/0), oklch(.7 .1 240/0))` → `oklch(none none 180/0)` | `color.rs:3659-3666` | #1194 | `color/color-mix-polar-zero-alpha-not-none` |
 | C5 | `color-mix(in srgb, red, blue)` → `purple`; `rgb(from red r g b)` → `red` | `rgb!` `color.rs:3193-3208` | no | `gradient-color-mix-result-is-not-legacy`, `gradient-rcs-result-is-not-legacy` |
 | C6 | 54 of 834 WPT invalid values become colors: `color-mix(… 150% …)` (40), `calc(h + 1deg)` (4), `hsl(0, 50, 30%)`, `hsla(…, none)`, `rgb(255, 255, 255, none)` (8), `alpha(from red)` (2) | `color.rs:3413-3431`, `:1370-1489`, `:782-949`, `:1251-1287` | no | `mix-percent-over-100-stays-invalid`, `rcs-hue-keyword-is-a-number` |
-| C7 | `color:red;color:foo` → `color:foo`; `color:red;color:device-cmyk(0 1 1 0)` → `device-cmyk` only | `prefix_handler.rs:124-156` | no | `rule-merging/arch-props-values-invalid-color-replaces-valid`, `fallback-kept-before-device-cmyk` |
-| C8 | `color:lab(50% 20 30);color:lab(60% -20 30)`, chrome 90 → second gets no fallback | `prefix_handler.rs:101-121` | no | `color/arch-props-values-second-lab-declaration-gets-no-fallback` |
+| C7 | `color:red;color:foo` → `color:foo`; `color:red;color:device-cmyk(0 1 1 0)` → `device-cmyk` only | `prefix_handler.rs:124-156` | no | `rule-merging/invalid-color-replaces-valid`, `fallback-kept-before-device-cmyk` |
+| C8 | `color:lab(50% 20 30);color:lab(60% -20 30)`, chrome 90 → second gets no fallback | `prefix_handler.rs:101-121` | no | `color/second-lab-declaration-gets-no-fallback` |
 | C9 | `color-mix(in hsl, white, blue)` → `#8080ff` (WPT `color(srgb .625 .625 .875)`); `color-mix(in oklab, oklab(1.5 0 0), black)` → `oklab(75% 0 0)` (.5) | `color.rs:3670-3786`, `:1205`, `:1237` | no | `mix-*-not-powerless`, `mix-lightness-clamped-at-parse-time` |
 | C10 | unclamped L converted: `oklch(1.2 .1 30)`, chrome 90 → final `lab(122.343% …)` (engines clamp L: ΔE_OK ≈ 0.007, `near`); `oklab(.5 0 -2)` → `lab(-2132.44% …)` (L → 0: another color) | `color.rs:579-597` | no | none (WPT lower lane, 15 cases) |
 | C11 | `opacity:0.9999999` → `opacity:1` (stacking context lost) | number printing | no | `opacity-below-one-not-rounded-to-one` |
 | C12 | `color-scheme: dark light` → `light dark` | `ui.rs:474-507` (bitflags) | no | `color-scheme-keyword-order-preserved` |
-| C13 | light-dark lowering: `color-scheme:… !important` → non-important dark `@media` rule (N5); `light dark foo` → no toggles (#1152, 1.32.0); `@property initial-value` → `var()` (EM-36); toggles duplicated on merge (EM-132); dark rule dropped after a nested rule (#1049 cause) | `ui.rs:554-587`, `context.rs:89-153` | #1049 | `color/community-prs-light-dark-color-scheme-custom-ident`, `custom-properties/em-light-dark-not-lowered-in-property-initial-value`, `ui-misc/em-color-scheme-lowering-idempotent` |
+| C13 | light-dark lowering: `color-scheme:… !important` → non-important dark `@media` rule (N5); `light dark foo` → no toggles (#1152, 1.32.0); `@property initial-value` → `var()` (EM-36); toggles duplicated on merge (EM-132); dark rule dropped after a nested rule (#1049 cause) | `ui.rs:554-587`, `context.rs:89-153` | #1049 | `color/light-dark-color-scheme-custom-ident`, `custom-properties/light-dark-not-lowered-in-property-initial-value`, `ui-misc/color-scheme-lowering-idempotent` |
 | C14 | `color(rec2020 …)`/`color(xyz …)`, safari 14 → no fallback | `build-prefixes.js:434`, `compat.rs:2386-2395` | no | `lowering-rec2020-needs-fallback-for-safari14` |
 | C15 | `hsl(calc(infinity) 100% 50%)` → `#000` (spec: red); `calc(NaN)` component → `none`; `lab(calc(infinity) 0 0)` → `lab(3.40282e38% 0 0)`, re-minified `lab(2147483647% 0 0)` | `color.rs:2800-2805`, `:1205`; `percentage.rs:58` | #1093 (debug panic) | `infinite-hue-normalizes-to-zero`, `calc-nan-component-is-zero-not-none` |
-| C16 | `lab(50% 20 30)` with `opera 90` → no fallback (Opera Android numbering, N7); inside anonymous `@layer {}` → no fallback (N6) | `build-prefixes.js:449-450`; `rules/mod.rs:716-741`, `:986-1044` | no | `prefixing-compat/arch-core-opera-desktop-lab-fallback`, `cascade-layers-scope/arch-core-anonymous-layer-contents-lowered` |
+| C16 | `lab(50% 20 30)` with `opera 90` → no fallback (Opera Android numbering, N7); inside anonymous `@layer {}` → no fallback (N6) | `build-prefixes.js:449-450`; `rules/mod.rs:716-741`, `:986-1044` | no | `prefixing-compat/opera-desktop-lab-fallback`, `cascade-layers-scope/anonymous-layer-contents-lowered` |
 
 C1: `get_necessary_fallbacks` is non-empty for the LightDark, then `to_rgb()/to_lab()` recurse into the
 unconvertible arm and `.unwrap()` fails (`box-shadow` survives via `unwrap_or_else` but prints itself twice; #1311 is
@@ -132,7 +132,7 @@ Algorithms (css-color-4 unless noted):
   safe (pixel-identical).
 - **INV-COLOR-007 Analogous components and sets carry forward** (#analogous-components): `lab(50% none none)` →
   `lch(50% none none)`, `rgb(none none none / 50%)` → `oklab(none none none / 50%)`.
-  `mix-cross-space-none-carried-forward` F (#1368), `color/pr1376-color-mix-analogous-set`.
+  `mix-cross-space-none-carried-forward` F (#1368), `color/color-mix-analogous-set`.
 - **INV-COLOR-008 Hue fix-up**: `longer` with Δ = 0 adds 360 (WPT `color-mix(in oklch longer hue, red, white)` → hue
   209.23); normalize to [0,360) first (#hue-longer). `mix-longer-hue-equal-hues-full-turn` F (`color.rs:3807-3813`).
 - **INV-COLOR-009 Premultiplication**: before mixing (not hue in polar), with carried-forward alpha; skip
@@ -218,7 +218,7 @@ color-mix/light-dark/alpha functions and hash tokens are still re-parsed and re-
 | custom properties / unparsed | `@supports` side rules | `custom.rs:1052-1088`, `context.rs:158-226` | lowest fallback replaces the value; P3/LAB copies only in `DeclarationContext::StyleRule`; drained only by the `CssRule::Style` arm (`rules/mod.rs:822-841`) |
 | opacity, fill-/stroke-opacity | typed `AlphaValue` | `alpha.rs` | % → number; out-of-range kept |
 | color-scheme | partial | `ui.rs:433-507`, handler `:554-587` | custom idents/CSS-wide → unparsed (no toggles); lone `only` accepted |
-| print-color-adjust | typed, PrefixHandler | `ui.rs:589-597` | `-webkit-` for Safari ≤ 15.2 (15.3 none) / Chrome ≤ 135; invents `-moz-print-color-adjust` for Firefox 48–96 (probe `prefixing-compat/community-prs-print-color-adjust-no-moz-prefix`) |
+| print-color-adjust | typed, PrefixHandler | `ui.rs:589-597` | `-webkit-` for Safari ≤ 15.2 (15.3 none) / Chrome ≤ 135; invents `-moz-print-color-adjust` for Firefox 48–96 (probe `prefixing-compat/print-color-adjust-no-moz-prefix`) |
 | contrast-color(), device-cmyk(), color-layers(), HDR, `@color-profile`, forced-color-adjust, dynamic-range-limit, color-adjust | unparsed / unknown at-rule | - | passed through; an author fallback before them is deleted (INV-017) |
 | gradients with `in <space>` | unparsed (#1272) | `gradient.rs` | colors inside still minified and lowered |
 

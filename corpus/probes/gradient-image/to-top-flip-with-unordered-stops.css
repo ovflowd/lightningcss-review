@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: gradient-image/to-top-flip-with-unordered-stops
+area: gradient-image
+title: Flipping `to top` gradients must not reorder out-of-order color stops
+mode: minify
+targets: none
+expect: equivalent
+known: none
+ref: https://drafts.csswg.org/css-images-3/#color-stop-fixup
+note: LinearGradient::to_css reverses items for 0deg (src/values/gradient.rs:285-320); stop fixup is order dependent. Needs pixel comparison: computed values differ textually anyway
+*/
+.t { width: 100px; height: 100px; background-image: linear-gradient(to top, red 80%, blue 20%); }

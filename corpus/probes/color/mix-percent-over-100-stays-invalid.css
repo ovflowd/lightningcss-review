@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: color/mix-percent-over-100-stays-invalid
+area: color
+title: color-mix() percentage above 100% is a parse error and must not be evaluated
+mode: minify
+targets: none
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/css-color-5/#color-mix https://github.com/web-platform-tests/wpt/blob/master/css/css-color/parsing/color-invalid-color-mix-function.html
+note: master: percentages are read with expect_percentage() without [0,100] check (src/values/color.rs:3413) and the mix is extrapolated to a valid color
+*/
+.t { color: red; color: color-mix(in srgb, red 150%, blue); }

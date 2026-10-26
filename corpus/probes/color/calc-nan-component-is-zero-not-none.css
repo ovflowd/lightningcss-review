@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: color/calc-nan-component-is-zero-not-none
+area: color
+title: calc(NaN) in a color component censors to 0; it is not the none keyword
+mode: minify
+targets: none
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/css-values-4/#top-level-calculation https://github.com/web-platform-tests/wpt/blob/master/css/css-color/parsing/color-computed-color-function.html
+note: master stores none as NaN, so calc(NaN) becomes a missing component and is filled from red (result red instead of a 50% mix with black)
+*/
+.t { color: color-mix(in srgb, color(srgb calc(NaN) 0 0), red); }

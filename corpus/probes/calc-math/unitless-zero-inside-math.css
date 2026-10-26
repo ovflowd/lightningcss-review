@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: calc-math/unitless-zero-inside-math
+area: calc-math
+title: 0px inside a math function must keep its unit
+mode: minify
+targets: none
+expect: equivalent, output-not-contains:"max(0,"
+known: none
+ref: https://drafts.csswg.org/css-values-4/#calc-type-checking
+note: guard; max(0, 10%) mixes <number> and <length-percentage> and is invalid
+*/
+.t { width: max(0px, 10%); }

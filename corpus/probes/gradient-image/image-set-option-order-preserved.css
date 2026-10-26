@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: gradient-image/image-set-option-order-preserved
+area: gradient-image
+title: image-set() options must keep their order and duplicates (selection drops later equal resolutions)
+mode: minify
+targets: none
+expect: equivalent, idempotent
+known: none
+ref: https://drafts.csswg.org/css-images-4/#image-set-notation
+note: guard. The UA removes unsupported type() options, then options whose resolution equals an earlier one; reordering or deduplicating "equal" 1x options changes which file is chosen. master adds 1x (Chrome serializes the same) and keeps order
+*/
+.t { width: 50px; height: 50px; background-image: image-set("a.avif" type("image/avif"), "a.jpg" type("image/jpeg"), "a2.jpg" 2x); }

@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: flex-grid-align/grid-template-rows-exceed-areas
+area: flex-grid-align
+title: Folding into grid-template must keep explicit rows that have no matching area string
+mode: minify
+targets: none
+expect: output-contains:"100px"
+known: fixed-by#1132
+ref: https://github.com/parcel-bundler/lightningcss/issues/1130 https://drafts.csswg.org/css-grid-2/#explicit-grid-shorthand https://github.com/parcel-bundler/lightningcss/pull/1132
+note: <=1.30.2 dropped the 100px row. #1132 pads areas with ". . ." which keeps layout but changes computed grid-template-areas, so `equivalent` is deliberately not asserted here
+*/
+.t { display: grid; grid-template-areas: "a a a" "b c c"; grid-template-rows: 30px 60px 100px; grid-template-columns: 1fr 1fr 1fr; }

@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: color/hue-method-specified-is-invalid
+area: color
+title: "specified hue" was removed from <hue-interpolation-method>; declaration must stay invalid
+mode: minify
+targets: none
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/css-color-4/#typedef-hue-interpolation-method https://drafts.csswg.org/css-color-4/#changes-from-20220705
+note: master still parses Specified (src/values/color.rs:278) and computes a mix
+*/
+.t { color: red; color: color-mix(in oklch specified hue, red, blue); }

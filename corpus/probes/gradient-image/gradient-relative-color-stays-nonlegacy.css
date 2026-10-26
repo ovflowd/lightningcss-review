@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: gradient-image/gradient-relative-color-stays-nonlegacy
+area: gradient-image
+title: Resolving rgb(from ...) to a legacy color changes the default gradient interpolation space
+mode: minify
+targets: none
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/css-color-4/#interpolation-space https://drafts.csswg.org/css-images-4/#coloring-gradient-line https://drafts.csswg.org/css-color-5/#relative-colors
+note: MASTER FAILS (no issue filed yet). Gradients interpolate in sRGB only when every stop is a legacy sRGB color, otherwise Oklab. master prints linear-gradient(90deg,red,#00f) (legacy -> sRGB); Chrome 156 renders the input in Oklab (pixel maxdiff 84). Needs pixel comparison
+*/
+.t { width: 100px; height: 50px; background: linear-gradient(90deg, rgb(from red r g b), blue); }

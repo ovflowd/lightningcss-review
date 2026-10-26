@@ -1,0 +1,14 @@
+/*! lcr-probe
+id: selectors/attribute-case-flags-preserved
+area: selectors
+title: The `i` and `s` attribute flags must survive minification
+mode: minify
+targets: none
+expect: equivalent, output-contains:" i]", output-contains:" s]"
+known: none
+dom: <div class="a" data-x="ABC"></div><ol class="b" type="a"></ol>
+ref: https://drafts.csswg.org/selectors-4/#attribute-case https://html.spec.whatwg.org/multipage/semantics-other.html#case-sensitivity-of-selectors
+note: `type` is case-insensitive in HTML, so without `s` `[type="A"]` would match type="a"; without `i`, data-x="ABC" would not match "abc". Different declarations on purpose: merging an `s` rule is a separate bug (Chrome rejects `s`)
+*/
+.a[data-x="abc" i] { color: red; }
+.b[type="A" s] { color: green; }

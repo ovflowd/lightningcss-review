@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: color/polar-zero-alpha-unpremultiply
+area: color
+title: color-mix of fully transparent colors in a polar space must not produce none components
+mode: minify
+targets: none
+expect: equivalent, output-not-contains:"none none"
+known: open-issue#1194
+ref: https://drafts.csswg.org/css-color-4/#interpolation-alpha https://github.com/parcel-bundler/lightningcss/issues/1194 https://github.com/parcel-bundler/lightningcss/pull/1195 https://drafts.csswg.org/css-color-5/#color-mix-result
+note: if the interpolated alpha is zero the un-premultiplied value is the premultiplied value; 1.33.0 emits oklch(none none 180/0); fix in closed PR #1195 was never merged
+*/
+.t { color: color-mix(in oklch, oklch(0.5 0.2 120 / 0), oklch(0.7 0.1 240 / 0)); }

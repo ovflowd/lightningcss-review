@@ -1,0 +1,27 @@
+/*! lcr-probe
+id: selectors/webkit-any-fallback-specificity
+area: selectors
+title: :is()/:not() list lowering must not raise specificity via :-webkit-any()/:-moz-any() fallbacks
+mode: lower-minify
+targets: chrome 87, firefox 78, safari 14, edge 88
+expect: equivalent
+known: open-issue#997
+ref: https://github.com/parcel-bundler/lightningcss/issues/997 https://drafts.csswg.org/selectors-4/#specificity-rules
+dom: <div class="x">x</div><span class="y">y</span>
+note: output adds `:not(:-webkit-any(a,block))`; Chromium still supports :-webkit-any() with pseudo-class specificity (0,1,0), so it now beats the earlier `.x` rule (verified in Chrome 156); intended specificity is (0,0,1)
+*/
+.x {
+  color: red;
+}
+
+:not(a, block) {
+  color: blue;
+}
+
+.y {
+  background-color: red;
+}
+
+:is(span, b) {
+  background-color: blue;
+}

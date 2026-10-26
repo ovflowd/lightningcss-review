@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: font/font-shorthand-stretch-keyword
+area: font
+title: font-stretch inside the font shorthand must stay a keyword
+mode: minify
+targets: none
+expect: equivalent
+known: open-issue#1140
+ref: https://github.com/parcel-bundler/lightningcss/issues/1140 https://drafts.csswg.org/css-fonts-4/#font-prop https://drafts.csswg.org/css-fonts-4/#font-width-css3-values
+note: the shorthand only accepts <font-width-css3> keywords; master prints `font:400 75% 36px/38px TeX Gyre Heros` which Chrome 156 rejects. Root cause FontStretch::to_css (src/properties/font.rs:264-272) converts to a percentage whenever dest.minify
+*/
+.t { font: 400 condensed 36px/38px "TeX Gyre Heros"; }

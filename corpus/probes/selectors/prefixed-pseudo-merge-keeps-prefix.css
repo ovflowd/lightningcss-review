@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: selectors/prefixed-pseudo-merge-keeps-prefix
+area: selectors
+title: Merging ::selection with a following ::-moz-selection rule must keep the -moz- variant (and be idempotent)
+mode: minify
+targets: none
+expect: equivalent, idempotent, output-contains:"-moz-selection"
+known: open-bug
+ref: https://drafts.csswg.org/css-pseudo-4/#selectordef-selection https://github.com/clean-css/clean-css/issues/814
+note: rules/mod.rs:1082-1094 ORs the prefixes into the first rule but keeps its unprefixed selector; selector.rs:1189-1197 prints (Moz & None).or_none() as unprefixed, so master emits `.t::selection{...}.t::selection{...}` (second pass dedupes). Same for ::placeholder/::-webkit-input-placeholder, :fullscreen/:-webkit-full-screen, ::backdrop, :any-link
+*/
+.t::selection { color: rgb(0, 128, 0); }
+.t::-moz-selection { color: rgb(0, 128, 0); }

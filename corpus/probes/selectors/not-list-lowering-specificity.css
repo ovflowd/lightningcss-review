@@ -1,0 +1,14 @@
+/*! lcr-probe
+id: selectors/not-list-lowering-specificity
+area: selectors
+title: lowering :not(.a, .b) must keep its specificity (0,1,0 argument), not become :not(.a):not(.b)
+mode: lower
+targets: firefox 80
+expect: equivalent
+known: none
+ref: https://drafts.csswg.org/selectors-4/#specificity-rules
+dom: <div class="x y z"></div>
+note: guards ff4de2a (:not(:is(.a,.b))); with the old :not(.a):not(.b) lowering the second rule ties at (0,3,0) and wins (red)
+*/
+.x.y.z { color: green; }
+.x:not(.a, .b) { color: red; }

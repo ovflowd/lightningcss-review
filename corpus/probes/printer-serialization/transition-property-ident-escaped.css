@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: printer-serialization/transition-property-ident-escaped
+area: printer-serialization
+title: Unknown property names in transition-property must be printed as escaped identifiers
+mode: print
+targets: none
+expect: equivalent, output-not-contains:"fake}name"
+known: open-bug
+ref: https://drafts.csswg.org/css-transitions-1/#transition-property-property https://drafts.csswg.org/cssom-1/#serialize-an-identifier https://github.com/oven-sh/bun/pull/36165
+note: `fake\7d name` is the custom-ident "fake}name"; PropertyId::to_css (properties/mod.rs:265) writes the name raw, so master prints `transition-property: fake}name;`, closing the block early and turning the next rule's prelude into `name}.u` (dropped). Also affects `transition: fake\7d name 1s`
+*/
+.t { transition-property: fake\7d name; }
+.u { color: rgb(0, 128, 0); }

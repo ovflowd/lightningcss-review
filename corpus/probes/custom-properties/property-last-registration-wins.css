@@ -1,0 +1,14 @@
+/*! lcr-probe
+id: custom-properties/property-last-registration-wins
+area: custom-properties
+title: The last valid @property for a name wins
+mode: minify
+targets: none
+expect: equivalent, idempotent
+known: none
+ref: https://drafts.css-houdini.org/css-properties-values-api-1/#determining-registration
+note: guard; deduplicating @property rules must keep the last one (passes on master)
+*/
+@property --ssv-e { syntax: "<length>"; inherits: false; initial-value: 1px; }
+@property --ssv-e { syntax: "<length>"; inherits: false; initial-value: 2px; }
+.t { width: var(--ssv-e); }

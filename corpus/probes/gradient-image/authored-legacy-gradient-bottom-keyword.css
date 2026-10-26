@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: gradient-image/authored-legacy-gradient-bottom-keyword
+area: gradient-image
+title: Authored -webkit-linear-gradient(bottom, ...) must keep its direction (the legacy default is top)
+mode: print
+targets: none
+expect: equivalent
+known: open-issue#1107
+ref: https://compat.spec.whatwg.org/#css-gradients-webkit-linear-gradient https://www.w3.org/TR/2011/WD-css3-images-20110217/#linear-gradients https://github.com/parcel-bundler/lightningcss/issues/1107
+dom: <div class="t">x</div>
+note: LinearGradient::to_css (values/gradient.rs) omits Vertical(Bottom) as "default" even for prefixed gradients, where `bottom` means start-at-bottom (= standard `to top`); happens without minify
+*/
+.t { background-image: -webkit-linear-gradient(bottom, red, blue); }

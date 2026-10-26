@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: border-outline/border-color-oklch-currentcolor
+area: border-outline
+title: border-color mixing oklch() and currentColor must not panic when fallbacks are generated
+mode: lower
+targets: safari 14
+expect: no-panic
+known: open-bug
+ref: https://drafts.csswg.org/css-backgrounds-3/#border-color https://github.com/parcel-bundler/lightningcss/pull/1311 https://github.com/parcel-bundler/lightningcss/pull/801
+note: CssColor::get_fallback (src/values/color.rs:517-519) unwraps to_rgb/to_p3/to_lab on currentColor; panics on 1.33.0
+*/
+.t { border-style: solid; border-color: oklch(70% .2 30) currentColor; }

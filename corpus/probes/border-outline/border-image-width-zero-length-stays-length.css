@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: border-outline/border-image-width-zero-length-stays-length
+area: border-outline
+title: border-image-width `0px` must not become `0` (a <number>), which changes interpolation
+mode: minify
+targets: none
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/css-values-4/#lengths https://drafts.csswg.org/css-backgrounds-3/#border-image-width
+note: MASTER FAILS (no issue filed yet). A bare 0 parses as <number> where both are allowed; numbers and lengths do not interpolate, so Chrome 156 gives 10px at 50% for 0->10px but 5px for 0px->10px. master prints from{border-image-width:0}
+*/
+.t { width: 50px; height: 50px; border: 10px solid; border-image-source: linear-gradient(red, blue); animation: k 1s linear -0.5s paused; }
+@keyframes k { from { border-image-width: 0px; } to { border-image-width: 10px; } }

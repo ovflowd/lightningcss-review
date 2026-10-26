@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: rule-merging/invalid-color-replaces-valid
+area: rule-merging
+title: A later invalid `color` value must not replace an earlier valid one
+mode: minify
+targets: none
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/css2/#parsing-errors
+note: Property::parse falls back to Unparsed for any invalid value (src/properties/mod.rs:719-724) and FallbackHandler overwrites the earlier slot (src/properties/prefix_handler.rs:124-156); 1.33.0 emits .t{color:foo}
+*/
+.t { color: red; color: foo; }

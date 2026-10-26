@@ -1,0 +1,17 @@
+/*! lcr-probe
+id: display-layout/display-multi-keyword-short-forms
+area: display-layout
+title: Multi-keyword display values must map to the equivalent short keyword, not a different box type
+mode: minify
+targets: none
+expect: equivalent, output-contains:"display:inline-block", output-contains:"display:block ruby"
+known: none
+ref: https://drafts.csswg.org/css-display-3/#display-value-summary https://drafts.csswg.org/css-display-3/#the-display-properties
+note: guard (output ok on master; WebKit 27.2 rejects block flow list-item, inline flow list-item and block ruby, so its `different` is engine support, O9): serialization uses the short form (inline flow-root -> inline-block, block flex -> flex, block flow list-item -> list-item, inline flow list-item -> inline list-item); `block ruby` has no short form and ruby alone means inline ruby
+*/
+.a { display: inline flow-root; }
+.b { display: block flex; }
+.c { display: block flow list-item; }
+.d { display: inline flow list-item; }
+.e { display: block ruby; }
+.f { display: inline table; }

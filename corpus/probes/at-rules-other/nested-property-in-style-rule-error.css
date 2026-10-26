@@ -1,0 +1,19 @@
+/*! lcr-probe
+id: at-rules-other/nested-property-in-style-rule-error
+area: at-rules-other
+title: @property nested directly in a style rule is invalid and must be rejected like nested @keyframes
+mode: minify
+targets: none
+expect: parse-error
+known: open-issue#962
+ref: https://github.com/parcel-bundler/lightningcss/issues/962 https://github.com/parcel-bundler/lightningcss/pull/1314 https://drafts.csswg.org/css-nesting-1/#conditionals
+note: maintainer wants an error (warning with errorRecovery); since v1.31.0 (#1090) parse_prelude returns early for "property" and skips allowed_in_style_rule, so it is accepted silently and stays nested (or is hoisted when nesting is lowered)
+*/
+.example {
+  @property --angle {
+    syntax: "<angle>";
+    inherits: true;
+    initial-value: 0turn;
+  }
+  color: red;
+}

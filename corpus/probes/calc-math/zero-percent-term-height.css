@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: calc-math/zero-percent-term-height
+area: calc-math
+title: calc(10px + 0%) keeps its percentage (height behaves as auto when the basis is indefinite)
+mode: minify
+targets: none
+expect: equivalent, output-contains:"%"
+known: open-bug
+ref: https://drafts.csswg.org/css-values-4/#calc-simplification https://drafts.csswg.org/css-values-4/#calc-computed-value
+dom: <div class="p"><div class="t"></div></div>
+note: UNFILED master failure; zero-valued terms cannot be dropped from a Sum; master prints height:10px (DimensionPercentage::add, percentage.rs:408-414)
+*/
+.t { height: calc(10px + 0%); }

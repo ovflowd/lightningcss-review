@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: prefixing-compat/merged-prefixed-rules-keep-each-prefix
+area: prefixing-compat
+title: Merging `::-webkit-input-placeholder` and `::-moz-placeholder` rules must still print `::-moz-placeholder`
+mode: lower-minify
+targets: firefox 40, chrome 50
+expect: output-contains:"::-moz-placeholder", output-contains:"::-webkit-input-placeholder"
+known: open-bug
+ref: https://drafts.csswg.org/css-pseudo-4/#placeholder-pseudo https://drafts.csswg.org/selectors-4/#grouping
+note: merge_style_rules ORs Moz into the first rule's vendor_prefix (src/rules/mod.rs:1080-1093) but the component keeps Placeholder(WebKit); on the Moz pass `(dest.vendor_prefix & own).or_none()` is None, so `::placeholder` is printed and Firefox 40 (no ::placeholder before 51) loses the style. Same for :-moz-full-screen -> :fullscreen
+*/
+.t::-webkit-input-placeholder { color: red; }
+.t::-moz-placeholder { color: red; }

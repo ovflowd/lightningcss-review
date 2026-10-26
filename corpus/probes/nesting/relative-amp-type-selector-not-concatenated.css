@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: nesting/relative-amp-type-selector-not-concatenated
+area: nesting
+title: A relative nested selector `> &a` must not be lowered into the class `.fooa`
+mode: lower-minify
+targets: chrome 100
+expect: equivalent, output-not-contains:".fooa"
+known: open-bug
+ref: https://drafts.csswg.org/css-nesting-1/#nest-selector https://github.com/evanw/esbuild/blob/main/CHANGELOG-2023.md
+dom: <div class="foo"><a class="fooa">x</a></div>
+note: `&a` (type selector after &) is invalid, so the nested rule is dropped; master prints `.foo>.fooa{...}` (text concatenation, a different class), unlike `.foo{&a{}}` -> `a.foo` (covered by nesting/nesting-selector-before-type-selector-is-invalid). esbuild 0.17.19 fixed the same `.fooa` output
+*/
+.foo { > &a { color: rgb(255, 0, 0); } }

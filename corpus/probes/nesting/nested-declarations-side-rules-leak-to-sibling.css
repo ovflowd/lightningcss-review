@@ -1,0 +1,17 @@
+/*! lcr-probe
+id: nesting/nested-declarations-side-rules-leak-to-sibling
+area: nesting
+title: Logical-property side rules for declarations after a nested rule must target the parent, not the next sibling rule
+mode: lower
+targets: safari 11
+expect: equivalent
+known: open-issue#1023
+ref: https://drafts.csswg.org/css-nesting-1/#nested-declarations-rule https://github.com/parcel-bundler/lightningcss/issues/1023 https://github.com/parcel-bundler/lightningcss/issues/1381
+dom: <div class="p"><div class="c"></div><div class="d"></div></div>
+note: master emits `.p .d:not(:lang(...)){margin-left:1px}` (wrong element) and nothing for `.p`; NestedDeclarationsRule::minify fills handler_context ltr/rtl/supports but only the CssRule::Style branch of CssRuleList::minify drains them (src/rules/mod.rs:822-841)
+*/
+.p {
+  .c { color: red; }
+  margin-inline-start: 1px;
+  .d { color: blue; }
+}

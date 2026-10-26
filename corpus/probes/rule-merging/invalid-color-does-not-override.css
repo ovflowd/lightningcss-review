@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: rule-merging/invalid-color-does-not-override
+area: rule-merging
+title: An unparsable color declaration must not delete the earlier valid one
+mode: minify
+targets: none
+expect: equivalent, output-contains:"green"
+known: open-bug
+ref: https://drafts.csswg.org/css-syntax-3/#style-rules https://drafts.csswg.org/css-values-5/#resolve-property
+note: UNFILED master failure; only values with arbitrary substitution functions are assumed valid at parse time; FallbackHandler treats every Unparsed value as overriding (prefix_handler.rs:148), same for fill/stroke/caret/filter/text-shadow/backdrop-filter
+*/
+.t { color: green; color: notacolor; }

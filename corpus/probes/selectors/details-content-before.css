@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: selectors/details-content-before
+area: selectors
+title: `::details-content::before` must parse: ::details-content is element-backed, so any pseudo may follow it
+mode: minify
+targets: none
+expect: no-panic, output-contains:"::details-content"
+known: open-issue#1244
+ref: https://drafts.csswg.org/css-pseudo-4/#element-backed https://drafts.csswg.org/css-pseudo-4/#details-content-pseudo https://github.com/parcel-bundler/lightningcss/issues/1244 https://github.com/parcel-bundler/lightningcss/pull/930
+note: regression from #930 (v1.29.3): 'Invalid state' error; <=1.29.2 accepted it as an unknown pseudo-element
+*/
+details::details-content::before { color: red; }

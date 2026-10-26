@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: flex-grid-align/grid-auto-flow-areas-no-panic
+area: flex-grid-align
+title: grid auto-flow shorthand followed by grid-template-areas must not panic
+mode: minify
+targets: none
+expect: no-panic, equivalent
+known: fixed-by#1132
+ref: https://github.com/parcel-bundler/lightningcss/issues/1096 https://drafts.csswg.org/css-grid-2/#grid-shorthand https://github.com/parcel-bundler/lightningcss/pull/1132
+note: <=1.30.2 hit unreachable!() in GridTemplate::to_css_with_indent (rows not a track list); Chrome normalizes ".content." to ". content ." so the minified string is computed-equivalent
+*/
+.t { display: grid; grid: auto-flow / 1fr 2fr 1fr; grid-template-areas: ". content ."; }

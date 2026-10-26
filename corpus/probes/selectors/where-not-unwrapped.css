@@ -1,0 +1,14 @@
+/*! lcr-probe
+id: selectors/where-not-unwrapped
+area: selectors
+title: `:where(.x)` must never be unwrapped like a single-argument `:is()` (it has zero specificity)
+mode: minify
+targets: none
+expect: equivalent, output-contains:":where("
+known: none
+dom: <div class="t x"></div>
+ref: https://drafts.csswg.org/selectors-4/#zero-matches https://drafts.csswg.org/selectors-4/#specificity-rules
+note: `.t:where(.x)` is (0,1,0) and loses to the later `.t`; unwrapped `.t.x` (0,2,0) would win
+*/
+.t:where(.x) { color: red; }
+.t { color: blue; }

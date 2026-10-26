@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: calc-math/number-math-in-percentage-slot
+area: calc-math
+title: Number-only min()/max()/clamp() inside color channels must not panic
+mode: minify
+targets: none
+expect: no-panic, equivalent
+known: fixed-by#1131
+ref: https://github.com/parcel-bundler/lightningcss/issues/1129 https://github.com/parcel-bundler/lightningcss/issues/1166 https://drafts.csswg.org/css-values-4/#comp-func https://github.com/parcel-bundler/lightningcss/pull/1131
+note: <=1.30.2 hit unreachable!() in Percentage::parse ("Percentages are always compatible, so they will always compute to a value.") when Calc returned a Number
+*/
+.t { color: rgb(clamp(10, 20, 30) 0 0); }
+.u { background: (lineal-gradient(rgba(max(1, 2)))); }

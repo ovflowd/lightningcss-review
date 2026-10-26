@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: rule-merging/empty-flex-becomes-flex-1
+area: rule-merging
+title: An empty `flex:` declaration is invalid and must not become `flex: 1`
+mode: minify
+targets: none
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/css2/#parsing-errors https://drafts.csswg.org/css-flexbox-1/#flex-property
+note: Flex::parse returns defaults for empty input (src/properties/flex.rs:139-179); 1.33.0 emits .t{flex:1}
+*/
+.t { flex: 2; flex: ; }

@@ -1,0 +1,16 @@
+/*! lcr-probe
+id: selectors/framework-pseudo-verbatim
+area: selectors
+title: Framework pseudo-classes (:deep, ::ng-deep, :host-context, :global) pass through with their arguments intact
+mode: lower-minify
+targets: chrome 111, firefox 128, safari 16.4, ios_saf 16.4
+flags: error-recovery
+expect: no-panic, output-contains:":deep(.a .b)", output-contains:"::ng-deep .e", output-contains:":host-context(.dark) .f", output-contains:":global(.c"
+known: none
+ref: https://github.com/tailwindlabs/tailwindcss/blob/8cc0551b1217d36dc565840b90920964d37cb46c/packages/@tailwindcss-node/src/optimize.ts#L63-L76 https://github.com/nuxt/nuxt/issues/31041 https://github.com/web-infra-dev/rspack/issues/8695 https://github.com/tailwindlabs/tailwindcss/pull/20434
+note: Tailwind, Vite and Rspack run LightningCSS before the Vue/Angular/CSS-modules compilers resolve these selectors; the descendant space inside :deep() is meaningful, and Tailwind filters these warnings by their exact message text
+*/
+.p :deep(.a .b) { color: red; }
+.q :global(.c > .d) { color: red; }
+::ng-deep .e { color: red; }
+:host-context(.dark) .f { color: red; }

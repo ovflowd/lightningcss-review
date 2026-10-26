@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: media-queries/range-lowering-mq3-compatible
+area: media-queries
+title: range syntax lowered for pre-MQ4 targets must not use the MQ4-only `not (...)` condition
+mode: lower-minify
+targets: ios_saf 16
+expect: output-not-contains:"not (min-width", equivalent
+known: open-issue#1361
+ref: https://www.w3.org/TR/mediaqueries-3/#syntax https://drafts.csswg.org/mediaqueries-4/#mq-not https://github.com/parcel-bundler/lightningcss/issues/1361
+note: browsers lacking range syntax (Safari/iOS < 16.4, Chrome < 104) also lack `not` before a media condition (MDN or_syntax); write_min_max (src/media_query.rs:1522) emits it; regression since v1.29.0 (7f29035)
+*/
+@media (width < 1024px) { .t { color: red; } }

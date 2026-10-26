@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: custom-properties/all-var-accepted
+area: custom-properties
+title: all: var(--x) must parse and be preserved
+mode: print
+targets: none
+expect: no-panic, output-contains:"var(--all)"
+known: open-issue#752
+ref: https://github.com/parcel-bundler/lightningcss/issues/752 https://drafts.csswg.org/css-variables-1/#using-variables https://drafts.csswg.org/css-cascade-5/#all-shorthand
+note: since 1.25.0 (d7aeff3) parsing fails with UnexpectedToken(Function("var")); var() is valid in every property including all
+*/
+.a { all: var(--all); }

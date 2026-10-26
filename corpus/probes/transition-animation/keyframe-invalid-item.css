@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: transition-animation/keyframe-invalid-item
+area: transition-animation
+title: An invalid declaration inside a keyframe block must only drop that declaration
+mode: minify
+targets: none
+expect: equivalent, output-contains:"opacity:.25"
+known: open-issue#1103
+ref: https://github.com/parcel-bundler/lightningcss/issues/1103 https://drafts.csswg.org/css-syntax-3/#consume-block-contents
+note: same root cause as the nested at-rule case; Chrome 156 keeps `from { opacity: .25 }`. Bun's port tracks it as oven-sh/bun#46288
+*/
+@keyframes k2 { from { opacity: .25; 1: x } to { opacity: 1; } }
+.t { animation: k2 1000s linear paused; }

@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: rule-merging/font-reset-only-subproperties-stay-after-font
+area: rule-merging
+title: Reset-only sub-properties declared after `font` must stay after it (handled shorthand vs unhandled longhand reorder)
+mode: minify
+targets: none
+expect: equivalent
+known: open-issue#1207
+ref: https://drafts.csswg.org/css-fonts-4/#font-prop https://github.com/parcel-bundler/lightningcss/issues/1207
+note: DeclarationBlock::minify pushes unhandled properties immediately but FontHandler emits `font` at finalize, so master prints `.t{font-kerning:none;...;font:16px serif}` and `font` resets them all
+*/
+.t { font: 16px serif; font-kerning: none; font-feature-settings: "tnum"; font-variation-settings: "wght" 700; font-optical-sizing: none; }

@@ -1,0 +1,11 @@
+/*! lcr-probe
+id: transform/translate-scale-none-kept
+area: transform
+title: `translate: none` / `scale: none` must not become identity values (identity creates a stacking context)
+mode: minify
+targets: none
+expect: equivalent, output-contains:"translate:none"
+known: fixed-by#703
+ref: https://drafts.csswg.org/css-transforms-2/#valdef-translate-none https://github.com/parcel-bundler/lightningcss/pull/703
+*/
+.t { translate: none; scale: none; }

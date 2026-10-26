@@ -1,0 +1,14 @@
+/*! lcr-probe
+id: calc-math/unitless-zero-in-calc-keeps-fallback
+area: calc-math
+title: An invalid calc() mixing <length> and <number> must not override (and delete) an earlier valid declaration
+mode: minify
+targets: none
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/css-values-4/#calc-type-checking https://github.com/parcel-bundler/lightningcss/issues/928
+dom: <div class="t">x</div><div class="u">y</div>
+note: browsers drop `calc(100px - 0)` and `calc(0 + 5px)` at parse time (spec example), but lightningcss parses them as valid Calc and dedupes away `margin-left: 3px` / `width: 3px`; #928 itself (asking to simplify to 100px) was closed as not planned, the dedupe bug is unfiled
+*/
+.t { margin-left: 3px; margin-left: calc(100px - 0); }
+.u { width: 3px; width: calc(0 + 5px); }

@@ -1,0 +1,14 @@
+/*! lcr-probe
+id: border-outline/border-image-none-not-empty
+area: border-outline
+title: border-image:none must not serialize as an empty value
+mode: minify
+targets: none
+expect: equivalent, output-not-contains:"border-image:}", output-not-contains:"border-image:;"
+known: open-issue#1146
+ref: https://github.com/parcel-bundler/lightningcss/issues/1146 https://drafts.csswg.org/css-backgrounds-3/#border-image https://github.com/web-platform-tests/wpt/blob/master/css/css-backgrounds/parsing/border-image-valid.html
+dom: <div class="a b"></div>
+note: BorderImage::to_css_internal (src/properties/border_image.rs:295-334) omits every initial component, so the all-initial value prints nothing; browsers drop `border-image:` and the earlier border image survives. Open fix PR #1336
+*/
+.a { border: 10px solid; border-image: url(x.png) 30; }
+.a.b { border-image: none; }

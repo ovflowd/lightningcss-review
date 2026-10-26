@@ -1,0 +1,14 @@
+/*! lcr-probe
+id: supports-container/supports-prefixed-operand-unprefixed
+area: supports-container
+title: A vendor-prefixed feature inside an @supports and/or must keep its prefix
+mode: minify
+targets: none
+expect: equivalent
+known: open-issue#710
+ref: https://github.com/parcel-bundler/lightningcss/issues/710 https://drafts.csswg.org/css-conditional-3/#at-supports
+note: since 1.24.1 (6bd2761) `(-webkit-box-orient:vertical)` becomes `(box-orient:vertical)`, which no browser supports, so the block never applies
+*/
+@supports (display: -webkit-box) and (-webkit-box-orient: vertical) {
+  .a { color: red; }
+}

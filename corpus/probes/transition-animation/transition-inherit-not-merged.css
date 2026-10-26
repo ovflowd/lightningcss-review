@@ -1,0 +1,13 @@
+/*! lcr-probe
+id: transition-animation/transition-inherit-not-merged
+area: transition-animation
+title: transition: inherit followed by a longhand must not collapse into a shorthand
+mode: minify
+targets: none
+expect: equivalent
+known: open-issue#1214
+ref: https://github.com/parcel-bundler/lightningcss/issues/1214 https://drafts.csswg.org/css-cascade-5/#inherit
+dom: <div style="transition: opacity 2s ease-in 1s"><div class="f">x</div></div>
+note: output `transition: bar` drops the inherited duration/delay/timing; margin:inherit;margin-top:10px is handled correctly
+*/
+.f { transition: inherit; transition-property: opacity; }

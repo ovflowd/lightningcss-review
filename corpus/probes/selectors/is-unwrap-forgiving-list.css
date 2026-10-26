@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: selectors/is-unwrap-forgiving-list
+area: selectors
+title: :is() with an invalid argument must not be unwrapped (forgiving list)
+mode: minify
+targets: none
+expect: equivalent
+known: open-issue#345
+ref: https://github.com/parcel-bundler/lightningcss/issues/345 https://drafts.csswg.org/selectors-4/#matches
+note: `:is(:unknown), p` is valid (forgiving); `:unknown, p` invalidates the whole rule so p loses its color
+*/
+:is(:does-not-exist), p { color: green; }

@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: custom-properties/plus-sign-token-boundary
+area: custom-properties
+title: An explicit + sign on a number/dimension token is a token boundary
+mode: minify
+targets: none
+expect: equivalent, output-not-contains:"1px2px"
+known: open-bug
+ref: https://drafts.csswg.org/css-syntax-3/#consume-a-numeric-token https://drafts.csswg.org/css-syntax-3/#serialization
+note: UNFILED master failure; `1px+2px` is two dimension tokens (margin: 1px 2px); TokenList printing drops has_sign and emits `1px2px` (unit px2px)
+*/
+.t { --m: 1px+2px; margin: var(--m); }

@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: gradient-image/conic-hint-50pct-not-midpoint
+area: gradient-image
+title: A 50% hint in a conic gradient is only a no-op when it is the midpoint of its two stops
+mode: minify
+targets: none
+expect: equivalent, output-contains:"50%"
+known: open-bug
+ref: https://drafts.csswg.org/css-images-4/#color-transition-hint https://drafts.csswg.org/css-images-4/#conic-color-stops
+note: MASTER FAILS (no issue filed yet). serialize_items drops every Hint(50%) (src/values/gradient.rs:1038-1041) for all gradient types; here the stops are 0% and 60% so H=0.83. Chrome 156 pixel maxdiff 117
+*/
+.t { width: 100px; height: 100px; background: conic-gradient(red 0%, 50%, blue 60%); }

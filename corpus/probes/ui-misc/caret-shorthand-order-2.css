@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: ui-misc/caret-shorthand-order-2
+area: ui-misc
+title: caret-color after a caret shorthand must still win
+mode: minify
+targets: none
+expect: equivalent, output-not-contains:"#00f;caret:auto"
+known: open-issue#1362
+ref: https://github.com/parcel-bundler/lightningcss/issues/1362 https://drafts.csswg.org/css-ui-4/#caret
+note: since 1.21.0 FallbackHandler writes the later caret-color back into the earlier slot, before `caret:auto`; equivalence only differs in engines that support the caret shorthand
+*/
+.c { caret-color: red; caret: auto; caret-color: blue; }

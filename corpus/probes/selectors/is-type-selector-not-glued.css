@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: selectors/is-type-selector-not-glued
+area: selectors
+title: `.cb:is(input:checked)` must not be unwrapped into `.cbinput:checked`
+mode: minify
+targets: none
+expect: equivalent, output-not-contains:".cbinput"
+known: fixed-by#783
+ref: https://drafts.csswg.org/selectors-4/#matches https://github.com/parcel-bundler/lightningcss/issues/661 https://github.com/parcel-bundler/lightningcss/pull/783
+dom: <input class="cb" type="checkbox" checked>
+*/
+.cb:is(input:checked) { margin: 3rem; }

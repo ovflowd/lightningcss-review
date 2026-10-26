@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: flex-grid-align/place-self-normal-stretch-collapsed
+area: flex-grid-align
+title: `place-self: normal stretch` must not collapse to `normal`
+mode: minify
+targets: none
+expect: equivalent
+known: open-issue#1182
+ref: https://drafts.csswg.org/css-align-3/#place-self-property https://github.com/parcel-bundler/lightningcss/issues/1182
+note: PlaceSelf::to_css treats justify stretch as equal to align normal (src/properties/align.rs:509-512); same bug for place-items (align.rs:780) and justify-self:auto (#1182, PR #1302)
+*/
+.t { place-self: normal stretch; }

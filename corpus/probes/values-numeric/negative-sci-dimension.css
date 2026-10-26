@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: values-numeric/negative-sci-dimension
+area: values-numeric
+title: Negative dimensions in scientific notation must not gain a second minus sign
+mode: minify
+targets: none
+expect: equivalent, output-not-contains:"--"
+known: fixed-by#1192
+ref: https://github.com/parcel-bundler/lightningcss/issues/1097 https://drafts.csswg.org/css-syntax-3/#consume-number https://github.com/parcel-bundler/lightningcss/pull/1192
+note: <=1.32 printed linear-gradient(--1.42109e-14deg,...) (invalid, whole background dropped); fix is in serialize_dimension (src/values/length.rs)
+*/
+.t { background: linear-gradient(-1.42109e-14deg, red 0%, blue 100%); }

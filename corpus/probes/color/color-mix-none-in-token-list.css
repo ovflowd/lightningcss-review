@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: color/color-mix-none-in-token-list
+area: color
+title: inside an unparsed color-mix() (var() argument) `hsl(none …)` must not be rewritten to a hex color
+mode: minify
+targets: none
+expect: equivalent
+known: open-issue#1368
+ref: https://drafts.csswg.org/css-color-4/#interpolation-missing https://github.com/parcel-bundler/lightningcss/issues/1368
+note: found while triaging #1368; the token-list path prints `color-mix(in hsl, #bf4040, var(--c))`, so the missing hue becomes 0deg instead of taking 200deg from --c
+*/
+.t { --c: hsl(200 50% 50%); color: color-mix(in hsl, hsl(none 50% 50%), var(--c)); }

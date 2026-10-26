@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: color/fallback-kept-before-variadic-color-mix
+area: color
+title: fallback must survive before a 3-argument color-mix() (unsupported in some engines)
+mode: minify
+targets: none
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/css-color-5/#color-mix https://github.com/mdn/browser-compat-data/blob/main/css/types/color.json
+note: BCD: variadic color-mix in Firefox 150/Safari 27, not Chrome; master drops color:red
+*/
+.t { color: red; color: color-mix(in srgb, red, blue, lime); }

@@ -1,0 +1,18 @@
+/*! lcr-probe
+id: selectors/an-plus-b-serialization-roundtrip
+area: selectors
+title: An+B values (`-n+3`, `-n`, `n`, `2n+1`, `0n+5`, negative B) serialize to an equivalent, re-parseable form
+mode: minify
+targets: none
+expect: equivalent, idempotent
+known: none
+dom: <ol><li class="a"></li><li class="b"></li><li class="c"></li><li class="d"></li><li class="e"></li><li class="f"></li></ol>
+ref: https://drafts.csswg.org/css-syntax-3/#serializing-anb https://drafts.csswg.org/selectors-4/#the-nth-child-pseudo
+note: write_affine (selectors/parser.rs:1325-1340) special-cases 0/1/-1/odd; `:nth-child(-n)` matches nothing, `:nth-child(n+0)` everything, `2n-1` equals odd
+*/
+li:nth-child(-n+3) { color: red; }
+li:nth-last-child(-n) { color: green; }
+li:nth-child(n+0) { background-color: blue; }
+li:nth-child(2n-1) { border-left-color: red; }
+li:nth-child(0n+5) { outline-color: red; }
+li:nth-last-child(3n-2) { text-decoration-color: red; }

@@ -1,0 +1,15 @@
+/*! lcr-probe
+id: selectors/escaped-identifiers-roundtrip
+area: selectors
+title: Hex escapes followed by a hex digit keep their terminating space; Tailwind-style escapes survive
+mode: minify
+targets: none
+expect: equivalent, idempotent
+known: none
+dom: <div class="10"></div><div class="md:w-1/2"></div><div id="123"></div>
+ref: https://drafts.csswg.org/selectors-4/#case-sensitive https://drafts.csswg.org/cssom-1/#serialize-an-identifier
+note: `.\31 0` is class "10"; dropping the space gives `\310` (U+0310). Class/ID matching is case- and code-point-exact
+*/
+.\31 0 { color: red; }
+.md\:w-1\/2 { color: green; }
+#\31 23 { color: blue; }

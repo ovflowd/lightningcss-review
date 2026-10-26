@@ -1,0 +1,17 @@
+/*! lcr-probe
+id: calc-math/negative-calc-clamped
+area: calc-math
+title: A calc() that resolves below a property's allowed range must be clamped, not unwrapped to an invalid literal
+mode: minify
+targets: none
+expect: equivalent, output-not-contains:"width:-5px", output-not-contains:"line-height:-1"
+known: fixed-by#1329
+ref: https://github.com/parcel-bundler/lightningcss/issues/1000 https://github.com/parcel-bundler/lightningcss/pull/1329 https://drafts.csswg.org/css-values-4/#calc-range
+note: v1.33.0 outputs width:-5px / line-height:-1 / border-top-width:-2px, which are invalid outside calc() so the declarations are dropped
+*/
+.t {
+  width: calc(5px - 10px);
+  line-height: calc(1 - 2);
+  border-style: solid;
+  border-top-width: calc(2px - 4px);
+}

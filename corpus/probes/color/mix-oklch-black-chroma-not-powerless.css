@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: color/mix-oklch-black-chroma-not-powerless
+area: color
+title: color-mix(in oklch, red, black): black chroma is 0, not missing
+mode: minify
+targets: none
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/css-color-4/#powerless https://drafts.csswg.org/css-color-4/#interpolation-missing https://github.com/web-platform-tests/wpt/blob/master/css/css-color/parsing/color-computed-color-mix-function.html
+note: engines: oklch(0.314 0.1288 29.23); master doubles chroma (.2577) via L=0 => C,h powerless rule (src/values/color.rs:3691)
+*/
+.t { color: color-mix(in oklch, red, black); }

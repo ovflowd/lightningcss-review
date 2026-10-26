@@ -1,0 +1,14 @@
+/*! lcr-probe
+id: border-outline/border-image-none-serializes-empty
+area: border-outline
+title: `border-image: none` must not serialize to an empty (invalid) value
+mode: minify
+targets: none
+expect: equivalent, output-not-contains:"border-image:}"
+known: open-issue#1146
+ref: https://drafts.csswg.org/css-backgrounds-3/#border-image https://github.com/parcel-bundler/lightningcss/issues/1146
+dom: <div class="t u"></div>
+note: BorderImage::to_css_internal prints nothing when every component is default (src/properties/border_image.rs:295-335)
+*/
+.t { border-image-source: linear-gradient(red, red); border-image-slice: 1; }
+.t.u { border-image: none; }

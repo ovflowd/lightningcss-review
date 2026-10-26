@@ -1,0 +1,11 @@
+/*! lcr-probe
+id: nesting/unknown-at-rule-stays-in-style-rule
+area: nesting
+title: When nesting is lowered, an unknown at-rule inside a style rule stays inside it instead of being hoisted bare
+mode: lower-minify
+targets: chrome 100
+expect: output-contains:"@apply --m", output-not-contains:"}@apply"
+known: fixed-by#1233
+ref: https://drafts.csswg.org/css-mixins-1/#apply-rule https://github.com/parcel-bundler/lightningcss/issues/1232 https://github.com/parcel-bundler/lightningcss/pull/1233
+*/
+.foo { color: red; @apply --m; .bar { color: blue; } }

@@ -1,0 +1,11 @@
+/*! lcr-probe
+id: custom-properties/var-empty-fallback-idempotent
+area: custom-properties
+title: `var(--x, )` must not gain an extra space on every pass
+mode: print
+targets: none
+expect: idempotent, output-contains:"var(--bar, )"
+known: fixed-by#1142
+ref: https://drafts.csswg.org/css-variables-2/#using-variables https://github.com/parcel-bundler/lightningcss/issues/1141 https://github.com/parcel-bundler/lightningcss/pull/1142
+*/
+.t { transform: var(--bar, ); margin: env(--foo, ); }

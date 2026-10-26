@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: color/fallback-kept-before-device-cmyk
+area: color
+title: an earlier color declaration is a fallback when a later value is unsupported (device-cmyk)
+mode: minify
+targets: none
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/css-color-5/#device-cmyk https://drafts.csswg.org/css-syntax-3/#consume-declaration
+note: master drops color:red because unparsed values "always override" (src/properties/prefix_handler.rs:148); no engine implements device-cmyk()
+*/
+.t { color: red; color: device-cmyk(0 1 1 0); }

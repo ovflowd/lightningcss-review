@@ -1,0 +1,16 @@
+/*! lcr-probe
+id: cascade-layers-scope/scoped-declarations
+area: cascade-layers-scope
+title: Bare declarations directly inside @scope must be kept (scoped declarations)
+mode: print
+targets: none
+expect: equivalent
+known: open-issue#1165
+ref: https://github.com/parcel-bundler/lightningcss/issues/1165 https://drafts.csswg.org/css-cascade-6/#scoped-declarations
+dom: <div class="foo"><span class="a">x</span></div>
+note: master errors (declaration parsed as a qualified-rule prelude because NestedRuleParser has allow_declarations=false at top level); with errorRecovery it prints @scope(.foo){} and also loses .a. Chrome 156 parses the declarations as CSSNestedDeclarations
+*/
+@scope (.foo) {
+  border: 1px solid black;
+  .a { color: red; }
+}

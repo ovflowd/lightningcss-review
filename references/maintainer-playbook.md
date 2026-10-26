@@ -212,22 +212,22 @@ for the class, not the input.
 ### 5.1 Regression classes in his history: what the review must exercise
 
 Probe ids are Devon-fix guards (`known: none` unless noted; equivalence-based). `lcr baseline` at cbeaf83:
-17 pass; `values-numeric/devon-unitless-length-standards-mode` fails, as expected for open #682.
+17 pass; `values-numeric/unitless-length-standards-mode` fails, as expected for open #682.
 
 | Class | His fixes | Exercise with |
 |---|---|---|
-| Handler reorders declarations | #805 22a8b6f, #504 da3aeb8, #746 60622a1 | `reverse-decls`, `var-before`, `var-after`; `box-model-size/devon-width-literal-then-var-order`, `rule-merging/devon-all-shorthand-keeps-custom-props` |
+| Handler reorders declarations | #805 22a8b6f, #504 da3aeb8, #746 60622a1 | `reverse-decls`, `var-before`, `var-after`; `box-model-size/width-literal-then-var-order`, `rule-merging/all-shorthand-keeps-custom-props` |
 | Non-deterministic order | #855 d4eec35, #1355 | R2, repeated runs; HashMap iteration in emit paths |
-| Merge/dedupe changes cascade | #1347 + #1109 93b9e66 (unreleased), #525 a8d909a, #478 df1bae2 | `important`, `duplicate-nonadjacent`, `prefixed-sibling`; `rule-merging/devon-dup-rule-keeps-importance` |
-| `@layer` order | 33ea2c1 (imports), 32aecd9 (#974, unreleased) | `wrap-layer`, `wrap-media`; `cascade-layers-scope/devon-layer-order-conditional-declaration`, `cascade-layers-scope/devon-layer-sublayer-order` |
-| Nesting | #356 6a7d19e, #175 e66d99c, #1089 9e04c01; open #1156 | `nest` with and without targets; `nesting/devon-important-in-nested-media`, `nesting/devon-nested-declarations-semicolon` |
-| Selector lowering | ff4de2a (`:not()` lists), 31ce350 (`:is()` only if specificities equal), 284debf (unknown pseudo-elements out of `:is()`) | `selectors/devon-not-list-lowering-specificity` |
-| calc | #827 + #791 e3c8e12 (stack overflow), #836 ddc9ce8 (`clamp`) | number chains, nested math, mixed units; `calc-math/devon-calc-repeated-clamp-no-overflow`, `calc-math/devon-clamp-incomparable-max` |
-| Color math | #446 c5fcb63 (gamut-mapping loop), #522 20c9612 (panic), #1323 (cutoffs) | boundaries, unresolvable inputs; `color/devon-currentcolor-color-mix-no-panic` |
-| Invalid shortening on print | #727 445def9, #283 84298d2, #120 facbffd, #125 3bdefdc, #127 6d46cce | O3, R2; `flex-grid-align/devon-flex-unitless-zero-basis`, `font/devon-generic-family-name-quoted`, `font/devon-family-consecutive-spaces` (`fixed-by#1064`), `printer-serialization/devon-custom-property-name-escape`, `transform/devon-rotate-over-360-not-matrix` |
-| Media lowering | #320 → #343 | `media-queries/devon-not-range-interval-lowering` (`fixed-by#343`) |
+| Merge/dedupe changes cascade | #1347 + #1109 93b9e66 (unreleased), #525 a8d909a, #478 df1bae2 | `important`, `duplicate-nonadjacent`, `prefixed-sibling`; `rule-merging/dup-rule-keeps-importance` |
+| `@layer` order | 33ea2c1 (imports), 32aecd9 (#974, unreleased) | `wrap-layer`, `wrap-media`; `cascade-layers-scope/layer-order-conditional-declaration`, `cascade-layers-scope/layer-sublayer-order` |
+| Nesting | #356 6a7d19e, #175 e66d99c, #1089 9e04c01; open #1156 | `nest` with and without targets; `nesting/important-in-nested-media`, `nesting/nested-declarations-semicolon` |
+| Selector lowering | ff4de2a (`:not()` lists), 31ce350 (`:is()` only if specificities equal), 284debf (unknown pseudo-elements out of `:is()`) | `selectors/not-list-lowering-specificity` |
+| calc | #827 + #791 e3c8e12 (stack overflow), #836 ddc9ce8 (`clamp`) | number chains, nested math, mixed units; `calc-math/calc-repeated-clamp-no-overflow`, `calc-math/clamp-incomparable-max` |
+| Color math | #446 c5fcb63 (gamut-mapping loop), #522 20c9612 (panic), #1323 (cutoffs) | boundaries, unresolvable inputs; `color/currentcolor-color-mix-no-panic` |
+| Invalid shortening on print | #727 445def9, #283 84298d2, #120 facbffd, #125 3bdefdc, #127 6d46cce | O3, R2; `flex-grid-align/flex-unitless-zero-basis`, `font/generic-family-name-quoted`, `font/family-consecutive-spaces` (`fixed-by#1064`), `printer-serialization/custom-property-name-escape`, `transform/rotate-over-360-not-matrix` |
+| Media lowering | #320 → #343 | `media-queries/not-range-interval-lowering` (`fixed-by#343`) |
 | CSS-modules scoping | #883 (`:nth-child(of S)`), #194 (animation + `var()`), #129 (grid line names) | every ident position + exports map (output assertions, oracle L8) |
-| Invalid input accepted | #1000 (fixed by #1329); open #682 (`src/values/length.rs:145` takes any number as px) | O7; `values-numeric/devon-unitless-length-standards-mode` (`open-issue#682`) |
+| Invalid input accepted | #1000 (fixed by #1329); open #682 (`src/values/length.rs:145` takes any number as px) | O7; `values-numeric/unitless-length-standards-mode` (`open-issue#682`) |
 | Compat data | #77, #1306 (open, partial as full) | B11, `retarget-*` |
 | Build, bindings | #361 → #381, wasm fixes (5a145da, 3822c49), #784 | B7-B10 |
 

@@ -1,0 +1,14 @@
+/*! lcr-probe
+id: box-model-size/scroll-margin-percent-auto-override-valid
+area: box-model-size
+title: scroll-margin takes lengths only, so `%` or `auto` must not replace an earlier valid value
+mode: minify
+targets: none
+expect: equivalent
+known: open-bug
+ref: https://drafts.csswg.org/css-scroll-snap-1/#propdef-scroll-margin https://github.com/web-platform-tests/wpt/blob/master/css/css-scroll-snap/parsing/scroll-margin-invalid.html
+note: MASTER FAILS (no issue filed yet). scroll-margin-* are typed as LengthPercentageOrAuto (src/properties/mod.rs:1416 onward), so 33 WPT invalid values (auto, 20%, -30% over 11 properties) drop the earlier valid declaration
+*/
+.t { scroll-margin-top: 10px; scroll-margin-top: 10%; }
+.u { scroll-margin: 5px; scroll-margin: auto; }
+.v { scroll-margin-inline-start: 4px; scroll-margin-inline-start: -30%; }

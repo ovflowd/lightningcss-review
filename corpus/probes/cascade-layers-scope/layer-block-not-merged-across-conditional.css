@@ -1,0 +1,22 @@
+/*! lcr-probe
+id: cascade-layers-scope/layer-block-not-merged-across-conditional
+area: cascade-layers-scope
+title: Two `@layer a` blocks separated by a matching `@supports { @layer a {} }` must not be merged
+mode: minify
+targets: none
+expect: equivalent, idempotent
+known: none
+ref: https://drafts.csswg.org/css-cascade-5/#layer-ordering https://github.com/parcel-bundler/lightningcss/issues/974 https://github.com/parcel-bundler/lightningcss/commit/32aecd9568da1256770c3bfce3ff699b89c1f296
+note: observable version of src/lib.rs test_layer_order_across_rules (lib.rs:10291); merging the last block into the first lets the @supports rule (blue) win over green
+*/
+@layer a {
+  .t { color: red; }
+}
+@supports (display: grid) {
+  @layer a {
+    .t { color: blue; }
+  }
+}
+@layer a {
+  .t { color: green; }
+}

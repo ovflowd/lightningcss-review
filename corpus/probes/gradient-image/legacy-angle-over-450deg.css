@@ -1,0 +1,12 @@
+/*! lcr-probe
+id: gradient-image/legacy-angle-over-450deg
+area: gradient-image
+title: Converting a standard angle above 450deg to the legacy -webkit- angle must wrap modulo 360
+mode: lower-minify
+targets: chrome 20
+expect: idempotent, output-contains:"-webkit-linear-gradient(270deg"
+known: open-bug
+ref: https://compat.spec.whatwg.org/#css-gradients-webkit-linear-gradient https://www.w3.org/TR/2011/WD-css3-images-20110217/#linear-gradient-syntax https://drafts.csswg.org/css-images-3/#linear-gradient-syntax
+note: MASTER FAILS (no issue filed yet). Legacy angles are polar (0deg = right, counter-clockwise), so legacy = (90 - std) mod 360 = 270deg for 540deg. convert_to_legacy_degree uses (450 - d).abs() % 360 (src/values/gradient.rs:597-602) and yields 90deg, i.e. the opposite direction
+*/
+.t { width: 100px; height: 100px; background-image: linear-gradient(540deg, red, blue); }

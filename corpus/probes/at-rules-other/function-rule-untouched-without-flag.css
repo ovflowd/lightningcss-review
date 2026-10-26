@@ -1,0 +1,14 @@
+/*! lcr-probe
+id: at-rules-other/function-rule-untouched-without-flag
+area: at-rules-other
+title: Without the custom-functions draft flag @function and dashed-function calls pass through
+mode: minify
+targets: none
+expect: equivalent
+known: none
+ref: https://drafts.csswg.org/css-mixins-1/#function-rule https://github.com/parcel-bundler/lightningcss/pull/1356
+note: guards #1356's flag-off claim; with drafts.customFunctions the .a.b element must still get 30px (dynamic scoping) which lcr-probe flags cannot express yet
+*/
+@function --scale(--y) { result: calc(var(--y) * var(--k)); }
+.a { --k: 2; width: --scale(10px); }
+.a.b { --k: 3; }

@@ -1,0 +1,20 @@
+/*! lcr-probe
+id: selectors/before-marker
+area: selectors
+title: ::before::marker is a valid sub-pseudo-element chain and must not be rejected
+mode: minify
+targets: none
+expect: equivalent, output-contains:"::marker"
+known: open-issue#990
+ref: https://github.com/parcel-bundler/lightningcss/issues/990 https://drafts.csswg.org/css-pseudo-4/#marker-pseudo
+dom: <ul><li class="m">x</li></ul>
+note: v1.33.0 errors with "Invalid state"; css-pseudo-4 says ::marker::before is not allowed but ::before::marker is
+*/
+.m::before {
+  content: "a";
+  display: list-item;
+}
+
+.m::before::marker {
+  color: red;
+}
