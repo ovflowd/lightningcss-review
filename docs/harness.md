@@ -14,7 +14,7 @@ Every stage can be re-run on its own; later stages read only the files listed he
 | `oracle` | corpus files, `env.json` | `oracle/` (jobs, raw engine results, screenshots), `oracle.json`, `spec-cards.json` |
 | `worklist` | everything above | `analysis.json` skeleton with the open slots |
 | `report` | everything above + `analysis.json` | `report.md`, `report.json` |
-| `perf` (optional) | `src/*`, real-world files | `perf/`, `perf.json` |
+| `perf` (optional) | `src/*`, real-world files | `perf/`, `perf.json` (with `skip_reason` when the release binaries look stale: P1/P2 SKIP) |
 
 Every command that works on a run takes the run id (or `latest`, or a PR number) explicitly and
 prints the run it resolved to; nothing falls back to an implicit "last run".
@@ -22,7 +22,9 @@ prints the run it resolved to; nothing falls back to an implicit "last run".
 Inspection and housekeeping:
 
 - `lcr table <run> [--transition t1,t2] [--check O9] [--case <glob>] [--json]`: one line per oracle
-  case (transition, base/head status, wrong engines per side, legacy transitions).
+  case (transition, base/head status, wrong engines per side, legacy transitions). Before the oracle
+  runs it prints output-only rows (id, source, area, base/head ok, changed), deltas only unless
+  `--case` is given.
 - `lcr show <run> <case>`: input, outputs and a per-engine `element | property | input | base | head`
   table; `--json` prints everything untruncated.
 - `lcr oracle <run> --rerun <ids|globs>`: re-run only those cases and merge their verdicts. `lcr
@@ -62,12 +64,13 @@ otherwise `SAFE`; a missing stage turns a clean result into `INCONCLUSIVE`. Ever
 every report, in catalog order, so reports diff cleanly.
 
 Checks compare head with base, so behavior base already has is never charged to the PR: a checklist
-answer `FAIL_PRE_EXISTING` and a `PRE_EXISTING` delta become NOTEs, and a
-`NEEDS_MAINTAINER_DECISION` delta feeds a "decision needed" line that caps the verdict at
-`NEEDS_CHANGES`. An `effective_severity` on a checklist answer can only lower its severity. Answers
-and deltas that name an analysis finding (`"finding": "F3"`) fold into it as evidence, so one
-defect is counted once; so do check failures whose cases an analysis finding cites, REGRESSION
-entries sharing a reason, and a checklist FAIL whose `same-root-as:` item also failed.
+answer `FAIL_PRE_EXISTING` and a `PRE_EXISTING` delta become NOTEs, and so does a T6 failure on a
+probe either one names (directly or through its linked finding); a
+`NEEDS_MAINTAINER_DECISION` delta feeds a "Decision needed" line (below). An `effective_severity`
+on a checklist answer can only lower its severity. Answers and deltas that name an analysis finding
+(`"finding": "F3"`) fold into it as evidence, so one defect is counted once; so do check failures
+whose cases an analysis finding cites, REGRESSION entries sharing a reason, and a checklist FAIL
+whose `same-root-as:` item also failed.
 
 Other verdict rules:
 
@@ -79,13 +82,13 @@ Other verdict rules:
   cannot judge against base (`input-rejected`, or head output equal to what base gives the same
   input under other targets); with NEEDS_MAINTAINER_DECISION entries they make up the
   "Decision needed" lines of the report and summary. A decision is MAJOR only when the oracle
-  shows head worse than base, otherwise a NOTE.
+  shows head worse than base, otherwise a NOTE, so it never makes the verdict `UNSAFE`.
 - When every delta needs a parser flag the PR adds (`corpus.json` `flag_only`), the verdict carries
   a scope, e.g. `UNSAFE (flag custom-functions only)`, and the summary adds "default path
   byte-identical (N requests)".
 - Classifications match in file order and the first match wins. A glob may not clear a `regressed`
   case unless it is REGRESSION; a catch-all (`w-*`, `m-t-*`, `source:wpt`) must cover cases of a
-  single transition; REGRESSION is rejected where base is wrong in the same engines as head.
+  single transition; REGRESSION is rejected where base is wrong in every engine where head is.
 - A checklist answer `{"area": "<area>", "answer": "N/A", "evidence": …}` answers every item of
   that (non-general) area that has no answer of its own.
 
@@ -113,6 +116,6 @@ be re-run on their own with `lcr oracle <run> --rerun <ids>`.
 - A mutation: `lib/lcr/mutations.py`; it must be deterministic and produce valid CSS or `None`.
 - Probes and checklists: see [CONTRIBUTING.md](../CONTRIBUTING.md). A checklist item that restates
   another item's root cause carries a line `  same-root-as: <ID>` after its `verify:` line, so a
-  FAIL of both is counted once; an item about specific files carries `  covers: <glob>, …`. Curated probes cite spec anchors, WPT files, issues and merged
-  PRs, never an open PR, and never set `repro:` (that key marks a PR probe reproducing the linked
-  issue).
+  FAIL of both is counted once; an item about specific files carries `  covers: <glob>, …`.
+  Curated probes cite spec anchors, WPT files, issues and merged PRs, never an open PR, and never
+  set `repro:` (that key marks a PR probe reproducing the linked issue).

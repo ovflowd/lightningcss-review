@@ -1,35 +1,30 @@
 # Browser oracle: how verdicts are computed
 
-The oracle answers one question per case and engine: **does the output behave like the input?** It
-never asks LightningCSS to judge its own output: selectors are parsed by css-tree, values are
-compared by a fixed normalizer, and only browsers compute styles.
+The oracle answers one question per case and engine: **does the output behave like the input?**
+Selectors are parsed by css-tree, values compared by a fixed normalizer, styles computed by browsers.
 
 ## Pipeline
 
 1. `prepare-jobs.mjs` (analysis image): for each case, synthesize one DOM from the selectors of the
-   input and both outputs (`dom.mjs`), rewrite user-action pseudo-classes (`:hover`, `:focus`,
-   `:focus-visible`, `:focus-within`, `:active`, `:target`, `:visited`) to attribute selectors
-   **identically in every sheet**, and list each sheet's declarations, selectors and
-   `@media`/`@supports`/`@container` preludes (exact source text) for validity probing. Rules nested
-   without `&` are parsed in place; `@keyframes` selectors are neither synthesized nor probed. A
-   custom property the input uses without fallback and never defines gets a `:root` stand-in in
-   every sheet (`rgb(1, 2, 3)` for colors, else `5px`; listed in `injectedVars`).
+   input and both outputs (`dom.mjs`), rewrite user-action pseudo-classes (`:hover`, `:focus*`,
+   `:active`, `:target`, `:visited`) to attribute selectors **identically in every sheet**, and list
+   each sheet's declarations, selectors and `@media`/`@supports`/`@container` preludes (exact
+   source text) for validity probing. Rules nested without `&` are parsed in place; `@keyframes`
+   selectors are neither synthesized nor probed. A custom property the input uses without fallback
+   and never defines gets a `:root` stand-in in every sheet (`rgb(1, 2, 3)` for colors, else `5px`;
+   listed in `injectedVars`).
 2. `engine-runner.cjs`, reference profile (`latest`: current Chromium, Firefox and WebKit). For each
    job it loads the DOM once and, for the sheets `empty`, `input`, `base`, `head`, reads
-   `getComputedStyle` of every element plus each pseudo-element the sheets use (also with `dom:`).
-   It records:
-   - `touched`: properties whose value under `input` differs from `empty` (what the input does);
-   - `diff` for base and head: every (element, property) whose value differs from `input`;
-   - validity: whether the engine accepts each declaration (CSSOM `setProperty`), selector
-     (`insertRule`) and prelude (`@media` that is not `not all`, etc.);
-   - for visual areas, a screenshot hash per sheet.
+   `getComputedStyle` of every element and each pseudo-element the sheets use.
+   It records `touched` (properties whose value under `input` differs from `empty`), `diff` for
+   base and head (every (element, property) differing from `input`), validity (does the engine
+   accept each declaration, selector and prelude) and, for visual areas, a screenshot hash.
    Light and dark color schemes run as separate jobs when the CSS uses `light-dark()`, `color-scheme`
    or `prefers-color-scheme`.
 3. Legacy profiles (old Playwright images), **only for cases with targets**: the same sheets, but
    only the properties the reference engine of the same family saw the input touch. An engine is used
-   only when the case's targets include its family and the engine version is >= the target version
-   (else the output may use syntax that engine lacks). Differences base and head share exactly
-   are dropped when anything else differs (L3).
+   only when the case's targets include its family and the engine version is >= the target version.
+   Differences base and head share exactly are dropped when anything else differs; layout: L3.
 4. `compare.mjs`: normalizes and classifies.
 
 ## Value comparison (`normalize.mjs`)
@@ -52,7 +47,10 @@ Lowering comparisons gamut-map the reference color to sRGB with the CSS Color 4 
 
 Per engine and side: `equivalent` (all diffs equal/noise), `near` (worst is near/space-changed),
 `different`, `no-coverage` (the input touched nothing on the synthesized DOM), `unknown`
-(no output, or not decidable), `error` (the engine job failed).
+(no output, or not decidable), `error` (the engine job failed). A side whose css-tree
+serialization equals the input's is `equivalent` in reference engines (`same-text-as-input`). An
+engine where the input is rejected and touches nothing is left out, unless an output applies
+styles there: that side is `different` (`input-inert-output-live`, `inertLive`).
 
 The case summary takes the worst status across engines, separately for base and head, and derives
 the transition (first matching row wins). Each verdict lists `engines: {engine: {base, head}}`.
@@ -62,7 +60,7 @@ the transition (first matching row wins). Each verdict lists `engines: {engine: 
 | `error` on either side | `errored` | a job failed: never different, never verified; re-run it |
 | input rejected or touching nothing in every engine | `input-rejected` | nothing to judge against: a decision, never O1/O2/T3 |
 | base cannot run the request (a flag the PR adds) | `introduced` | head judged against the input alone: different → O2, equivalent → verified |
-| ok → ok | `both-equivalent` | the output changed but both are fine |
+| ok → ok | `both-equivalent` | both are fine |
 | ok → near | `near-introduced` | head drifts within tolerance |
 | bad → ok | `fixed` | the PR fixes a real difference |
 | ok → bad | `regressed` | **the PR breaks something** |
@@ -71,19 +69,18 @@ the transition (first matching row wins). Each verdict lists `engines: {engine: 
 | unknown / no coverage | `unverified` | the oracle could not decide: inspect or classify |
 
 **Neutral deltas.** When head shows exactly base's differences from the input in every engine,
-the PR changed only the text: the case is `neutral` and needs no classification.
+the PR changed only the text: the case is `neutral`, no classification needed.
 
-**Engine divergence.** When, on the same side, at least one engine says `equivalent`/`near` and
-another says `different`, the engines disagree about what the *input* means (one lags, deviates
-from the spec, or implements a newer rule). It needs evidence that they read the input
-differently: one rejects part of it, it does nothing in one, or its values differ on the disputed
-property. Such cases go to **O9** with the split, not to O1/O2. Exception: base equivalent in
-every engine and head different in any is `regressed` (O1). The reviewer decides against the
-spec: which engine follows the current spec text (cite `drafts.csswg.org/...#anchor`) and WPT
-(cite the test file or wpt.fyi), per engine: REGRESSION only if base matched where head does not.
+**Engine divergence.** When, on the same side, one engine says `equivalent`/`near` and another
+`different`, and they read the input differently (one rejects part of it, it does nothing in one,
+or its values differ on the disputed property), they disagree about what the input means: **O9**
+with the split, not O1/O2. Exception: base equivalent in every engine and head different in any is
+`regressed` (O1). O9 judges each engine against the spec meaning of the input (cite
+`drafts.csswg.org/...#anchor` and the WPT file or wpt.fyi). An engine that lags the spec is no
+evidence of a regression: REGRESSION needs base to match the spec in an engine where head does not.
 
-`rejectedHead > rejectedBase` (a declaration, selector or prelude the engine rejects with no
-surviving fallback for the same property) feeds check O3 even when computed styles match.
+`rejectedHead > rejectedBase` (a declaration, selector or prelude rejected with no surviving
+fallback for the property) feeds O3 even when computed styles match.
 
 Property cases (WPT) use a CSSOM check: invalid input stays invalid behind its valid fallback; a
 shorthand resets the same longhands (`shorthand-reset-changed`); spelling differences are resolved
@@ -97,19 +94,19 @@ with a computed-value fixture (`contextual-match` vs `computed-difference`).
   `no-coverage`, not wrong.
 - L2 **Pseudo-state rewrite**: user-action pseudo-classes become attributes in every sheet, so a PR
   changing their handling (the `pseudoClasses` option) needs output assertions instead.
-- L3 **Engine version spread**: legacy engines are specific Playwright builds. Computed-value
-  serialization changed between versions (e.g. `font-family` quoting, `normal` vs `auto`), which can
-  show as `different` in lowering checks for properties the case does not care about. Always compare
-  the base and head transitions: noise affects both equally.
+- L3 **Engine version spread**: legacy engines are specific Playwright builds. Serialization
+  changed between versions (`font-family` quoting, `normal` vs `auto`) and fonts differ, so lowering
+  checks can show `different` on properties the case does not care about. Layout-derived used values
+  (width, height, inline/block-size, px line-height, `*-origin`) no sheet declares (nor a shorthand
+  or logical equivalent) are compared with the legacy engine's own input, or skipped where it reads
+  the input differently. Noise affects base and head alike.
 - L4 **Playwright WebKit is not Safari** (WPE/GTK builds): Apple-only features (`-apple-system`,
   some `-webkit-` behaviors) differ.
 - L5 **Static snapshot**: animations, transitions, `@starting-style`, scroll-driven timelines and
-  view transitions are compared as computed values at rest, not as running animations. Use the
-  spec checklist for interpolation semantics.
+  view transitions are compared at rest. Use the spec checklist for interpolation semantics.
 - L6 **Viewport and media**: fixed 800×600 viewport, light scheme (plus dark when relevant), screen
-  media, `prefers-reduced-motion: no-preference`. Media-dependent branches outside that context are
-  not exercised.
-- L7 **Resources**: `url()` targets do not load (no network); `@import` is not followed; fonts are the
+  media, `prefers-reduced-motion: no-preference`; other media branches are not exercised.
+- L7 **Resources**: `url()` targets do not load; `@import` is not followed; fonts are the
   container defaults.
 - L8 **CSS modules**: renamed identifiers make computed-style comparison meaningless; those cases are
   skipped (use output assertions).

@@ -107,7 +107,7 @@ Invariants:
 - Leaks: `NestedDeclarationsRule::minify` and keyframes fill side lists but never drain them, so they
   land on the next sibling or vanish (`nesting/nested-declarations-side-rules-leak-to-sibling`). All
   selectors incompatible yields side rules with an empty selector. Style attributes drop side rules
-  (the WPT lane cannot see these).
+  (WPT cannot see these).
 - `serialize_nesting` prints the plain parent only for one parent with leading `&` or a simple
   type-free parent, else `:is(parents)`, even for targets without `:is()`. `&` cannot represent a
   pseudo-element parent.
@@ -117,7 +117,7 @@ Invariants:
 | Unit | Affects | Test with |
 |---|---|---|
 | handler order, `DeclarationBlock::minify` | every declaration's order/survival | `reverse-decls`, `important`, `var-before/after` |
-| one handler, shorthand macros | its group, longhands it resets, merges | `reverse-decls`, `var-after`, `prefixed-sibling`, `retarget-*` |
+| one handler, shorthand macros | its group, longhands it resets, merges | `reverse-decls`, `var-after`, `(value-)prefixed-sibling`, `retarget-*` |
 | derive `Parse`/`ToCss`, `define_properties!` | parse priority, Unparsed fallback, AST | `upper-props`, `shorthand; new-longhand` both orders |
 | `PropertyHandlerContext` | side rules, importance | `important`, `wrap-supports`, `nest`; `logical/*` |
 | `CssRuleList::minify`, merge, dedupe | cascade across rules | `duplicate-nonadjacent`, `wrap-*`, `nest`; `rule-merging/*` |

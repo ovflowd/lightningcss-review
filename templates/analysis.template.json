@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "run_id": "<filled by `lcr analysis-init`>",
+  "run_id": "<filled by `lcr worklist`>",
   "intent": {
     "kind": "bugfix | feature | refactor | compat-data | perf | tests | docs | api | deps",
     "summary": "One or two sentences: what the PR changes, in CSS terms (which syntax, which output).",
@@ -11,7 +11,7 @@
     {
       "item": "GEN-01",
       "answer": "PASS | FAIL | FAIL_PRE_EXISTING | N/A",
-      "evidence": "case id, probe id, file:line, spec URL#anchor, or command output. FAIL_PRE_EXISTING: a probe, base case or issue (#N) showing base fails the same way; it becomes a NOTE and never counts toward A1",
+      "evidence": "case id, probe id, file:line, spec URL#anchor, or command output. FAIL_PRE_EXISTING: evidence that base fails the same way, of a kind a PRE_EXISTING delta accepts; it becomes a NOTE, never counts toward A1, and turns a T6 failure on a probe it names into a NOTE",
       "note": "one line; required on FAIL when the verify line offers alternatives (`… or …`): say why none holds. A FAIL citing a fixed or equivalent case of the mode the verify line accepts is rejected (A3)",
       "effective_severity": "optional: a lower severity when the item applies only marginally (never higher than the item's own)",
       "severity_reason": "required with effective_severity: why the item's severity does not fit this PR",
@@ -24,8 +24,8 @@
       "id": "case id, a glob (`m-p-color/x-*`) or `source:<src>`. Entries match in file order and the first match wins. A glob may not clear a regressed case unless it is REGRESSION; a catch-all (`w-*`, `m-*`, `source:wpt`) must cover cases of one transition",
       "classification": "INTENDED | ACCEPTABLE_SIDE_EFFECT | REGRESSION | NEEDS_MAINTAINER_DECISION | ORACLE_NOISE | PRE_EXISTING",
       "reason": "one line; for ORACLE_NOISE say which tolerance/limitation; INTENDED/ACCEPTABLE_SIDE_EFFECT/ORACLE_NOISE on a case the browsers call different must cite the spec or WPT. Entries with the same classification and reason are reported as one finding",
-      "evidence": "PRE_EXISTING only (or in reason): a probe, base case or issue showing base is wrong the same way. PRE_EXISTING yields at most a NOTE. REGRESSION needs base right where head is wrong; NEEDS_MAINTAINER_DECISION goes to the decision line and never makes the verdict UNSAFE",
-      "finding": "optional: id of the analysis finding these cases are evidence for"
+      "evidence": "PRE_EXISTING only (or in reason): evidence that base is wrong the same way: an issue (`open-issue#N`, `fixed-by#N` or a lightningcss issue/PR URL; a bare #N does not count), a probe with an assertion that fails on base, a case the oracle finds wrong on base, a base tuple (`t-…`) whose base output matches its recorded expectation, or a case that crashes on base. PRE_EXISTING yields at most a NOTE, and a T6 failure on a probe it names (an assertion that holds on base only because base is wrong another way) becomes a NOTE. REGRESSION needs base to match the spec in an engine where head does not. NEEDS_MAINTAINER_DECISION goes to the decision line and never makes the verdict UNSAFE: it is MAJOR when the browsers show head worse than base, otherwise a NOTE",
+      "finding": "optional: id of the analysis finding these cases are evidence for. On a PRE_EXISTING entry (or a FAIL_PRE_EXISTING answer) it also turns T6 failures on the probes that finding cites into NOTEs"
     }
   ],
   "findings": [

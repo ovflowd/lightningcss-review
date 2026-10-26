@@ -86,6 +86,32 @@ class ChecklistTest(unittest.TestCase):
         self.assertIn("**or**", tests04)
         self.assertIn("effective_severity: MINOR", tests04)
 
+    def line(self, rel, item):
+        return next(l for l in read(rel).splitlines() if l.startswith(f"- [{item}]"))
+
+    def test_missing_branch_coverage_is_minor_and_reasons_live_outside_code(self):
+        tests03 = self.line("references/checklists/tests.md", "TESTS-03")
+        self.assertTrue(tests03.startswith("- [TESTS-03] (MINOR)"))
+        self.assertIn("oracle-verified", tests03)
+        tests11 = self.line("references/checklists/tests.md", "TESTS-11")
+        self.assertTrue(tests11.startswith("- [TESTS-11] (NOTE)"))
+        self.assertIn("PR body or a comment", tests11)
+
+    def test_display_handler_and_rule_dedupe_are_separate_items(self):
+        rel = "references/checklists/display-layout.md"
+        self.assertNotIn("is_duplicate", self.line(rel, "DISPLAY-02"))
+        self.assertIn("StyleRule::is_duplicate", self.line(rel, "DISPLAY-03"))
+        # value-prefixed-sibling only puts prefixes first; the later-prefixed order needs reverse-decls.
+        self.assertIn("reverse-decls", self.items()["DISPLAY-02"][0])
+
+    def test_value_prefix_mutation_is_named_where_value_prefixes_matter(self):
+        from lcr import mutations
+
+        self.assertIn("value-prefixed-sibling", mutations.MUTATIONS)
+        items = self.items()
+        for item in ("GEN-06", "DISPLAY-02", "TESTS-03"):
+            self.assertIn("value-prefixed-sibling", items[item][0], item)
+
 
 class CuratedProbeTest(unittest.TestCase):
     def test_curated_probes_validate(self):
@@ -148,6 +174,27 @@ class ContractDocsTest(unittest.TestCase):
             self.assertIn(f"`{c}`" if c != "FAIL_PRE_EXISTING" else c, text, c)
         for key in ("effective_severity", "finding: F<n>", "repro: #N", "--rerun"):
             self.assertIn(key, text, key)
+
+    def test_decision_needed_is_never_described_as_a_verdict_floor(self):
+        for rel in ("SKILL.md", "docs/harness.md"):
+            text = " ".join(read(rel).split())
+            self.assertNotRegex(text, r"(?i)caps? the verdict", rel)
+        skill = " ".join(read("SKILL.md").split())
+        self.assertIn("Never UNSAFE: MAJOR if the oracle shows head worse than base, else a NOTE", skill)
+
+    def test_o9_judges_engines_against_the_spec(self):
+        skill = " ".join(read("SKILL.md").split())
+        self.assertIn("an engine that lags the spec", skill)
+        self.assertIn("REGRESSION needs base to match the spec in an engine where head does not", skill)
+        self.assertNotIn("base matched in every engine", skill)
+        self.assertIn("base wrong wherever head is → PRE_EXISTING", skill)
+        self.assertIn("`references/spec/<cluster>.md`", skill)
+
+    def test_thread_step_reads_issue_comments_and_searches_related_issues(self):
+        skill = " ".join(read("SKILL.md").split())
+        self.assertIn("maintainer comments on each linked issue, closed too", skill)
+        self.assertIn("`gh search issues`", skill)
+        self.assertIn("standing maintainer policy", skill)
 
     def test_probe_format_documents_new_keys(self):
         text = read("references/probe-format.md")

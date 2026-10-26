@@ -14,13 +14,17 @@ from pathlib import Path
 from .common import SKILL_DIR, LcrError, cache_dir, load_config, read_json, read_jsonl, skill_version, write_json
 from .prepare import test_area_map
 from .targets import format_targets
+from .tuples import matches_expectation
 
 SEV_RANK = {"BLOCKER": 0, "MAJOR": 1, "MINOR": 2, "NOTE": 3}
 CHECKLIST_RE = re.compile(r"^- \[([A-Z0-9]+-\d+)\] \((BLOCKER|MAJOR|MINOR|NOTE)\) (.+)$")
 CLASSIFICATIONS = {"INTENDED", "ACCEPTABLE_SIDE_EFFECT", "REGRESSION", "NEEDS_MAINTAINER_DECISION", "ORACLE_NOISE", "PRE_EXISTING"}
 ANSWERS = ("PASS", "FAIL", "FAIL_PRE_EXISTING", "N/A")
 SPEC_CITE = re.compile(r"https?://(drafts\.csswg\.org|www\.w3\.org|drafts\.fxtf\.org|html\.spec\.whatwg\.org|wpt\.fyi|github\.com/web-platform-tests/wpt)/\S+")
-ISSUE_REF = re.compile(r"(?<![\w/])#\d+\b|github\.com/parcel-bundler/lightningcss/(issues|pull)/\d+")
+# An issue as evidence: a probe `known:` tag or a Lightning CSS issue/PR URL, never a bare `#N`.
+ISSUE_REF = re.compile(r"(?<![\w-])(?:open-issue#\d+|fixed-by#(?:\d+|[0-9a-f]{7,40}))(?![\w-])|github\.com/parcel-bundler/lightningcss/(?:issues|pull)/\d+")
+PRE_EVIDENCE = ("an issue (`open-issue#N`, `fixed-by#N` or a lightningcss issue/PR URL), a probe with an assertion that fails on base, "
+                "a case the oracle finds wrong on base, a base tuple (`t-…`) whose base output matches its recorded expectation, or a case that crashes on base")
 # Transitions where head is worse than base in the engines that can judge the case.
 BAD_TRANSITIONS = ("regressed", "worsened")
 NOT_VERIFIED = ("unverified", "errored", "input-rejected")
@@ -477,6 +481,7 @@ def evaluate(run_dir: Path) -> dict:
             s = v["summary"]["latest"]
             t = s["transition"]
             tag = f"{cid}{'~dark' if v.get('scheme') == 'dark' else ''}"
+            woke = f" [input inert, output live in {', '.join(s['inertLive'])}]" if s.get("inertLive") else ""
             if s.get("visualErrors"):
                 shot_errors.append(tag)
             if t == "errored":
@@ -495,11 +500,11 @@ def evaluate(run_dir: Path) -> dict:
             if judged_bad and s["head"] == "different" and (case.get("request") or {}).get("targets") and engine_statuses(v) and not wrong_in(v, case, "head"):
                 outside_targets.append(tag)
             elif t in BAD_TRANSITIONS:
-                bad_candidates.append((tag, cid, src))
+                bad_candidates.append((tag + woke, cid, src))
             elif is_divergent and (t == "still-different" or head_tuple):
                 bb = wrong_in(v, case, "base")
                 eh = s.get("enginesHead", {})
-                divergent.append(f"{tag} [head equivalent in {', '.join(eh.get('ok', [])) or 'none'}; different in {', '.join(eh.get('bad', [])) or 'none'}; base different in {', '.join(bb) or 'none'}]")
+                divergent.append(f"{tag} [head equivalent in {', '.join(eh.get('ok', [])) or 'none'}; different in {', '.join(eh.get('bad', [])) or 'none'}; base different in {', '.join(bb) or 'none'}]{woke}")
             elif t == "introduced" and s["head"] == "different":
                 new_bad.append(tag)
             elif head_tuple and s["head"] == "different" and t != "introduced":
@@ -699,6 +704,9 @@ def evaluate(run_dir: Path) -> dict:
     if not perf:
         add("P1", "SKIP", "optional: run `lcr perf` for core/hot-path changes")
         add("P2", "SKIP", "optional: run `lcr perf`")
+    elif perf.get("skip_reason"):
+        add("P1", "SKIP", perf["skip_reason"])
+        add("P2", "SKIP", perf["skip_reason"])
     else:
         slow = perf["total_ratio"] and perf["total_ratio"] > th["perf_total_ratio"] and perf["slower_share"] >= th["perf_slower_share"]
         add("P1", "FAIL" if slow else "PASS", f"real-world total {perf['total_ms']['base']}ms -> {perf['total_ms']['head']}ms (x{perf['total_ratio']}); {perf['slower_share']:.0%} of files >5% slower; median of {perf['repeats']}",
@@ -707,7 +715,23 @@ def evaluate(run_dir: Path) -> dict:
         add("P2", "FAIL" if grew else "PASS", f"release CLI {perf['binary_bytes']['base']} -> {perf['binary_bytes']['head']} bytes (x{perf['binary_ratio']})")
 
     # ---- probe assertions (T6)
-    broke, failing, probe_fixed = [], [], []
+    afinding_refs = {str(f.get("id") or f"F{i}"): set(case_refs(" ".join(map(str, f.get("evidence") or [])), known)) for i, f in enumerate(analysis.get("findings", []), 1)}
+    pre_marks = [(f"PRE_EXISTING {d.get('id', '')}", d, f"{d.get('reason', '')} {d.get('evidence', '')}") for d in analysis.get("deltas", []) if d.get("classification") == "PRE_EXISTING"]
+    # Only answers to this run's checklist items: their evidence is what A3 validates.
+    checklist = load_checklists(prep.get("areas", []))
+    answers = resolve_answers(analysis, checklist)
+    pre_answers = [(it["item"], answers[it["item"]]) for it in checklist if (answers.get(it["item"]) or {}).get("answer") == "FAIL_PRE_EXISTING"]
+    pre_marks += [(f"FAIL_PRE_EXISTING {item}", {"finding": a.get("finding")}, f"{a.get('evidence', '')} {a.get('note', '')}") for item, a in pre_answers]
+
+    def pre_existing_mark(pid):
+        """The PRE_EXISTING classification or FAIL_PRE_EXISTING answer that names a probe, or links a
+        finding that cites it."""
+        for label, entry, text in pre_marks:
+            if entry.get("id") == pid or pid in case_refs(text, known) or pid in afinding_refs.get(str(entry.get("finding")), ()):
+                return label
+        return None
+
+    broke, broke_pre, failing, probe_fixed = [], [], [], []
     if corpus.get("probes"):
         r2 = set(idem)
         for p in sorted(corpus["probes"], key=lambda p: p["id"]):
@@ -722,23 +746,26 @@ def evaluate(run_dir: Path) -> dict:
                 if name == "equivalent" or (name == "idempotent" and p["id"] in r2):
                     continue
                 if hb is True and hh is False:
-                    broke.append(f"{p['id']}: {name} (holds on base, fails on head)")
+                    mark = pre_existing_mark(p["id"])
+                    if mark:
+                        broke_pre.append(f"{p['id']}: {name} (holds on base, fails on head; base is wrong another way per {mark})")
+                    else:
+                        broke.append(f"{p['id']}: {name} (holds on base, fails on head)")
                 elif hh is False and (p["origin"] == "pr" or p.get("changed")):
                     failing.append(f"{p['id']}: {name}" + (" (fails on base too)" if hb is False else ""))
     fixed_note = f"; {len(probe_fixed)} assertion(s) now pass (fixed by this PR)" if probe_fixed else ""
     if not corpus:
         add("T6", "SKIP", "corpus stage did not run")
     elif broke:
-        add("T6", "FAIL", f"{len(broke)} probe assertion(s) hold on base and fail on head" + (f"; {len(failing)} more fail on head" if failing else "") + fixed_note, broke + failing)
-    elif failing:
-        add("T6", "PARTIAL", f"{len(failing)} probe assertion(s) fail on head" + fixed_note, failing, severity="NOTE")
+        add("T6", "FAIL", f"{len(broke)} probe assertion(s) hold on base and fail on head" + (f"; {len(broke_pre) + len(failing)} more fail on head" if broke_pre or failing else "") + fixed_note, broke + broke_pre + failing)
+    elif broke_pre or failing:
+        parts = ([f"{len(broke_pre)} probe assertion(s) hold on base only because base is wrong another way (pre-existing)"] if broke_pre else []) + ([f"{len(failing)} probe assertion(s) fail on head"] if failing else [])
+        add("T6", "PARTIAL", "; ".join(parts) + fixed_note, broke_pre + failing, severity="NOTE")
     else:
         add("T6", "PASS", f"{sum(len(a['head']) for a in probe_asserts.values())} assertion(s) checked" + fixed_note)
 
     # ---- analysis
     problems, warnings = [], []
-    checklist = load_checklists(prep.get("areas", []))
-    answers = resolve_answers(analysis, checklist)
     missing_items = [it["item"] for it in checklist if (answers.get(it["item"]) or {}).get("answer") not in ANSWERS or not answers[it["item"]].get("evidence")]
 
     def item_severity(it, a):
@@ -755,14 +782,21 @@ def evaluate(run_dir: Path) -> dict:
             return eff
         return it["severity"]
 
+    base_out = {}
+
     def base_wrong(cid):
-        """Evidence that base itself fails on a case."""
+        """Evidence that base itself fails on a case, or (a base tuple) that base's own tests record its behavior."""
         pa = probe_asserts.get(cid)
         if pa and any(x is False for x in pa["base"].values()):
             return True
         v = light(verdicts.get(cid) or [])
         if v and (v["summary"]["latest"]["base"] == "different" or v["summary"]["latest"]["transition"] in ("still-different", "fixed", "worsened")):
             return True
+        c = cases.get(cid) or {}
+        if c.get("source") == "tuple" and c.get("side") in ("base", "both") and c.get("expectation"):
+            if not base_out:
+                base_out.update(outputs(run_dir, "base"))
+            return bool(base_out.get(cid)) and matches_expectation(c["expectation"], base_out[cid]) is True
         return cid in base_ids
 
     failed_items, pre_items = [], []
@@ -789,7 +823,7 @@ def evaluate(run_dir: Path) -> dict:
     for it, a in pre_items:
         text = f"{a.get('evidence', '')} {a.get('note', '')}"
         if not ISSUE_REF.search(text) and not any(base_wrong(r) for r in case_refs(text, known)):
-            problems.append(f"{it['item']}: FAIL_PRE_EXISTING needs a case, probe or issue showing base fails the same way")
+            problems.append(f"{it['item']}: FAIL_PRE_EXISTING needs evidence that base fails the same way: {PRE_EVIDENCE}")
     if not analysis:
         add("A1", "SKIP", "analysis.json missing")
     elif failed_items:
@@ -926,15 +960,15 @@ def evaluate(run_dir: Path) -> dict:
                 for c in cov:
                     v = light(verdicts.get(c) or [])
                     if v and transition_of(c) == "still-different":
-                        # REGRESSION needs base right in every engine where head is wrong.
-                        both = set(wrong_in(v, cases.get(c, {}), "head")) & set(wrong_in(v, cases.get(c, {}), "base"))
-                        if both:
-                            incomplete.append(f"{pattern}: REGRESSION on {c}, but base is wrong in the same engines ({', '.join(sorted(both))}); use PRE_EXISTING or NEEDS_MAINTAINER_DECISION")
+                        # REGRESSION needs an engine where base is right and head is wrong.
+                        hw = set(wrong_in(v, cases.get(c, {}), "head"))
+                        if hw and hw <= set(wrong_in(v, cases.get(c, {}), "base")):
+                            incomplete.append(f"{pattern}: REGRESSION on {c}, but base is wrong in every engine where head is ({', '.join(sorted(hw))}); use PRE_EXISTING or NEEDS_MAINTAINER_DECISION")
                             break
             if cl == "PRE_EXISTING":
                 text = f"{d.get('reason', '')} {d.get('evidence', '')}"
                 if not ISSUE_REF.search(text) and not any(base_wrong(r) for r in case_refs(text, known)):
-                    incomplete.append(f"{pattern}: PRE_EXISTING must cite a probe, issue or base case where base is wrong the same way")
+                    incomplete.append(f"{pattern}: PRE_EXISTING needs evidence that base is wrong the same way: {PRE_EVIDENCE}")
                 ok_base = [c for c in cov if transition_of(c) == "regressed"]
                 if ok_base:
                     incomplete.append(f"{pattern}: PRE_EXISTING on {ok_base[0]}, which base renders equivalent in every engine")
@@ -1029,8 +1063,8 @@ def evaluate(run_dir: Path) -> dict:
         if cl == "REGRESSION":
             entry = {"source": "classification", "check": None, "severity": "BLOCKER", "title": f"Regression: {snippet_words(reason, 120)}", "detail": f"{reason} ({n} case(s))", "evidence": ev_items}
         else:
-            # A policy question caps the verdict at NEEDS_CHANGES: MAJOR when the browsers show head
-            # worse than base, otherwise a note.
+            # A policy question never makes the verdict UNSAFE: MAJOR when the browsers show head worse
+            # than base, otherwise a note.
             sev = "MAJOR" if any(c in oracle_bad for c in cases_g) else "NOTE"
             entry = {"source": "classification", "check": None, "severity": sev, "title": f"Decision needed: {snippet_words(reason, 120)}", "detail": f"{reason} ({n} case(s))", "evidence": ev_items}
             decision_lines.append(f"{snippet_words(reason, 160)} ({n} case(s))")
@@ -1161,7 +1195,7 @@ def case_block(ev: dict, run_dir: Path, cid: str, base_out: dict, head_out: dict
     for v in ev["oracle"].get("verdicts", {}).get(cid, []):
         s = v["summary"]["latest"]
         bw, hw = wrong_in(v, case, "base"), wrong_in(v, case, "head")
-        lines.append(f"  oracle ({v.get('scheme')}): base **{s['base']}**, head **{s['head']}** → `{s['transition']}` · base wrong in: {', '.join(bw) or 'none'} · head wrong in: {', '.join(hw) or 'none'}")
+        lines.append(f"  oracle ({v.get('scheme')}): base **{s['base']}**, head **{s['head']}** → `{s['transition']}` · base wrong in: {', '.join(bw) or 'none'} · head wrong in: {', '.join(hw) or 'none'}" + (f" · input inert, output live in: {', '.join(s['inertLive'])}" if s.get("inertLive") else ""))
         for engine, e in sorted(v.get("latest", {}).items()):
             hv = e.get("variants", {}).get("head", {}) if "variants" in e else {}
             diffs = hv.get("diffs", [])[:3]

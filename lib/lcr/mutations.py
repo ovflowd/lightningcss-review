@@ -2,8 +2,8 @@
 
 A mutation does not have to preserve the meaning of the original input: the oracle compares each
 mutated input with its own output. Mutations encode the habits in Devon's tests: both declaration
-orders, typed vs var() values, !important, prefixed siblings, nesting, conditional/layer wrapping,
-non-adjacent duplicates, different targets.
+orders, typed vs var() values, !important, prefixed siblings (property and value prefixes), nesting,
+conditional/layer wrapping, non-adjacent duplicates, different targets.
 """
 from __future__ import annotations
 
@@ -18,6 +18,7 @@ MUTATIONS = (
     "var-before",
     "var-after",
     "prefixed-sibling",
+    "value-prefixed-sibling",
     "wrap-media",
     "wrap-layer",
     "wrap-supports",
@@ -167,6 +168,33 @@ def prefixed_props() -> dict[str, list[str]]:
     return {p["name"]: p.get("prefixes") or [] for p in data}
 
 
+VALUE_PREFIXES = {
+    ("display", "flex"): ("-webkit-box", "-ms-flexbox"),
+    ("display", "inline-flex"): ("-webkit-inline-box", "-ms-inline-flexbox"),
+    ("position", "sticky"): ("-webkit-sticky",),
+}
+UNPREFIXED_VALUE = {(prop, v): value for (prop, value), prefixed in VALUE_PREFIXES.items() for v in prefixed}
+
+
+def value_prefixed_siblings(decls: list[str]) -> list[str]:
+    """Legacy prefixed values before each unprefixed one (`display: -webkit-box; display: flex`), and
+    the unprefixed value after the last of its prefixed values when the rule lacks it."""
+    keys = [(n.lower(), v.lower()) for n, v, _ in map(prop_of, decls)]
+    present = set(keys)
+    last = {}
+    for i, key in enumerate(keys):
+        if key in UNPREFIXED_VALUE and (key[0], UNPREFIXED_VALUE[key]) not in present:
+            last[(key[0], UNPREFIXED_VALUE[key])] = i
+    out = []
+    for i, (d, key) in enumerate(zip(decls, keys)):
+        name, _value, imp = prop_of(d)
+        suffix = " !important" if imp else ""
+        before = [v for v in VALUE_PREFIXES.get(key, ()) if (key[0], v) not in present]
+        after = [v for (_prop, v), at in last.items() if at == i]
+        out += [f"{name}: {v}{suffix}" for v in before] + [d] + [f"{name}: {v}{suffix}" for v in after]
+    return out
+
+
 def mutate(css: str, mutation: str) -> str | None:
     items = split_top(css)
     if not items:
@@ -226,6 +254,8 @@ def mutate(css: str, mutation: str) -> str | None:
                 if webkit:
                     new.append(f"-webkit-{name}: {value}{' !important' if imp else ''}")
                 new.append(d)
+        elif mutation == "value-prefixed-sibling":
+            new = value_prefixed_siblings(decls)
         elif mutation == "upper-props":
             new = []
             for d in decls:

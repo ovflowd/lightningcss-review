@@ -118,7 +118,8 @@ function pageSnapshot(job) {
   scratch.remove();
   // Return only what differs from the reference variant, plus the reference itself for the
   // properties that the input touched (differs from the empty sheet). Lowering jobs (job.props)
-  // return the raw values of the elements their reference engine saw touched, nothing else.
+  // return the raw values of the elements their reference engine saw touched (the input's too,
+  // for layout-derived values), nothing else.
   var ref = result.variants[job.reference || 'input'];
   var empty = result.variants.empty;
   var packed = { elements: result.elements, variants: {} };
@@ -126,7 +127,7 @@ function pageSnapshot(job) {
     var cur = result.variants[name];
     var entry = { info: cur.info };
     if (job.props) {
-      if (name !== 'empty' && name !== (job.reference || 'input')) {
+      if (name !== 'empty') {
         var values = {};
         Object.keys(cur.snap).forEach(function (key) {
           if (!keysFilter || keysFilter.has(key)) values[key] = cur.snap[key];

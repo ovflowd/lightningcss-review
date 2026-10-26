@@ -93,6 +93,12 @@ export function parseSheet(css) {
   }
 }
 
+/** css-tree's serialization: equal for sheets that differ only in whitespace, comments or final semicolons. */
+export function canonicalText(css) {
+  const ast = typeof css === 'string' ? parseSheet(css) : null;
+  return ast ? nesting.generate(ast) : null;
+}
+
 const isKeyframes = (node) => node.type === 'Atrule' && /keyframes$/i.test(node.name);
 
 // A selector is an array of steps: {combinator, compound: [simple nodes]}.
@@ -559,6 +565,26 @@ export function rewriteStates(css) {
   return { css: parts.join(''), rewrites: edits.length };
 }
 
+const AT_KEYWORD = /@(?:[-\w]|\\[0-9a-fA-F]{1,6}\s?|\\.)+/y;
+
+/** Whether parentheses and brackets balance outside strings and comments. */
+export function balanced(text) {
+  const stack = [];
+  const close = { ')': '(', ']': '[' };
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (ch === '\\') i++;
+    else if (ch === '"' || ch === "'") {
+      for (i++; i < text.length && text[i] !== ch; i++) if (text[i] === '\\') i++;
+    } else if (ch === '/' && text[i + 1] === '*') {
+      const end = text.indexOf('*/', i + 2);
+      i = end < 0 ? text.length : end + 1;
+    } else if (ch === '(' || ch === '[') stack.push(ch);
+    else if (close[ch] && stack.pop() !== close[ch]) return false;
+  }
+  return stack.length === 0;
+}
+
 /** Lists for the engine to test: declarations, selectors, conditional preludes (per sheet). */
 export function validityProbe(css, limit = 400) {
   const ast = parseSheet(css);
@@ -568,8 +594,18 @@ export function validityProbe(css, limit = 400) {
   if (!ast) return { decls, selectors, preludes, parsed: false };
   // Probe the exact source text (loc offsets), never a re-serialization.
   const src = (node) => (node && node.loc ? css.slice(node.loc.start.offset, node.loc.end.offset) : node ? csstree.generate(node) : '');
-  // css-tree can end a prelude's loc before its last `)`; the prelude runs up to the block.
-  const preludeSrc = (node) => (node.prelude.loc && node.block && node.block.loc ? css.slice(node.prelude.loc.start.offset, node.block.loc.start.offset) : src(node.prelude));
+  // css-tree's prelude loc can start after a leading `(` (`@supports ((a:b) or (c:d))`) and end
+  // before the last `)`: the prelude is everything between the at-keyword and the block.
+  const preludeSrc = (node) => {
+    if (node.loc && node.block && node.block.loc) {
+      AT_KEYWORD.lastIndex = node.loc.start.offset;
+      if (AT_KEYWORD.exec(css)) {
+        const text = css.slice(AT_KEYWORD.lastIndex, node.block.loc.start.offset).trim();
+        if (balanced(text)) return text;
+      }
+    }
+    return csstree.generate(node.prelude);
+  };
   // Nested rule selectors are only valid relative to their parent, and keyframe selectors are
   // not selectors at all: neither is probed on its own.
   let rules = 0;

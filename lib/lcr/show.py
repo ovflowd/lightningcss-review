@@ -1,6 +1,6 @@
 """Inspect cases: `lcr show` prints one case (input, base/head output, per-engine oracle diffs) and
-`lcr table` one line per oracle case. Both read the run files line by line, so they stay fast on
-large runs."""
+`lcr table` one line per oracle case (per corpus case, outputs only, before the oracle runs). Both
+read the run files line by line, so they stay fast on large runs."""
 from __future__ import annotations
 
 import fnmatch
@@ -202,11 +202,51 @@ def check_case_ids(run_dir: Path, check: str) -> set[str]:
     raise LcrError(f"no check {check} in report.json")
 
 
+def output_rows(run_dir: Path, ids: set[str] | None = None, pattern: str | None = None) -> list[dict]:
+    """Before the oracle: one row per case from the corpus outputs. Without `ids` or `pattern`,
+    only the deltas (base and head outputs differ)."""
+    corpus = run_dir / "corpus"
+    if not (corpus / "cases.jsonl").exists():
+        raise LcrError("no corpus yet; run `lcr corpus <run>` first")
+    changed = {d["id"] for d in read_jsonl(corpus / "deltas.jsonl")}
+    keep = lambda cid: (ids is None or cid in ids) and (fnmatch.fnmatchcase(cid, pattern) if pattern else ids is not None or cid in changed)
+    cases = [c for c in read_jsonl(corpus / "cases.jsonl") if keep(c["id"])]
+    ok = {side: {o["id"]: bool(o.get("ok")) for o in read_jsonl(corpus / f"outputs-{side}.jsonl")} for side in ("base", "head")}
+    return [
+        {
+            "id": c["id"],
+            "source": c.get("source"),
+            "area": c.get("area") or (c.get("probe") or {}).get("area"),
+            "base_ok": ok["base"].get(c["id"]),
+            "head_ok": ok["head"].get(c["id"]),
+            "changed": c["id"] in changed,
+        }
+        for c in sorted(cases, key=lambda c: c["id"])
+    ]
+
+
+def format_output_table(rows: list[dict], deltas_only: bool = False) -> str:
+    if not rows:
+        return "no matching cases"
+    flag = lambda v: "-" if v is None else "ok" if v else "error"
+    cells = [("id", "source", "area", "base", "head", "changed")]
+    for r in rows:
+        cells.append((r["id"], r["source"] or "-", r["area"] or "-", flag(r["base_ok"]), flag(r["head_ok"]), "yes" if r["changed"] else "-"))
+    w = [max(len(str(c[i])) for c in cells) for i in range(len(cells[0]) - 1)]
+    lines = ["  ".join(f"{str(c[i]):<{w[i]}}" for i in range(len(w))) + "  " + c[-1] for c in cells]
+    lines.append(f"{len(rows)} row(s), {sum(1 for r in rows if r['changed'])} changed; no oracle yet, outputs only" + ("; deltas only (`--case '*'` lists every case)" if deltas_only else ""))
+    return "\n".join(lines)
+
+
 def table(run_dir: Path, transition: str | None = None, check: str | None = None, pattern: str | None = None, as_json: bool = False) -> None:
     verdicts = (read_json(run_dir / "oracle.json") or {}).get("verdicts")
-    if verdicts is None:
-        raise LcrError("no oracle.json yet; run `lcr oracle <run>` first")
     transitions = {t for t in (transition or "").replace(",", " ").split() if t} or None
     ids = check_case_ids(run_dir, check) if check else None
+    if verdicts is None:
+        if transitions:
+            raise LcrError("--transition needs oracle.json; run `lcr oracle <run>` first")
+        rows = output_rows(run_dir, ids, pattern)
+        print(json.dumps(rows, indent=2, sort_keys=True, ensure_ascii=False) if as_json else format_output_table(rows, deltas_only=ids is None and not pattern))
+        return
     rows = table_rows(verdicts, transitions, ids, pattern)
     print(json.dumps(rows, indent=2, sort_keys=True, ensure_ascii=False) if as_json else format_table(rows))

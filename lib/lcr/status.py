@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 from pathlib import Path
 
 from .common import read_json, read_jsonl, write_json
@@ -158,6 +159,50 @@ def worklist(run_dir: Path) -> dict:
     return open_items
 
 
+DELTA_IDS_SHOWN = 8
+SOURCE_ORDER = ("tuple", "probe", "mutation", "wpt", "realworld")
+ENGINE_MUTATION = re.compile(r"^m-(.+)-engine-[^/]+$")
+
+
+def mutation_parent(case_id: str) -> str | None:
+    from .mutations import MUTATIONS
+
+    for m in sorted(MUTATIONS, key=len, reverse=True):
+        if case_id.startswith("m-") and case_id.endswith(f"-{m}"):
+            return case_id[2 : -len(m) - 1]
+    m = ENGINE_MUTATION.match(case_id)
+    return m.group(1) if m else None
+
+
+def delta_group(delta: dict) -> str:
+    """`m-<parent>-*` for mutations, `p-<dir>/*` for probes, the source otherwise."""
+    cid, source = delta.get("id", ""), delta.get("source", "")
+    if source == "mutation":
+        parent = mutation_parent(cid)
+        return f"m-{parent}-*" if parent else source
+    if source == "probe" and "/" in cid:
+        return cid.split("/", 1)[0] + "/*"
+    return source
+
+
+def delta_groups(deltas) -> list[tuple[str, list[str]]]:
+    groups: dict[tuple[str, str], list[str]] = {}
+    for d in deltas:
+        groups.setdefault((d.get("source", ""), delta_group(d)), []).append(d["id"])
+    rank = lambda src: SOURCE_ORDER.index(src) if src in SOURCE_ORDER else len(SOURCE_ORDER)
+    return [(key, sorted(ids)) for (src, key), ids in sorted(groups.items(), key=lambda kv: (rank(kv[0][0]), kv[0][0], kv[0][1]))]
+
+
+def delta_lines(deltas) -> list[str]:
+    """One line per delta group; a mutation family lists the mutation names after its glob."""
+    out = []
+    for key, ids in delta_groups(deltas):
+        names = [i[len(key) - 1 :] for i in ids] if key.startswith("m-") and key.endswith("-*") else ids
+        more = f" (+{len(ids) - DELTA_IDS_SHOWN} more)" if len(ids) > DELTA_IDS_SHOWN else ""
+        out.append(f"  delta {key} ({len(ids)}): {', '.join(names[:DELTA_IDS_SHOWN])}{more}")
+    return out
+
+
 def brief(run_dir: Path) -> str:
     """Compact digest of a run for the reviewing agent (instead of reading the raw JSON files)."""
     prep = read_json(run_dir / "prepare.json") or {}
@@ -174,8 +219,8 @@ def brief(run_dir: Path) -> str:
     items = sorted({f"{(i.get('impl') or {}).get('type') or '-'}::{(i.get('item') or {}).get('name') or '-'} ({i['file']})" for i in prep.get("changed_items", [])})
     if items:
         out.append("changed items: " + "; ".join(items[:15]))
-    for f in prep.get("risk_flags", []):
-        out.append(f"risk: {f['id']}: {f['detail']}")
+    flags = prep.get("risk_flags", [])
+    out.append("risk flags: " + ("none" if not flags else "; ".join(f"{f['id']}: {f['detail']}" for f in flags)))
     for i in prep.get("linked_issues", []):
         out.append(f"linked issue #{i['number']} ({i['state']}): {i['title']}  -> {run_dir}/issues/{i['number']}.json")
     for o in prep.get("overlapping_prs", [])[:5]:
@@ -186,6 +231,7 @@ def brief(run_dir: Path) -> str:
             out.append(f"build {side}: tests {b['summary']} exit={b['test_exit']} adapter={'ok' if b['adapter_ok'] else 'FAILED'}")
     if corpus:
         out.append(f"cases: {corpus.get('cases')}; deltas: {corpus.get('deltas') or 'none'}")
+        out += delta_lines(read_jsonl(run_dir / "corpus" / "deltas.jsonl"))
         for k, v in (corpus.get("tuples") or {}).items():
             if v:
                 out.append(f"tests {k}: {len(v)}  e.g. " + ", ".join(f"{e['test'].split('::')[-1]}:{e['line']}" for e in v[:4]))

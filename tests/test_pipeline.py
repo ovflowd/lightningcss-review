@@ -4,16 +4,18 @@ import contextlib
 import errno
 import io
 import json
+import os
 import sys
 import tempfile
 import time
 import unittest
 from pathlib import Path
+from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "lib"))
 
-from lcr import adapter, build, common, corpus, mutations, oracle, prepare, probes, show, tuples  # noqa: E402
+from lcr import adapter, build, common, corpus, mutations, oracle, perf, prepare, probes, show, status, tuples  # noqa: E402
 import lcr_main  # noqa: E402
 
 # A stand-in for the JSONL adapter: echoes the CSS as the output. `hang` leaves a grandchild that
@@ -402,6 +404,177 @@ class InspectTest(unittest.TestCase):
             show.show(run, "t-1", as_json=True)
         data = json.loads(buf.getvalue())
         self.assertEqual((data["base"]["code"], data["head"]["code"], len(data["oracle"])), ("B", "H", 1))
+
+
+class PreOracleTableTest(unittest.TestCase):
+    def run_dir(self) -> Path:
+        run = Path(tempfile.mkdtemp())
+        common.write_jsonl(run / "corpus" / "cases.jsonl", [
+            {"id": "p-a/x", "source": "probe", "probe": {"area": "selectors"}, "request": {}},
+            {"id": "t-1", "source": "tuple", "request": {}},
+            {"id": "w-1", "source": "wpt", "area": "color", "request": {}},
+        ])
+        common.write_jsonl(run / "corpus" / "outputs-base.jsonl", [{"id": "p-a/x", "ok": True}, {"id": "t-1", "ok": True}, {"id": "w-1", "ok": False}])
+        common.write_jsonl(run / "corpus" / "outputs-head.jsonl", [{"id": "p-a/x", "ok": False}, {"id": "t-1", "ok": True}, {"id": "w-1", "ok": False}])
+        common.write_jsonl(run / "corpus" / "deltas.jsonl", [{"id": "p-a/x", "source": "probe"}])
+        return run
+
+    def test_deltas_by_default_and_every_case_by_glob(self):
+        run = self.run_dir()
+        self.assertEqual(show.output_rows(run), [{"id": "p-a/x", "source": "probe", "area": "selectors", "base_ok": True, "head_ok": False, "changed": True}])
+        rows = show.output_rows(run, pattern="*")
+        self.assertEqual([(r["id"], r["area"], r["changed"]) for r in rows], [("p-a/x", "selectors", True), ("t-1", None, False), ("w-1", "color", False)])
+        text = show.format_output_table(rows)
+        self.assertIn("w-1    wpt     color      error  error  -", text)
+        self.assertTrue(text.endswith("3 row(s), 1 changed; no oracle yet, outputs only"))
+
+    def test_table_runs_before_the_oracle(self):
+        run = self.run_dir()
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf):
+            show.table(run)
+        self.assertIn("p-a/x  probe   selectors  ok    error  yes", buf.getvalue())
+        with self.assertRaises(common.LcrError):
+            show.table(run, transition="fixed")
+        with self.assertRaises(common.LcrError):
+            show.table(Path(tempfile.mkdtemp()))
+
+
+class BriefTest(unittest.TestCase):
+    def test_risk_flags_line_is_always_printed(self):
+        run = Path(tempfile.mkdtemp())
+        common.write_json(run / "prepare.json", {"run_id": "r", "pr": {"number": 1}})
+        with contextlib.redirect_stdout(io.StringIO()):
+            self.assertIn("\nrisk flags: none\n", status.brief(run))
+            common.write_json(run / "prepare.json", {"run_id": "r", "pr": {"number": 1}, "risk_flags": [{"id": "core-file", "detail": "wide"}, {"id": "bindings", "detail": "napi"}]})
+            self.assertIn("\nrisk flags: core-file: wide; bindings: napi\n", status.brief(run))
+
+    def test_delta_ids_grouped_by_source_and_family(self):
+        self.assertEqual(status.mutation_parent("m-p-a/x-reverse-decls"), "p-a/x")
+        self.assertEqual(status.mutation_parent("m-t-1-engine-legacy-2021"), "t-1")
+        self.assertEqual(status.mutation_parent("m-p-a/x-value-prefixed-sibling"), "p-a/x")
+        self.assertEqual(status.mutation_parent("m-p-a/x-prefixed-sibling"), "p-a/x")
+        deltas = [{"id": f"m-p-a/x-{m}", "source": "mutation"} for m in ("nest", "important", "engine-legacy-2023")]
+        deltas += [{"id": f"p-a/n{i}", "source": "probe"} for i in range(10)] + [{"id": "p-b/y", "source": "probe"}]
+        deltas += [{"id": "r-x-minify", "source": "realworld"}, {"id": "t-2", "source": "tuple"}]
+        groups = status.delta_groups(deltas)
+        self.assertEqual([k for k, _ in groups], ["tuple", "p-a/*", "p-b/*", "m-p-a/x-*", "realworld"])
+        lines = status.delta_lines(deltas)
+        self.assertEqual(lines[1], "  delta p-a/* (10): " + ", ".join(f"p-a/n{i}" for i in range(8)) + " (+2 more)")
+        self.assertEqual(lines[3], "  delta m-p-a/x-* (3): engine-legacy-2023, important, nest")
+
+
+class ValuePrefixedSiblingTest(unittest.TestCase):
+    def test_prefixed_values_go_before_the_unprefixed_one(self):
+        m = lambda css: mutations.mutate(css, "value-prefixed-sibling")
+        self.assertEqual(m(".a { display: flex }"), ".a { display: -webkit-box; display: -ms-flexbox; display: flex }\n")
+        self.assertEqual(m(".a { display: inline-flex }"), ".a { display: -webkit-inline-box; display: -ms-inline-flexbox; display: inline-flex }\n")
+        self.assertEqual(m(".a { position: sticky !important; top: 0 }"), ".a { position: -webkit-sticky !important; position: sticky !important; top: 0 }\n")
+
+    def test_lone_prefixed_values_get_the_unprefixed_one_after(self):
+        m = lambda css: mutations.mutate(css, "value-prefixed-sibling")
+        self.assertEqual(m(".a { display: -webkit-box; display: -ms-flexbox }"), ".a { display: -webkit-box; display: -ms-flexbox; display: flex }\n")
+        self.assertEqual(m(".a { position: -webkit-sticky }"), ".a { position: -webkit-sticky; position: sticky }\n")
+
+    def test_no_change_is_none(self):
+        m = lambda css: mutations.mutate(css, "value-prefixed-sibling")
+        self.assertIsNone(m(".a { display: -webkit-box; display: -ms-flexbox; display: flex }"))
+        self.assertIsNone(m(".a { display: block; color: red }"))
+        self.assertIsNone(m(".a { display: flex"))
+
+    def test_registered_as_a_mutation(self):
+        parent = {"id": "p-a/x", "source": "probe", "request": {"kind": "sheet", "css": ".a { display: flex }"}}
+        ids = [c["id"] for c in mutations.mutation_cases([parent])]
+        self.assertIn("m-p-a/x-value-prefixed-sibling", ids)
+        self.assertNotIn("m-p-a/x-prefixed-sibling", ids)
+
+
+class StaleBuildTest(unittest.TestCase):
+    def test_copies_are_touched(self):
+        with tempfile.TemporaryDirectory() as d:
+            src = Path(d) / "src"
+            (src / "selectors").mkdir(parents=True)
+            f = src / "selectors" / "lib.rs"
+            f.write_text("x")
+            old = time.time() - 86400
+            os.utime(f, (old, old))
+            start = time.time() - 1
+            build.fresh_copy(src, Path(d) / "tree")
+            self.assertGreater((Path(d) / "tree" / "selectors" / "lib.rs").stat().st_mtime, start)
+            build.touch_tree(src)
+            self.assertGreater(f.stat().st_mtime, start)
+
+    def test_identical_release_binaries(self):
+        self.assertIn("byte-identical", perf.stale_reason(b"bin", b"bin", {"src/lib.rs": {}, "README.md": {}}, []))
+        self.assertIsNone(perf.stale_reason(b"bin", b"bin", {"README.md": {}}, []))
+        self.assertIsNone(perf.stale_reason(b"bin", b"bin2", {"src/lib.rs": {}}, []))
+
+    def test_release_binaries_that_print_base_output(self):
+        self.assertIn("same output on 2 delta case(s)", perf.stale_reason(b"a", b"b", {"src/lib.rs": {}}, [("x", "x"), ("y", "y")]))
+        self.assertIsNone(perf.stale_reason(b"a", b"b", {"src/lib.rs": {}}, [("x", "x"), ("y", "z")]))
+
+    def test_smoke_inputs_and_outputs(self):
+        run = Path(tempfile.mkdtemp())
+        sheet = lambda css, **kw: {"kind": "sheet", "css": css, "minify": True, "compact": True, "targets": None, **kw}
+        common.write_jsonl(run / "corpus" / "cases.jsonl", [
+            {"id": "a", "request": sheet(".a{}")},
+            {"id": "b", "request": sheet(".b{}", targets={"chrome": 1})},
+            {"id": "c", "request": sheet(".c{}")},
+            {"id": "d", "request": sheet(".d{}")},
+            {"id": "e", "request": {**sheet(".e{}"), "compact": False}},
+        ])
+        ok = lambda code: {"ok": True, "code": code}
+        common.write_jsonl(run / "corpus" / "deltas.jsonl", [
+            {"id": "a", "base": ok("1"), "head": ok("2")},
+            {"id": "b", "base": ok("1"), "head": ok("2")},
+            {"id": "c", "base": {"ok": False}, "head": ok("2")},
+            {"id": "d", "base": ok("1"), "head": ok("2")},
+            {"id": "e", "base": ok("1"), "head": ok("2")},
+        ])
+        self.assertEqual(perf.smoke_inputs(run), [".a{}", ".d{}"])
+        bins = {}
+        for side, script in (("base", "print('B')"), ("head", "import sys; print('H' if 'd' in open(sys.argv[2]).read() else 'B')")):
+            bins[side] = run / side
+            bins[side].write_text(f"#!{sys.executable}\n{script}\n")
+            bins[side].chmod(0o755)
+        self.assertEqual(perf.smoke_outputs(bins, [".a{}", ".d{}", ".x{}"]), [("B\n", "B\n"), ("B\n", "H\n")])
+
+    def test_release_build_touches_the_export_first(self):
+        with tempfile.TemporaryDirectory() as d:
+            run, cache = Path(d) / "run", Path(d) / "cache"
+            src = run / "src" / "head" / "src" / "lib.rs"
+            src.parent.mkdir(parents=True)
+            src.write_text("x")
+            old = time.time() - 86400
+            os.utime(src, (old, old))
+            seen = []
+
+            def fake_run(cmd, **kw):
+                seen.append(src.stat().st_mtime)
+                (cache / "targets" / "head-release" / "release").mkdir(parents=True, exist_ok=True)
+                (cache / "targets" / "head-release" / "release" / "lightningcss").write_bytes(b"bin")
+
+            with mock.patch.object(perf, "HOST", True), mock.patch.object(perf, "cache_dir", lambda: cache), mock.patch.object(perf, "run", fake_run):
+                dest = perf.build_release(run, "head")
+            self.assertGreater(seen[0], old + 3600)
+            self.assertEqual(dest.read_bytes(), b"bin")
+
+    def test_stale_release_binaries_skip_the_timing(self):
+        with tempfile.TemporaryDirectory() as d:
+            run = Path(d)
+            common.write_json(run / "prepare.json", {"files": {"src/lib.rs": {}}})
+            common.write_jsonl(run / "corpus" / "cases.jsonl", [])
+            common.write_jsonl(run / "corpus" / "deltas.jsonl", [])
+            for side in ("base", "head"):
+                (run / side).write_bytes(b"same")
+            with mock.patch.object(perf, "available_files", lambda: [("x", run / "x.css")]), \
+                    mock.patch.object(perf, "preflight_disk", lambda *a: None), \
+                    mock.patch.object(perf, "build_release", lambda _run, side: run / side), \
+                    mock.patch.object(perf, "time_once", side_effect=AssertionError("timed a stale build")), \
+                    contextlib.redirect_stderr(io.StringIO()):
+                data = perf.perf(run)
+            self.assertIn("byte-identical", data["skip_reason"])
+            self.assertEqual(common.read_json(run / "perf.json"), data)
 
 
 class DiskTest(unittest.TestCase):

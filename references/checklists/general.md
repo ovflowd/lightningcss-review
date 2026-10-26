@@ -13,7 +13,7 @@ Every item judges the PR's change: when base fails it the same way, answer `FAIL
 - [GEN-05] (MAJOR) Emitted syntax is accepted by targets the engines do not cover (versions below the legacy profiles, Samsung, Opera, Android), and no old-browser workaround is added without a target gate and a reason.
   verify: compat data for the emitted syntax; mutations `retarget-legacy`, `engine-legacy-2021`.
 - [GEN-06] (MAJOR) A handler or ordering change behaves correctly in both orders: typed then `var()`, `var()` then typed, prefixed then unprefixed, shorthand then longhand (behavior; test coverage is TESTS-03).
-  verify: mutations `reverse-decls`, `var-before`, `var-after`, `prefixed-sibling`.
+  verify: mutations `reverse-decls`, `var-before`, `var-after`, `prefixed-sibling`, `value-prefixed-sibling` (prefixed values such as `display:-webkit-box`).
 - [GEN-07] (MAJOR) Compat changes go through `scripts/build-prefixes.js` (generated files not hand-edited), partial support is not counted as support, and every override cites the browser bug.
   verify: read the generator diff; compare `src/compat.rs`/`src/prefixes.rs` hunks against it.
 - [GEN-08] (MAJOR) A new lowering has a `Features` flag, applies only to targets that need it (output unchanged for one that does not), and honors an enclosing `@supports` condition (test coverage is TESTS-02).

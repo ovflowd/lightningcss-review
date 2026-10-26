@@ -29,7 +29,30 @@ export const compactSelector = (s) => String(s).replace(/:lang\(([^()]*)\)/gi, (
   return n > 4 ? `:lang(<${n} languages>)` : m;
 });
 
-function rawDiffs(mode, v, touched) {
+// Used values that follow from layout (sizes, origins, px line heights) shift with fonts and engine
+// versions. Unless a sheet declares the property, a shorthand of it or a logical equivalent, legacy
+// lanes compare them with the legacy engine's own input, never with the reference engine's, and
+// skip them when that engine reads the input differently from the reference engine.
+const LAYOUT_RELATED = {
+  width: ['width', 'inline-size', 'block-size'],
+  height: ['height', 'block-size', 'inline-size'],
+  'inline-size': ['inline-size', 'width', 'height'],
+  'block-size': ['block-size', 'width', 'height'],
+  'line-height': ['line-height', 'font'],
+  'background-origin': ['background-origin', 'background'],
+  'mask-origin': ['mask-origin', 'mask'],
+};
+const unprefixed = (prop) => String(prop).toLowerCase().replace(/^-(webkit|moz|ms|o)-/, '');
+const PX = /^-?(\d+\.?\d*|\.\d+)(e[-+]?\d+)?px$/i;
+
+export function layoutDerived(prop, ref, val, declared) {
+  const p = unprefixed(prop);
+  if (p === 'line-height' && !(PX.test(String(ref).trim()) && PX.test(String(val).trim()))) return false;
+  const related = LAYOUT_RELATED[p] || (p.endsWith('-origin') ? [p] : null);
+  return Boolean(related) && !related.some((r) => declared.has(r));
+}
+
+function rawDiffs(mode, v, touched, declared = new Set(), own = null) {
   const diffs = [];
   if (mode === 'same-engine') {
     for (const [key, prop, ref, val] of v.diff || []) {
@@ -43,12 +66,18 @@ function rawDiffs(mode, v, touched) {
   }
   const values = v.values || {};
   for (const [key, vals] of Object.entries(touched)) {
-    for (const [prop, ref] of Object.entries(vals)) {
+    for (const [prop, refValue] of Object.entries(vals)) {
       const val = values[key] ? values[key][prop] : undefined;
       if (val === undefined || val === '') continue; // property unknown to this engine
       if (prop.startsWith('--lightningcss-')) continue;
+      let ref = refValue;
+      const layout = layoutDerived(prop, ref, val, declared);
+      if (layout) {
+        ref = own && own[key] ? own[key][prop] : undefined;
+        if (ref === undefined || ref === '') continue;
+      }
       const r = compareValues(prop, ref, val, 'lowering');
-      if (r.level !== 'equal') diffs.push({ key, prop, ref, val, level: r.level, details: r.details });
+      if (r.level !== 'equal') diffs.push({ key, prop, ref, val, level: r.level, details: r.details, ...(layout ? { refFrom: 'engine-input' } : {}) });
     }
   }
   return diffs;
@@ -66,8 +95,15 @@ export function sheetVerdict(engine, job, result, mode, refTouched) {
   const out = {};
   const touched = mode === 'same-engine' ? input.touched || {} : refTouched || {};
   const touchedCount = Object.values(touched).reduce((n, vals) => n + Object.keys(vals).length, 0);
+  const probe = job.probe || {};
+  const declared = new Set(['input', 'base', 'head'].flatMap((n) => (probe[n] ? probe[n].decls : []).map((d) => unprefixed(d[0]))));
+  const foreign = FOREIGN[engine] || /^$/;
+  // A side whose text is the input's (up to whitespace and comments) behaves like it in the same
+  // engine. A legacy lane compares with another engine's reading, which the same text can miss.
+  const same = new Set(mode === 'same-engine' ? job.sameAsInput || [] : []);
+  const own = mode === 'lowering' && input.values && !rawDiffs(mode, input, touched, declared).some((d) => d.level === 'different') ? input.values : null;
   const diffsBySide = {};
-  for (const name of ['base', 'head']) if (variants[name]) diffsBySide[name] = rawDiffs(mode, variants[name], touched);
+  for (const name of ['base', 'head']) if (variants[name]) diffsBySide[name] = same.has(name) ? [] : rawDiffs(mode, variants[name], touched, declared, own);
   // Lowering: a difference base and head share exactly comes from the engine version spread (L3)
   // or predates the PR; either way it cannot decide the transition. When nothing else differs the
   // shared differences stay, so a defect both sides have is still reported (as neutral).
@@ -91,15 +127,17 @@ export function sheetVerdict(engine, job, result, mode, refTouched) {
       continue;
     }
     const diffs = diffsBySide[name];
+    if (same.has(name)) {
+      out[name] = { status: 'equivalent', reason: 'same-text-as-input', diffs: [], diffCount: 0, levels: {}, sig: '', rejected: { decls: [], selectors: [], preludes: [] }, hardRejected: 0 };
+      continue;
+    }
     const level = worstLevel(diffs.map((d) => d.level));
     let status = statusOf(level);
     if (status === 'equivalent' && touchedCount === 0) status = 'no-coverage';
     // validity: declarations/selectors/preludes the engine rejects in this output but not in input
-    const probe = job.probe || {};
     const accepted = v.info || {};
     const inAccepted = input.info || {};
     const rejected = { decls: [], selectors: [], preludes: [] };
-    const foreign = FOREIGN[engine] || /^$/;
     const inputRejectedDecls = new Set();
     const rejectedCarriers = [];
     (probe.input ? probe.input.decls : []).forEach((d, i) => {
@@ -272,8 +310,16 @@ export function summarize(bucket, { introduced = false, touched = null } = {}) {
   // output behaves like it. Valid input that only sets initial values still judges: an output
   // that changes something there is wrong.
   const isInert = (e) => e.touched === 0 && e.inputRejected !== false;
-  const inert = live.filter(([, e]) => isInert(e)).map(([n]) => n);
-  const judged = live.filter(([, e]) => !isInert(e));
+  // Where the input is inert but an output applies styles, dead CSS turned live: that side is
+  // different there. Engines where all three sheets are inert stay out. When the input is inert in
+  // every engine there is nothing to judge against (input-rejected).
+  const someLive = live.some(([, e]) => !isInert(e));
+  const applies = (v) => v.status === 'different' || v.status === 'near';
+  const woken = (e) => someLive && isInert(e) && (applies(e.variants.base) || applies(e.variants.head));
+  const wake = (v) => (applies(v) ? { ...v, status: 'different', reason: 'input-inert-output-live' } : v.status === 'no-coverage' ? { ...v, status: 'equivalent' } : v);
+  const inertLive = live.filter(([, e]) => woken(e)).map(([n]) => n);
+  const inert = live.filter(([, e]) => isInert(e) && !woken(e)).map(([n]) => n);
+  const judged = live.filter(([, e]) => !isInert(e) || woken(e)).map(([n, e]) => (woken(e) ? [n, { ...e, variants: { base: wake(e.variants.base), head: wake(e.variants.head) } }] : [n, e]));
   const worst = (list, side) => (list.length ? worstStatus(list.map(([, e]) => e.variants[side].status)) : 'unknown');
   let base = worst(judged, 'base');
   let head = worst(judged, 'head');
@@ -296,11 +342,12 @@ export function summarize(bucket, { introduced = false, touched = null } = {}) {
   const enginesHead = split('head');
   // Engines splitting on the same output only point at the input when they read the input
   // differently: one rejects part of it, it does nothing in one of them, or it computes differently.
-  const inputDependent = inert.length > 0 || new Set(judged.map(([, e]) => e.inputSig || '')).size > 1 || readsDiffer(judged, touched);
+  const inputDependent = inert.length > 0 || inertLive.length > 0 || new Set(judged.map(([, e]) => e.inputSig || '')).size > 1 || readsDiffer(judged, touched);
   const divergent = !['regressed', 'errored', 'input-rejected', 'unverified'].includes(t) && (enginesBase.divergent || enginesHead.divergent) && inputDependent;
   const neutral = live.length > 0 && live.every(([, e]) => e.variants.base.sig !== undefined && e.variants.base.sig === e.variants.head.sig && e.variants.base.status === e.variants.head.status);
   const engines = {};
   for (const [n, e] of named) engines[n] = { base: e.variants.base.status, head: e.variants.head.status };
+  for (const [n, e] of judged) if (inertLive.includes(n)) engines[n] = { base: e.variants.base.status, head: e.variants.head.status, reason: 'input-inert-output-live' };
   const entries = Object.values(bucket);
   return {
     base,
@@ -316,6 +363,7 @@ export function summarize(bucket, { introduced = false, touched = null } = {}) {
     engines,
     errored,
     inert,
+    inertLive,
     inputDependent,
     divergent,
     neutral,

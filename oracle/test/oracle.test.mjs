@@ -5,8 +5,8 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { compareValues, tokenize } from '../normalize.mjs';
-import { synthesize, rewriteStates, validityProbe } from '../dom.mjs';
-import { summarize, sheetVerdict, compactSelector } from '../verdict.mjs';
+import { synthesize, rewriteStates, validityProbe, balanced, canonicalText } from '../dom.mjs';
+import { summarize, sheetVerdict, compactSelector, layoutDerived } from '../verdict.mjs';
 import { sheetJob } from '../prepare-jobs.mjs';
 import { readAll, jsonlWriter } from '../jsonl.mjs';
 
@@ -55,6 +55,13 @@ test('state rewrite touches selectors only, never media features', () => {
 test('validity probes use the exact source text', () => {
   const p = validityProbe('.a{margin:1px  2px!important}');
   assert.deepEqual(p.decls, [['margin', '1px  2px', true]]);
+});
+
+test('preludes are sliced from the at-keyword to the block and stay balanced', () => {
+  const p = validityProbe('@supports ((-webkit-appearance:none) or (appearance:none)){.a{color:red}}@media (min-width:1px) and ((hover)){.b{color:red}}');
+  assert.deepEqual(p.preludes, [['supports', '((-webkit-appearance:none) or (appearance:none))'], ['media', '(min-width:1px) and ((hover))']]);
+  assert.equal(balanced('(a) or (b))'), false);
+  assert.equal(balanced('(")") or [x]'), true);
 });
 
 test('pseudo-elements: prefixed aliases, one-colon CSS 2 forms and nested rules are read', () => {
@@ -114,10 +121,24 @@ test('input that touches nothing in every engine is input-rejected, never regres
   // Valid input that only sets initial values is not rejected: head changing something is a regression.
   const initial = { ...e('no-coverage', 'different'), touched: 0, inputRejected: false };
   assert.equal(summarize({ chromium: initial, firefox: initial }).transition, 'regressed');
-  // An engine where the input is inert is left out; the others still judge the case.
-  const s = summarize({ chromium: e('equivalent', 'equivalent'), firefox: inert('no-coverage', 'different') });
+  // An engine where all three sheets are inert is left out; the others still judge the case.
+  const s = summarize({ chromium: e('equivalent', 'equivalent'), firefox: inert('no-coverage', 'no-coverage') });
   assert.equal(s.transition, 'both-equivalent');
   assert.deepEqual(s.inert, ['firefox']);
+  assert.deepEqual(s.inertLive, []);
+});
+
+test('an output that applies styles where the input is inert is different there', () => {
+  const inert = (base, head) => ({ ...e(base, head), touched: 0, inputSig: '0//', inputRejected: true });
+  const s = summarize({ chromium: inert('no-coverage', 'different'), firefox: e('equivalent', 'equivalent'), webkit: inert('no-coverage', 'near') });
+  assert.equal(s.transition, 'regressed');
+  assert.equal(s.head, 'different');
+  assert.deepEqual(s.inert, []);
+  assert.deepEqual(s.inertLive, ['chromium', 'webkit']);
+  assert.deepEqual(s.engines.chromium, { base: 'equivalent', head: 'different', reason: 'input-inert-output-live' });
+  assert.deepEqual(s.enginesHead.bad, ['chromium', 'webkit']);
+  // Base live where the input is dead and head inert again: the PR fixes it.
+  assert.equal(summarize({ chromium: inert('different', 'no-coverage'), firefox: e('equivalent', 'equivalent') }).transition, 'fixed');
 });
 
 test('base fine everywhere and head wrong in one engine is regressed, not divergent', () => {
@@ -229,4 +250,60 @@ test('a longhand whose value the input carried in a rejected shorthand is marked
   assert.equal(decls.find((d) => d.prop === 'animation-timeline').carrierRejected, true);
   assert.equal(decls.find((d) => d.prop === 'animation-delay').carrierRejected, undefined);
   assert.equal(v.variants.head.hardRejected, 2);
+});
+
+test('a side whose text is the input up to whitespace and comments is equivalent by definition', () => {
+  const css = '.t { display: inline-flex; display: -ms-inline-flexbox; }\n';
+  assert.equal(canonicalText(css), canonicalText('/* x */.t{display:inline-flex;display:-ms-inline-flexbox}'));
+  assert.notEqual(canonicalText(css), canonicalText('.t{display:-ms-inline-flexbox;display:inline-flex}'));
+  const { jobs } = sheetJob({ id: 's', sheets: { input: css, base: '.t{display:-ms-inline-flexbox}', head: '.t{display:inline-flex;display:-ms-inline-flexbox}' } });
+  assert.deepEqual(jobs[0].sameAsInput, ['head']);
+  const touched = { 'div#0': { display: 'inline-flex', color: 'rgb(255, 0, 0)' } };
+  const diff = [['div#0', 'color', 'rgb(255, 0, 0)', 'rgb(0, 0, 255)']];
+  const result = { variants: { input: { info: {}, touched }, base: { info: {}, diff }, head: { info: {}, diff } } };
+  const v = sheetVerdict('webkit', { probe: {}, sameAsInput: ['head'] }, result, 'same-engine');
+  assert.equal(v.variants.base.status, 'different');
+  assert.deepEqual([v.variants.head.status, v.variants.head.reason], ['equivalent', 'same-text-as-input']);
+  assert.equal(summarize({ webkit: v }).transition, 'fixed');
+  // A legacy lane compares with the reference engine's reading: the same text can still lack lowering
+  // there (an @layer or nested rule the old engine drops), so it is judged like any output.
+  const values = { 'div#0': { display: 'block', color: 'rgb(255, 0, 0)' } };
+  const lowering = { variants: { input: { info: {}, values }, base: { info: {}, values }, head: { info: {}, values } } };
+  const w = sheetVerdict('webkit', { probe: {}, sameAsInput: ['head'] }, lowering, 'lowering', touched);
+  assert.deepEqual([w.variants.base.status, w.variants.head.status, w.variants.head.reason], ['different', 'different', undefined]);
+  assert.equal(summarize({ webkit: w }).transition, 'still-different');
+});
+
+test('legacy lanes skip layout-derived used values the sheets do not declare', () => {
+  const none = new Set(['display']);
+  assert.equal(layoutDerived('width', '7.03125px', '9px', none), true);
+  assert.equal(layoutDerived('inline-size', '7px', '9px', none), true);
+  assert.equal(layoutDerived('transform-origin', '3.5px 10.5px', '4.5px 9.5px', none), true);
+  assert.equal(layoutDerived('-webkit-perspective-origin', '1px 1px', '2px 2px', none), true);
+  assert.equal(layoutDerived('line-height', '19px', '21px', none), true);
+  assert.equal(layoutDerived('line-height', 'normal', '21px', none), false);
+  assert.equal(layoutDerived('display', 'block', 'flex', none), false);
+  assert.equal(layoutDerived('width', '7px', '9px', new Set(['inline-size'])), false);
+  assert.equal(layoutDerived('line-height', '19px', '21px', new Set(['font'])), false);
+  assert.equal(layoutDerived('transform-origin', '1px 1px', '2px 2px', new Set(['transform-origin'])), false);
+  const touched = { 'div#0': { display: 'inline-flex', width: '7.03125px', 'transform-origin': '3.515625px 10.5px' } };
+  const values = (display) => ({ 'div#0': { display, width: '9px', 'transform-origin': '4.5px 9.5px' } });
+  const result = { variants: { input: { info: {} }, base: { info: {}, values: values('block') }, head: { info: {}, values: values('inline-flex') } } };
+  const probe = { input: { decls: [['display', 'inline-flex', false]], selectors: [], preludes: [] } };
+  const v = sheetVerdict('webkit', { probe }, result, 'lowering', touched);
+  assert.deepEqual(v.variants.base.diffs.map((d) => d.prop), ['display']);
+  assert.equal(v.variants.head.status, 'equivalent');
+  // With the legacy engine's own input values, a layout change the output causes there still shows.
+  const own = { ...result.variants, input: { info: {}, values: values('inline-flex') }, head: { info: {}, values: { 'div#0': { display: 'inline-flex', width: '9px', 'transform-origin': '1px 1px' } } } };
+  const w = sheetVerdict('webkit', { probe }, { variants: own }, 'lowering', touched);
+  assert.deepEqual(w.variants.head.diffs.map((d) => [d.prop, d.ref, d.refFrom]), [['transform-origin', '4.5px 9.5px', 'engine-input']]);
+  assert.equal(w.variants.base.status, 'different');
+  // An engine that reads the input differently (a rule it drops) gives no layout to compare with.
+  const dropped = { 'div#0': { display: 'block', width: '800px', 'transform-origin': '400px 9.5px' } };
+  const misread = { input: { info: {}, values: dropped }, base: { info: {}, values: dropped }, head: { info: {}, values: values('inline-flex') } };
+  const m = sheetVerdict('webkit', { probe }, { variants: misread }, 'lowering', touched);
+  assert.deepEqual([m.variants.base.diffs.map((d) => d.prop), m.variants.head.status], [['display'], 'equivalent']);
+  // Reference lanes still compare every property.
+  const ref = sheetVerdict('webkit', { probe }, { variants: { input: { info: {}, touched }, head: { info: {}, diff: [['div#0', 'width', '7.03125px', '9px']] } } }, 'same-engine');
+  assert.equal(ref.variants.head.status, 'different');
 });

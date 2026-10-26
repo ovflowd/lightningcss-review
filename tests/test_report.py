@@ -168,7 +168,14 @@ class ClassificationTest(ReportTestCase):
         cid = r.case(probe_case("p-color/s"), delta=True)
         r.oracle["verdicts"][cid] = verdict(cid, "different", "different", "still-different", per_engine={"chromium": ("equivalent", "equivalent"), "firefox": ("different", "different"), "webkit": ("equivalent", "equivalent")})
         r.analysis["deltas"] = [{"id": cid, "classification": "REGRESSION", "reason": "worse"}]
-        self.assertIn("base is wrong in the same engines (firefox)", check(r.evaluate(), "A3")["evidence"])
+        self.assertIn("base is wrong in every engine where head is (firefox)", check(r.evaluate(), "A3")["evidence"])
+
+    def test_regression_needs_one_engine_where_only_head_is_wrong(self):
+        r = self.run
+        cid = r.case(probe_case("p-color/s"), delta=True)
+        r.oracle["verdicts"][cid] = verdict(cid, "different", "different", "still-different", per_engine={"chromium": ("equivalent", "different"), "firefox": ("different", "different"), "webkit": ("equivalent", "equivalent")})
+        r.analysis["deltas"] = [{"id": cid, "classification": "REGRESSION", "reason": "worse"}]
+        self.assertNotIn("REGRESSION on", check(r.evaluate(), "A3")["evidence"])
 
     def test_regression_on_both_equivalent_warns(self):
         r = self.run
@@ -196,7 +203,8 @@ class ClassificationTest(ReportTestCase):
         r.oracle["verdicts"][cid] = verdict(cid, "equivalent", "different", "regressed")
         r.analysis["deltas"] = [{"id": cid, "classification": "PRE_EXISTING", "reason": "same as before"}]
         joined = check(r.evaluate(), "A3")["evidence"]
-        self.assertIn("PRE_EXISTING must cite", joined)
+        self.assertIn("PRE_EXISTING needs evidence that base is wrong the same way: an issue (`open-issue#N`", joined)
+        self.assertIn("a base tuple (`t-…`) whose base output matches its recorded expectation", joined)
         self.assertIn("base renders equivalent in every engine", joined)
         r.oracle["verdicts"][cid] = verdict(cid, "different", "different", "still-different")
         r.corpus["probes"] = [{"id": cur, "probe": cur[2:], "origin": "curated", "known": "open-bug", "changed": False, "assert": {"base": {"output-contains:\"a\"": False}, "head": {"output-contains:\"a\"": False}}}]
@@ -204,6 +212,28 @@ class ClassificationTest(ReportTestCase):
         ev = r.evaluate()
         self.assertEqual(check(ev, "A3")["status"], "PASS")
         self.assertFalse([f for f in ev["findings"] if cid in f.get("evidence", [])])
+
+    def test_pre_existing_accepts_a_base_tuple_recording_the_behavior(self):
+        r = self.run
+        cid = r.case(probe_case("p-color/p"), delta=True)
+        r.oracle["verdicts"][cid] = verdict(cid, "equivalent", "equivalent", "both-equivalent")
+
+        def tup(tid, side, base_code):
+            r.case({"id": tid, "source": "tuple", "side": side, "test": "tests::test_color", "helper": "minify_test", "line": 1, "expectation": {"type": "code", "code": ".a{color:red}"},
+                    "request": {"kind": "sheet", "css": ".a{color:red}", "minify": True}}, base_code=base_code)
+            r.analysis["deltas"] = [{"id": cid, "classification": "PRE_EXISTING", "reason": f"base already prints this, see {tid}"}]
+            return check(r.evaluate(), "A3")
+
+        self.assertEqual(tup("t-0000000000000001", "both", ".a{color:red}")["status"], "PASS")
+        self.assertEqual(tup("t-0000000000000002", "base", ".a{color:red}")["status"], "PASS")
+        self.assertIn("PRE_EXISTING needs evidence", tup("t-0000000000000003", "both", ".a{color:blue}")["evidence"])
+        self.assertIn("PRE_EXISTING needs evidence", tup("t-0000000000000004", "head", ".a{color:red}")["evidence"])
+
+    def test_issue_ref_needs_a_tag_or_url(self):
+        for text in ("open-issue#710", "known: fixed-by#1283", "fixed-by#0a1b2c3", "see https://github.com/parcel-bundler/lightningcss/issues/710", "github.com/parcel-bundler/lightningcss/pull/12"):
+            self.assertTrue(report.ISSUE_REF.search(text), text)
+        for text in ("#710", "base too, #710", "issue #7", "open-issue#", "reopen-issue#7", "fixed-by#xyz", "lib.rs#L12", "https://github.com/other/repo/issues/7"):
+            self.assertFalse(report.ISSUE_REF.search(text), text)
 
 
 class IncompleteAnalysisTest(ReportTestCase):
@@ -253,6 +283,15 @@ class TransitionTest(ReportTestCase):
         ev = r.evaluate()
         self.assertEqual(check(ev, "O1")["items"], [d, w])
         self.assertEqual(check(ev, "O9")["status"], "PASS")
+
+    def test_inert_input_with_live_output_is_named_in_o1(self):
+        r = self.run
+        cid = r.case(probe_case("p-color/live"), delta=True)
+        r.oracle["verdicts"][cid] = verdict(cid, "equivalent", "different", "regressed", per_engine={"firefox": ("equivalent", "equivalent")}, inertLive=["chromium", "webkit"])
+        ev = r.evaluate()
+        self.assertEqual(check(ev, "O1")["items"], [f"{cid} [input inert, output live in chromium, webkit]"])
+        self.assertEqual(ev["open"]["O1"], check(ev, "O1")["items"])
+        self.assertEqual([s["id"] for s in report.open_slots(ev)], [cid])
 
     def test_o3_counts_only_engines_in_targets(self):
         r = self.run
@@ -305,6 +344,14 @@ class StabilityAndBuildTest(ReportTestCase):
         r.corpus.update({"idempotency_failures": []})
         r2 = check(r.evaluate(), "R2")
         self.assertEqual((r2["status"], r2["severity"]), ("PARTIAL", "NOTE"))
+
+    def test_stale_perf_binaries_skip_p1_and_p2(self):
+        r = self.run
+        r.write()
+        (r.dir / "perf.json").write_text(json.dumps({"skip_reason": "head release binary behaves like base", "total_ratio": None, "slower_share": 0, "binary_ratio": 1.0}))
+        ev = r.evaluate()
+        for cid in ("P1", "P2"):
+            self.assertEqual((check(ev, cid)["status"], check(ev, cid)["evidence"]), ("SKIP", "head release binary behaves like base"))
 
     def test_b11_diff_of_diffs(self):
         r = self.run
@@ -375,12 +422,13 @@ class ChecklistTest(ReportTestCase):
         self.assertIn("cannot raise", check(ev, "A3")["evidence"])
 
     def test_fail_pre_existing_is_a_note(self):
-        self.answer(answer="FAIL_PRE_EXISTING", evidence="base too, #710")
+        self.answer(answer="FAIL_PRE_EXISTING", evidence="base too, open-issue#710")
         ev = self.run.evaluate([ITEM])
         self.assertEqual(check(ev, "A1")["status"], "PASS")
         self.assertEqual([f["severity"] for f in ev["findings"]], ["NOTE"])
-        self.answer(answer="FAIL_PRE_EXISTING", evidence="trust me")
-        self.assertIn("FAIL_PRE_EXISTING needs", check(self.run.evaluate([ITEM]), "A3")["evidence"])
+        for evidence in ("trust me", "base too, #710"):
+            self.answer(answer="FAIL_PRE_EXISTING", evidence=evidence)
+            self.assertIn("FAIL_PRE_EXISTING needs evidence that base fails the same way: an issue", check(self.run.evaluate([ITEM]), "A3")["evidence"])
 
     def test_area_level_na(self):
         self.run.analysis["checklist"] = [{"area": "color", "answer": "N/A", "evidence": "diff touches no color code"}]
@@ -447,6 +495,55 @@ class ProbeAssertionTest(ReportTestCase):
         self.assertEqual((t6["status"], t6["severity"]), ("FAIL", "MAJOR"))
         self.assertEqual(t6["items"], [f'{a}: output-not-contains:"x" (holds on base, fails on head)'])
         self.assertEqual(ev["probe_fixed"], [f"{b}: idempotent"])
+
+    def broken_by_another_base_bug(self):
+        r = self.run
+        a = r.case(probe_case("p-color/a"), delta=True)
+        r.oracle["verdicts"][a] = verdict(a, "different", "different", "still-different")
+        r.corpus["probes"] = [{"id": a, "probe": a[2:], "origin": "pr", "known": "none", "changed": True, "assert": {"base": {'output-not-contains:" or "': True}, "head": {'output-not-contains:" or "': False}}}]
+        return a
+
+    def test_pre_existing_classification_naming_the_probe_makes_t6_a_note(self):
+        r = self.run
+        a = self.broken_by_another_base_bug()
+        r.analysis["findings"] = [{"id": "F1", "severity": "NOTE", "title": "Base drops the conjunct, head turns it into or", "evidence": [a]}]
+        r.analysis["deltas"] = [{"id": a, "classification": "PRE_EXISTING", "reason": "base drops the and conjunct; both wrong in the same engines", "evidence": f"{a} is still-different", "finding": "F1"}]
+        ev = r.evaluate()
+        t6 = check(ev, "T6")
+        self.assertEqual((t6["status"], t6["severity"]), ("PARTIAL", "NOTE"))
+        self.assertEqual(t6["items"], [f'{a}: output-not-contains:" or " (holds on base, fails on head; base is wrong another way per PRE_EXISTING {a})'])
+        self.assertIn("hold on base only because base is wrong another way", t6["evidence"])
+        self.assertEqual(check(ev, "A3")["status"], "PASS")
+        self.assertEqual([(f["id"], f["severity"]) for f in ev["findings"]], [("F1", "NOTE")])
+        self.assertEqual(ev["verdict"], "SAFE")
+
+    def test_fail_pre_existing_answer_or_linked_finding_makes_t6_a_note(self):
+        r = self.run
+        a = self.broken_by_another_base_bug()
+        r.analysis["checklist"] = [{"item": "COLOR-01", "answer": "FAIL_PRE_EXISTING", "evidence": f"base is wrong too: {a}"}]
+        t6 = check(r.evaluate([ITEM]), "T6")
+        self.assertEqual((t6["status"], t6["severity"]), ("PARTIAL", "NOTE"))
+        self.assertIn("per FAIL_PRE_EXISTING COLOR-01", t6["items"][0])
+        # An answer to an item outside this run's checklist is never validated, so it clears nothing.
+        self.assertEqual(check(r.evaluate(), "T6")["severity"], "MAJOR")
+        other = r.case(probe_case("p-color/other"), delta=True)
+        r.oracle["verdicts"][other] = verdict(other, "different", "different", "still-different")
+        r.analysis["checklist"] = []
+        r.analysis["findings"] = [{"id": "F1", "severity": "NOTE", "title": "Pre-existing merge bug", "evidence": [a, other]}]
+        r.analysis["deltas"] = [{"id": other, "classification": "PRE_EXISTING", "reason": "base wrong the same way", "finding": "F1"}]
+        t6 = check(r.evaluate(), "T6")
+        self.assertEqual((t6["status"], t6["severity"]), ("PARTIAL", "NOTE"))
+        self.assertIn(f"per PRE_EXISTING {other}", t6["items"][0])
+
+    def test_pre_existing_naming_another_probe_leaves_t6_major(self):
+        r = self.run
+        a = self.broken_by_another_base_bug()
+        other = r.case(probe_case("p-color/other"), delta=True)
+        r.oracle["verdicts"][other] = verdict(other, "different", "different", "still-different")
+        r.analysis["deltas"] = [{"id": other, "classification": "PRE_EXISTING", "reason": "base wrong the same way"}]
+        t6 = check(r.evaluate(), "T6")
+        self.assertEqual((t6["status"], t6["severity"]), ("FAIL", "MAJOR"))
+        self.assertEqual(t6["items"], [f'{a}: output-not-contains:" or " (holds on base, fails on head)'])
 
 
 class TestsChecksTest(ReportTestCase):

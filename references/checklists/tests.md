@@ -7,8 +7,8 @@ Quality of the PR's own tests (`src/lib.rs` `mod tests`, `tests/*.rs`, `bundler:
 - [TESTS-02] (MAJOR) Lowering tests cover both sides of the threshold: a target that needs it, one that does not (output unchanged), and for prefixes both directions.
   verify: tuples with targets; `retarget-none`, `retarget-modern`, `retarget-legacy`.
   same-root-as: GEN-08
-- [TESTS-03] (MAJOR) The PR's own tests cover order-sensitive changes in both orders and the Unparsed, `!important`, CSS-wide variants: typed/`var()`, prefixed/unprefixed, shorthand/longhand, each reversed (behavior is GEN-06).
-  verify: mutation deltas show what the tests miss (`reverse-decls`, `var-before`, `var-after`, `important`, `prefixed-sibling`).
+- [TESTS-03] (MINOR) The PR's own tests cover order-sensitive changes in both orders and the Unparsed, `!important`, CSS-wide variants: typed/`var()`, prefixed/unprefixed, shorthand/longhand, each reversed (behavior is GEN-06). MAJOR (a linked finding) only when an untested branch changes what browsers compute on oracle-verified cases (a delta that is not `both-equivalent` or `neutral`).
+  verify: mutation deltas show what the tests miss (`reverse-decls`, `var-before`, `var-after`, `important`, `prefixed-sibling`, `value-prefixed-sibling`).
   same-root-as: GEN-06
 - [TESTS-04] (MAJOR) Compact output of new lowering is covered: a PR `minify_test_with_options_and_browsers` case **or** a passing `lower-minify` probe (curated or PR) satisfies it. Keep MAJOR only when the changed value has a compact-specific serializer path (gradients, colors, legacy prefixed forms); otherwise `effective_severity: MINOR`. N/A unless the PR adds lowering or `prefix_test` cases.
   verify: tuples with compact output; `lower-minify` probes; a FAIL says why neither alternative holds.
@@ -26,7 +26,7 @@ Quality of the PR's own tests (`src/lib.rs` `mod tests`, `tests/*.rs`, `bundler:
 - [TESTS-10] (MAJOR) JS-facing changes have `node/test/*.mjs` tests that run from the repo root and in both wasm modes.
   verify: B5; CI test-wasm via B6.
   covers: node/*, napi/*, wasm/*
-- [TESTS-11] (MINOR) Changed expectations cite their reason (spec, WPT, issue), and WPT-derived cases cite the WPT file and take expected values from it, not from LightningCSS output.
-  verify: the PR's src/lib.rs hunk.
+- [TESTS-11] (NOTE) The PR body or a comment explains every changed expectation (spec, WPT, issue). Reason comments in test code are not the project's habit; only ported WPT cases carry a link comment, with expected values from WPT, not from LightningCSS output.
+  verify: the expectations T3/T4 list against the PR body and thread; ported WPT cases in the src/lib.rs hunk.
 - [TESTS-12] (MINOR) Tests are deterministic across runs and platforms: no HashMap order, hash seeds, platform float formatting or absolute paths in module hashes.
   verify: read hashes and numbers in new expectations.

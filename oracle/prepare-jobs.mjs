@@ -3,7 +3,7 @@
 //
 // usage: node prepare-jobs.mjs --cases cases.jsonl --out jobs.jsonl
 //        node prepare-jobs.mjs --legacy --jobs jobs.jsonl --results results-latest.jsonl --out legacy-jobs.jsonl
-import { synthesize, rewriteStates, validityProbe, collectPseudos, undefinedCustomProperties } from './dom.mjs';
+import { synthesize, rewriteStates, validityProbe, collectPseudos, undefinedCustomProperties, canonicalText } from './dom.mjs';
 import { readJsonl, jsonlWriter } from './jsonl.mjs';
 
 const args = process.argv.slice(2);
@@ -41,6 +41,9 @@ export function sheetJob(c) {
     reference: 'input',
     visual: Boolean(c.visual),
   };
+  const inputText = canonicalText(c.sheets.input);
+  const sameAsInput = inputText === null ? [] : variants.filter(([name, css]) => name !== 'input' && canonicalText(css) === inputText).map(([name]) => name);
+  if (sameAsInput.length) job.sameAsInput = sameAsInput;
   const meta = { id: c.id, dom: { selectors: dom.selectors, synthesized: dom.synthesized, unsupported: dom.unsupported, generic: dom.generic, override: Boolean(dom.override), focused: Boolean(dom.focused) }, rewrites };
   if (injected.length) meta.injectedVars = injected.map(([name]) => name);
   const jobs = [job];

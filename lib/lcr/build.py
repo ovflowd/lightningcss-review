@@ -3,7 +3,7 @@
 Per side: `cargo fmt --check` on the pristine tree; then, on an instrumented copy (adapter example +
 test-tuple recorder), `cargo test --all-features --no-fail-fast` with RUSTFLAGS=-D warnings (as CI)
 and `cargo build --example lcr_adapter`. Target directories persist per side under the cache, so
-consecutive reviews only rebuild what changed.
+consecutive reviews reuse compiled dependencies; the workspace crates always rebuild (`touch_tree`).
 """
 from __future__ import annotations
 
@@ -38,6 +38,25 @@ def toolchain_channel(tree: Path) -> str:
         if m:
             return m.group(1)
     return "stable"
+
+
+def touch_tree(root: Path) -> None:
+    """Set every file's mtime to now. `git archive` exports carry commit times and the per-side
+    target dirs are shared across runs, so without this cargo can judge another tree's artifacts
+    fresh and skip the rebuild."""
+    now = time.time()
+    for dirpath, _dirs, files in os.walk(root):
+        for name in files:
+            path = os.path.join(dirpath, name)
+            if not os.path.islink(path):
+                os.utime(path, (now, now))
+
+
+def fresh_copy(pristine: Path, tree: Path) -> None:
+    if tree.exists():
+        shutil.rmtree(tree)
+    shutil.copytree(pristine, tree, symlinks=True)
+    touch_tree(tree)
 
 
 def parse_test_log(text: str) -> dict:
@@ -174,9 +193,7 @@ def _build_side(run_dir: Path, side: str, jobs: int, results: dict, lock: thread
     (out / "fmt.txt").write_text(fmt.stdout + fmt.stderr)
 
     # 2. instrumented copy
-    if tree.exists():
-        shutil.rmtree(tree)
-    shutil.copytree(pristine, tree, symlinks=True)
+    fresh_copy(pristine, tree)
     inject_adapter(tree)
     try:
         injected = inject_dump(tree)

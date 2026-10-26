@@ -134,7 +134,7 @@ def main(argv=None) -> int:
     p.add_argument("case")
     p.add_argument("--json", action="store_true", help="everything about the case, untruncated")
 
-    p = sub.add_parser("table", help="one line per oracle case: transition, base/head status, bad engines, legacy")
+    p = sub.add_parser("table", help="one line per oracle case: transition, base/head status, bad engines, legacy (before the oracle: outputs only)")
     p.add_argument("run")
     p.add_argument("--transition", default=None, help="only these transitions (comma separated)")
     p.add_argument("--check", default=None, help="only the cases a report check lists (needs report.json)")
