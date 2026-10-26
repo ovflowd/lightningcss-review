@@ -1,0 +1,1 @@
+{"checklist": [], "deltas": [{"classification": "", "id": "p-color/gone", "reason": ""}, {"classification": "", "id": "p-color/*", "reason": ""}], "findings": [{"title": "no severity"}, {"evidence": ["x"], "id": "F1", "severity": "NOTE", "title": "a"}, {"evidence": ["y"], "id": "F1", "severity": "NOTE", "title": "b"}], "intent": {"kind": "", "summary": ""}}

@@ -1,0 +1,13 @@
+VERDICT: INCONCLUSIVE (0 blocker, 0 major, 0 minor, 0 note)
+<RUN>/report.md
+**LightningCSS # — VERDICT: INCONCLUSIVE** (0 blocker · 0 major · 0 minor · 0 note)
+
+s
+
+Findings:
+None.
+
+Coverage: latest: chromium 1. 2 behavioral deltas (1 verified in browsers, 1 errored), 2 PR probes, 0 mutations, 0 WPT cases, 0 real-world files.
+
+Report: <RUN>/report.md
+

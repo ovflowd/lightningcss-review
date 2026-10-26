@@ -1,0 +1,1 @@
+{"cases": {"tuple": 1}, "deltas": {"tuple": 1}, "idempotency": {}, "idempotency_failures": [], "probes": [], "robustness": {"base": [], "head": []}, "size": [], "tuple_stats": {}, "tuples": {"modified": [{"head_id": "t-1", "head_line": 2, "id": "t-0", "line": 1, "test": "tests::test_color"}]}}

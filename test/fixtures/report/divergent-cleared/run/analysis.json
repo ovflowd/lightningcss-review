@@ -1,0 +1,1 @@
+{"checklist": [], "deltas": [{"classification": "ORACLE_NOISE", "id": "p-color/x", "reason": "firefox lags the spec https://drafts.csswg.org/css-color-4/#x"}], "findings": [], "intent": {"kind": "bugfix", "summary": "s"}}

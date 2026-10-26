@@ -1,0 +1,3745 @@
+{
+  "builder_script": [
+    [
+      {
+        "jobs": 8,
+        "lanes": [
+          "selectors",
+          "no-default-features",
+          "wasm-check",
+          "c-bindings",
+          "nope"
+        ],
+        "locked": true,
+        "rustflags": "-D warnings"
+      },
+      "\nset -u\ncd /src\nexport CARGO_HOME=/cargo CARGO_TARGET_DIR=/target RUSTFLAGS='-D warnings' RUST_BACKTRACE=0\nlane() { name=$1; shift; s=$(date +%s); sh -c \"$1\" > /out/lane-$name.log 2>&1; echo $? > /out/lane-$name.exit; echo $(( $(date +%s) - s )) > /out/lane-$name.seconds; }\nstart=$(date +%s)\nLCR_DUMP=/out/tuples.jsonl cargo test --all-features --no-fail-fast --locked -j 8 > /out/test.log 2>&1\necho $? > /out/test.exit\necho $(( $(date +%s) - start )) > /out/test.seconds\nstart=$(date +%s)\ncargo build --all-features --locked -j 8 --example lcr_adapter > /out/adapter.log 2>&1\ncode=$?\necho $code > /out/adapter.exit\necho $(( $(date +%s) - start )) > /out/adapter.seconds\nif [ $code -eq 0 ]; then cp /target/debug/examples/lcr_adapter /out/adapter; fi\nlane selectors 'cargo test -p parcel_selectors --locked -j 8'\nlane no-default-features 'cargo check -p lightningcss --no-default-features --lib --locked -j 8'\nlane wasm-check 'cargo check --target wasm32-unknown-unknown -p lightningcss_node --locked -j 8'\nlane c-bindings 'cp c/lightningcss.h /tmp/lightningcss.h.orig && cargo build -p lightningcss_c_bindings --locked -j 8 && diff -u /tmp/lightningcss.h.orig c/lightningcss.h'\n"
+    ],
+    [
+      {
+        "jobs": 2,
+        "lanes": [],
+        "locked": false,
+        "rustflags": ""
+      },
+      "\nset -u\ncd /src\nexport CARGO_HOME=/cargo CARGO_TARGET_DIR=/target RUSTFLAGS='' RUST_BACKTRACE=0\nlane() { name=$1; shift; s=$(date +%s); sh -c \"$1\" > /out/lane-$name.log 2>&1; echo $? > /out/lane-$name.exit; echo $(( $(date +%s) - s )) > /out/lane-$name.seconds; }\nstart=$(date +%s)\nLCR_DUMP=/out/tuples.jsonl cargo test --all-features --no-fail-fast  -j 2 > /out/test.log 2>&1\necho $? > /out/test.exit\necho $(( $(date +%s) - start )) > /out/test.seconds\nstart=$(date +%s)\ncargo build --all-features  -j 2 --example lcr_adapter > /out/adapter.log 2>&1\ncode=$?\necho $code > /out/adapter.exit\necho $(( $(date +%s) - start )) > /out/adapter.seconds\nif [ $code -eq 0 ]; then cp /target/debug/examples/lcr_adapter /out/adapter; fi\n\n"
+    ],
+    [
+      {
+        "jobs": 4,
+        "lanes": [
+          "selectors"
+        ],
+        "locked": true,
+        "paths": {
+          "cargo": "/c",
+          "out": "/o",
+          "src": "/a b",
+          "target": "/t"
+        },
+        "rustflags": "-D warnings"
+      },
+      "\nset -u\ncd /a b\nexport CARGO_HOME=/c CARGO_TARGET_DIR=/t RUSTFLAGS='-D warnings' RUST_BACKTRACE=0\nlane() { name=$1; shift; s=$(date +%s); sh -c \"$1\" > /o/lane-$name.log 2>&1; echo $? > /o/lane-$name.exit; echo $(( $(date +%s) - s )) > /o/lane-$name.seconds; }\nstart=$(date +%s)\nLCR_DUMP=/o/tuples.jsonl cargo test --all-features --no-fail-fast --locked -j 4 > /o/test.log 2>&1\necho $? > /o/test.exit\necho $(( $(date +%s) - start )) > /o/test.seconds\nstart=$(date +%s)\ncargo build --all-features --locked -j 4 --example lcr_adapter > /o/adapter.log 2>&1\ncode=$?\necho $code > /o/adapter.exit\necho $(( $(date +%s) - start )) > /o/adapter.seconds\nif [ $code -eq 0 ]; then cp /t/debug/examples/lcr_adapter /o/adapter; fi\nlane selectors 'cargo test -p parcel_selectors --locked -j 4'\n"
+    ]
+  ],
+  "change_areas": [
+    {
+      "Cargo.lock": {
+        "added_lines": [],
+        "removed_lines": [],
+        "status": "M"
+      },
+      "node/ast.d.ts": {
+        "added_lines": [],
+        "removed_lines": [],
+        "status": "M"
+      },
+      "node/index.js": {
+        "added_lines": [],
+        "removed_lines": [],
+        "status": "M"
+      },
+      "selectors/parser.rs": {
+        "added_lines": [
+          "  pub struct S;"
+        ],
+        "removed_lines": [],
+        "status": "M"
+      },
+      "src/compat.rs": {
+        "added_lines": [],
+        "removed_lines": [],
+        "status": "M"
+      },
+      "src/declaration.rs": {
+        "added_lines": [],
+        "removed_lines": [],
+        "status": "M"
+      },
+      "src/lib.rs": {
+        "added_lines": [
+          "TokenList"
+        ],
+        "removed_lines": [
+          "x"
+        ],
+        "status": "M"
+      },
+      "src/properties/mod.rs": {
+        "added_lines": [
+          "    \"new-prop\": NewProp,",
+          "  \"a-b\": X,",
+          "\"Upper\": y,"
+        ],
+        "removed_lines": [],
+        "status": "M"
+      },
+      "src/rules/function.rs": {
+        "added_lines": [
+          "let t: TokenList = x;",
+          ".unwrap()",
+          "pub fn new_api() {}",
+          "x == 1.5"
+        ],
+        "removed_lines": [],
+        "status": "A"
+      },
+      "src/rules/style.rs": {
+        "added_lines": [
+          "unsafe { y }",
+          "panic!(\"x\")",
+          "épanic!(",
+          "a.to_vec()"
+        ],
+        "removed_lines": [
+          "TokenList"
+        ],
+        "status": "M"
+      }
+    },
+    {
+      "Cargo.lock": [
+        "build-release"
+      ],
+      "node/ast.d.ts": [
+        "bindings-api"
+      ],
+      "node/index.js": [
+        "bindings-api"
+      ],
+      "selectors/parser.rs": [
+        "selectors"
+      ],
+      "src/compat.rs": [
+        "prefixing-compat"
+      ],
+      "src/declaration.rs": [
+        "rule-merging"
+      ],
+      "src/lib.rs": [
+        "tests"
+      ],
+      "src/properties/mod.rs": [
+        "properties-registry"
+      ],
+      "src/rules/function.rs": [
+        "at-rules-other",
+        "custom-properties"
+      ],
+      "src/rules/style.rs": [
+        "custom-properties",
+        "nesting",
+        "rule-merging",
+        "selectors"
+      ]
+    }
+  ],
+  "compat_variants": [
+    [
+      "pub enum Feature {\n  AnyLink,\n  NewThing,\n  Ünicode,\n}\nimpl Feature {\n  pub fn is_compatible(&self, browsers: Browsers) -> bool {\n    match self {\n      Feature::AnyLink => {\n        if version < 5 {\n          return false;\n      }\n      Feature::A\n      | Feature::B\n      | Feature::C => {\n        return false\n      }\n      Feature::Café => {}\n    }\n  }\n  pub fn other() {\n    let x = 1;\n  }\n}",
+      [
+        [
+          3,
+          3
+        ]
+      ],
+      [
+        "NewThing"
+      ]
+    ],
+    [
+      "pub enum Feature {\n  AnyLink,\n  NewThing,\n  Ünicode,\n}\nimpl Feature {\n  pub fn is_compatible(&self, browsers: Browsers) -> bool {\n    match self {\n      Feature::AnyLink => {\n        if version < 5 {\n          return false;\n      }\n      Feature::A\n      | Feature::B\n      | Feature::C => {\n        return false\n      }\n      Feature::Café => {}\n    }\n  }\n  pub fn other() {\n    let x = 1;\n  }\n}",
+      [
+        [
+          4,
+          4
+        ]
+      ],
+      [
+        "Ünicode"
+      ]
+    ],
+    [
+      "pub enum Feature {\n  AnyLink,\n  NewThing,\n  Ünicode,\n}\nimpl Feature {\n  pub fn is_compatible(&self, browsers: Browsers) -> bool {\n    match self {\n      Feature::AnyLink => {\n        if version < 5 {\n          return false;\n      }\n      Feature::A\n      | Feature::B\n      | Feature::C => {\n        return false\n      }\n      Feature::Café => {}\n    }\n  }\n  pub fn other() {\n    let x = 1;\n  }\n}",
+      [
+        [
+          10,
+          10
+        ]
+      ],
+      [
+        "AnyLink"
+      ]
+    ],
+    [
+      "pub enum Feature {\n  AnyLink,\n  NewThing,\n  Ünicode,\n}\nimpl Feature {\n  pub fn is_compatible(&self, browsers: Browsers) -> bool {\n    match self {\n      Feature::AnyLink => {\n        if version < 5 {\n          return false;\n      }\n      Feature::A\n      | Feature::B\n      | Feature::C => {\n        return false\n      }\n      Feature::Café => {}\n    }\n  }\n  pub fn other() {\n    let x = 1;\n  }\n}",
+      [
+        [
+          16,
+          16
+        ]
+      ],
+      [
+        "A",
+        "B",
+        "C"
+      ]
+    ],
+    [
+      "pub enum Feature {\n  AnyLink,\n  NewThing,\n  Ünicode,\n}\nimpl Feature {\n  pub fn is_compatible(&self, browsers: Browsers) -> bool {\n    match self {\n      Feature::AnyLink => {\n        if version < 5 {\n          return false;\n      }\n      Feature::A\n      | Feature::B\n      | Feature::C => {\n        return false\n      }\n      Feature::Café => {}\n    }\n  }\n  pub fn other() {\n    let x = 1;\n  }\n}",
+      [
+        [
+          18,
+          18
+        ]
+      ],
+      [
+        "Café"
+      ]
+    ],
+    [
+      "pub enum Feature {\n  AnyLink,\n  NewThing,\n  Ünicode,\n}\nimpl Feature {\n  pub fn is_compatible(&self, browsers: Browsers) -> bool {\n    match self {\n      Feature::AnyLink => {\n        if version < 5 {\n          return false;\n      }\n      Feature::A\n      | Feature::B\n      | Feature::C => {\n        return false\n      }\n      Feature::Café => {}\n    }\n  }\n  pub fn other() {\n    let x = 1;\n  }\n}",
+      [
+        [
+          22,
+          22
+        ]
+      ],
+      []
+    ],
+    [
+      "pub enum Feature {\n  AnyLink,\n  NewThing,\n  Ünicode,\n}\nimpl Feature {\n  pub fn is_compatible(&self, browsers: Browsers) -> bool {\n    match self {\n      Feature::AnyLink => {\n        if version < 5 {\n          return false;\n      }\n      Feature::A\n      | Feature::B\n      | Feature::C => {\n        return false\n      }\n      Feature::Café => {}\n    }\n  }\n  pub fn other() {\n    let x = 1;\n  }\n}",
+      [
+        [
+          1,
+          24
+        ]
+      ],
+      [
+        "A",
+        "AnyLink",
+        "B",
+        "C",
+        "Café",
+        "NewThing",
+        "Ünicode"
+      ]
+    ]
+  ],
+  "css_modules_debug": [
+    [
+      null,
+      null
+    ],
+    [
+      "",
+      null
+    ],
+    [
+      "None",
+      null
+    ],
+    [
+      "  None  ",
+      null
+    ],
+    [
+      "Some(Config { pattern: Pattern { segments: [Literal(\"x-\"), Name, Literal(\"\\u{1f600}\"), ContentHash] }, dashed_idents: true, animation: false, grid: true, custom_idents: false, container: true, pure: false })",
+      {
+        "animation": false,
+        "container": true,
+        "custom_idents": false,
+        "dashed_idents": true,
+        "grid": true,
+        "pattern": "x-[name]😀[content-hash]",
+        "pure": false
+      }
+    ],
+    [
+      "Some(Config { pattern: Pattern { segments: [Hash, Literal(\"_\"), Local] } })",
+      {}
+    ],
+    [
+      "Config { pure: true }",
+      {
+        "pure": true
+      }
+    ],
+    [
+      "Some(Config { pattern: Pattern { segments: [] }, grid: false })",
+      {
+        "grid": false
+      }
+    ]
+  ],
+  "drift_signature": [
+    [
+      [
+        97,
+        10,
+        98,
+        10,
+        99,
+        10
+      ],
+      [
+        97,
+        10,
+        66,
+        10,
+        99,
+        10
+      ],
+      "aaf95548b963d362f09e1e47554b4ab332560e1be9624db90c0c79cfdd327bfe"
+    ],
+    [
+      [
+        120,
+        10,
+        97,
+        10,
+        98,
+        10,
+        99,
+        10
+      ],
+      [
+        120,
+        10,
+        97,
+        10,
+        66,
+        10,
+        99,
+        10
+      ],
+      "aaf95548b963d362f09e1e47554b4ab332560e1be9624db90c0c79cfdd327bfe"
+    ],
+    [
+      [],
+      [
+        110,
+        101,
+        119,
+        10
+      ],
+      "d64617e90f4f49418b28009e569c25015766f5c996feb273a26b35af102a5e25"
+    ],
+    [
+      [
+        45,
+        45,
+        32,
+        100,
+        97,
+        115,
+        104,
+        10,
+        107,
+        101,
+        101,
+        112,
+        10
+      ],
+      [
+        107,
+        101,
+        101,
+        112,
+        10
+      ],
+      "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    ],
+    [
+      [
+        255,
+        254,
+        32,
+        98,
+        97,
+        100,
+        10
+      ],
+      [
+        103,
+        111,
+        111,
+        100,
+        10
+      ],
+      "5e44bc7dda41466e568ba4194f19d7ce21b7106bc8db5d094502c2766d3a46a0"
+    ],
+    [
+      [
+        239,
+        187,
+        191,
+        98,
+        111,
+        109,
+        10
+      ],
+      [
+        98,
+        111,
+        109,
+        10
+      ],
+      "b4b2216e2f1885429685ac03afdb344f499aa343fbc96ec054a3a94e62025b1c"
+    ],
+    [
+      [
+        97,
+        13,
+        10,
+        98,
+        10
+      ],
+      [
+        97,
+        10,
+        98,
+        10
+      ],
+      "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    ],
+    [
+      [
+        115,
+        97,
+        109,
+        101,
+        10
+      ],
+      [
+        115,
+        97,
+        109,
+        101,
+        10
+      ],
+      "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    ],
+    [
+      [
+        10,
+        120,
+        10,
+        10
+      ],
+      [
+        120,
+        10
+      ],
+      "f1e9946b2370d1e7acc9363ca0f7a81b52e966edf80a1456e1cf392294073025"
+    ]
+  ],
+  "enclosing_items": [
+    [
+      "use x;\npub struct Foo;\nimpl<'a> ToCss for Foo<'a> {\n  pub(crate) async fn a() {\n    1\n  }\n}\nimpl Handler {\n  const fn b() {}\n  extern \"C\" fn c() {}\n  macro_rules! m { () => {} }\n}\nimpl std::fmt::Display for Bar {\n  fn fmt() {}\n}\npub enum Baz { A }\n",
+      [
+        [
+          5,
+          5
+        ]
+      ],
+      [
+        {
+          "impl": {
+            "line": 3,
+            "trait": "ToCss",
+            "type": "Foo"
+          },
+          "item": {
+            "kind": "fn",
+            "line": 4,
+            "name": "a"
+          },
+          "range": [
+            5,
+            5
+          ]
+        }
+      ]
+    ],
+    [
+      "use x;\npub struct Foo;\nimpl<'a> ToCss for Foo<'a> {\n  pub(crate) async fn a() {\n    1\n  }\n}\nimpl Handler {\n  const fn b() {}\n  extern \"C\" fn c() {}\n  macro_rules! m { () => {} }\n}\nimpl std::fmt::Display for Bar {\n  fn fmt() {}\n}\npub enum Baz { A }\n",
+      [
+        [
+          1,
+          1
+        ]
+      ],
+      [
+        {
+          "impl": null,
+          "item": null,
+          "range": [
+            1,
+            1
+          ]
+        }
+      ]
+    ],
+    [
+      "use x;\npub struct Foo;\nimpl<'a> ToCss for Foo<'a> {\n  pub(crate) async fn a() {\n    1\n  }\n}\nimpl Handler {\n  const fn b() {}\n  extern \"C\" fn c() {}\n  macro_rules! m { () => {} }\n}\nimpl std::fmt::Display for Bar {\n  fn fmt() {}\n}\npub enum Baz { A }\n",
+      [
+        [
+          9,
+          11
+        ],
+        [
+          14,
+          14
+        ]
+      ],
+      [
+        {
+          "impl": {
+            "line": 8,
+            "trait": null,
+            "type": "Handler"
+          },
+          "item": {
+            "kind": "macro_rules!",
+            "line": 11,
+            "name": "m"
+          },
+          "range": [
+            9,
+            11
+          ]
+        },
+        {
+          "impl": {
+            "line": 13,
+            "trait": "std::fmt::Display",
+            "type": "Bar"
+          },
+          "item": {
+            "kind": "fn",
+            "line": 14,
+            "name": "fmt"
+          },
+          "range": [
+            14,
+            14
+          ]
+        }
+      ]
+    ],
+    [
+      "use x;\npub struct Foo;\nimpl<'a> ToCss for Foo<'a> {\n  pub(crate) async fn a() {\n    1\n  }\n}\nimpl Handler {\n  const fn b() {}\n  extern \"C\" fn c() {}\n  macro_rules! m { () => {} }\n}\nimpl std::fmt::Display for Bar {\n  fn fmt() {}\n}\npub enum Baz { A }\n",
+      [
+        [
+          16,
+          40
+        ]
+      ],
+      [
+        {
+          "impl": {
+            "line": 13,
+            "trait": "std::fmt::Display",
+            "type": "Bar"
+          },
+          "item": {
+            "kind": "enum",
+            "line": 16,
+            "name": "Baz"
+          },
+          "range": [
+            16,
+            40
+          ]
+        }
+      ]
+    ],
+    [
+      "use x;\npub struct Foo;\nimpl<'a> ToCss for Foo<'a> {\n  pub(crate) async fn a() {\n    1\n  }\n}\nimpl Handler {\n  const fn b() {}\n  extern \"C\" fn c() {}\n  macro_rules! m { () => {} }\n}\nimpl std::fmt::Display for Bar {\n  fn fmt() {}\n}\npub enum Baz { A }\n",
+      [
+        [
+          3,
+          3
+        ]
+      ],
+      [
+        {
+          "impl": {
+            "line": 3,
+            "trait": "ToCss",
+            "type": "Foo"
+          },
+          "item": {
+            "kind": "struct",
+            "line": 2,
+            "name": "Foo"
+          },
+          "range": [
+            3,
+            3
+          ]
+        }
+      ]
+    ]
+  ],
+  "field_expr": [
+    [
+      "&str",
+      "\"x\": x"
+    ],
+    [
+      "&'i str",
+      "\"x\": x"
+    ],
+    [
+      "Option<&str>",
+      "\"x\": x"
+    ],
+    [
+      "Option<&'a str>",
+      "\"x\": x"
+    ],
+    [
+      "bool",
+      "\"x\": x"
+    ],
+    [
+      "u32",
+      "\"x\": x"
+    ],
+    [
+      "usize",
+      "\"x\": x"
+    ],
+    [
+      "i32",
+      "\"x\": x"
+    ],
+    [
+      "i64",
+      null
+    ],
+    [
+      "Browsers",
+      "\"x\": format!(\"{:?}\", x)"
+    ],
+    [
+      "Option<Browsers>",
+      "\"x\": format!(\"{:?}\", x)"
+    ],
+    [
+      "Targets",
+      "\"x\": format!(\"{:?}\", x)"
+    ],
+    [
+      "crate::targets::Targets",
+      "\"x\": format!(\"{:?}\", x)"
+    ],
+    [
+      "Option<Targets>",
+      "\"x\": format!(\"{:?}\", x)"
+    ],
+    [
+      "ParserOptions<'_, '_>",
+      "\"x\": serde_json::json!({\"flags\": format!(\"{:?}\", x.flags), \"css_modules\": format!(\"{:?}\", x.css_modules), \"error_recovery\": x.error_recovery, \"filename\": x.filename.clone()})"
+    ],
+    [
+      "PrinterOptions",
+      "\"x\": serde_json::json!({\"minify\": x.minify, \"targets\": format!(\"{:?}\", x.targets)})"
+    ],
+    [
+      "css_modules::Config",
+      "\"x\": format!(\"{:?}\", x)"
+    ],
+    [
+      "Config",
+      "\"x\": format!(\"{:?}\", x)"
+    ],
+    [
+      "ParserError<'i>",
+      "\"x\": format!(\"{:?}\", x)"
+    ],
+    [
+      "MinifyErrorKind",
+      "\"x\": format!(\"{:?}\", x)"
+    ],
+    [
+      "&[&str]",
+      "\"x\": format!(\"{:?}\", x)"
+    ],
+    [
+      "Vec<u8>",
+      null
+    ],
+    [
+      "& str",
+      "\"x\": x"
+    ],
+    [
+      "&'été str",
+      "\"x\": x"
+    ]
+  ],
+  "find_helpers": {
+    "helpers": [
+      {
+        "attrs_start": 432,
+        "body_close": 585,
+        "body_open": 524,
+        "fn_start": 471,
+        "has_track_caller": true,
+        "is_test": false,
+        "name": "lifetimes",
+        "params": [
+          [
+            "source",
+            "&'i str"
+          ],
+          [
+            "expected",
+            "&'i str"
+          ]
+        ]
+      },
+      {
+        "attrs_start": 588,
+        "body_close": 647,
+        "body_open": 612,
+        "fn_start": 600,
+        "has_track_caller": false,
+        "is_test": true,
+        "name": "test_x",
+        "params": []
+      },
+      {
+        "attrs_start": 650,
+        "body_close": 769,
+        "body_open": 737,
+        "fn_start": 652,
+        "has_track_caller": false,
+        "is_test": false,
+        "name": "attr_like",
+        "params": [
+          [
+            "source",
+            "&str"
+          ],
+          [
+            "minify",
+            "bool"
+          ],
+          [
+            "targets",
+            "Option<Browsers>"
+          ],
+          [
+            "skipme",
+            "Vec<u8>"
+          ]
+        ]
+      },
+      {
+        "attrs_start": 771,
+        "body_close": 850,
+        "body_open": 810,
+        "fn_start": 784,
+        "has_track_caller": false,
+        "is_test": false,
+        "name": "not_leaf",
+        "params": [
+          [
+            "source",
+            "&str"
+          ]
+        ]
+      },
+      {
+        "attrs_start": 852,
+        "body_close": 950,
+        "body_open": 917,
+        "fn_start": 854,
+        "has_track_caller": false,
+        "is_test": false,
+        "name": "generic",
+        "params": [
+          [
+            "source",
+            "T"
+          ],
+          [
+            "options",
+            "ParserOptions"
+          ]
+        ]
+      },
+      {
+        "attrs_start": 952,
+        "body_close": 1033,
+        "body_open": 996,
+        "fn_start": 954,
+        "has_track_caller": false,
+        "is_test": false,
+        "name": "errs",
+        "params": [
+          [
+            "source",
+            "&str"
+          ],
+          [
+            "error",
+            "ParserError"
+          ]
+        ]
+      }
+    ],
+    "mod_close": 1035,
+    "mod_open": 29,
+    "text": "b\"x\";\n#[cfg(test)]\nmod tests {\n  // fn not_a_helper(source: &str) { StyleSheet::parse }\n  /* fn nested /* comment */ fn still_comment(source: &str) {} */\n  const S: &str = \"fn fake(source: &str) { StyleSheet::parse }\";\n  const R: &str = r##\"fn raw(a: &str) { \"# } \"##;\n  const C: char = '{';\n  const Q: char = '\\'';\n  const U: char = '\\u{1F600}';\n  impl<'a> Foo<'a> { fn method(&self, source: &str) { StyleSheet::parse(source) } }\n\n  #[track_caller]\n  #[allow(unused)]\n  fn lifetimes<'i>(source: &'i str, expected: &'i str) {\n    let x: &'i str = \"}\";\n    StyleSheet::parse(source);\n  }\n\n  #[test]\n  fn test_x() {\n    lifetimes(\".a{}\", \".a{}\");\n  }\n\n  fn attr_like(source: &str, minify: bool, targets: Option<Browsers>, skipme: Vec<u8>) { StyleAttribute::parse(source) }\n  pub(crate) fn not_leaf(source: &str) { attr_like(source, true, None, vec![]) }\n  fn generic<T: Into<String>>(source: T, options: ParserOptions) { Property::parse_string(source) }\n  fn errs(source: &str, error: ParserError) { let _ = foo::parse_string(source); }\n}\n"
+  },
+  "host_build": {
+    "base": {
+      "adapter": "#!/bin/sh\necho adapter\n",
+      "files": [
+        "adapter.exit",
+        "adapter.log",
+        "adapter.seconds",
+        "fmt.txt",
+        "lane-no-default-features.exit",
+        "lane-no-default-features.log",
+        "lane-no-default-features.seconds",
+        "lane-selectors.exit",
+        "lane-selectors.log",
+        "lane-selectors.seconds",
+        "lane-wasm-check.exit",
+        "lane-wasm-check.log",
+        "lane-wasm-check.seconds",
+        "test.exit",
+        "test.log",
+        "test.seconds",
+        "tests.json",
+        "tuples.jsonl"
+      ],
+      "fmt": "",
+      "tests": {
+        "failures": {
+          "tests::test_b": "thread 'tests::test_b' panicked at src/lib.rs:40:5:\nboom"
+        },
+        "tests": {
+          "src/lib.rs::tests::test_a": "ok",
+          "src/lib.rs::tests::test_b": "failed"
+        }
+      }
+    },
+    "build": {
+      "base": {
+        "adapter_errors": [],
+        "adapter_ok": true,
+        "attempts": [
+          {
+            "exit": 101,
+            "locked": true,
+            "rustflags": "-D warnings"
+          }
+        ],
+        "compile_errors": [
+          "error: test failed, to rerun pass `--lib`"
+        ],
+        "fmt_files": [],
+        "fmt_ok": true,
+        "image": "host",
+        "injection": {
+          "helpers": [
+            {
+              "fields": [
+                "source",
+                "expected",
+                "options"
+              ],
+              "name": "minify_test_with_options",
+              "skipped": []
+            }
+          ]
+        },
+        "lanes": {
+          "no-default-features": {
+            "errors": [],
+            "exit": 0,
+            "tail": "Checking lightningcss v1.0.0 (/src)"
+          },
+          "selectors": {
+            "errors": [
+              "error: test failed, to rerun pass `-p parcel_selectors --lib`"
+            ],
+            "exit": 101,
+            "tail": "test parser::tests::test_parsing ... FAILED\nerror: test failed, to rerun pass `-p parcel_selectors --lib`"
+          },
+          "wasm-check": {
+            "errors": [],
+            "exit": 0,
+            "tail": "Checking lightningcss v1.0.0 (/src)"
+          }
+        },
+        "lockfile_outdated": false,
+        "side": "base",
+        "summary": {
+          "failed": 1,
+          "ignored": 0,
+          "passed": 1
+        },
+        "test_exit": 101,
+        "toolchain": "stable",
+        "tuples": 2,
+        "warnings_as_errors": false
+      },
+      "head": {
+        "adapter_errors": [],
+        "adapter_ok": true,
+        "attempts": [
+          {
+            "exit": 101,
+            "locked": true,
+            "rustflags": "-D warnings"
+          },
+          {
+            "exit": 101,
+            "locked": true,
+            "rustflags": ""
+          }
+        ],
+        "compile_errors": [
+          "error: test failed, to rerun pass `--lib`"
+        ],
+        "fmt_files": [
+          "src/lib.rs"
+        ],
+        "fmt_ok": false,
+        "image": "host",
+        "injection": {
+          "helpers": [
+            {
+              "fields": [
+                "source",
+                "expected",
+                "options"
+              ],
+              "name": "minify_test_with_options",
+              "skipped": []
+            }
+          ]
+        },
+        "lanes": {
+          "no-default-features": {
+            "errors": [],
+            "exit": 0,
+            "tail": "Checking lightningcss v1.0.0 (/src)"
+          },
+          "selectors": {
+            "errors": [
+              "error: test failed, to rerun pass `-p parcel_selectors --lib`"
+            ],
+            "exit": 101,
+            "tail": "test parser::tests::test_parsing ... FAILED\nerror: test failed, to rerun pass `-p parcel_selectors --lib`"
+          },
+          "wasm-check": {
+            "errors": [],
+            "exit": 0,
+            "tail": "Checking lightningcss v1.0.0 (/src)"
+          }
+        },
+        "lockfile_outdated": false,
+        "side": "head",
+        "summary": {
+          "failed": 1,
+          "ignored": 0,
+          "passed": 1
+        },
+        "test_exit": 101,
+        "toolchain": "1.96.0",
+        "tuples": 2,
+        "warnings_as_errors": true
+      },
+      "js": {
+        "ran": false,
+        "skipped": "JS lane needs the builder image (LCR_BUILD=host)"
+      }
+    },
+    "head": {
+      "adapter": "#!/bin/sh\necho adapter\n",
+      "files": [
+        "adapter.exit",
+        "adapter.log",
+        "adapter.seconds",
+        "fmt.txt",
+        "lane-no-default-features.exit",
+        "lane-no-default-features.log",
+        "lane-no-default-features.seconds",
+        "lane-selectors.exit",
+        "lane-selectors.log",
+        "lane-selectors.seconds",
+        "lane-wasm-check.exit",
+        "lane-wasm-check.log",
+        "lane-wasm-check.seconds",
+        "test.exit",
+        "test.log",
+        "test.seconds",
+        "tests.json",
+        "tuples.jsonl"
+      ],
+      "fmt": "Diff in src/lib.rs at line 3:\n-old\n+new\n",
+      "tests": {
+        "failures": {
+          "tests::test_b": "thread 'tests::test_b' panicked at src/lib.rs:40:5:\nboom"
+        },
+        "tests": {
+          "src/lib.rs::tests::test_a": "ok",
+          "src/lib.rs::tests::test_b": "failed"
+        }
+      }
+    },
+    "stderr": "[lcr] warning: /tmp/tmp0haq0unt/cache is on tmpfs (RAM); set LCR_CACHE to an on-disk directory\n[lcr] base: tests {'passed': 1, 'failed': 1, 'ignored': 0} exit=101 adapter=ok tuples=2 (0s)\n[lcr] head: tests {'passed': 1, 'failed': 1, 'ignored': 0} exit=101 adapter=ok tuples=2 (0s)\n"
+  },
+  "inject_dump": {
+    "info": {
+      "helpers": [
+        {
+          "fields": [
+            "source",
+            "expected"
+          ],
+          "name": "lifetimes",
+          "skipped": []
+        },
+        {
+          "fields": [
+            "source",
+            "minify",
+            "targets"
+          ],
+          "name": "attr_like",
+          "skipped": [
+            "skipme"
+          ]
+        },
+        {
+          "fields": [
+            "options"
+          ],
+          "name": "generic",
+          "skipped": [
+            "source"
+          ]
+        },
+        {
+          "fields": [
+            "source",
+            "error"
+          ],
+          "name": "errs",
+          "skipped": []
+        }
+      ]
+    },
+    "text": "b\"x\";\n#[cfg(test)]\nmod tests { #[allow(dead_code, unused)] pub(crate) mod lcr_dump { use std::io::Write; static LOCK: std::sync::Mutex<()> = std::sync::Mutex::new(()); #[track_caller] pub(crate) fn dump(helper: &str, fields: serde_json::Value) { let path = match std::env::var(\"LCR_DUMP\") { Ok(p) => p, Err(_) => return }; let loc = std::panic::Location::caller(); let test = std::thread::current().name().unwrap_or(\"\").to_string(); let record = serde_json::json!({\"test\": test, \"helper\": helper, \"file\": loc.file(), \"line\": loc.line(), \"fields\": fields}); let mut text = record.to_string(); text.push('\\n'); let _guard = LOCK.lock().unwrap_or_else(|e| e.into_inner()); if let Ok(mut f) = std::fs::OpenOptions::new().create(true).append(true).open(path) { let _ = f.write_all(text.as_bytes()); } } } \n  // fn not_a_helper(source: &str) { StyleSheet::parse }\n  /* fn nested /* comment */ fn still_comment(source: &str) {} */\n  const S: &str = \"fn fake(source: &str) { StyleSheet::parse }\";\n  const R: &str = r##\"fn raw(a: &str) { \"# } \"##;\n  const C: char = '{';\n  const Q: char = '\\'';\n  const U: char = '\\u{1F600}';\n  impl<'a> Foo<'a> { fn method(&self, source: &str) { StyleSheet::parse(source) } }\n\n  #[track_caller]\n  #[allow(unused)]\n  fn lifetimes<'i>(source: &'i str, expected: &'i str) { { crate::tests::lcr_dump::dump(\"lifetimes\", serde_json::json!({\"source\": source, \"expected\": expected})); }\n    let x: &'i str = \"}\";\n    StyleSheet::parse(source);\n  }\n\n  #[test]\n  fn test_x() {\n    lifetimes(\".a{}\", \".a{}\");\n  }\n\n  #[track_caller] fn attr_like(source: &str, minify: bool, targets: Option<Browsers>, skipme: Vec<u8>) { { crate::tests::lcr_dump::dump(\"attr_like\", serde_json::json!({\"source\": source, \"minify\": minify, \"targets\": format!(\"{:?}\", targets)})); } StyleAttribute::parse(source) }\n  pub(crate) fn not_leaf(source: &str) { attr_like(source, true, None, vec![]) }\n  #[track_caller] fn generic<T: Into<String>>(source: T, options: ParserOptions) { { crate::tests::lcr_dump::dump(\"generic\", serde_json::json!({\"options\": serde_json::json!({\"flags\": format!(\"{:?}\", options.flags), \"css_modules\": format!(\"{:?}\", options.css_modules), \"error_recovery\": options.error_recovery, \"filename\": options.filename.clone()})})); } Property::parse_string(source) }\n  #[track_caller] fn errs(source: &str, error: ParserError) { { crate::tests::lcr_dump::dump(\"errs\", serde_json::json!({\"source\": source, \"error\": format!(\"{:?}\", error)})); } let _ = foo::parse_string(source); }\n}\n"
+  },
+  "inject_errors": {
+    "no-leaf": [
+      "#[cfg(test)]\nmod tests {\n  fn a(source: &str) { }\n}\n",
+      "no leaf test helpers found in src/lib.rs (helper layout changed?)"
+    ],
+    "no-mod": [
+      "fn main() {}\n",
+      "could not find `#[cfg(test)] mod tests {` in src/lib.rs"
+    ],
+    "raw": [
+      "#[cfg(test)]\nmod tests {\n  const R: &str = r#\"abc;\n}\n",
+      "unterminated raw string in src/lib.rs"
+    ],
+    "string": [
+      "#[cfg(test)]\nmod tests {\n  const S: &str = \"abc;\n}\n",
+      "unterminated string in src/lib.rs"
+    ],
+    "unbalanced": [
+      "#[cfg(test)]\nmod tests {\n  fn a() {\n",
+      "unbalanced {} in src/lib.rs"
+    ]
+  },
+  "int": [
+    [
+      "12",
+      12
+    ],
+    [
+      " 7\n",
+      7
+    ],
+    [
+      "+3",
+      3
+    ],
+    [
+      "-4",
+      -4
+    ],
+    [
+      "1_000",
+      1000
+    ],
+    [
+      "١٢",
+      12
+    ],
+    [
+      "𝟙𝟚",
+      12
+    ],
+    [
+      "",
+      null
+    ],
+    [
+      "1_",
+      null
+    ],
+    [
+      "_1",
+      null
+    ],
+    [
+      "1__0",
+      null
+    ],
+    [
+      "x",
+      null
+    ],
+    [
+      "1.0",
+      null
+    ],
+    [
+      "٣_٤",
+      34
+    ],
+    [
+      "1f600",
+      128512,
+      16
+    ],
+    [
+      "0x1F",
+      31,
+      16
+    ],
+    [
+      "  ff ",
+      255,
+      16
+    ],
+    [
+      "-a",
+      -10,
+      16
+    ],
+    [
+      "1_f",
+      31,
+      16
+    ],
+    [
+      "g",
+      null,
+      16
+    ],
+    [
+      "",
+      null,
+      16
+    ]
+  ],
+  "issues": [
+    [
+      {
+        "body": "Fixes #12, related to #13.\nCloses: https://github.com/parcel-bundler/lightningcss/issues/14",
+        "closingIssuesReferences": [
+          {
+            "number": 15
+          }
+        ],
+        "number": 9,
+        "title": "Fix x"
+      },
+      [
+        12,
+        13,
+        14,
+        15
+      ],
+      [
+        12,
+        14,
+        15
+      ]
+    ],
+    [
+      {
+        "body": null,
+        "closingIssuesReferences": null,
+        "number": 9,
+        "title": "fıxes #21 and FİXED #22"
+      },
+      [
+        21,
+        22
+      ],
+      [
+        21,
+        22
+      ]
+    ],
+    [
+      {
+        "body": "café#31 a/#32 (#33) #9 #123456 #٣٤ resolves #35é Resolved: #36",
+        "closingIssuesReferences": [
+          {
+            "number": null
+          },
+          {}
+        ],
+        "number": 9,
+        "title": ""
+      },
+      [
+        33,
+        34,
+        36
+      ],
+      [
+        36
+      ]
+    ],
+    [
+      {
+        "body": "x",
+        "number": 9,
+        "title": "ſee #41 — closes  #42"
+      },
+      [
+        41,
+        42
+      ],
+      [
+        42
+      ]
+    ]
+  ],
+  "js_lane_script": [
+    [
+      {
+        "regenAst": true,
+        "regenCompat": true,
+        "runJs": true
+      },
+      "\nset -u\ncd /src\nexport CARGO_HOME=/cargo CARGO_TARGET_DIR=/target-js YARN_CACHE_FOLDER=/cargo/yarn-cache PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true PUPPETEER_SKIP_DOWNLOAD=true\necho \"### yarn install --frozen-lockfile --registry=https://registry.npmjs.com/\" >> /out/js.log; sh -c 'yarn install --frozen-lockfile --registry=https://registry.npmjs.com/' >> /out/js.log 2>&1; code=$?; echo \"### exit $code\" >> /out/js.log; if [ $code -ne 0 ]; then echo 'yarn install --frozen-lockfile --registry=https://registry.npmjs.com/' > /out/js.failed; exit 0; fi\necho \"### yarn build\" >> /out/js.log; sh -c 'yarn build' >> /out/js.log 2>&1; code=$?; echo \"### exit $code\" >> /out/js.log; if [ $code -ne 0 ]; then echo 'yarn build' > /out/js.failed; exit 0; fi\necho \"### yarn test\" >> /out/js.log; sh -c 'yarn test' >> /out/js.log 2>&1; code=$?; echo \"### exit $code\" >> /out/js.log; if [ $code -ne 0 ]; then echo 'yarn test' > /out/js.failed; exit 0; fi\necho \"### yarn tsc\" >> /out/js.log; sh -c 'yarn tsc' >> /out/js.log 2>&1; code=$?; echo \"### exit $code\" >> /out/js.log; if [ $code -ne 0 ]; then echo 'yarn tsc' > /out/js.failed; exit 0; fi\necho \"### node scripts/build-prefixes.js\" >> /out/js.log; sh -c 'node scripts/build-prefixes.js' >> /out/js.log 2>&1; code=$?; echo \"### exit $code\" >> /out/js.log; if [ $code -ne 0 ]; then echo 'node scripts/build-prefixes.js' > /out/js.failed; exit 0; fi\necho \"### yarn build-ast\" >> /out/js.log; sh -c 'yarn build-ast' >> /out/js.log 2>&1; code=$?; echo \"### exit $code\" >> /out/js.log; if [ $code -ne 0 ]; then echo 'yarn build-ast' > /out/js.failed; exit 0; fi\n",
+      [
+        "yarn install --frozen-lockfile --registry=https://registry.npmjs.com/",
+        "yarn build",
+        "yarn test",
+        "yarn tsc",
+        "node scripts/build-prefixes.js",
+        "yarn build-ast"
+      ]
+    ],
+    [
+      {
+        "regenAst": false,
+        "regenCompat": true,
+        "runJs": false
+      },
+      "\nset -u\ncd /src\nexport CARGO_HOME=/cargo CARGO_TARGET_DIR=/target-js YARN_CACHE_FOLDER=/cargo/yarn-cache PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true PUPPETEER_SKIP_DOWNLOAD=true\necho \"### yarn install --frozen-lockfile --registry=https://registry.npmjs.com/\" >> /out/js.log; sh -c 'yarn install --frozen-lockfile --registry=https://registry.npmjs.com/' >> /out/js.log 2>&1; code=$?; echo \"### exit $code\" >> /out/js.log; if [ $code -ne 0 ]; then echo 'yarn install --frozen-lockfile --registry=https://registry.npmjs.com/' > /out/js.failed; exit 0; fi\necho \"### node scripts/build-prefixes.js\" >> /out/js.log; sh -c 'node scripts/build-prefixes.js' >> /out/js.log 2>&1; code=$?; echo \"### exit $code\" >> /out/js.log; if [ $code -ne 0 ]; then echo 'node scripts/build-prefixes.js' > /out/js.failed; exit 0; fi\n",
+      [
+        "yarn install --frozen-lockfile --registry=https://registry.npmjs.com/",
+        "node scripts/build-prefixes.js"
+      ]
+    ],
+    [
+      {
+        "regenAst": true,
+        "regenCompat": false,
+        "runJs": false
+      },
+      "\nset -u\ncd /src\nexport CARGO_HOME=/cargo CARGO_TARGET_DIR=/target-js YARN_CACHE_FOLDER=/cargo/yarn-cache PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true PUPPETEER_SKIP_DOWNLOAD=true\necho \"### yarn install --frozen-lockfile --registry=https://registry.npmjs.com/\" >> /out/js.log; sh -c 'yarn install --frozen-lockfile --registry=https://registry.npmjs.com/' >> /out/js.log 2>&1; code=$?; echo \"### exit $code\" >> /out/js.log; if [ $code -ne 0 ]; then echo 'yarn install --frozen-lockfile --registry=https://registry.npmjs.com/' > /out/js.failed; exit 0; fi\necho \"### yarn build-ast\" >> /out/js.log; sh -c 'yarn build-ast' >> /out/js.log 2>&1; code=$?; echo \"### exit $code\" >> /out/js.log; if [ $code -ne 0 ]; then echo 'yarn build-ast' > /out/js.failed; exit 0; fi\n",
+      [
+        "yarn install --frozen-lockfile --registry=https://registry.npmjs.com/",
+        "yarn build-ast"
+      ]
+    ],
+    [
+      {
+        "regenAst": false,
+        "regenCompat": false,
+        "runJs": true
+      },
+      "\nset -u\ncd /src\nexport CARGO_HOME=/cargo CARGO_TARGET_DIR=/target-js YARN_CACHE_FOLDER=/cargo/yarn-cache PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true PUPPETEER_SKIP_DOWNLOAD=true\necho \"### yarn install --frozen-lockfile --registry=https://registry.npmjs.com/\" >> /out/js.log; sh -c 'yarn install --frozen-lockfile --registry=https://registry.npmjs.com/' >> /out/js.log 2>&1; code=$?; echo \"### exit $code\" >> /out/js.log; if [ $code -ne 0 ]; then echo 'yarn install --frozen-lockfile --registry=https://registry.npmjs.com/' > /out/js.failed; exit 0; fi\necho \"### yarn build\" >> /out/js.log; sh -c 'yarn build' >> /out/js.log 2>&1; code=$?; echo \"### exit $code\" >> /out/js.log; if [ $code -ne 0 ]; then echo 'yarn build' > /out/js.failed; exit 0; fi\necho \"### yarn test\" >> /out/js.log; sh -c 'yarn test' >> /out/js.log 2>&1; code=$?; echo \"### exit $code\" >> /out/js.log; if [ $code -ne 0 ]; then echo 'yarn test' > /out/js.failed; exit 0; fi\necho \"### yarn tsc\" >> /out/js.log; sh -c 'yarn tsc' >> /out/js.log 2>&1; code=$?; echo \"### exit $code\" >> /out/js.log; if [ $code -ne 0 ]; then echo 'yarn tsc' > /out/js.failed; exit 0; fi\n",
+      [
+        "yarn install --frozen-lockfile --registry=https://registry.npmjs.com/",
+        "yarn build",
+        "yarn test",
+        "yarn tsc"
+      ]
+    ]
+  ],
+  "lanes_for": [
+    [
+      {
+        "files": {}
+      },
+      "",
+      [
+        "selectors",
+        "no-default-features"
+      ]
+    ],
+    [
+      {
+        "files": {
+          "napi/src/lib.rs": {}
+        }
+      },
+      "",
+      [
+        "selectors",
+        "no-default-features",
+        "wasm-check"
+      ]
+    ],
+    [
+      {
+        "files": {
+          "c/x.h": {},
+          "src/a.rs": {}
+        }
+      },
+      "+ #[cfg(target_arch = \"wasm32\")]\n",
+      [
+        "selectors",
+        "no-default-features",
+        "wasm-check",
+        "c-bindings"
+      ]
+    ],
+    [
+      {
+        "files": {
+          ".cargo/config": {}
+        }
+      },
+      " target_arch context\n",
+      [
+        "selectors",
+        "no-default-features",
+        "wasm-check"
+      ]
+    ],
+    [
+      {
+        "files": {}
+      },
+      "-target_arch\n",
+      [
+        "selectors",
+        "no-default-features",
+        "wasm-check"
+      ]
+    ]
+  ],
+  "new_drift": [
+    [
+      {
+        "node/ast.d.ts": "s",
+        "src/compat.rs": "h"
+      },
+      {
+        "node/ast.d.ts": "s",
+        "node/flags.js": "x"
+      },
+      [
+        "src/compat.rs"
+      ]
+    ],
+    [
+      {},
+      {
+        "a": "b"
+      },
+      []
+    ],
+    [
+      {
+        "a": "2",
+        "b": "1"
+      },
+      {},
+      [
+        "a",
+        "b"
+      ]
+    ]
+  ],
+  "parse_test_log": [
+    [
+      "   Compiling lightningcss v1.0.0 (/src)\nerror[E0425]: cannot find value `x` in this scope\nwarning: unused variable\nerror: could not compile `lightningcss` (lib test) due to 1 previous error\ntest orphan ... ok\n     Running unittests src/lib.rs (/target/debug/deps/lightningcss-70253750a15cc34e)\ntest tests::test_a ... ok\ntest tests::test_b ... FAILED\ntest tests::test_c ... ignored, slow\ntest tests::test_d ... ok\r\n     Running tests/cli.rs (/target/debug/deps/cli-1234)\ntest cli::test_a ... ok\n   Doc-tests lightningcss\ntest src/lib.rs - (line 10) ... ok\ntest src/lib.rs - x (line 20) ... FAILED\n\nfailures:\n\n---- tests::test_b stdout ----\nthread 'tests::test_b' panicked at src/lib.rs:1:1:\nassertion failed\n\n---- src/lib.rs - x (line 20) stdout ----\ndoc failure\nline 0\nline 1\nline 2\nline 3\nline 4\nline 5\nline 6\nline 7\nline 8\nline 9\nline 10\nline 11\nline 12\nline 13\nline 14\nline 15\nline 16\nline 17\nline 18\nline 19\nline 20\nline 21\nline 22\nline 23\nline 24\nline 25\nline 26\nline 27\nline 28\nline 29\nline 30\nline 31\nline 32\nline 33\nline 34\nline 35\nline 36\nline 37\nline 38\nline 39\nline 40\nline 41\nline 42\nline 43\nline 44\nline 45\nline 46\nline 47\nline 48\nline 49\nline 50\nline 51\nline 52\nline 53\nline 54\nline 55\nline 56\nline 57\nline 58\nline 59\nline 60\nline 61\nline 62\nline 63\nline 64\nline 65\nline 66\nline 67\nline 68\nline 69\nline 70\nline 71\nline 72\nline 73\nline 74\nline 75\nline 76\nline 77\nline 78\nline 79\n\nfailures:\n    tests::test_b\n\ntest result: FAILED. 3 passed; 2 failed; 1 ignored\nerror: test failed, to rerun pass `--lib`\nnote: implied by `-D warnings`\nerror: the lock file /src/Cargo.lock needs to be updated but --locked was passed to prevent this\n",
+      {
+        "compile_errors": [
+          "error[E0425]: cannot find value `x` in this scope",
+          "error: could not compile `lightningcss` (lib test) due to 1 previous error",
+          "error: test failed, to rerun pass `--lib`",
+          "error: the lock file /src/Cargo.lock needs to be updated but --locked was passed to prevent this"
+        ],
+        "failures": {
+          "src/lib.rs - x (line 20)": "doc failure\nline 0\nline 1\nline 2\nline 3\nline 4\nline 5\nline 6\nline 7\nline 8\nline 9\nline 10\nline 11\nline 12\nline 13\nline 14\nline 15\nline 16\nline 17\nline 18\nline 19\nline 20\nline 21\nline 22\nline 23\nline 24\nline 25\nline 26\nline 27\nline 28\nline 29\nline 30\nline 31\nline 32\nline 33\nline 34\nline 35\nline 36\nline 37\nline 38\nline 39\nline 40\nline 41\nline 42\nline 43\nline 44\nline 45\nline 46\nline 47\nline 48\nline 49\nline 50\nline 51\nline 52\nline 53\nline 54\nline 55\nline 56\nline 57\nline 58",
+          "tests::test_b": "thread 'tests::test_b' panicked at src/lib.rs:1:1:\nassertion failed"
+        },
+        "lockfile_outdated": true,
+        "summary": {
+          "failed": 2,
+          "ignored": 1,
+          "passed": 5
+        },
+        "tests": {
+          "None::orphan": "ok",
+          "lightningcss::src/lib.rs - (line 10)": "ok",
+          "lightningcss::src/lib.rs - x (line 20)": "failed",
+          "src/lib.rs::tests::test_a": "ok",
+          "src/lib.rs::tests::test_b": "failed",
+          "src/lib.rs::tests::test_c": "ignored",
+          "src/lib.rs::tests::test_d": "ok",
+          "tests/cli.rs::cli::test_a": "ok"
+        },
+        "warnings_as_errors": true
+      }
+    ],
+    [
+      "",
+      {
+        "compile_errors": null,
+        "failures": {},
+        "lockfile_outdated": false,
+        "summary": {
+          "failed": 0,
+          "ignored": 0,
+          "passed": 0
+        },
+        "tests": {},
+        "warnings_as_errors": false
+      }
+    ],
+    [
+      "test a ... ok\n",
+      {
+        "compile_errors": null,
+        "failures": {},
+        "lockfile_outdated": false,
+        "summary": {
+          "failed": 0,
+          "ignored": 0,
+          "passed": 1
+        },
+        "tests": {
+          "None::a": "ok"
+        },
+        "warnings_as_errors": false
+      }
+    ],
+    [
+      "error: something\nerror: something\nerror: something\nerror: something\nerror: something\nerror: something\nerror: something\nerror: something\nerror: something\nerror: something\nerror: something\nerror: something\nerror: something\nerror: something\nerror: something\nerror: something\nerror: something\nerror: something\nerror: something\nerror: something\nerror: something\nerror: something\nerror: something\nerror: something\nerror: something\n",
+      {
+        "compile_errors": [
+          "error: something",
+          "error: something",
+          "error: something",
+          "error: something",
+          "error: something",
+          "error: something",
+          "error: something",
+          "error: something",
+          "error: something",
+          "error: something",
+          "error: something",
+          "error: something",
+          "error: something",
+          "error: something",
+          "error: something",
+          "error: something",
+          "error: something",
+          "error: something",
+          "error: something",
+          "error: something"
+        ],
+        "failures": {},
+        "lockfile_outdated": false,
+        "summary": {
+          "failed": 0,
+          "ignored": 0,
+          "passed": 0
+        },
+        "tests": {},
+        "warnings_as_errors": false
+      }
+    ]
+  ],
+  "patch": {
+    "added": {
+      "feed.rs": [
+        "a"
+      ],
+      "new.rs": [
+        "fn x() {}"
+      ],
+      "src/compat.rs": [
+        "  NewThing,"
+      ],
+      "src/lib.rs": [
+        "  new",
+        "  newer",
+        "  added"
+      ]
+    },
+    "changed": {
+      "feed.rs": {
+        "base": [
+          [
+            1,
+            1
+          ]
+        ],
+        "head": [
+          [
+            1,
+            1
+          ]
+        ]
+      },
+      "gone.rs": {
+        "base": [
+          [
+            1,
+            1
+          ]
+        ],
+        "head": []
+      },
+      "new.rs": {
+        "base": [],
+        "head": [
+          [
+            1,
+            2
+          ]
+        ]
+      },
+      "src/compat.rs": {
+        "base": [],
+        "head": [
+          [
+            3,
+            3
+          ]
+        ]
+      },
+      "src/lib.rs": {
+        "base": [
+          [
+            10,
+            10
+          ]
+        ],
+        "head": [
+          [
+            10,
+            11
+          ],
+          [
+            22,
+            22
+          ]
+        ]
+      }
+    },
+    "hunks": {
+      "feed.rs": {
+        "added": 1,
+        "base": [
+          [
+            1,
+            2
+          ]
+        ],
+        "head": [
+          [
+            1,
+            2
+          ]
+        ],
+        "removed": 1
+      },
+      "gone.rs": {
+        "added": 0,
+        "base": [
+          [
+            1,
+            1
+          ]
+        ],
+        "head": [],
+        "removed": 0
+      },
+      "new.rs": {
+        "added": 1,
+        "base": [],
+        "head": [
+          [
+            1,
+            2
+          ]
+        ],
+        "removed": 0
+      },
+      "src/compat.rs": {
+        "added": 1,
+        "base": [
+          [
+            1,
+            3
+          ]
+        ],
+        "head": [
+          [
+            1,
+            4
+          ]
+        ],
+        "removed": 0
+      },
+      "src/lib.rs": {
+        "added": 3,
+        "base": [
+          [
+            10,
+            10
+          ]
+        ],
+        "head": [
+          [
+            10,
+            11
+          ],
+          [
+            22,
+            22
+          ]
+        ],
+        "removed": 1
+      }
+    },
+    "removed": {
+      "feed.rs": [
+        "a"
+      ],
+      "src/lib.rs": [
+        "  old"
+      ]
+    },
+    "text": "diff --git a/src/compat.rs b/src/compat.rs\n--- a/src/compat.rs\n+++ b/src/compat.rs\n@@ -1,3 +1,4 @@\n pub enum Feature {\n   AnyLink,\n+  NewThing,\n }\ndiff --git a/src/lib.rs b/src/lib.rs\n--- a/src/lib.rs\n+++ b/src/lib.rs\n@@ -10 +10,2 @@ mod tests {\n-  old\n+  new\n+  newer\n@@ -20,0 +22 @@\n+  added\ndiff --git a/new.rs b/new.rs\nnew file mode 100644\n--- /dev/null\n+++ b/new.rs\n@@ -0,0 +1,2 @@\n+++plus\n+fn x() {}\ndiff --git a/gone.rs b/gone.rs\ndeleted file mode 100644\n--- a/gone.rs\n+++ /dev/null\n@@ -1 +0,0 @@\n----dash\n\\ No newline at end of file\ndiff --git a/feed.rs b/feed.rs\n--- a/feed.rs\n+++ b/feed.rs\n@@ -1,2 +1,2 @@\n-a\fb\n+a\fc\n ctx more\n"
+  },
+  "perf_summary": [
+    [
+      [
+        [
+          "a",
+          {
+            "base": [
+              0.001,
+              0.002,
+              0.0015
+            ],
+            "head": [
+              0.0011,
+              0.0021,
+              0.0016
+            ]
+          }
+        ],
+        [
+          "b",
+          {
+            "base": [
+              0.01,
+              0.0125
+            ],
+            "head": [
+              0.02,
+              0.0105
+            ]
+          }
+        ],
+        [
+          "c",
+          {
+            "base": [
+              NaN,
+              NaN
+            ],
+            "head": [
+              0.1,
+              0.1
+            ]
+          }
+        ],
+        [
+          "z",
+          {
+            "base": [
+              0.0,
+              0.0
+            ],
+            "head": [
+              0.001,
+              0.001
+            ]
+          }
+        ]
+      ],
+      {
+        "base": 1000,
+        "head": 1100
+      },
+      3,
+      {
+        "binary_bytes": {
+          "base": 1000,
+          "head": 1100
+        },
+        "binary_ratio": 1.1,
+        "failed_files": [
+          "c"
+        ],
+        "files": [
+          {
+            "base_ms": 1.5,
+            "head_ms": 1.6,
+            "name": "a",
+            "ratio": 1.0667
+          },
+          {
+            "base_ms": 11.25,
+            "head_ms": 15.25,
+            "name": "b",
+            "ratio": 1.3556
+          },
+          {
+            "base_ms": NaN,
+            "head_ms": 100.0,
+            "name": "c",
+            "ratio": NaN
+          },
+          {
+            "base_ms": 0.0,
+            "head_ms": 1.0,
+            "name": "z",
+            "ratio": null
+          }
+        ],
+        "repeats": 3,
+        "slower_share": 0.667,
+        "total_ms": {
+          "base": 12.75,
+          "head": 17.85
+        },
+        "total_ratio": 1.4
+      }
+    ],
+    [
+      [
+        [
+          "only-failed",
+          {
+            "base": [
+              NaN
+            ],
+            "head": [
+              NaN
+            ]
+          }
+        ]
+      ],
+      {
+        "base": 7,
+        "head": 7
+      },
+      1,
+      {
+        "binary_bytes": {
+          "base": 7,
+          "head": 7
+        },
+        "binary_ratio": 1.0,
+        "failed_files": [
+          "only-failed"
+        ],
+        "files": [
+          {
+            "base_ms": NaN,
+            "head_ms": NaN,
+            "name": "only-failed",
+            "ratio": NaN
+          }
+        ],
+        "repeats": 1,
+        "slower_share": 0.0,
+        "total_ms": {
+          "base": 0,
+          "head": 0
+        },
+        "total_ratio": null
+      }
+    ],
+    [
+      [
+        [
+          "even",
+          {
+            "base": [
+              0.5,
+              0.25,
+              0.75,
+              1.0
+            ],
+            "head": [
+              0.5,
+              0.5,
+              0.5,
+              0.5
+            ]
+          }
+        ]
+      ],
+      {
+        "base": 3,
+        "head": 2
+      },
+      4,
+      {
+        "binary_bytes": {
+          "base": 3,
+          "head": 2
+        },
+        "binary_ratio": 0.66667,
+        "failed_files": [],
+        "files": [
+          {
+            "base_ms": 625.0,
+            "head_ms": 500.0,
+            "name": "even",
+            "ratio": 0.8
+          }
+        ],
+        "repeats": 4,
+        "slower_share": 0.0,
+        "total_ms": {
+          "base": 625.0,
+          "head": 500.0
+        },
+        "total_ratio": 0.8
+      }
+    ]
+  ],
+  "regex": [
+    [
+      "\\bunsafe\\b",
+      "",
+      "unsafe {",
+      [
+        "unsafe"
+      ]
+    ],
+    [
+      "\\bunsafe\\b",
+      "",
+      "éunsafe",
+      []
+    ],
+    [
+      "\\bunsafe\\b",
+      "",
+      "unsafeé",
+      []
+    ],
+    [
+      "\\bunsafe\\b",
+      "",
+      "x unsafe",
+      [
+        "unsafe"
+      ]
+    ],
+    [
+      "\\bunsafe\\b",
+      "",
+      "_unsafe",
+      []
+    ],
+    [
+      "^\\s*(\\w+),?\\s*$",
+      "",
+      "  Ünicode,",
+      [
+        "  Ünicode,"
+      ]
+    ],
+    [
+      "^\\s*(\\w+),?\\s*$",
+      "",
+      "  A,\n",
+      [
+        "  A,\n"
+      ]
+    ],
+    [
+      "^\\s*(\\w+),?\\s*$",
+      "",
+      "﻿A,",
+      []
+    ],
+    [
+      "^\\s*(\\w+),?\\s*$",
+      "",
+      "\u001fA,",
+      [
+        "\u001fA,"
+      ]
+    ],
+    [
+      "^\\s*(\\w+),?\\s*$",
+      "",
+      "A,",
+      [
+        "A,"
+      ]
+    ],
+    [
+      "Feature::(\\w+)",
+      "",
+      "Feature::Café | Feature::B2",
+      [
+        "Feature::Café",
+        "Feature::B2"
+      ]
+    ],
+    [
+      "Feature::(\\w+)",
+      "",
+      "Feature::١x",
+      [
+        "Feature::١x"
+      ]
+    ],
+    [
+      "(\\d{1,5})\\b",
+      "",
+      "#12",
+      [
+        "12"
+      ]
+    ],
+    [
+      "(\\d{1,5})\\b",
+      "",
+      "#12é",
+      []
+    ],
+    [
+      "(\\d{1,5})\\b",
+      "",
+      "#١٢",
+      [
+        "١٢"
+      ]
+    ],
+    [
+      "(\\d{1,5})\\b",
+      "",
+      "#123456",
+      [
+        "23456"
+      ]
+    ],
+    [
+      "a.c",
+      "",
+      "a\nc",
+      []
+    ],
+    [
+      "a.c",
+      "",
+      "a\rc",
+      [
+        "a\rc"
+      ]
+    ],
+    [
+      "a.c",
+      "",
+      "a c",
+      [
+        "a c"
+      ]
+    ],
+    [
+      "a.c",
+      "",
+      "abc",
+      [
+        "abc"
+      ]
+    ],
+    [
+      "^x$",
+      "",
+      "x",
+      [
+        "x"
+      ]
+    ],
+    [
+      "^x$",
+      "",
+      "x\n",
+      [
+        "x"
+      ]
+    ],
+    [
+      "^x$",
+      "",
+      "x\n\n",
+      []
+    ],
+    [
+      "^x$",
+      "",
+      "\nx",
+      []
+    ],
+    [
+      "^(error(?:\\[E\\d+\\])?: .+)$",
+      "m",
+      "error: a\r\nerror[E1]: b\nwarning\nerror: c d",
+      [
+        "error: a\r",
+        "error[E1]: b",
+        "error: c d"
+      ]
+    ],
+    [
+      "^(error(?:\\[E\\d+\\])?: .+)$",
+      "m",
+      "x\nerror: y",
+      [
+        "error: y"
+      ]
+    ],
+    [
+      "\\bfix(?:e[sd])?\\b",
+      "i",
+      "FIX",
+      [
+        "FIX"
+      ]
+    ],
+    [
+      "\\bfix(?:e[sd])?\\b",
+      "i",
+      "fıxes",
+      [
+        "fıxes"
+      ]
+    ],
+    [
+      "\\bfix(?:e[sd])?\\b",
+      "i",
+      "FİXED",
+      [
+        "FİXED"
+      ]
+    ],
+    [
+      "\\bfix(?:e[sd])?\\b",
+      "i",
+      "ﬁx",
+      []
+    ],
+    [
+      "\\bfix(?:e[sd])?\\b",
+      "i",
+      "fix_",
+      []
+    ],
+    [
+      "\\bfix(?:e[sd])?\\b",
+      "i",
+      "Fixé",
+      []
+    ],
+    [
+      "[^\\s]+",
+      "",
+      "a b\u001cc﻿d",
+      [
+        "a",
+        "b",
+        "c﻿d"
+      ]
+    ],
+    [
+      "\\S+",
+      "",
+      "a b\u001cc﻿d",
+      [
+        "a",
+        "b",
+        "c﻿d"
+      ]
+    ],
+    [
+      "^$",
+      "m",
+      "a\n\nb\r\rc",
+      [
+        ""
+      ]
+    ],
+    [
+      "\\Bx",
+      "",
+      "ax",
+      [
+        "x"
+      ]
+    ],
+    [
+      "\\Bx",
+      "",
+      " x",
+      []
+    ],
+    [
+      "\\Bx",
+      "",
+      "éx",
+      [
+        "x"
+      ]
+    ]
+  ],
+  "risk_flags": [
+    [
+      {
+        "Cargo.lock": {
+          "added_lines": [],
+          "removed_lines": [],
+          "status": "M"
+        },
+        "node/ast.d.ts": {
+          "added_lines": [],
+          "removed_lines": [],
+          "status": "M"
+        },
+        "node/index.js": {
+          "added_lines": [],
+          "removed_lines": [],
+          "status": "M"
+        },
+        "selectors/parser.rs": {
+          "added_lines": [
+            "  pub struct S;"
+          ],
+          "removed_lines": [],
+          "status": "M"
+        },
+        "src/compat.rs": {
+          "added_lines": [],
+          "removed_lines": [],
+          "status": "M"
+        },
+        "src/declaration.rs": {
+          "added_lines": [],
+          "removed_lines": [],
+          "status": "M"
+        },
+        "src/lib.rs": {
+          "added_lines": [
+            "TokenList"
+          ],
+          "removed_lines": [
+            "x"
+          ],
+          "status": "M"
+        },
+        "src/properties/mod.rs": {
+          "added_lines": [
+            "    \"new-prop\": NewProp,",
+            "  \"a-b\": X,",
+            "\"Upper\": y,"
+          ],
+          "removed_lines": [],
+          "status": "M"
+        },
+        "src/rules/function.rs": {
+          "added_lines": [
+            "let t: TokenList = x;",
+            ".unwrap()",
+            "pub fn new_api() {}",
+            "x == 1.5"
+          ],
+          "removed_lines": [],
+          "status": "A"
+        },
+        "src/rules/style.rs": {
+          "added_lines": [
+            "unsafe { y }",
+            "panic!(\"x\")",
+            "épanic!(",
+            "a.to_vec()"
+          ],
+          "removed_lines": [
+            "TokenList"
+          ],
+          "status": "M"
+        }
+      },
+      {
+        "src/lib.rs": {
+          "added": 400,
+          "base": [],
+          "head": [],
+          "removed": 3
+        },
+        "src/rules/style.rs": {
+          "added": 250,
+          "base": [],
+          "head": [],
+          "removed": 0
+        }
+      },
+      [
+        {
+          "detail": "touches files with a wide blast radius",
+          "id": "core-file",
+          "paths": [
+            "selectors/parser.rs",
+            "src/compat.rs",
+            "src/declaration.rs",
+            "src/properties/mod.rs",
+            "src/rules/style.rs"
+          ]
+        },
+        {
+          "detail": "3 line(s) removed from src/lib.rs (expectations changed or deleted)",
+          "id": "test-lines-removed",
+          "paths": [
+            "src/lib.rs"
+          ]
+        },
+        {
+          "detail": "src/compat.rs changed; it is generated by `node scripts/build-prefixes.js` — verify it was regenerated, not hand-edited",
+          "id": "generated-edited",
+          "paths": [
+            "src/compat.rs"
+          ]
+        },
+        {
+          "detail": "node/ast.d.ts changed; verify it matches `yarn build-ast` output",
+          "id": "ast-types-changed",
+          "paths": [
+            "node/ast.d.ts"
+          ]
+        },
+        {
+          "detail": "touches the forked parcel_selectors crate (published separately)",
+          "id": "selectors-crate",
+          "paths": [
+            "selectors/parser.rs"
+          ]
+        },
+        {
+          "detail": "dependency manifests changed",
+          "id": "dependencies",
+          "paths": [
+            "Cargo.lock"
+          ]
+        },
+        {
+          "detail": "+650/-3 lines",
+          "id": "large-diff",
+          "paths": []
+        },
+        {
+          "detail": "extra allocations in hot paths",
+          "id": "added-clone-heavy",
+          "paths": [
+            "src/rules/style.rs"
+          ]
+        },
+        {
+          "detail": "float equality comparison",
+          "id": "added-float-compare",
+          "paths": [
+            "src/rules/function.rs"
+          ]
+        },
+        {
+          "detail": "new panic!/unreachable!/todo! in library code",
+          "id": "added-panic",
+          "paths": [
+            "src/rules/style.rs"
+          ]
+        },
+        {
+          "detail": "new unsafe code",
+          "id": "added-unsafe",
+          "paths": [
+            "src/rules/style.rs"
+          ]
+        },
+        {
+          "detail": "new unwrap()/expect() in library code (panics on user input?)",
+          "id": "added-unwrap",
+          "paths": [
+            "src/rules/function.rs"
+          ]
+        },
+        {
+          "detail": "new or changed `pub` items (Rust API / AST / TS types surface)",
+          "id": "public-api",
+          "paths": [
+            "selectors/parser.rs",
+            "src/rules/function.rs"
+          ]
+        },
+        {
+          "detail": "touches bindings or the visitor API; run the JS lane",
+          "id": "bindings",
+          "paths": [
+            "node/ast.d.ts",
+            "node/index.js"
+          ]
+        },
+        {
+          "detail": "new properties registered: a-b, new-prop",
+          "id": "new-property",
+          "paths": [
+            "src/properties/mod.rs"
+          ]
+        }
+      ]
+    ],
+    [
+      {
+        "scripts/build-prefixes.js": {},
+        "src/compat.rs": {},
+        "src/visitor.rs": {},
+        "src/x.rs": {
+          "added_lines": [
+            "fn x() {}"
+          ]
+        }
+      },
+      {},
+      [
+        {
+          "detail": "touches files with a wide blast radius",
+          "id": "core-file",
+          "paths": [
+            "src/compat.rs"
+          ]
+        },
+        {
+          "detail": "source changes without test changes",
+          "id": "no-tests",
+          "paths": [
+            "src/compat.rs",
+            "src/visitor.rs",
+            "src/x.rs"
+          ]
+        },
+        {
+          "detail": "touches bindings or the visitor API; run the JS lane",
+          "id": "bindings",
+          "paths": []
+        }
+      ]
+    ],
+    [
+      {
+        "README.md": {}
+      },
+      {
+        "src/lib.rs": {
+          "added": 1,
+          "base": [],
+          "head": [],
+          "removed": 0
+        }
+      },
+      []
+    ]
+  ],
+  "rust_unescape": [
+    [
+      "plain",
+      "plain"
+    ],
+    [
+      "a\\u{1f600}\\n\\\\",
+      "a😀\n\\"
+    ],
+    [
+      "\\t\\r\\0\\'\\\"",
+      "\t\r\u0000'\""
+    ],
+    [
+      "\\q",
+      "q"
+    ],
+    [
+      "tail\\",
+      "tail"
+    ],
+    [
+      "\\😀x",
+      "😀x"
+    ],
+    [
+      "\\u{41}\\u{e9}",
+      "Aé"
+    ]
+  ],
+  "split_params": [
+    [
+      "source: &str, expected: &str",
+      [
+        [
+          "source",
+          "&str"
+        ],
+        [
+          "expected",
+          "&str"
+        ]
+      ]
+    ],
+    [
+      "mut a: Vec<(u8, u8)>, b: HashMap<K, V>",
+      [
+        [
+          "a",
+          "Vec<(u8, u8)>"
+        ],
+        [
+          "b",
+          "HashMap<K, V>"
+        ]
+      ]
+    ],
+    [
+      "&self, x: u32",
+      [
+        [
+          "x",
+          "u32"
+        ]
+      ]
+    ],
+    [
+      "",
+      []
+    ],
+    [
+      "  a:  Option< & str >  ,  ",
+      [
+        [
+          "a",
+          "Option< & str >"
+        ]
+      ]
+    ],
+    [
+      "f: impl Fn(u8) -> u8, g: [u8; 2]",
+      [
+        [
+          "f",
+          "impl Fn(u8) -> u8, g: [u8; 2]"
+        ]
+      ]
+    ],
+    [
+      "a: &[(&str, Option<&str>)]",
+      [
+        [
+          "a",
+          "&[(&str, Option<&str>)]"
+        ]
+      ]
+    ]
+  ],
+  "test_fns": [
+    [
+      "  #[test]\n  pub fn test_flex() {\n    a\n  }\n\n  fn helper() {\n    h\n  }\n\n  #[cfg(feature = \"x\")]\n  #[test]\n  pub(crate) fn test_margin() {\n    b\n  }\n    fn test_nested() {}\n  #[test]\n  fn test_été() {\n  }\n  #[test]\n  fn not_test() {}",
+      [
+        [
+          3,
+          3
+        ]
+      ],
+      [
+        "test_flex"
+      ]
+    ],
+    [
+      "  #[test]\n  pub fn test_flex() {\n    a\n  }\n\n  fn helper() {\n    h\n  }\n\n  #[cfg(feature = \"x\")]\n  #[test]\n  pub(crate) fn test_margin() {\n    b\n  }\n    fn test_nested() {}\n  #[test]\n  fn test_été() {\n  }\n  #[test]\n  fn not_test() {}",
+      [
+        [
+          5,
+          7
+        ]
+      ],
+      []
+    ],
+    [
+      "  #[test]\n  pub fn test_flex() {\n    a\n  }\n\n  fn helper() {\n    h\n  }\n\n  #[cfg(feature = \"x\")]\n  #[test]\n  pub(crate) fn test_margin() {\n    b\n  }\n    fn test_nested() {}\n  #[test]\n  fn test_été() {\n  }\n  #[test]\n  fn not_test() {}",
+      [
+        [
+          10,
+          10
+        ]
+      ],
+      [
+        "test_margin"
+      ]
+    ],
+    [
+      "  #[test]\n  pub fn test_flex() {\n    a\n  }\n\n  fn helper() {\n    h\n  }\n\n  #[cfg(feature = \"x\")]\n  #[test]\n  pub(crate) fn test_margin() {\n    b\n  }\n    fn test_nested() {}\n  #[test]\n  fn test_été() {\n  }\n  #[test]\n  fn not_test() {}",
+      [
+        [
+          13,
+          13
+        ]
+      ],
+      [
+        "test_margin"
+      ]
+    ],
+    [
+      "  #[test]\n  pub fn test_flex() {\n    a\n  }\n\n  fn helper() {\n    h\n  }\n\n  #[cfg(feature = \"x\")]\n  #[test]\n  pub(crate) fn test_margin() {\n    b\n  }\n    fn test_nested() {}\n  #[test]\n  fn test_été() {\n  }\n  #[test]\n  fn not_test() {}",
+      [
+        [
+          15,
+          15
+        ]
+      ],
+      [
+        "test_margin"
+      ]
+    ],
+    [
+      "  #[test]\n  pub fn test_flex() {\n    a\n  }\n\n  fn helper() {\n    h\n  }\n\n  #[cfg(feature = \"x\")]\n  #[test]\n  pub(crate) fn test_margin() {\n    b\n  }\n    fn test_nested() {}\n  #[test]\n  fn test_été() {\n  }\n  #[test]\n  fn not_test() {}",
+      [
+        [
+          17,
+          17
+        ]
+      ],
+      [
+        "test_été"
+      ]
+    ],
+    [
+      "  #[test]\n  pub fn test_flex() {\n    a\n  }\n\n  fn helper() {\n    h\n  }\n\n  #[cfg(feature = \"x\")]\n  #[test]\n  pub(crate) fn test_margin() {\n    b\n  }\n    fn test_nested() {}\n  #[test]\n  fn test_été() {\n  }\n  #[test]\n  fn not_test() {}",
+      [
+        [
+          20,
+          20
+        ]
+      ],
+      []
+    ],
+    [
+      "  #[test]\n  pub fn test_flex() {\n    a\n  }\n\n  fn helper() {\n    h\n  }\n\n  #[cfg(feature = \"x\")]\n  #[test]\n  pub(crate) fn test_margin() {\n    b\n  }\n    fn test_nested() {}\n  #[test]\n  fn test_été() {\n  }\n  #[test]\n  fn not_test() {}",
+      [
+        [
+          1,
+          30
+        ]
+      ],
+      [
+        "test_flex",
+        "test_margin",
+        "test_été"
+      ]
+    ]
+  ],
+  "to_requests": [
+    {
+      "bits": {
+        "MediaQueries": 448,
+        "MediaRangeSyntax": 128,
+        "Nesting": 1
+      },
+      "identity": "e86481d160bcd70e",
+      "problem": "no source field recorded",
+      "requests": [
+        [
+          "",
+          {
+            "compact": false,
+            "css": ".a{}",
+            "css_modules": {
+              "animation": false,
+              "container": true,
+              "custom_idents": false,
+              "dashed_idents": true,
+              "grid": true,
+              "pattern": "x-[name]😀[content-hash]",
+              "pure": false
+            },
+            "error_recovery": true,
+            "filename": "a.css",
+            "flags": [
+              "custom-functions",
+              "custom-media",
+              "deep-selector-combinator",
+              "nesting",
+              "scroll-navigation-controls"
+            ],
+            "kind": "sheet",
+            "minify": true,
+            "targets": null
+          },
+          {
+            "code": ".a{}",
+            "type": "code"
+          }
+        ]
+      ],
+      "tuple": {
+        "fields": {
+          "expected": ".a{}",
+          "options": {
+            "css_modules": "Some(Config { pattern: Pattern { segments: [Literal(\"x-\"), Name, Literal(\"\\u{1f600}\"), ContentHash] }, dashed_idents: true, animation: false, grid: true, custom_idents: false, container: true, pure: false })",
+            "error_recovery": true,
+            "filename": "a.css",
+            "flags": "ParserFlags(NESTING | CUSTOM_MEDIA | DEEP_SELECTOR_COMBINATOR | SCROLL_NAVIGATION_CONTROLS | CUSTOM_FUNCTIONS)"
+          },
+          "source": ".a{}"
+        },
+        "helper": "test_with_options"
+      }
+    },
+    {
+      "bits": {
+        "MediaQueries": 448,
+        "MediaRangeSyntax": 128,
+        "Nesting": 1
+      },
+      "identity": "cc4fd85573b53bff",
+      "problem": "no source field recorded",
+      "requests": [
+        [
+          "",
+          {
+            "compact": false,
+            "css": ".a{}",
+            "kind": "sheet",
+            "minify": true,
+            "targets": null
+          },
+          {
+            "code": ".a{}",
+            "type": "code"
+          }
+        ]
+      ],
+      "tuple": {
+        "fields": {
+          "expected": ".a{}",
+          "options": {},
+          "source": ".a{}"
+        },
+        "helper": "test_with_options"
+      }
+    },
+    {
+      "bits": {
+        "MediaQueries": 448,
+        "MediaRangeSyntax": 128,
+        "Nesting": 1
+      },
+      "identity": "60aa46b7fb5fd3e7",
+      "problem": "no source field recorded",
+      "requests": [
+        [
+          "",
+          {
+            "compact": false,
+            "css": ".a{}",
+            "filename": "",
+            "kind": "sheet",
+            "minify": true,
+            "targets": null
+          },
+          {
+            "code": ".a{}",
+            "type": "code"
+          }
+        ]
+      ],
+      "tuple": {
+        "fields": {
+          "expected": ".a{}",
+          "options": {
+            "css_modules": "None",
+            "error_recovery": false,
+            "filename": "",
+            "flags": "ParserFlags(0x0)"
+          },
+          "source": ".a{}"
+        },
+        "helper": "test_with_options"
+      }
+    },
+    {
+      "bits": {
+        "MediaQueries": 448,
+        "MediaRangeSyntax": 128,
+        "Nesting": 1
+      },
+      "identity": "696fd58b23a1e4fa",
+      "problem": "no source field recorded",
+      "requests": [
+        [
+          "",
+          {
+            "compact": true,
+            "css": ".a{}",
+            "kind": "sheet",
+            "minify": true,
+            "printer_targets": {
+              "browsers": {
+                "chrome": 5242880,
+                "safari": 852224
+              },
+              "exclude": 448,
+              "include": 1
+            },
+            "targets": null
+          },
+          {
+            "code": "x",
+            "type": "code"
+          }
+        ]
+      ],
+      "tuple": {
+        "fields": {
+          "expected": "x",
+          "options": {
+            "minify": true,
+            "targets": "Targets { browsers: Some(Browsers { chrome: Some(5242880), safari: Some(852224) }), include: Features(Nesting), exclude: Features(MediaQueries) }"
+          },
+          "source": ".a{}"
+        },
+        "helper": "test_with_printer_options"
+      }
+    },
+    {
+      "bits": {
+        "MediaQueries": 448,
+        "MediaRangeSyntax": 128,
+        "Nesting": 1
+      },
+      "identity": "01d2f1c411937f92",
+      "problem": "no source field recorded",
+      "requests": [
+        [
+          "",
+          {
+            "compact": false,
+            "css": ".a{}",
+            "kind": "sheet",
+            "minify": true,
+            "printer_targets": {
+              "browsers": null,
+              "exclude": 0,
+              "include": 0
+            },
+            "targets": null
+          },
+          {
+            "code": "x",
+            "type": "code"
+          }
+        ]
+      ],
+      "tuple": {
+        "fields": {
+          "expected": "x",
+          "options": {
+            "minify": false,
+            "targets": "Targets { browsers: None, include: Features(0x0), exclude: Features(0x0) }"
+          },
+          "source": ".a{}"
+        },
+        "helper": "test_with_printer_options"
+      }
+    },
+    {
+      "bits": {
+        "MediaQueries": 448,
+        "MediaRangeSyntax": 128,
+        "Nesting": 1
+      },
+      "identity": "93cda9e139a6c2fa",
+      "problem": "no source field recorded",
+      "requests": [
+        [
+          "",
+          {
+            "compact": false,
+            "css": ".a{}",
+            "kind": "sheet",
+            "minify": true,
+            "printer_targets": {
+              "browsers": null,
+              "exclude": 0,
+              "include": 0
+            },
+            "targets": null
+          },
+          {
+            "code": "x",
+            "type": "code"
+          }
+        ]
+      ],
+      "tuple": {
+        "fields": {
+          "expected": "x",
+          "source": ".a{}"
+        },
+        "helper": "test_with_printer_options"
+      }
+    },
+    {
+      "bits": {
+        "MediaQueries": 448,
+        "MediaRangeSyntax": 128,
+        "Nesting": 1
+      },
+      "identity": "099a780421f48efe",
+      "problem": "no source field recorded",
+      "requests": [
+        [
+          "",
+          {
+            "compact": true,
+            "css": ".a{}",
+            "css_modules": {
+              "animation": false,
+              "container": true,
+              "custom_idents": false,
+              "dashed_idents": true,
+              "grid": true,
+              "pattern": "x-[name]😀[content-hash]",
+              "pure": false
+            },
+            "error_recovery": true,
+            "filename": "a.css",
+            "flags": [
+              "custom-functions",
+              "custom-media",
+              "deep-selector-combinator",
+              "nesting",
+              "scroll-navigation-controls"
+            ],
+            "kind": "sheet",
+            "minify": true,
+            "targets": {
+              "firefox": 6553600
+            }
+          },
+          {
+            "code": ".a{}",
+            "type": "code"
+          }
+        ]
+      ],
+      "tuple": {
+        "fields": {
+          "browsers": "Some(Browsers { firefox: Some(6553600) })",
+          "expected": ".a{}",
+          "options": {
+            "css_modules": "Some(Config { pattern: Pattern { segments: [Literal(\"x-\"), Name, Literal(\"\\u{1f600}\"), ContentHash] }, dashed_idents: true, animation: false, grid: true, custom_idents: false, container: true, pure: false })",
+            "error_recovery": true,
+            "filename": "a.css",
+            "flags": "ParserFlags(NESTING | CUSTOM_MEDIA | DEEP_SELECTOR_COMBINATOR | SCROLL_NAVIGATION_CONTROLS | CUSTOM_FUNCTIONS)"
+          },
+          "source": ".a{}"
+        },
+        "helper": "minify_test_with_options_and_browsers"
+      }
+    },
+    {
+      "bits": {
+        "MediaQueries": 448,
+        "MediaRangeSyntax": 128,
+        "Nesting": 1
+      },
+      "identity": "87b3a60b68bf8ea1",
+      "problem": "no source field recorded",
+      "requests": [
+        [
+          "",
+          {
+            "compact": true,
+            "css": ".a{}",
+            "css_modules": {
+              "dashed_idents": false
+            },
+            "kind": "sheet",
+            "minify": true,
+            "targets": null
+          },
+          {
+            "code": ".a{}",
+            "type": "code"
+          }
+        ]
+      ],
+      "tuple": {
+        "fields": {
+          "browsers": "None",
+          "expected": ".a{}",
+          "options": {
+            "css_modules": "Some(Config { pattern: Pattern { segments: [Hash, Literal(\"_\"), Local] }, dashed_idents: false })"
+          },
+          "source": ".a{}"
+        },
+        "helper": "minify_test_with_options_and_browsers"
+      }
+    },
+    {
+      "bits": {
+        "MediaQueries": 448,
+        "MediaRangeSyntax": 128,
+        "Nesting": 1
+      },
+      "identity": "17216dfe13198f3d",
+      "problem": "no source field recorded",
+      "requests": [
+        [
+          "",
+          {
+            "compact": false,
+            "css": ".a{}",
+            "kind": "sheet",
+            "minify": true,
+            "targets": {
+              "ie": 720896
+            }
+          },
+          {
+            "code": ".a{}",
+            "type": "code"
+          }
+        ]
+      ],
+      "tuple": {
+        "fields": {
+          "expected": ".a{}",
+          "source": ".a{}",
+          "targets": "Browsers { ie: Some(720896), edge: None }"
+        },
+        "helper": "prefix_test"
+      }
+    },
+    {
+      "bits": {
+        "MediaQueries": 448,
+        "MediaRangeSyntax": 128,
+        "Nesting": 1
+      },
+      "identity": "e7ce43438de86c33",
+      "problem": "no source field recorded",
+      "requests": [
+        [
+          "",
+          {
+            "compact": true,
+            "css": "color: red",
+            "kind": "attr",
+            "minify": true,
+            "targets": null
+          },
+          {
+            "code": "color:red",
+            "type": "code"
+          }
+        ]
+      ],
+      "tuple": {
+        "fields": {
+          "expected": "color:red",
+          "minify": true,
+          "source": "color: red",
+          "targets": "None"
+        },
+        "helper": "attr_test"
+      }
+    },
+    {
+      "bits": {
+        "MediaQueries": 448,
+        "MediaRangeSyntax": 128,
+        "Nesting": 1
+      },
+      "identity": "ab3d93d1cf6e4508",
+      "problem": "no source field recorded",
+      "requests": [
+        [
+          "",
+          {
+            "compact": false,
+            "css": "color: red",
+            "kind": "attr",
+            "minify": true,
+            "targets": {
+              "chrome": 1
+            }
+          },
+          {
+            "code": "color: red",
+            "type": "code"
+          }
+        ]
+      ],
+      "tuple": {
+        "fields": {
+          "expected": "color: red",
+          "minify": false,
+          "source": "color: red",
+          "targets": "Some(Browsers { chrome: Some(1) })"
+        },
+        "helper": "attr_test"
+      }
+    },
+    {
+      "bits": {
+        "MediaQueries": 448,
+        "MediaRangeSyntax": 128,
+        "Nesting": 1
+      },
+      "identity": "e695db502a2a4384",
+      "problem": "no source field recorded",
+      "requests": [
+        [
+          "",
+          {
+            "compact": false,
+            "css": ".a{&.b{}}",
+            "include": 129,
+            "kind": "sheet",
+            "minify": true,
+            "targets": {
+              "chrome": 5898240
+            }
+          },
+          {
+            "code": "x",
+            "type": "code"
+          }
+        ]
+      ],
+      "tuple": {
+        "fields": {
+          "expected": "x",
+          "source": ".a{&.b{}}",
+          "targets": "Targets { browsers: Some(Browsers { chrome: Some(5898240) }), include: Features(MediaRangeSyntax | Nesting), exclude: Features(0x0) }"
+        },
+        "helper": "nesting_test_with_targets"
+      }
+    },
+    {
+      "bits": {
+        "MediaQueries": 448,
+        "MediaRangeSyntax": 128,
+        "Nesting": 1
+      },
+      "identity": "9dbe4488938a63b8",
+      "problem": "no source field recorded",
+      "requests": [
+        [
+          "",
+          {
+            "compact": false,
+            "css": ".a{&.b{}}",
+            "exclude": 1,
+            "kind": "sheet",
+            "minify": true,
+            "targets": null
+          },
+          {
+            "code": "x",
+            "type": "code"
+          }
+        ]
+      ],
+      "tuple": {
+        "fields": {
+          "expected": "x",
+          "source": ".a{&.b{}}",
+          "targets": "Targets { browsers: None, include: Features(0x0), exclude: Features(Nesting) }"
+        },
+        "helper": "nesting_test_with_targets"
+      }
+    },
+    {
+      "bits": {
+        "MediaQueries": 448,
+        "MediaRangeSyntax": 128,
+        "Nesting": 1
+      },
+      "identity": "99186f4fd4c2f5d6",
+      "problem": "no source field recorded",
+      "requests": [
+        [
+          "",
+          {
+            "compact": false,
+            "css": ".a{}",
+            "kind": "sheet",
+            "minify": true,
+            "targets": null
+          },
+          {
+            "code": "x",
+            "type": "code"
+          }
+        ]
+      ],
+      "tuple": {
+        "fields": {
+          "expected": "x",
+          "source": ".a{}"
+        },
+        "helper": "nesting_test_no_targets"
+      }
+    },
+    {
+      "bits": {
+        "MediaQueries": 448,
+        "MediaRangeSyntax": 128,
+        "Nesting": 1
+      },
+      "identity": "45cefc180f3325af",
+      "problem": "no source field recorded",
+      "requests": [
+        [
+          "",
+          {
+            "compact": false,
+            "css": "@custom-media --a (x);",
+            "flags": [
+              "custom-media"
+            ],
+            "kind": "sheet",
+            "minify": true,
+            "printer_targets": null,
+            "targets": {
+              "chrome": 6225920
+            }
+          },
+          {
+            "code": "y",
+            "type": "code"
+          }
+        ]
+      ],
+      "tuple": {
+        "fields": {
+          "expected": "y",
+          "source": "@custom-media --a (x);"
+        },
+        "helper": "custom_media_test"
+      }
+    },
+    {
+      "bits": {
+        "MediaQueries": 448,
+        "MediaRangeSyntax": 128,
+        "Nesting": 1
+      },
+      "identity": "a4fd1dcc4100ca9c",
+      "problem": "no source field recorded",
+      "requests": [
+        [
+          "",
+          {
+            "compact": false,
+            "css": ".a{}",
+            "css_modules": {
+              "animation": true,
+              "container": true,
+              "custom_idents": true,
+              "dashed_idents": false,
+              "grid": true,
+              "pattern": "[local]__[hash]",
+              "pure": false
+            },
+            "filename": "test.css",
+            "kind": "sheet",
+            "minify": true,
+            "targets": null
+          },
+          {
+            "code": "x",
+            "type": "code"
+          }
+        ]
+      ],
+      "tuple": {
+        "fields": {
+          "config": "Config { pattern: Pattern { segments: [Local, Literal(\"__\"), Hash] }, dashed_idents: false, animation: true, grid: true, custom_idents: true, container: true, pure: false }",
+          "expected": "x",
+          "minify": false,
+          "source": ".a{}"
+        },
+        "helper": "css_modules_test"
+      }
+    },
+    {
+      "bits": {
+        "MediaQueries": 448,
+        "MediaRangeSyntax": 128,
+        "Nesting": 1
+      },
+      "identity": "ff25bb82fc70358f",
+      "problem": "no source field recorded",
+      "requests": [
+        [
+          "",
+          {
+            "compact": true,
+            "css": ".a{}",
+            "css_modules": {},
+            "filename": "test.css",
+            "kind": "sheet",
+            "minify": true,
+            "targets": null
+          },
+          {
+            "code": "x",
+            "type": "code"
+          }
+        ]
+      ],
+      "tuple": {
+        "fields": {
+          "config": "None",
+          "expected": "x",
+          "minify": true,
+          "source": ".a{}"
+        },
+        "helper": "css_modules_test"
+      }
+    },
+    {
+      "bits": {
+        "MediaQueries": 448,
+        "MediaRangeSyntax": 128,
+        "Nesting": 1
+      },
+      "identity": "898386d95e2dc648",
+      "problem": "no source field recorded",
+      "requests": [
+        [
+          "",
+          {
+            "compact": false,
+            "css": "a{",
+            "kind": "sheet",
+            "minify": false,
+            "targets": null
+          },
+          {
+            "error": "UnexpectedToken(CurlyBracketBlock)",
+            "stage": "parse",
+            "type": "error"
+          }
+        ]
+      ],
+      "tuple": {
+        "fields": {
+          "error": "UnexpectedToken(CurlyBracketBlock)",
+          "source": "a{"
+        },
+        "helper": "error_test"
+      }
+    },
+    {
+      "bits": {
+        "MediaQueries": 448,
+        "MediaRangeSyntax": 128,
+        "Nesting": 1
+      },
+      "identity": "e613541a0b4d72d2",
+      "problem": "no source field recorded",
+      "requests": [
+        [
+          "",
+          {
+            "compact": false,
+            "css": "a{",
+            "kind": "sheet",
+            "minify": false,
+            "targets": null
+          },
+          {
+            "error": null,
+            "stage": "parse",
+            "type": "error"
+          }
+        ]
+      ],
+      "tuple": {
+        "fields": {
+          "source": "a{"
+        },
+        "helper": "error_test"
+      }
+    },
+    {
+      "bits": {
+        "MediaQueries": 448,
+        "MediaRangeSyntax": 128,
+        "Nesting": 1
+      },
+      "identity": "dcebfbccb8bc9ab1",
+      "problem": "no source field recorded",
+      "requests": [
+        [
+          "",
+          {
+            "compact": false,
+            "css": "a{",
+            "error_recovery": true,
+            "flags": [
+              "nesting"
+            ],
+            "kind": "sheet",
+            "minify": false,
+            "targets": null
+          },
+          {
+            "error": "x",
+            "stage": "parse",
+            "type": "error"
+          }
+        ]
+      ],
+      "tuple": {
+        "fields": {
+          "error": "x",
+          "options": {
+            "error_recovery": true,
+            "flags": "ParserFlags(NESTING)"
+          },
+          "source": "a{"
+        },
+        "helper": "error_test_with_options"
+      }
+    },
+    {
+      "bits": {
+        "MediaQueries": 448,
+        "MediaRangeSyntax": 128,
+        "Nesting": 1
+      },
+      "identity": "ab75beab152ccc4e",
+      "problem": "no source field recorded",
+      "requests": [
+        [
+          "",
+          {
+            "compact": false,
+            "css": ".a{}",
+            "css_modules": {},
+            "kind": "sheet",
+            "minify": false,
+            "targets": null
+          },
+          {
+            "error": "InvalidReference",
+            "stage": "parse",
+            "type": "error"
+          }
+        ]
+      ],
+      "tuple": {
+        "fields": {
+          "error": "InvalidReference",
+          "source": ".a{}"
+        },
+        "helper": "css_modules_error_test"
+      }
+    },
+    {
+      "bits": {
+        "MediaQueries": 448,
+        "MediaRangeSyntax": 128,
+        "Nesting": 1
+      },
+      "identity": "f6e257010ee9e254",
+      "problem": "no source field recorded",
+      "requests": [
+        [
+          "",
+          {
+            "compact": false,
+            "css": ".a{}",
+            "flags": [
+              "custom-media"
+            ],
+            "kind": "sheet",
+            "minify": true,
+            "targets": null
+          },
+          {
+            "error": "UnsupportedCustomMediaBooleanLogic",
+            "stage": "minify",
+            "type": "error"
+          }
+        ]
+      ],
+      "tuple": {
+        "fields": {
+          "error": "UnsupportedCustomMediaBooleanLogic",
+          "options": {
+            "flags": "ParserFlags(CUSTOM_MEDIA)"
+          },
+          "source": ".a{}"
+        },
+        "helper": "minify_error_test_with_options"
+      }
+    },
+    {
+      "bits": {
+        "MediaQueries": 448,
+        "MediaRangeSyntax": 128,
+        "Nesting": 1
+      },
+      "identity": "a3ca08e47f5c3dc1",
+      "problem": "no source field recorded",
+      "requests": [
+        [
+          "",
+          {
+            "compact": false,
+            "css": ".a{",
+            "error_recovery": true,
+            "kind": "sheet",
+            "minify": false,
+            "targets": null
+          },
+          {
+            "type": "warnings"
+          }
+        ]
+      ],
+      "tuple": {
+        "fields": {
+          "source": ".a{"
+        },
+        "helper": "error_recovery_test"
+      }
+    },
+    {
+      "bits": {
+        "MediaQueries": 448,
+        "MediaRangeSyntax": 128,
+        "Nesting": 1
+      },
+      "identity": "cda2603540d42428",
+      "problem": "property_range_test names/cases not parseable",
+      "requests": [
+        [
+          "1bb2bd242df19d16",
+          {
+            "compact": true,
+            "kind": "value",
+            "property": "width",
+            "value": "-1px"
+          },
+          {
+            "type": "value-unparsed"
+          }
+        ],
+        [
+          "cd1d033c2c48513c",
+          {
+            "compact": true,
+            "kind": "value",
+            "property": "width",
+            "value": "calc(1px - 2px)"
+          },
+          {
+            "code": "0",
+            "type": "value"
+          }
+        ],
+        [
+          "b024519cc26372d3",
+          {
+            "compact": true,
+            "kind": "value",
+            "property": "width",
+            "value": "a\"b"
+          },
+          {
+            "code": "\n",
+            "type": "value"
+          }
+        ],
+        [
+          "34f00edfbfc6f46f",
+          {
+            "compact": true,
+            "kind": "value",
+            "property": "min-😀",
+            "value": "-1px"
+          },
+          {
+            "type": "value-unparsed"
+          }
+        ],
+        [
+          "e84a25cc25ec976e",
+          {
+            "compact": true,
+            "kind": "value",
+            "property": "min-😀",
+            "value": "calc(1px - 2px)"
+          },
+          {
+            "code": "0",
+            "type": "value"
+          }
+        ],
+        [
+          "0a7132adc35fdd92",
+          {
+            "compact": true,
+            "kind": "value",
+            "property": "min-😀",
+            "value": "a\"b"
+          },
+          {
+            "code": "\n",
+            "type": "value"
+          }
+        ]
+      ],
+      "tuple": {
+        "fields": {
+          "cases": "[(\"-1px\", None), (\"calc(1px - 2px)\", Some(\"0\")), (\"a\\\"b\", Some(\"\\n\"))]",
+          "names": "[\"width\", \"min-\\u{1f600}\"]"
+        },
+        "helper": "property_range_test"
+      }
+    },
+    {
+      "bits": {
+        "MediaQueries": 448,
+        "MediaRangeSyntax": 128,
+        "Nesting": 1
+      },
+      "identity": "20ca9fa7b37c821b",
+      "problem": "property_range_test names/cases not parseable",
+      "requests": null,
+      "tuple": {
+        "fields": {
+          "cases": "[(\"-1px\", None)]",
+          "names": "[]"
+        },
+        "helper": "property_range_test"
+      }
+    },
+    {
+      "bits": {
+        "MediaQueries": 448,
+        "MediaRangeSyntax": 128,
+        "Nesting": 1
+      },
+      "identity": "0372c02c97a5dc1b",
+      "problem": "property_range_test names/cases not parseable",
+      "requests": null,
+      "tuple": {
+        "fields": {
+          "cases": "[(\"-1px\", None)]"
+        },
+        "helper": "property_range_test"
+      }
+    },
+    {
+      "bits": {
+        "MediaQueries": 448,
+        "MediaRangeSyntax": 128,
+        "Nesting": 1
+      },
+      "identity": "9624525c24bd63c9",
+      "problem": "helper unknown_helper has no adapter mapping",
+      "requests": null,
+      "tuple": {
+        "fields": {
+          "source": "x"
+        },
+        "helper": "unknown_helper"
+      }
+    },
+    {
+      "bits": {
+        "MediaQueries": 448,
+        "MediaRangeSyntax": 128,
+        "Nesting": 1
+      },
+      "identity": "4dd816afd686b1a7",
+      "problem": "no source field recorded",
+      "requests": null,
+      "tuple": {
+        "fields": {
+          "expected": "x"
+        },
+        "helper": "prefix_test"
+      }
+    }
+  ],
+  "universal_newlines": [
+    [
+      [
+        97,
+        13,
+        10,
+        98,
+        13,
+        99,
+        10
+      ],
+      "a\nb\nc\n",
+      3
+    ],
+    [
+      [
+        239,
+        187,
+        191,
+        120,
+        13
+      ],
+      "﻿x\n",
+      1
+    ],
+    [
+      [
+        110,
+        111,
+        32,
+        110,
+        101,
+        119,
+        108,
+        105,
+        110,
+        101
+      ],
+      "no newline",
+      1
+    ],
+    [
+      [],
+      "",
+      0
+    ],
+    [
+      [
+        10,
+        10
+      ],
+      "\n\n",
+      2
+    ],
+    [
+      [
+        97,
+        13
+      ],
+      "a\n",
+      1
+    ],
+    [
+      [
+        120,
+        133,
+        121,
+        10
+      ],
+      "x�y\n",
+      1
+    ],
+    [
+      [
+        98,
+        97,
+        100,
+        255,
+        98,
+        121,
+        116,
+        101,
+        10
+      ],
+      "bad�byte\n",
+      1
+    ]
+  ]
+}

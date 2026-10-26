@@ -1,0 +1,13 @@
+VERDICT: INCONCLUSIVE (0 blocker, 1 major, 0 minor, 0 note)
+<RUN>/report.md
+**LightningCSS # — VERDICT: INCONCLUSIVE** (0 blocker · 1 major · 0 minor · 0 note)
+
+s
+
+Findings:
+1. [MAJOR] Analysis incomplete or inconsistent with the evidence — w-*: a catch-all classification must cover cases of one transition (found both-equivalent, fixed)
+
+Coverage: latest: chromium 1. 2 behavioral deltas (2 verified in browsers), 0 PR probes, 0 mutations, 2 WPT cases, 0 real-world files.
+
+Report: <RUN>/report.md
+

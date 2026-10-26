@@ -1,0 +1,1 @@
+{"checklist": [], "deltas": [{"classification": "PRE_EXISTING", "evidence": "p-color/c is still-different", "finding": "F1", "id": "p-color/c", "reason": "base drops the and conjunct"}], "findings": [{"evidence": ["p-color/c"], "id": "F1", "severity": "NOTE", "title": "Base drops the conjunct"}], "intent": {"kind": "bugfix", "summary": "s"}}

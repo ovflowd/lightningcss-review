@@ -1,0 +1,18 @@
+VERDICT: UNSAFE (1 blocker, 4 major, 1 minor, 2 note)
+<RUN>/report.md
+**LightningCSS # — VERDICT: UNSAFE** (1 blocker · 4 major · 1 minor · 2 note)
+
+s
+
+Findings:
+1. [BLOCKER] [GEN-06] Colors stay equivalent — m-x (also: TESTS-03)
+2. [MAJOR] Gradient loses a stop — p-color/x (also: COLOR-01, O8)
+3. [MAJOR] [COLOR-02] Colors stay equivalent — only p-color/lm
+4. [MAJOR] [COLOR-04] Colors stay equivalent — e
+5. [MAJOR] Analysis incomplete or inconsistent with the evidence — COLOR-02: FAIL cites p-color/lm (lower-minify, fixed), which its verify line accepts
+6. [MINOR] [COLOR-03] Colors stay equivalent — e
+
+Coverage: latest: chromium 1. 2 behavioral deltas (1 verified in browsers), 0 PR probes, 0 mutations, 0 WPT cases, 0 real-world files.
+
+Report: <RUN>/report.md
+

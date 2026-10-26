@@ -1,0 +1,14 @@
+VERDICT: UNSAFE (1 blocker, 1 major, 0 minor, 0 note)
+<RUN>/report.md
+**LightningCSS # — VERDICT: UNSAFE** (1 blocker · 1 major · 0 minor · 0 note)
+
+s
+
+Findings:
+1. [BLOCKER] Regression in current engines (head worse than base) — p-color/d
+2. [MAJOR] Lowering regression in legacy engines within targets — p-color/w@legacy-2021
+
+Coverage: latest: chromium 1; legacy-2021: chromium 97. 2 behavioral deltas (2 verified in browsers), 0 PR probes, 0 mutations, 0 WPT cases, 0 real-world files.
+
+Report: <RUN>/report.md
+

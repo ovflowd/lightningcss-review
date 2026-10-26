@@ -1,0 +1,1 @@
+{"checklist": [], "deltas": [{"classification": "PRE_EXISTING", "id": "p-color/p", "reason": "base already prints this, see t-0000000000000001"}, {"classification": "PRE_EXISTING", "id": "t-0000000000000004", "reason": "see t-0000000000000004"}], "findings": [], "intent": {"kind": "bugfix", "summary": "s"}}

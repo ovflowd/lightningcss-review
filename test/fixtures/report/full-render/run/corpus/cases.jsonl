@@ -1,0 +1,5 @@
+{"area": "color", "id": "p-color/fixed-one", "origin": "pr", "probe": {"area": "color", "expect": [], "id": "color/fixed-one", "known": "none", "mode": "minify", "repro": null, "title": "t"}, "request": {"compact": true, "css": ".t{color:red}", "kind": "sheet", "minify": true, "targets": null}, "source": "probe"}
+{"id": "r-bootstrap-minify", "mode": "minify", "name": "bootstrap", "request": {"css": "a{}", "kind": "sheet", "minify": true}, "source": "realworld"}
+{"id": "r-tiny-minify", "mode": "minify", "name": "tiny", "request": {"css": "a{}", "kind": "sheet", "minify": true}, "source": "realworld"}
+{"helper": "minify_test", "id": "t-err", "line": 7, "request": {"css": "a{color:red}", "kind": "sheet", "minify": true}, "side": "both", "source": "tuple", "test": "tests::test_color"}
+{"id": "w-0000000a", "mode": "lower", "request": {"kind": "property", "property": "color", "value": "color-mix(in srgb, red, blue)"}, "source": "wpt", "wpt": {"file": "css/color.html", "kind": "valid", "property": "color", "value": "color-mix(in srgb, red, blue)"}}

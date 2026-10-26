@@ -43,7 +43,7 @@ base its merge base, and the report says so. Both trees are exported with `git a
 
 `build` patches a copy of `src/lib.rs` (never the clone): every leaf test helper gets a one-line
 call that records its arguments and call site (`#[track_caller]`), keeping line numbers intact.
-`lib/lcr/tuples.py` maps each helper back to an adapter request with the same parse, minify and
+`lib/build/tuples.js` maps each helper back to an adapter request with the same parse, minify and
 print options, so every expectation of either side runs on both builds. `T5` reports any recorded
 expectation the adapter does not reproduce.
 
@@ -55,13 +55,21 @@ features and flags as the tests. It reads one JSON request per line (`sheet`, `a
 timeouts restart the process. It uses only public API so the same file compiles against old and
 new revisions.
 
+Lightning CSS itself is not always deterministic: on a few very large real-world sheets, and on
+rule deduplication whose result depends on hash order (the curated probe
+`rule-merging/stale-dedupe-key-idempotent`), the same build sometimes gives a different output
+for the same request. A single real-world delta, or one from that probe, that does not reproduce
+on a re-run is that noise, not the PR. The same goes for a B1 failure of upstream's
+`bundler::tests::test_bundle` (media query order) on either side: re-run `lcr build`.
+
 ## Verdict
 
-`config/checks.json` lists every check with the severity a failure carries. `lib/lcr/report.py`
-evaluates each from the stage files, adds the reviewer's checklist answers and findings, and
-applies the rule: any BLOCKER is `UNSAFE`, any MAJOR `NEEDS_CHANGES`, any MINOR `SAFE_WITH_NITS`,
-otherwise `SAFE`; a missing stage turns a clean result into `INCONCLUSIVE`. Every check appears in
-every report, in catalog order, so reports diff cleanly.
+`config/checks.json` lists every check with the severity a failure carries. `lib/report/`
+(`evaluate.js`, one module per check group under `checks/`) evaluates each from the stage files,
+adds the reviewer's checklist answers and findings, and applies the rule: any BLOCKER is
+`UNSAFE`, any MAJOR `NEEDS_CHANGES`, any MINOR `SAFE_WITH_NITS`, otherwise `SAFE`; a missing stage
+turns a clean result into `INCONCLUSIVE`. Every check appears in every report, in catalog order,
+so reports diff cleanly.
 
 Checks compare head with base, so behavior base already has is never charged to the PR: a checklist
 answer `FAIL_PRE_EXISTING` and a `PRE_EXISTING` delta become NOTEs, and so does a T6 failure on a
@@ -107,13 +115,53 @@ See [`references/oracle.md`](../references/oracle.md) for how DOMs are synthesiz
 compared, what each status and transition means, and the known limitations. Jobs that errored can
 be re-run on their own with `lcr oracle <run> --rerun <ids>`.
 
+The oracle scripts (`oracle/prepare-jobs.mjs`, `oracle/compare.mjs`, `oracle/spec-cards.mjs`,
+`oracle/engine-runner.cjs`) run inside the browser images; `lcr oracle` and `lcr selftest` call
+them with fixed flags. Run by hand, an unknown option, a missing value or a stray argument prints
+the usage and exits 2.
+
+## Code map
+
+The host side is plain Node.js (24 or newer, ES modules, no runtime dependencies), type-checked
+from its JSDoc with `tsc --checkJs`. One directory per stage under `lib/`, each entry module named
+after its stage, with its unit tests in a `test/` directory next to it:
+
+| Directory | Contents |
+|---|---|
+| `lib/cli/` | `bin/lcr`'s command table, argument parsing, run resolution, `lcr clean` |
+| `lib/core/` | shared foundation: errors, logging, paths, subprocesses (`proc.js`), Docker Compose, locks, disk checks, stage-file I/O, JSON and other value semantics (below) |
+| `lib/setup/` | `doctor`, `setup` (`--update`), image tags and the compose service runners |
+| `lib/prepare/`, `lib/build/` | the prepare stage; build, tuple recording and mapping, `perf` |
+| `lib/corpus/` | case sources, the base/head differential, probes, mutations |
+| `lib/oracle-driver/` | case selection and the oracle pipeline, `selftest`, `baseline` |
+| `lib/report/` | check evaluation, findings, verdict, report rendering, `summary` |
+| `lib/inspect/` | `status`, `worklist`, `brief`, `show`, `table` |
+| `lib/adapter/`, `lib/targets/`, `lib/fixtures/`, `lib/spec/` | adapter client, browser targets, WPT and real-world fixtures, spec cards and coverage |
+| `lib/types.js` | every shared data shape (stage files, config, adapter protocol) as `@typedef` |
+| `oracle/*.mjs`, `oracle/lib/` | the analysis-image scripts (`prepare-jobs`, `compare`, `spec-cards`) and their modules: DOM synthesis, value normalization, per-engine verdicts, transitions; shapes in `oracle/lib/types.mjs` |
+| `oracle/engine-runner.cjs`, `oracle/runner/` | the engine runner and its in-page functions (CommonJS, ES2020: it also runs on the legacy images' Node 14 and 16) |
+| `test/` | shared test helpers (`test/helpers/`) and fixtures, including the frozen py-final golden outputs |
+
+Stage files keep the exact format the harness has always written: `.json` files in Python's
+`json.dumps(indent=2, sort_keys=True)` layout, `.jsonl` rows in its compact form, and case ids
+hashed from that same serialization (`lib/core/pyjson.js`, `lib/core/ids.js`). Existing runs,
+baselines and analyses therefore stay valid, and reports are byte-identical across versions. The
+`lib/core/py*.js` helpers keep the other behaviors this output depends on (number formatting,
+rounding, string splitting, sorting by code point, Unicode-aware regex classes); use them instead
+of the JavaScript built-ins wherever a value ends up in a stage file or in printed output.
+
 ## Adding things
 
-- A check: add it to `config/checks.json`, evaluate it in `lib/lcr/report.py`, cover it with a
-  unit test or a self-test case.
-- An engine profile: add it to `config/engines.json` (a Playwright release), run
-  `lcr setup --profiles <name>`, then `lcr selftest`.
-- A mutation: `lib/lcr/mutations.py`; it must be deterministic and produce valid CSS or `None`.
+- A check: add it to `config/checks.json`, evaluate it in the matching `lib/report/checks/`
+  module, cover it with a unit test (`lib/report/checks/test/`) or a self-test case.
+- An engine profile: pin its Playwright image in `compose.yaml` (under `x-frozen-pins` for a
+  legacy profile, so Dependabot leaves it alone) and add a `browsers-<name>` service like the
+  others; add the profile to `config/engines.json` (role, expected engine versions, `lacks`); then
+  run `lcr setup --profiles <name>` and `lcr selftest`. The latest profile moves with
+  `lcr setup --update`, which rebuilds the image and keeps the new pin only if the selftest
+  passes; a Dependabot PR moves the same pin, so run `lcr setup --profiles latest` and
+  `lcr selftest --profiles latest` on it before merging.
+- A mutation: `lib/corpus/mutations.js`; it must be deterministic and produce valid CSS or `null`.
 - Probes and checklists: see [CONTRIBUTING.md](../CONTRIBUTING.md). A checklist item that restates
   another item's root cause carries a line `  same-root-as: <ID>` after its `verify:` line, so a
   FAIL of both is counted once; an item about specific files carries `  covers: <glob>, …`.

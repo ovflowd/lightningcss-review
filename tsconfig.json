@@ -1,0 +1,23 @@
+{
+  // Type-check the JavaScript (JSDoc types); nothing is compiled or emitted.
+  // Everything is `strict`. No rule is relaxed: JSDoc can express every type the code needs.
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": true,
+    "noEmit": true,
+    "strict": true,
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "target": "esnext",
+    "lib": ["esnext"],
+    "types": ["node"],
+    "skipLibCheck": true,
+    "noFallthroughCasesInSwitch": true
+  },
+  "include": ["lib/**/*.js", "oracle/**/*.mjs", "oracle/**/*.cjs", "scripts/**/*.js", "test/**/*.js", "types/**/*.d.ts"],
+  "exclude": [
+    "node_modules",
+    // Vendored from upstream Lightning CSS; not ours to annotate.
+    "oracle/wpt"
+  ]
+}

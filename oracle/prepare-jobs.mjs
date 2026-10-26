@@ -1,107 +1,114 @@
-// Turns oracle cases (written by lcr) into engine jobs: synthesized DOM, state-rewritten sheets,
-// validity probes. Runs in the analysis image (css-tree available).
-//
-// usage: node prepare-jobs.mjs --cases cases.jsonl --out jobs.jsonl
-//        node prepare-jobs.mjs --legacy --jobs jobs.jsonl --results results-latest.jsonl --out legacy-jobs.jsonl
-import { synthesize, rewriteStates, validityProbe, collectPseudos, undefinedCustomProperties, canonicalText } from './dom.mjs';
-import { readJsonl, jsonlWriter } from './jsonl.mjs';
+/**
+ * prepare-jobs: oracle cases (written by `lcr oracle`) -> engine jobs.
+ *
+ * Stage: oracle, analysis image (css-tree available).
+ *
+ *   node prepare-jobs.mjs --cases cases.jsonl --out jobs.jsonl [--meta jobs.meta.jsonl]
+ *   node prepare-jobs.mjs --legacy --jobs jobs.jsonl --results results-latest.jsonl
+ *                         --out legacy-jobs.jsonl [--ids <case>,<case>…]
+ *
+ * Reference mode writes the jobs of every case (lib/jobs.mjs) and one meta row per case (DOM
+ * coverage, rewrites, or the error that kept the case from becoming a job; `--meta` defaults to
+ * `<out>.meta`). Legacy mode writes, in job-id order, the sheet jobs of the given cases (all when
+ * `--ids` is empty) narrowed to what the reference engines saw the input touch. Without `--out`
+ * nothing is written; a missing input file reads as empty. Exit status 2 on a usage error.
+ */
+import { parseOptions } from './lib/cli.mjs';
+import { caseIdOf, legacyJob, propertyJob, sheetJob, touchedByJob } from './lib/jobs.mjs';
+import { jsonlWriter, readJsonl } from './lib/jsonl.mjs';
 
-const args = process.argv.slice(2);
-const opt = (name, fallback) => (args.includes(name) ? args[args.indexOf(name) + 1] : fallback);
+/** @import { OracleCase, Job } from './lib/types.mjs' */
+/** @import { TouchedSubset } from './lib/jobs.mjs' */
 
-const SCHEME_RE = /light-dark\(|color-scheme|prefers-color-scheme|--lightningcss-(light|dark)/i;
+const USAGE =
+  'usage: prepare-jobs.mjs --cases FILE --out FILE [--meta FILE]\n' +
+  '       prepare-jobs.mjs --legacy --jobs FILE --results FILE --out FILE [--ids ID,ID...]';
 
-export function sheetJob(c) {
-  const variants = Object.entries(c.sheets).filter(([, css]) => typeof css === 'string');
-  // domFrom: the changed blocks of a large sheet; synthesize elements for those selectors only.
-  // A `dom:` override replaces the HTML only: pseudo-elements are still read where the CSS uses them.
-  const dom = c.dom
-    ? { html: c.dom, pseudos: collectPseudos(variants.map(([, css]) => css)), rootAttrs: {}, selectors: 0, synthesized: 0, unsupported: 0, generic: false, override: true }
-    : synthesize(c.domFrom ? [c.domFrom] : variants.map(([, css]) => css));
-  if (c.domFrom) dom.focused = true;
-  const injected = typeof c.sheets.input === 'string' ? undefinedCustomProperties(c.sheets.input) : [];
-  const define = injected.length ? `\n:root{${injected.map(([name, value]) => `${name}:${value}`).join(';')}}` : '';
-  const sheets = { empty: define.trim() };
-  let rewrites = 0;
-  const probe = {};
-  for (const [name, css] of variants) {
-    const r = rewriteStates(css + define);
-    rewrites += r.rewrites;
-    sheets[name] = r.css;
-    probe[name] = validityProbe(r.css);
-  }
-  const job = {
-    id: c.id,
-    kind: 'sheet',
-    html: dom.html,
-    rootAttrs: dom.rootAttrs,
-    pseudos: dom.pseudos,
-    sheets,
-    probe,
-    reference: 'input',
-    visual: Boolean(c.visual),
-  };
-  const inputText = canonicalText(c.sheets.input);
-  const sameAsInput = inputText === null ? [] : variants.filter(([name, css]) => name !== 'input' && canonicalText(css) === inputText).map(([name]) => name);
-  if (sameAsInput.length) job.sameAsInput = sameAsInput;
-  const meta = { id: c.id, dom: { selectors: dom.selectors, synthesized: dom.synthesized, unsupported: dom.unsupported, generic: dom.generic, override: Boolean(dom.override), focused: Boolean(dom.focused) }, rewrites };
-  if (injected.length) meta.injectedVars = injected.map(([name]) => name);
-  const jobs = [job];
-  if (variants.some(([, css]) => SCHEME_RE.test(css))) {
-    jobs.push({ ...job, id: c.id + '~dark', colorScheme: 'dark', visual: false });
-    meta.dark = true;
-  }
-  return { jobs, meta };
+const options = parseOptions(
+  {
+    cases: { type: 'string' },
+    out: { type: 'string' },
+    meta: { type: 'string' },
+    legacy: { type: 'boolean', default: false },
+    jobs: { type: 'string' },
+    results: { type: 'string' },
+    ids: { type: 'string', default: '' },
+  },
+  USAGE,
+);
+
+/**
+ * @param {unknown} error
+ * @returns {string}
+ */
+function errorMessage(error) {
+  return String(error && /** @type {Error} */ (error).message ? /** @type {Error} */ (error).message : error);
 }
 
-function propertyJob(c) {
-  return {
-    jobs: [{ id: c.id, kind: 'property', property: c.property, value: c.value, wptKind: c.wptKind, expected: c.expected, outputs: c.outputs }],
-    meta: { id: c.id },
-  };
-}
+/**
+ * Reference jobs and their meta rows.
+ *
+ * @param {string} out
+ * @returns {Promise<void>}
+ */
+async function writeReferenceJobs(out) {
+  const jobsOut = jsonlWriter(out);
+  const metaOut = jsonlWriter(options.meta ?? `${out}.meta`);
 
-async function legacyJobs() {
-  // Same sheets, but each engine reads only the elements and properties its reference engine
-  // saw the input touch (that is all the lowering comparison looks at).
-  const jobs = new Map();
-  for await (const j of readJsonl(opt('--jobs'))) jobs.set(j.id, j);
-  const wanted = new Set((opt('--ids', '') || '').split(',').filter(Boolean));
-  const byId = new Map();
-  for await (const r of readJsonl(opt('--results'))) {
-    if (!r.result || !r.result.variants) continue;
-    if (!byId.has(r.id)) byId.set(r.id, { props: {}, keys: {} });
-    const touched = (r.result.variants.input && r.result.variants.input.touched) || {};
-    const props = new Set();
-    Object.values(touched).forEach((vals) => Object.keys(vals).forEach((p) => props.add(p)));
-    byId.get(r.id).props[r.engine] = [...props].sort();
-    byId.get(r.id).keys[r.engine] = Object.keys(touched).sort();
-  }
-  const out = jsonlWriter(opt('--out'));
-  for (const id of [...byId.keys()].sort()) {
-    if (wanted.size && !wanted.has(id.replace(/~dark$/, ''))) continue;
-    const job = jobs.get(id);
-    if (!job || job.kind !== 'sheet') continue;
-    out.write({ ...job, visual: false, propsByEngine: byId.get(id).props, keysByEngine: byId.get(id).keys });
-  }
-  await out.end();
-}
-
-async function referenceJobs() {
-  const out = jsonlWriter(opt('--out'));
-  const metaOut = jsonlWriter(opt('--meta', opt('--out') + '.meta'));
-  for await (const c of readJsonl(opt('--cases'))) {
+  for await (const row of readJsonl(options.cases)) {
+    const oracleCase = /** @type {OracleCase} */ (row);
     let built;
+
     try {
-      built = c.kind === 'property' ? propertyJob(c) : sheetJob(c);
-    } catch (e) {
-      metaOut.write({ id: c.id, error: String(e && e.message ? e.message : e) });
+      built = oracleCase.kind === 'property' ? propertyJob(oracleCase) : sheetJob(oracleCase);
+    } catch (error) {
+      // One case the synthesizer cannot handle must not cost the run its other cases.
+      metaOut.write({ id: oracleCase.id, error: errorMessage(error) });
       continue;
     }
-    built.jobs.forEach((j) => out.write(j));
+
+    built.jobs.forEach((job) => jobsOut.write(job));
     metaOut.write(built.meta);
   }
-  await Promise.all([out.end(), metaOut.end()]);
+
+  await Promise.all([jobsOut.end(), metaOut.end()]);
 }
 
-if (opt('--out')) await (args.includes('--legacy') ? legacyJobs() : referenceJobs());
+/**
+ * Legacy jobs for the requested cases.
+ *
+ * @param {string} out
+ * @returns {Promise<void>}
+ */
+async function writeLegacyJobs(out) {
+  /** @type {Map<string, Job>} */
+  const jobs = new Map();
+
+  for await (const row of readJsonl(options.jobs)) {
+    jobs.set(/** @type {Job} */ (row).id, /** @type {Job} */ (row));
+  }
+
+  const wanted = new Set(options.ids.split(',').filter(Boolean));
+  const touched = await touchedByJob(readJsonl(options.results));
+  const writer = jsonlWriter(out);
+
+  for (const id of [...touched.keys()].toSorted()) {
+    if (wanted.size && !wanted.has(caseIdOf(id))) {
+      continue;
+    }
+
+    const job = jobs.get(id);
+
+    if (!job || job.kind !== 'sheet') {
+      continue;
+    }
+
+    writer.write(legacyJob(job, /** @type {TouchedSubset} */ (touched.get(id))));
+  }
+
+  await writer.end();
+}
+
+if (options.out) {
+  await (options.legacy ? writeLegacyJobs(options.out) : writeReferenceJobs(options.out));
+}

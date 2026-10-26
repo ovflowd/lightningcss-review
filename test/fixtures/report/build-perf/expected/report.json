@@ -1,0 +1,490 @@
+{
+  "base": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "checks": [
+    {
+      "evidence": "1 test(s) fail on head but not on base",
+      "group": "build",
+      "id": "B1",
+      "items": [
+        "a::y"
+      ],
+      "severity": "BLOCKER",
+      "status": "FAIL",
+      "title": "Head test suite passes (cargo test --all-features)"
+    },
+    {
+      "evidence": "warnings become errors under RUSTFLAGS=-D warnings",
+      "group": "build",
+      "id": "B2",
+      "items": [],
+      "severity": "MAJOR",
+      "status": "FAIL",
+      "title": "Compiles with RUSTFLAGS=-D warnings (CI)"
+    },
+    {
+      "evidence": "rustfmt would change: /src/src/values/color.rs",
+      "group": "build",
+      "id": "B3",
+      "items": [],
+      "severity": "MINOR",
+      "status": "FAIL",
+      "title": "rustfmt clean on changed files"
+    },
+    {
+      "evidence": "",
+      "group": "build",
+      "id": "B4",
+      "items": [],
+      "severity": null,
+      "status": "PASS",
+      "title": "Cargo.lock in sync (--locked)"
+    },
+    {
+      "evidence": "bindings not touched",
+      "group": "build",
+      "id": "B5",
+      "items": [],
+      "severity": null,
+      "status": "SKIP",
+      "title": "JS lane: yarn build / test / tsc (when bindings change)"
+    },
+    {
+      "evidence": "pending: lint",
+      "group": "build",
+      "id": "B6",
+      "items": [],
+      "severity": "NOTE",
+      "status": "PARTIAL",
+      "title": "GitHub CI checks on the PR"
+    },
+    {
+      "evidence": "fails on base too (pre-existing)",
+      "group": "build",
+      "id": "B7",
+      "items": [
+        "tttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt"
+      ],
+      "severity": "NOTE",
+      "status": "PARTIAL",
+      "title": "parcel_selectors crate tests (not run by CI)"
+    },
+    {
+      "evidence": "lane not run",
+      "group": "build",
+      "id": "B8",
+      "items": [],
+      "severity": null,
+      "status": "SKIP",
+      "title": "Builds with --no-default-features"
+    },
+    {
+      "evidence": "3.0s",
+      "group": "build",
+      "id": "B9",
+      "items": [],
+      "severity": null,
+      "status": "PASS",
+      "title": "wasm32 compile gate (CI test-wasm compiles cfg(wasm32) code only there)"
+    },
+    {
+      "evidence": "fails on head, passes on base",
+      "group": "build",
+      "id": "B10",
+      "items": [
+        "error: x"
+      ],
+      "severity": "MAJOR",
+      "status": "FAIL",
+      "title": "C bindings build and c/lightningcss.h is up to date"
+    },
+    {
+      "evidence": "regenerate and commit: node/ast.d.ts; drifts identically on base (pre-existing): c.ts",
+      "group": "build",
+      "id": "B11",
+      "items": [],
+      "severity": "MAJOR",
+      "status": "FAIL",
+      "title": "Generated files in sync (build-prefixes.js output, ast.d.ts), compared with base's drift"
+    },
+    {
+      "evidence": "no test changes",
+      "group": "tests",
+      "id": "T1",
+      "items": [],
+      "severity": "MAJOR",
+      "status": "FAIL",
+      "title": "Source changes come with tests in src/lib.rs (or tests/, node/test)"
+    },
+    {
+      "evidence": "no new test cases",
+      "group": "tests",
+      "id": "T2",
+      "items": [],
+      "severity": null,
+      "status": "SKIP",
+      "title": "New test cases exercise the change (fail on base)"
+    },
+    {
+      "evidence": "no existing expectation changed",
+      "group": "tests",
+      "id": "T3",
+      "items": [],
+      "severity": null,
+      "status": "SKIP",
+      "title": "Changed expectations are browser-equivalent to their input"
+    },
+    {
+      "evidence": "",
+      "group": "tests",
+      "id": "T4",
+      "items": [],
+      "severity": null,
+      "status": "PASS",
+      "title": "No existing expectation removed while behavior changed"
+    },
+    {
+      "evidence": "0 head tuples reproduced",
+      "group": "tests",
+      "id": "T5",
+      "items": [],
+      "severity": null,
+      "status": "PASS",
+      "title": "Harness fidelity: recorded head expectations reproduce through the adapter"
+    },
+    {
+      "evidence": "0 assertion(s) checked",
+      "group": "tests",
+      "id": "T6",
+      "items": [],
+      "severity": null,
+      "status": "PASS",
+      "title": "PR and curated probe assertions that hold on base still hold on head"
+    },
+    {
+      "evidence": "",
+      "group": "oracle",
+      "id": "O1",
+      "items": [],
+      "severity": null,
+      "status": "PASS",
+      "title": "No regression in current engines (base equivalent -> head different, or head worse than base)"
+    },
+    {
+      "evidence": "",
+      "group": "oracle",
+      "id": "O2",
+      "items": [],
+      "severity": null,
+      "status": "PASS",
+      "title": "New/changed test outputs are equivalent to their input in current engines"
+    },
+    {
+      "evidence": "",
+      "group": "oracle",
+      "id": "O3",
+      "items": [],
+      "severity": null,
+      "status": "PASS",
+      "title": "No new declarations/selectors/conditions rejected by an in-target engine without a surviving fallback"
+    },
+    {
+      "evidence": "no legacy engine profile ran",
+      "group": "oracle",
+      "id": "O4",
+      "items": [],
+      "severity": null,
+      "status": "SKIP",
+      "title": "Lowered output in legacy engines within targets matches the modern rendering"
+    },
+    {
+      "evidence": "",
+      "group": "oracle",
+      "id": "O5",
+      "items": [],
+      "severity": null,
+      "status": "PASS",
+      "title": "No new near-miss (color/number drift within tolerance)"
+    },
+    {
+      "evidence": "",
+      "group": "oracle",
+      "id": "O6",
+      "items": [],
+      "severity": null,
+      "status": "PASS",
+      "title": "Pixel-identical rendering for visual areas"
+    },
+    {
+      "evidence": "",
+      "group": "oracle",
+      "id": "O7",
+      "items": [],
+      "severity": null,
+      "status": "SKIP",
+      "title": "WPT property cases do not regress"
+    },
+    {
+      "evidence": "2 delta(s) unverified and not cleared in analysis.json",
+      "group": "oracle",
+      "id": "O8",
+      "items": [
+        "p-color/a",
+        "p-color/b"
+      ],
+      "severity": "MAJOR",
+      "status": "FAIL",
+      "title": "Every behavioral delta was verified or cleared (errored engine jobs make the verdict INCONCLUSIVE)"
+    },
+    {
+      "evidence": "",
+      "group": "oracle",
+      "id": "O9",
+      "items": [],
+      "severity": null,
+      "status": "PASS",
+      "title": "Engines read the input differently: the spec decides (classify with a spec or WPT citation)"
+    },
+    {
+      "evidence": "",
+      "group": "oracle",
+      "id": "O10",
+      "items": [],
+      "severity": null,
+      "status": "PASS",
+      "title": "Cases the browsers cannot judge against base (input rejected in every engine, base behavior extended to new targets) are classified"
+    },
+    {
+      "evidence": "",
+      "group": "robustness",
+      "id": "R1",
+      "items": [],
+      "severity": null,
+      "status": "PASS",
+      "title": "No new panic / crash / timeout"
+    },
+    {
+      "evidence": "2 case(s) are unstable under a second minify pass on base and head alike (pre-existing)",
+      "group": "robustness",
+      "id": "R2",
+      "items": [
+        "p-color/a",
+        "p-color/b"
+      ],
+      "severity": "NOTE",
+      "status": "PARTIAL",
+      "title": "Output is stable under re-minification where base is (idempotent)"
+    },
+    {
+      "evidence": "touched areas: color",
+      "group": "side-effects",
+      "id": "S1",
+      "items": [],
+      "severity": null,
+      "status": "PASS",
+      "title": "Deltas stay inside the declared areas (or are explained)"
+    },
+    {
+      "evidence": "real-world corpus not available",
+      "group": "side-effects",
+      "id": "S2",
+      "items": [],
+      "severity": null,
+      "status": "SKIP",
+      "title": "Real-world minified size does not grow (> 0.1%)"
+    },
+    {
+      "evidence": "",
+      "group": "side-effects",
+      "id": "S3",
+      "items": [],
+      "severity": null,
+      "status": "PASS",
+      "title": "Overlapping open PRs identified"
+    },
+    {
+      "evidence": "real-world total 12.5ms -> 15.0ms (x1.2); 50% of files >5% slower; median of 5",
+      "group": "perf",
+      "id": "P1",
+      "items": [],
+      "severity": null,
+      "status": "PASS",
+      "title": "No consistent slowdown on the real-world corpus (release build; optional `lcr perf`)"
+    },
+    {
+      "evidence": "release CLI 100 -> 120 bytes (x1.2)",
+      "group": "perf",
+      "id": "P2",
+      "items": [],
+      "severity": "MINOR",
+      "status": "FAIL",
+      "title": "Release binary size does not grow by more than 1% (optional `lcr perf`)"
+    },
+    {
+      "evidence": "0/0 items answered",
+      "group": "analysis",
+      "id": "A1",
+      "items": [],
+      "severity": null,
+      "status": "PASS",
+      "title": "Spec checklist for the affected areas"
+    },
+    {
+      "evidence": "no linked issues",
+      "group": "analysis",
+      "id": "A2",
+      "items": [],
+      "severity": null,
+      "status": "SKIP",
+      "title": "Linked issue repro (`repro: #N` probe) fixed on head and failing on base"
+    },
+    {
+      "evidence": "all slots filled",
+      "group": "analysis",
+      "id": "A3",
+      "items": [],
+      "severity": null,
+      "status": "PASS",
+      "title": "Analysis complete (every slot filled with evidence)"
+    }
+  ],
+  "counts": {
+    "BLOCKER": 1,
+    "MAJOR": 5,
+    "MINOR": 2,
+    "NOTE": 3
+  },
+  "decision_needed": [],
+  "default_requests": null,
+  "engines": {
+    "latest": {
+      "chromium": "1"
+    }
+  },
+  "findings": [
+    {
+      "check": "B1",
+      "detail": "1 test(s) fail on head but not on base",
+      "evidence": [
+        "a::y"
+      ],
+      "n": 1,
+      "severity": "BLOCKER",
+      "source": "check",
+      "title": "Head test suite fails where base passes"
+    },
+    {
+      "check": "B10",
+      "detail": "fails on head, passes on base",
+      "evidence": [
+        "error: x"
+      ],
+      "n": 2,
+      "severity": "MAJOR",
+      "source": "check",
+      "title": "C bindings do not build or c/lightningcss.h is stale"
+    },
+    {
+      "check": "B11",
+      "detail": "regenerate and commit: node/ast.d.ts; drifts identically on base (pre-existing): c.ts",
+      "evidence": [],
+      "n": 3,
+      "severity": "MAJOR",
+      "source": "check",
+      "title": "Generated files drift from their generator (and not identically on base)"
+    },
+    {
+      "check": "B2",
+      "detail": "warnings become errors under RUSTFLAGS=-D warnings",
+      "evidence": [],
+      "n": 4,
+      "severity": "MAJOR",
+      "source": "check",
+      "title": "Does not compile with RUSTFLAGS=-D warnings"
+    },
+    {
+      "check": "O8",
+      "detail": "2 delta(s) unverified and not cleared in analysis.json",
+      "evidence": [
+        "p-color/a",
+        "p-color/b"
+      ],
+      "n": 5,
+      "severity": "MAJOR",
+      "source": "check",
+      "title": "Behavioral deltas neither verified by the oracle nor cleared"
+    },
+    {
+      "check": "T1",
+      "detail": "no test changes",
+      "evidence": [],
+      "n": 6,
+      "severity": "MAJOR",
+      "source": "check",
+      "title": "Source changes come without tests"
+    },
+    {
+      "check": "B3",
+      "detail": "rustfmt would change: /src/src/values/color.rs",
+      "evidence": [],
+      "n": 7,
+      "severity": "MINOR",
+      "source": "check",
+      "title": "rustfmt would change the changed files"
+    },
+    {
+      "check": "P2",
+      "detail": "release CLI 100 -> 120 bytes (x1.2)",
+      "evidence": [],
+      "n": 8,
+      "severity": "MINOR",
+      "source": "check",
+      "title": "Release binary grows by more than 1%"
+    },
+    {
+      "check": "B6",
+      "detail": "pending: lint",
+      "evidence": [],
+      "n": 9,
+      "severity": "NOTE",
+      "source": "check",
+      "title": "GitHub CI checks on the PR"
+    },
+    {
+      "check": "B7",
+      "detail": "fails on base too (pre-existing)",
+      "evidence": [
+        "tttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt"
+      ],
+      "n": 10,
+      "severity": "NOTE",
+      "source": "check",
+      "title": "parcel_selectors crate tests (not run by CI)"
+    },
+    {
+      "check": "R2",
+      "detail": "2 case(s) are unstable under a second minify pass on base and head alike (pre-existing)",
+      "evidence": [
+        "p-color/a",
+        "p-color/b"
+      ],
+      "n": 11,
+      "severity": "NOTE",
+      "source": "check",
+      "title": "Output is stable under re-minification where base is (idempotent)"
+    }
+  ],
+  "head_tree": "hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh",
+  "pr": null,
+  "run_id": "run",
+  "schema": 1,
+  "skill_version": "0.1.0",
+  "stages": {
+    "analysis": true,
+    "build": true,
+    "corpus": true,
+    "oracle": true,
+    "prepare": true
+  },
+  "verdict": "UNSAFE",
+  "verdict_scope": null
+}

@@ -1,0 +1,1 @@
+{"area": "color", "id": "p-color/reg", "origin": "pr", "probe": {"area": "color", "expect": [], "id": "color/reg", "known": "none", "mode": "minify", "repro": null, "title": "t"}, "request": {"compact": true, "css": ".t{color:red}", "kind": "sheet", "minify": true, "targets": null}, "source": "probe"}

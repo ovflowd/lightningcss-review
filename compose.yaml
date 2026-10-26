@@ -1,0 +1,104 @@
+# The harness's Docker images and the containers its stages run, driven by bin/lcr through
+# lib/setup/images.js (`docker compose build` and `docker compose run --rm`).
+#
+# - builder, builder-offline: the Rust toolchain image that builds and tests a Lightning CSS tree,
+#   one image per Rust channel (read from the reviewed tree's rust-toolchain file). `builder` has
+#   network access for cargo; `builder-offline` has none (rustfmt).
+# - browsers-<profile>: one browser image per engine profile in config/engines.json, all offline.
+#   The latest profile is also the analysis image (css-tree, colorjs.io, @webref/css, pngjs).
+# - Playwright pins: which Playwright image each profile builds on. The pin is the only place a
+#   profile's Playwright version is written; lcr derives the base image, the Playwright npm client
+#   and the image tag (lcr-browsers:pw-<version>) from it. Dependabot reads the latest profile's
+#   pin (the `playwright-latest` service); the legacy profiles reproduce the engines of a past year
+#   on purpose, so their pins live in `x-frozen-pins`, where Dependabot does not look.
+#
+# The ${LCR_*} variables are set by lcr on every call, from the pins and the reviewed tree, so run
+# `lcr setup` rather than `docker compose` by hand. Containers run as the host user, with per-run
+# bind mounts and environment passed on the command line.
+
+name: lcr
+
+x-frozen-pins:
+  legacy-2023: mcr.microsoft.com/playwright:v1.30.0-focal
+  legacy-2021: mcr.microsoft.com/playwright:v1.16.3-focal
+  # Bionic, Node 12, browsers under /root/.cache/ms-playwright: browsers.Dockerfile does not
+  # support this layout yet (the profile is optional).
+  legacy-2020: mcr.microsoft.com/playwright:v1.4.2
+
+x-container: &container
+  # Reap the browsers and cargo's children when the main process exits.
+  init: true
+  # Chromium needs more shared memory than Docker's 64 MB default.
+  shm_size: 2g
+  # lcr builds these images itself; there is nothing to pull from a registry.
+  pull_policy: never
+
+x-browsers: &browsers
+  <<: *container
+  # Engines judge CSS offline: no test page may reach the network.
+  network_mode: none
+
+x-browsers-build: &browsers-build
+  context: docker
+  dockerfile: browsers.Dockerfile
+
+services:
+  playwright-latest:
+    profiles: [pins]
+    build:
+      dockerfile_inline: FROM mcr.microsoft.com/playwright:v1.64.1-noble
+
+  builder:
+    <<: *container
+    image: lcr-builder:rust-${LCR_RUST_CHANNEL:-stable}
+    build:
+      context: docker
+      dockerfile: builder.Dockerfile
+      args:
+        RUST_CHANNEL: ${LCR_RUST_CHANNEL:-stable}
+
+  builder-offline:
+    <<: *container
+    image: lcr-builder:rust-${LCR_RUST_CHANNEL:-stable}
+    network_mode: none
+
+  browsers-latest:
+    <<: *browsers
+    image: lcr-browsers:pw-${LCR_PLAYWRIGHT_LATEST:?set by lcr from the Playwright pin}-analysis
+    build:
+      <<: *browsers-build
+      args:
+        BASE_IMAGE: ${LCR_BASE_LATEST:?set by lcr from the Playwright pin}
+        PLAYWRIGHT_VERSION: ${LCR_PLAYWRIGHT_LATEST:?set by lcr from the Playwright pin}
+        # The same versions as the devDependencies in package.json, which the oracle's unit tests
+        # run against (lib/setup/test/images.test.js checks).
+        EXTRA_PACKAGES: css-tree@3.2.1 colorjs.io@0.7.1 @webref/css@8.7.8 pngjs@7.0.0
+        # python3 runs the vendored WPT extractor's read-html.py; git lists the WPT files.
+        APT_PACKAGES: python3 git
+
+  browsers-legacy-2023:
+    <<: *browsers
+    image: lcr-browsers:pw-${LCR_PLAYWRIGHT_LEGACY_2023:?set by lcr from the Playwright pin}
+    build:
+      <<: *browsers-build
+      args:
+        BASE_IMAGE: ${LCR_BASE_LEGACY_2023:?set by lcr from the Playwright pin}
+        PLAYWRIGHT_VERSION: ${LCR_PLAYWRIGHT_LEGACY_2023:?set by lcr from the Playwright pin}
+
+  browsers-legacy-2021:
+    <<: *browsers
+    image: lcr-browsers:pw-${LCR_PLAYWRIGHT_LEGACY_2021:?set by lcr from the Playwright pin}
+    build:
+      <<: *browsers-build
+      args:
+        BASE_IMAGE: ${LCR_BASE_LEGACY_2021:?set by lcr from the Playwright pin}
+        PLAYWRIGHT_VERSION: ${LCR_PLAYWRIGHT_LEGACY_2021:?set by lcr from the Playwright pin}
+
+  browsers-legacy-2020:
+    <<: *browsers
+    image: lcr-browsers:pw-${LCR_PLAYWRIGHT_LEGACY_2020:?set by lcr from the Playwright pin}
+    build:
+      <<: *browsers-build
+      args:
+        BASE_IMAGE: ${LCR_BASE_LEGACY_2020:?set by lcr from the Playwright pin}
+        PLAYWRIGHT_VERSION: ${LCR_PLAYWRIGHT_LEGACY_2020:?set by lcr from the Playwright pin}

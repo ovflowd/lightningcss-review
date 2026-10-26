@@ -1,0 +1,2 @@
+{"helper": "prefix_test", "id": "t-base", "line": 1, "request": {"css": ".a{animation:x 1s scroll()}", "kind": "sheet", "minify": true, "targets": {"safari": 1048576}}, "side": "base", "source": "tuple", "test": "tests::test_animation"}
+{"helper": "prefix_test", "id": "t-head", "line": 2, "request": {"css": ".a{animation:x 1s scroll()}", "kind": "sheet", "minify": true, "targets": null}, "side": "head", "source": "tuple", "test": "tests::test_animation"}

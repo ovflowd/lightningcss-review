@@ -1,0 +1,17 @@
+VERDICT: INCONCLUSIVE (0 blocker, 3 major, 2 minor, 3 note)
+<RUN>/report.md
+**LightningCSS #2 — VERDICT: INCONCLUSIVE** (0 blocker · 3 major · 2 minor · 3 note)
+
+s
+
+Findings:
+1. [MAJOR] Analysis incomplete or inconsistent with the evidence — checklist items unanswered or without evidence: GEN-01, GEN-02, GEN-03, GEN-04, GEN-05, GEN-06, GEN-07, GEN-08, GEN-09, GEN-10…
+2. [MAJOR] Behavioral deltas neither verified by the oracle nor cleared — m-p-selectors/x-wrap
+3. [MAJOR] Deltas outside the declared areas are unexplained — p-selectors/x [selectors]
+4. [MINOR] Rendering differs in pixels — p-color/vis
+5. [MINOR] Real-world output grows (> 0.1%) — a/lower-minify: 1000 -> 1100 bytes
+
+Coverage: latest: chromium 1. 5 behavioral deltas (3 verified in browsers), 0 PR probes, 1 mutations, 1 WPT cases, 2 real-world files.
+
+Report: <RUN>/report.md
+

@@ -1,0 +1,13 @@
+VERDICT: INCONCLUSIVE (0 blocker, 1 major, 0 minor, 0 note)
+<RUN>/report.md
+**LightningCSS # — VERDICT: INCONCLUSIVE** (0 blocker · 1 major · 0 minor · 0 note)
+
+s
+
+Findings:
+1. [MAJOR] Analysis incomplete or inconsistent with the evidence — p-color/q: PRE_EXISTING needs evidence that base is wrong the same way: an issue (`open-issue#N`, `fixed-by#N` or a lightningcss issue/PR…
+
+Coverage: latest: chromium 1. 2 behavioral deltas (2 verified in browsers), 0 PR probes, 0 mutations, 0 WPT cases, 0 real-world files.
+
+Report: <RUN>/report.md
+

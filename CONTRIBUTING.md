@@ -7,13 +7,20 @@ way around).
 
 ## Setup
 
-See the README. Run the tests before sending a change:
+See the README. The harness runs on Node.js 24 with no packages; `npm ci` installs only the dev
+tooling (ESLint, Prettier, TypeScript for type-checking the JSDoc, and the oracle's libraries for
+its unit tests). Run the checks before sending a change:
 
 ```sh
-python3 -I -m unittest discover -s tests          # harness
-npm ci && node --test oracle/test/oracle.test.mjs  # oracle normalization and DOM synthesis
-bin/lcr selftest                                   # oracle in real engines (needs Docker images)
+npm ci
+npm run check          # lint, format check, typecheck (tsc --checkJs, strict), unit tests,
+                       # context and checklist lint (scripts/), probe validation
+bin/lcr selftest       # the oracle in real engines (needs the Docker images)
 ```
+
+`npm run format` applies the Prettier style. Unit tests sit next to the code they test
+(`lib/<stage>/test/`, `oracle/test/`, `scripts/test/`); shared helpers and fixtures are under
+`test/`. Tests use no network and no Docker.
 
 ## Probes
 
@@ -40,15 +47,19 @@ Everything under `references/` and `SKILL.md` is loaded into the reviewing agent
 must stay small and timeless: explain the mechanism (what the code does, why it breaks CSS
 semantics, how to spot it in a diff), not the history. No issue or PR numbers, commit hashes,
 release versions or line numbers, and only judgment the harness cannot make itself.
-`python3 -I scripts/lint_context.py` enforces this and the per-file size budgets. History belongs
+`node scripts/lint-context.js` enforces this and the per-file size budgets. History belongs
 in commit messages, not in the context.
 
 ## Harness and oracle
 
-- The harness is Python standard library only; keep it that way so it runs anywhere.
+- The harness has no runtime dependencies (Node.js built-ins only); keep it that way so it runs
+  anywhere `node` does. Subprocesses go through `lib/core/proc.js`, output through
+  `lib/core/log.js`, and an expected failure is an `LcrError` with a remedy.
+- The engine runner (`oracle/engine-runner.cjs`, `oracle/runner/`) runs inside the legacy
+  Playwright images on Node 14 and 16: CommonJS and ES2020 only (ESLint enforces it there).
 - Determinism is a feature: sort everything, no timestamps in compared output, no network in
   the oracle containers.
-- A change to verdict logic (`config/checks.json`, `lib/lcr/report.py`, `oracle/compare.mjs`)
+- A change to verdict logic (`config/checks.json`, `lib/report/`, `oracle/compare.mjs`)
   needs a known-answer case in `oracle/test/selftest.jsonl` or a unit test.
 
 ## Pull requests

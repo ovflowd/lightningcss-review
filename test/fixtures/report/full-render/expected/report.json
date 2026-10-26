@@ -1,0 +1,481 @@
+{
+  "base": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "checks": [
+    {
+      "evidence": "1 passed, 0 ignored",
+      "group": "build",
+      "id": "B1",
+      "items": [],
+      "severity": null,
+      "status": "PASS",
+      "title": "Head test suite passes (cargo test --all-features)"
+    },
+    {
+      "evidence": "",
+      "group": "build",
+      "id": "B2",
+      "items": [],
+      "severity": null,
+      "status": "PASS",
+      "title": "Compiles with RUSTFLAGS=-D warnings (CI)"
+    },
+    {
+      "evidence": "",
+      "group": "build",
+      "id": "B3",
+      "items": [],
+      "severity": null,
+      "status": "PASS",
+      "title": "rustfmt clean on changed files"
+    },
+    {
+      "evidence": "",
+      "group": "build",
+      "id": "B4",
+      "items": [],
+      "severity": null,
+      "status": "PASS",
+      "title": "Cargo.lock in sync (--locked)"
+    },
+    {
+      "evidence": "bindings not touched",
+      "group": "build",
+      "id": "B5",
+      "items": [],
+      "severity": null,
+      "status": "SKIP",
+      "title": "JS lane: yarn build / test / tsc (when bindings change)"
+    },
+    {
+      "evidence": "no checks reported (first-time contributor workflows may need approval)",
+      "group": "build",
+      "id": "B6",
+      "items": [],
+      "severity": null,
+      "status": "SKIP",
+      "title": "GitHub CI checks on the PR"
+    },
+    {
+      "evidence": "lane not run",
+      "group": "build",
+      "id": "B7",
+      "items": [],
+      "severity": null,
+      "status": "SKIP",
+      "title": "parcel_selectors crate tests (not run by CI)"
+    },
+    {
+      "evidence": "lane not run",
+      "group": "build",
+      "id": "B8",
+      "items": [],
+      "severity": null,
+      "status": "SKIP",
+      "title": "Builds with --no-default-features"
+    },
+    {
+      "evidence": "no napi/node/cfg(target_arch) changes",
+      "group": "build",
+      "id": "B9",
+      "items": [],
+      "severity": null,
+      "status": "SKIP",
+      "title": "wasm32 compile gate (CI test-wasm compiles cfg(wasm32) code only there)"
+    },
+    {
+      "evidence": "c/ not touched",
+      "group": "build",
+      "id": "B10",
+      "items": [],
+      "severity": null,
+      "status": "SKIP",
+      "title": "C bindings build and c/lightningcss.h is up to date"
+    },
+    {
+      "evidence": "no generated inputs touched",
+      "group": "build",
+      "id": "B11",
+      "items": [],
+      "severity": null,
+      "status": "SKIP",
+      "title": "Generated files in sync (build-prefixes.js output, ast.d.ts), compared with base's drift"
+    },
+    {
+      "evidence": "",
+      "group": "tests",
+      "id": "T1",
+      "items": [],
+      "severity": null,
+      "status": "PASS",
+      "title": "Source changes come with tests in src/lib.rs (or tests/, node/test)"
+    },
+    {
+      "evidence": "no new test cases",
+      "group": "tests",
+      "id": "T2",
+      "items": [],
+      "severity": null,
+      "status": "SKIP",
+      "title": "New test cases exercise the change (fail on base)"
+    },
+    {
+      "evidence": "no existing expectation changed",
+      "group": "tests",
+      "id": "T3",
+      "items": [],
+      "severity": null,
+      "status": "SKIP",
+      "title": "Changed expectations are browser-equivalent to their input"
+    },
+    {
+      "evidence": "",
+      "group": "tests",
+      "id": "T4",
+      "items": [],
+      "severity": null,
+      "status": "PASS",
+      "title": "No existing expectation removed while behavior changed"
+    },
+    {
+      "evidence": "0 head tuples reproduced",
+      "group": "tests",
+      "id": "T5",
+      "items": [],
+      "severity": null,
+      "status": "PASS",
+      "title": "Harness fidelity: recorded head expectations reproduce through the adapter"
+    },
+    {
+      "evidence": "0 assertion(s) checked",
+      "group": "tests",
+      "id": "T6",
+      "items": [],
+      "severity": null,
+      "status": "PASS",
+      "title": "PR and curated probe assertions that hold on base still hold on head"
+    },
+    {
+      "evidence": "2 case(s) where head is worse than base in current engines (base equivalent, or head adds differences)",
+      "group": "oracle",
+      "id": "O1",
+      "items": [
+        "r-bootstrap-minify",
+        "r-tiny-minify"
+      ],
+      "severity": "BLOCKER",
+      "status": "FAIL",
+      "title": "No regression in current engines (base equivalent -> head different, or head worse than base)"
+    },
+    {
+      "evidence": "",
+      "group": "oracle",
+      "id": "O2",
+      "items": [],
+      "severity": null,
+      "status": "PASS",
+      "title": "New/changed test outputs are equivalent to their input in current engines"
+    },
+    {
+      "evidence": "",
+      "group": "oracle",
+      "id": "O3",
+      "items": [],
+      "severity": null,
+      "status": "PASS",
+      "title": "No new declarations/selectors/conditions rejected by an in-target engine without a surviving fallback"
+    },
+    {
+      "evidence": "legacy-2021",
+      "group": "oracle",
+      "id": "O4",
+      "items": [],
+      "severity": null,
+      "status": "PASS",
+      "title": "Lowered output in legacy engines within targets matches the modern rendering"
+    },
+    {
+      "evidence": "",
+      "group": "oracle",
+      "id": "O5",
+      "items": [],
+      "severity": null,
+      "status": "PASS",
+      "title": "No new near-miss (color/number drift within tolerance)"
+    },
+    {
+      "evidence": "",
+      "group": "oracle",
+      "id": "O6",
+      "items": [],
+      "severity": null,
+      "status": "PASS",
+      "title": "Pixel-identical rendering for visual areas"
+    },
+    {
+      "evidence": "",
+      "group": "oracle",
+      "id": "O7",
+      "items": [],
+      "severity": null,
+      "status": "PASS",
+      "title": "WPT property cases do not regress"
+    },
+    {
+      "evidence": "1 delta(s) unverified and not cleared in analysis.json",
+      "group": "oracle",
+      "id": "O8",
+      "items": [
+        "t-err"
+      ],
+      "severity": "MAJOR",
+      "status": "FAIL",
+      "title": "Every behavioral delta was verified or cleared (errored engine jobs make the verdict INCONCLUSIVE)"
+    },
+    {
+      "evidence": "",
+      "group": "oracle",
+      "id": "O9",
+      "items": [],
+      "severity": null,
+      "status": "PASS",
+      "title": "Engines read the input differently: the spec decides (classify with a spec or WPT citation)"
+    },
+    {
+      "evidence": "",
+      "group": "oracle",
+      "id": "O10",
+      "items": [],
+      "severity": null,
+      "status": "PASS",
+      "title": "Cases the browsers cannot judge against base (input rejected in every engine, base behavior extended to new targets) are classified"
+    },
+    {
+      "evidence": "1 new panic/crash/timeout",
+      "group": "robustness",
+      "id": "R1",
+      "items": [
+        "t-err panic: boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom…"
+      ],
+      "severity": "BLOCKER",
+      "status": "FAIL",
+      "title": "No new panic / crash / timeout"
+    },
+    {
+      "evidence": "",
+      "group": "robustness",
+      "id": "R2",
+      "items": [],
+      "severity": null,
+      "status": "PASS",
+      "title": "Output is stable under re-minification where base is (idempotent)"
+    },
+    {
+      "evidence": "2 delta(s) outside the touched areas (color, selectors) need classification",
+      "group": "side-effects",
+      "id": "S1",
+      "items": [
+        "r-bootstrap-minify [realworld]",
+        "r-tiny-minify [realworld]"
+      ],
+      "severity": "MAJOR",
+      "status": "FAIL",
+      "title": "Deltas stay inside the declared areas (or are explained)"
+    },
+    {
+      "evidence": "real-world corpus not available",
+      "group": "side-effects",
+      "id": "S2",
+      "items": [],
+      "severity": null,
+      "status": "SKIP",
+      "title": "Real-world minified size does not grow (> 0.1%)"
+    },
+    {
+      "evidence": "1 open PR(s) touch the same files",
+      "group": "side-effects",
+      "id": "S3",
+      "items": [
+        "#8 other (src/values/color.rs)"
+      ],
+      "severity": "NOTE",
+      "status": "PARTIAL",
+      "title": "Overlapping open PRs identified"
+    },
+    {
+      "evidence": "optional: run `lcr perf` for core/hot-path changes",
+      "group": "perf",
+      "id": "P1",
+      "items": [],
+      "severity": null,
+      "status": "SKIP",
+      "title": "No consistent slowdown on the real-world corpus (release build; optional `lcr perf`)"
+    },
+    {
+      "evidence": "optional: run `lcr perf`",
+      "group": "perf",
+      "id": "P2",
+      "items": [],
+      "severity": null,
+      "status": "SKIP",
+      "title": "Release binary size does not grow by more than 1% (optional `lcr perf`)"
+    },
+    {
+      "evidence": "0/43 items answered",
+      "group": "analysis",
+      "id": "A1",
+      "items": [],
+      "severity": "NOTE",
+      "status": "PARTIAL",
+      "title": "Spec checklist for the affected areas"
+    },
+    {
+      "evidence": "1 linked issue(s)",
+      "group": "analysis",
+      "id": "A2",
+      "items": [
+        "#3: no PR probe with `repro: #3`"
+      ],
+      "severity": "MAJOR",
+      "status": "FAIL",
+      "title": "Linked issue repro (`repro: #N` probe) fixed on head and failing on base"
+    },
+    {
+      "evidence": "checklist items unanswered or without evidence: GEN-01, GEN-02, GEN-03, GEN-04, GEN-05, GEN-06, GEN-07, GEN-08, GEN-09, GEN-10…; w-0000000a: PRE_EXISTING on w-0000000a, which base renders equivalent in every engine",
+      "group": "analysis",
+      "id": "A3",
+      "items": [
+        "w-0000000a: PRE_EXISTING on w-0000000a, which base renders equivalent in every engine",
+        "checklist items unanswered or without evidence: GEN-01, GEN-02, GEN-03, GEN-04, GEN-05, GEN-06, GEN-07, GEN-08, GEN-09, GEN-10…"
+      ],
+      "severity": "MAJOR",
+      "status": "FAIL",
+      "title": "Analysis complete (every slot filled with evidence)"
+    }
+  ],
+  "counts": {
+    "BLOCKER": 2,
+    "MAJOR": 4,
+    "MINOR": 0,
+    "NOTE": 2
+  },
+  "decision_needed": [],
+  "default_requests": null,
+  "engines": {
+    "latest": {
+      "chromium": "140",
+      "firefox": "141",
+      "node": "24",
+      "webkit": "26"
+    },
+    "legacy-2021": {
+      "chromium": "97",
+      "firefox": "93",
+      "webkit": "15.4"
+    }
+  },
+  "findings": [
+    {
+      "check": "O1",
+      "detail": "2 case(s) where head is worse than base in current engines (base equivalent, or head adds differences)",
+      "evidence": [
+        "r-bootstrap-minify",
+        "r-tiny-minify"
+      ],
+      "n": 1,
+      "severity": "BLOCKER",
+      "source": "check",
+      "title": "Regression in current engines (head worse than base)"
+    },
+    {
+      "check": "R1",
+      "detail": "1 new panic/crash/timeout",
+      "evidence": [
+        "t-err panic: boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom…"
+      ],
+      "n": 2,
+      "severity": "BLOCKER",
+      "source": "check",
+      "title": "New panic / crash / timeout"
+    },
+    {
+      "check": "A2",
+      "detail": "1 linked issue(s)",
+      "evidence": [
+        "#3: no PR probe with `repro: #3`"
+      ],
+      "n": 3,
+      "severity": "MAJOR",
+      "source": "check",
+      "title": "Linked issue repro not fixed on head (or not reproduced on base)"
+    },
+    {
+      "check": "A3",
+      "detail": "checklist items unanswered or without evidence: GEN-01, GEN-02, GEN-03, GEN-04, GEN-05, GEN-06, GEN-07, GEN-08, GEN-09, GEN-10…; w-0000000a: PRE_EXISTING on w-0000000a, which base renders equivalent in every engine",
+      "evidence": [
+        "w-0000000a: PRE_EXISTING on w-0000000a, which base renders equivalent in every engine",
+        "checklist items unanswered or without evidence: GEN-01, GEN-02, GEN-03, GEN-04, GEN-05, GEN-06, GEN-07, GEN-08, GEN-09, GEN-10…"
+      ],
+      "n": 4,
+      "severity": "MAJOR",
+      "source": "check",
+      "title": "Analysis incomplete or inconsistent with the evidence"
+    },
+    {
+      "check": "O8",
+      "detail": "1 delta(s) unverified and not cleared in analysis.json",
+      "evidence": [
+        "t-err"
+      ],
+      "n": 5,
+      "severity": "MAJOR",
+      "source": "check",
+      "title": "Behavioral deltas neither verified by the oracle nor cleared"
+    },
+    {
+      "check": "S1",
+      "detail": "2 delta(s) outside the touched areas (color, selectors) need classification",
+      "evidence": [
+        "r-bootstrap-minify [realworld]",
+        "r-tiny-minify [realworld]"
+      ],
+      "n": 6,
+      "severity": "MAJOR",
+      "source": "check",
+      "title": "Deltas outside the declared areas are unexplained"
+    },
+    {
+      "check": "A1",
+      "detail": "0/43 items answered",
+      "evidence": [],
+      "n": 7,
+      "severity": "NOTE",
+      "source": "check",
+      "title": "Spec checklist for the affected areas"
+    },
+    {
+      "check": "S3",
+      "detail": "1 open PR(s) touch the same files",
+      "evidence": [
+        "#8 other (src/values/color.rs)"
+      ],
+      "n": 8,
+      "severity": "NOTE",
+      "source": "check",
+      "title": "Overlapping open PRs identified"
+    }
+  ],
+  "head_tree": "hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh",
+  "pr": 42,
+  "run_id": "run",
+  "schema": 1,
+  "skill_version": "0.1.0",
+  "stages": {
+    "analysis": true,
+    "build": true,
+    "corpus": true,
+    "oracle": true,
+    "prepare": true
+  },
+  "verdict": "UNSAFE",
+  "verdict_scope": null
+}

@@ -1,0 +1,17 @@
+VERDICT: UNSAFE (1 blocker, 0 major, 1 minor, 0 note)
+<RUN>/report.md
+**LightningCSS # — VERDICT: UNSAFE** (1 blocker · 0 major · 1 minor · 0 note)
+
+Unicode 😀😀😀
+
+Findings:
+1. [BLOCKER] Colour 😀 loses its alpha | when lowered
+for old targets, Colour 😀 loses its alpha | when lowered
+for old targets, Colour 😀 loses its alpha | when lowered
+for… — see　p-color/ü and p-color/b. (also: COLOR-01, O1, classification)
+2. [MINOR] evidence as a string — a
+
+Coverage: latest: chromium 1. 2 behavioral deltas (2 verified in browsers), 0 PR probes, 0 mutations, 0 WPT cases, 0 real-world files.
+
+Report: <RUN>/report.md
+

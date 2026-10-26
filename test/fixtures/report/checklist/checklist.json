@@ -1,0 +1,83 @@
+[
+  {
+    "covers": [],
+    "item": "COLOR-01",
+    "list": "color",
+    "severity": "MAJOR",
+    "text": "Colors stay equivalent",
+    "verify": "a `lower-minify` probe or a minify test"
+  },
+  {
+    "covers": [],
+    "item": "GEN-06",
+    "list": "general",
+    "severity": "BLOCKER",
+    "text": "Colors stay equivalent",
+    "verify": "mutations"
+  },
+  {
+    "covers": [],
+    "item": "TESTS-03",
+    "list": "tests",
+    "same_root_as": "GEN-06",
+    "severity": "MAJOR",
+    "text": "Colors stay equivalent",
+    "verify": "mutations"
+  },
+  {
+    "covers": [],
+    "item": "COLOR-02",
+    "list": "color",
+    "severity": "MAJOR",
+    "text": "Colors stay equivalent",
+    "verify": "a `lower-minify` probe or a minify test"
+  },
+  {
+    "covers": [],
+    "item": "COLOR-03",
+    "list": "color",
+    "severity": "MAJOR",
+    "text": "Colors stay equivalent",
+    "verify": "a `lower-minify` probe or a minify test"
+  },
+  {
+    "covers": [],
+    "item": "COLOR-04",
+    "list": "color",
+    "severity": "MAJOR",
+    "text": "Colors stay equivalent",
+    "verify": "a `lower-minify` probe or a minify test"
+  },
+  {
+    "covers": [],
+    "item": "COLOR-05",
+    "list": "color",
+    "severity": "MAJOR",
+    "text": "Colors stay equivalent",
+    "verify": "a `lower-minify` probe or a minify test"
+  },
+  {
+    "covers": [],
+    "item": "COLOR-06",
+    "list": "color",
+    "severity": "MAJOR",
+    "text": "Colors stay equivalent",
+    "verify": "a `lower-minify` probe or a minify test"
+  },
+  {
+    "covers": [],
+    "item": "COLOR-07",
+    "list": "color",
+    "severity": "MAJOR",
+    "text": "Colors stay equivalent",
+    "verify": "a `lower-minify` probe or a minify test"
+  },
+  {
+    "covers": [],
+    "item": "DISPLAY-01",
+    "list": "display",
+    "severity": "MAJOR",
+    "text": "Colors stay equivalent",
+    "verify": "a `lower-minify` probe or a minify test"
+  }
+]

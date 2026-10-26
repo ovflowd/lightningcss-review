@@ -1,0 +1,1269 @@
+{
+ "width": 78,
+ "cases": [
+  {
+   "argv": [],
+   "status": 2,
+   "stdout": "",
+   "stderr": "usage: lcr [-h]\n           {doctor,setup,prepare,build,corpus,probe,oracle,perf,report,status,worklist,brief,summary,show,table,review,wpt,realworld,spec-coverage,clean,baseline,selftest,validate-probes} ...\nlcr: error: the following arguments are required: command\n",
+   "values": null
+  },
+  {
+   "argv": [
+    "-h"
+   ],
+   "status": 0,
+   "stdout": "usage: lcr [-h]\n           {doctor,setup,prepare,build,corpus,probe,oracle,perf,report,status,worklist,brief,summary,show,table,review,wpt,realworld,spec-coverage,clean,baseline,selftest,validate-probes} ...\n\nlcr: deterministic review harness for parcel-bundler/lightningcss pull\nrequests.\n\npositional arguments:\n  {doctor,setup,prepare,build,corpus,probe,oracle,perf,report,status,worklist,brief,summary,show,table,review,wpt,realworld,spec-coverage,clean,baseline,selftest,validate-probes}\n    doctor              check host requirements and images\n    setup               build Docker images (builder + browser engines) and\n                        record versions\n    prepare             resolve PR -> base/head trees, classify the change\n    build               fmt check, inject recorder, cargo test (both sides),\n                        build adapters\n    corpus              assemble cases (tests, probes, WPT, real-world), run\n                        base/head adapters, compute deltas\n    probe               run the agent-written probes in <run>/probes through\n                        both adapters\n    oracle              run browser oracles on deltas, PR tests and probes\n    perf                optional: release-build timing on the real-world\n                        corpus and binary size, base vs head\n    report              compute verdict and render report.md/report.json from\n                        the templates\n    status              show stage status for a run\n    worklist            write/refresh analysis.json with every slot the report\n                        needs; print the open ones\n    brief               compact digest of a run for the reviewer (instead of\n                        raw JSON)\n    summary             print the fixed chat summary for a reported run\n    show                print one case: input, base/head output, per-engine\n                        oracle diffs\n    table               one line per oracle case: transition, base/head\n                        status, bad engines, legacy (before the oracle:\n                        outputs only)\n    review              prepare + build + corpus (stops before the agent\n                        analysis step)\n    wpt                 fetch the pinned WPT revision and extract the parsing\n                        corpus\n    realworld           download the pinned real-world CSS corpus\n    spec-coverage       webref inventory vs. what LightningCSS parses (missing\n                        features)\n    clean               delete old runs; with <run> drop its build trees;\n                        --results drops raw oracle results\n    baseline            run every curated probe on current master through the\n                        oracle\n    selftest            run the oracle's known-answer cases in every engine\n                        profile\n    validate-probes     parse every probe file and report format errors\n\noptions:\n  -h, --help            show this help message and exit\n",
+   "stderr": "",
+   "values": null
+  },
+  {
+   "argv": [
+    "--help"
+   ],
+   "status": 0,
+   "stdout": "usage: lcr [-h]\n           {doctor,setup,prepare,build,corpus,probe,oracle,perf,report,status,worklist,brief,summary,show,table,review,wpt,realworld,spec-coverage,clean,baseline,selftest,validate-probes} ...\n\nlcr: deterministic review harness for parcel-bundler/lightningcss pull\nrequests.\n\npositional arguments:\n  {doctor,setup,prepare,build,corpus,probe,oracle,perf,report,status,worklist,brief,summary,show,table,review,wpt,realworld,spec-coverage,clean,baseline,selftest,validate-probes}\n    doctor              check host requirements and images\n    setup               build Docker images (builder + browser engines) and\n                        record versions\n    prepare             resolve PR -> base/head trees, classify the change\n    build               fmt check, inject recorder, cargo test (both sides),\n                        build adapters\n    corpus              assemble cases (tests, probes, WPT, real-world), run\n                        base/head adapters, compute deltas\n    probe               run the agent-written probes in <run>/probes through\n                        both adapters\n    oracle              run browser oracles on deltas, PR tests and probes\n    perf                optional: release-build timing on the real-world\n                        corpus and binary size, base vs head\n    report              compute verdict and render report.md/report.json from\n                        the templates\n    status              show stage status for a run\n    worklist            write/refresh analysis.json with every slot the report\n                        needs; print the open ones\n    brief               compact digest of a run for the reviewer (instead of\n                        raw JSON)\n    summary             print the fixed chat summary for a reported run\n    show                print one case: input, base/head output, per-engine\n                        oracle diffs\n    table               one line per oracle case: transition, base/head\n                        status, bad engines, legacy (before the oracle:\n                        outputs only)\n    review              prepare + build + corpus (stops before the agent\n                        analysis step)\n    wpt                 fetch the pinned WPT revision and extract the parsing\n                        corpus\n    realworld           download the pinned real-world CSS corpus\n    spec-coverage       webref inventory vs. what LightningCSS parses (missing\n                        features)\n    clean               delete old runs; with <run> drop its build trees;\n                        --results drops raw oracle results\n    baseline            run every curated probe on current master through the\n                        oracle\n    selftest            run the oracle's known-answer cases in every engine\n                        profile\n    validate-probes     parse every probe file and report format errors\n\noptions:\n  -h, --help            show this help message and exit\n",
+   "stderr": "",
+   "values": null
+  },
+  {
+   "argv": [
+    "--he"
+   ],
+   "status": 0,
+   "stdout": "usage: lcr [-h]\n           {doctor,setup,prepare,build,corpus,probe,oracle,perf,report,status,worklist,brief,summary,show,table,review,wpt,realworld,spec-coverage,clean,baseline,selftest,validate-probes} ...\n\nlcr: deterministic review harness for parcel-bundler/lightningcss pull\nrequests.\n\npositional arguments:\n  {doctor,setup,prepare,build,corpus,probe,oracle,perf,report,status,worklist,brief,summary,show,table,review,wpt,realworld,spec-coverage,clean,baseline,selftest,validate-probes}\n    doctor              check host requirements and images\n    setup               build Docker images (builder + browser engines) and\n                        record versions\n    prepare             resolve PR -> base/head trees, classify the change\n    build               fmt check, inject recorder, cargo test (both sides),\n                        build adapters\n    corpus              assemble cases (tests, probes, WPT, real-world), run\n                        base/head adapters, compute deltas\n    probe               run the agent-written probes in <run>/probes through\n                        both adapters\n    oracle              run browser oracles on deltas, PR tests and probes\n    perf                optional: release-build timing on the real-world\n                        corpus and binary size, base vs head\n    report              compute verdict and render report.md/report.json from\n                        the templates\n    status              show stage status for a run\n    worklist            write/refresh analysis.json with every slot the report\n                        needs; print the open ones\n    brief               compact digest of a run for the reviewer (instead of\n                        raw JSON)\n    summary             print the fixed chat summary for a reported run\n    show                print one case: input, base/head output, per-engine\n                        oracle diffs\n    table               one line per oracle case: transition, base/head\n                        status, bad engines, legacy (before the oracle:\n                        outputs only)\n    review              prepare + build + corpus (stops before the agent\n                        analysis step)\n    wpt                 fetch the pinned WPT revision and extract the parsing\n                        corpus\n    realworld           download the pinned real-world CSS corpus\n    spec-coverage       webref inventory vs. what LightningCSS parses (missing\n                        features)\n    clean               delete old runs; with <run> drop its build trees;\n                        --results drops raw oracle results\n    baseline            run every curated probe on current master through the\n                        oracle\n    selftest            run the oracle's known-answer cases in every engine\n                        profile\n    validate-probes     parse every probe file and report format errors\n\noptions:\n  -h, --help            show this help message and exit\n",
+   "stderr": "",
+   "values": null
+  },
+  {
+   "argv": [
+    "-hx"
+   ],
+   "status": 0,
+   "stdout": "usage: lcr [-h]\n           {doctor,setup,prepare,build,corpus,probe,oracle,perf,report,status,worklist,brief,summary,show,table,review,wpt,realworld,spec-coverage,clean,baseline,selftest,validate-probes} ...\n\nlcr: deterministic review harness for parcel-bundler/lightningcss pull\nrequests.\n\npositional arguments:\n  {doctor,setup,prepare,build,corpus,probe,oracle,perf,report,status,worklist,brief,summary,show,table,review,wpt,realworld,spec-coverage,clean,baseline,selftest,validate-probes}\n    doctor              check host requirements and images\n    setup               build Docker images (builder + browser engines) and\n                        record versions\n    prepare             resolve PR -> base/head trees, classify the change\n    build               fmt check, inject recorder, cargo test (both sides),\n                        build adapters\n    corpus              assemble cases (tests, probes, WPT, real-world), run\n                        base/head adapters, compute deltas\n    probe               run the agent-written probes in <run>/probes through\n                        both adapters\n    oracle              run browser oracles on deltas, PR tests and probes\n    perf                optional: release-build timing on the real-world\n                        corpus and binary size, base vs head\n    report              compute verdict and render report.md/report.json from\n                        the templates\n    status              show stage status for a run\n    worklist            write/refresh analysis.json with every slot the report\n                        needs; print the open ones\n    brief               compact digest of a run for the reviewer (instead of\n                        raw JSON)\n    summary             print the fixed chat summary for a reported run\n    show                print one case: input, base/head output, per-engine\n                        oracle diffs\n    table               one line per oracle case: transition, base/head\n                        status, bad engines, legacy (before the oracle:\n                        outputs only)\n    review              prepare + build + corpus (stops before the agent\n                        analysis step)\n    wpt                 fetch the pinned WPT revision and extract the parsing\n                        corpus\n    realworld           download the pinned real-world CSS corpus\n    spec-coverage       webref inventory vs. what LightningCSS parses (missing\n                        features)\n    clean               delete old runs; with <run> drop its build trees;\n                        --results drops raw oracle results\n    baseline            run every curated probe on current master through the\n                        oracle\n    selftest            run the oracle's known-answer cases in every engine\n                        profile\n    validate-probes     parse every probe file and report format errors\n\noptions:\n  -h, --help            show this help message and exit\n",
+   "stderr": "",
+   "values": null
+  },
+  {
+   "argv": [
+    "bogus"
+   ],
+   "status": 2,
+   "stdout": "",
+   "stderr": "usage: lcr [-h]\n           {doctor,setup,prepare,build,corpus,probe,oracle,perf,report,status,worklist,brief,summary,show,table,review,wpt,realworld,spec-coverage,clean,baseline,selftest,validate-probes} ...\nlcr: error: argument command: invalid choice: 'bogus' (choose from 'doctor', 'setup', 'prepare', 'build', 'corpus', 'probe', 'oracle', 'perf', 'report', 'status', 'worklist', 'brief', 'summary', 'show', 'table', 'review', 'wpt', 'realworld', 'spec-coverage', 'clean', 'baseline', 'selftest', 'validate-probes')\n",
+   "values": null
+  },
+  {
+   "argv": [
+    "--bogus"
+   ],
+   "status": 2,
+   "stdout": "",
+   "stderr": "usage: lcr [-h]\n           {doctor,setup,prepare,build,corpus,probe,oracle,perf,report,status,worklist,brief,summary,show,table,review,wpt,realworld,spec-coverage,clean,baseline,selftest,validate-probes} ...\nlcr: error: the following arguments are required: command\n",
+   "values": null
+  },
+  {
+   "argv": [
+    "--keep",
+    "3",
+    "clean"
+   ],
+   "status": 2,
+   "stdout": "",
+   "stderr": "usage: lcr [-h]\n           {doctor,setup,prepare,build,corpus,probe,oracle,perf,report,status,worklist,brief,summary,show,table,review,wpt,realworld,spec-coverage,clean,baseline,selftest,validate-probes} ...\nlcr: error: argument command: invalid choice: '3' (choose from 'doctor', 'setup', 'prepare', 'build', 'corpus', 'probe', 'oracle', 'perf', 'report', 'status', 'worklist', 'brief', 'summary', 'show', 'table', 'review', 'wpt', 'realworld', 'spec-coverage', 'clean', 'baseline', 'selftest', 'validate-probes')\n",
+   "values": null
+  },
+  {
+   "argv": [
+    "doctor",
+    "-h"
+   ],
+   "status": 0,
+   "stdout": "usage: lcr doctor [-h]\n\noptions:\n  -h, --help  show this help message and exit\n",
+   "stderr": "",
+   "values": null
+  },
+  {
+   "argv": [
+    "prepare",
+    "-h"
+   ],
+   "status": 0,
+   "stdout": "usage: lcr prepare [-h] [--range LOCAL_RANGE] [--offline] [pr]\n\npositional arguments:\n  pr\n\noptions:\n  -h, --help           show this help message and exit\n  --range LOCAL_RANGE  review a local <base>..<head> instead of a PR\n  --offline            do not fetch (use refs already present)\n",
+   "stderr": "",
+   "values": null
+  },
+  {
+   "argv": [
+    "build",
+    "-h"
+   ],
+   "status": 0,
+   "stdout": "usage: lcr build [-h] [--js] [--jobs JOBS] [run]\n\npositional arguments:\n  run          run id, PR number, or 'latest'\n\noptions:\n  -h, --help   show this help message and exit\n  --js         also run the JS lane (yarn build/test/tsc)\n  --jobs JOBS\n",
+   "stderr": "",
+   "values": null
+  },
+  {
+   "argv": [
+    "corpus",
+    "-h"
+   ],
+   "status": 0,
+   "stdout": "usage: lcr corpus [-h] [--wpt {auto,all,none}] [--realworld {auto,all,none}]\n                  [run]\n\npositional arguments:\n  run                   run id, PR number, or 'latest'\n\noptions:\n  -h, --help            show this help message and exit\n  --wpt {auto,all,none}\n  --realworld {auto,all,none}\n",
+   "stderr": "",
+   "values": null
+  },
+  {
+   "argv": [
+    "probe",
+    "-h"
+   ],
+   "status": 0,
+   "stdout": "usage: lcr probe [-h] [run]\n\npositional arguments:\n  run         run id, PR number, or 'latest'\n\noptions:\n  -h, --help  show this help message and exit\n",
+   "stderr": "",
+   "values": null
+  },
+  {
+   "argv": [
+    "oracle",
+    "-h"
+   ],
+   "status": 0,
+   "stdout": "usage: lcr oracle [-h] [--profiles PROFILES] [--max-cases MAX_CASES]\n                  [--rerun IDS]\n                  [run]\n\npositional arguments:\n  run                   run id, PR number, or 'latest'\n\noptions:\n  -h, --help            show this help message and exit\n  --profiles PROFILES\n  --max-cases MAX_CASES\n  --rerun IDS           re-run only these case ids or globs (comma/space\n                        separated) and merge them into oracle.json\n",
+   "stderr": "",
+   "values": null
+  },
+  {
+   "argv": [
+    "perf",
+    "-h"
+   ],
+   "status": 0,
+   "stdout": "usage: lcr perf [-h] [run]\n\npositional arguments:\n  run         run id, PR number, or 'latest'\n\noptions:\n  -h, --help  show this help message and exit\n",
+   "stderr": "",
+   "values": null
+  },
+  {
+   "argv": [
+    "report",
+    "-h"
+   ],
+   "status": 0,
+   "stdout": "usage: lcr report [-h] [--allow-incomplete] [run]\n\npositional arguments:\n  run                 run id, PR number, or 'latest'\n\noptions:\n  -h, --help          show this help message and exit\n  --allow-incomplete  render even if analysis.json is missing\n",
+   "stderr": "",
+   "values": null
+  },
+  {
+   "argv": [
+    "status",
+    "-h"
+   ],
+   "status": 0,
+   "stdout": "usage: lcr status [-h] [run]\n\npositional arguments:\n  run         run id, PR number, or 'latest'\n\noptions:\n  -h, --help  show this help message and exit\n",
+   "stderr": "",
+   "values": null
+  },
+  {
+   "argv": [
+    "worklist",
+    "-h"
+   ],
+   "status": 0,
+   "stdout": "usage: lcr worklist [-h] [run]\n\npositional arguments:\n  run\n\noptions:\n  -h, --help  show this help message and exit\n",
+   "stderr": "",
+   "values": null
+  },
+  {
+   "argv": [
+    "brief",
+    "-h"
+   ],
+   "status": 0,
+   "stdout": "usage: lcr brief [-h] [run]\n\npositional arguments:\n  run\n\noptions:\n  -h, --help  show this help message and exit\n",
+   "stderr": "",
+   "values": null
+  },
+  {
+   "argv": [
+    "summary",
+    "-h"
+   ],
+   "status": 0,
+   "stdout": "usage: lcr summary [-h] [run]\n\npositional arguments:\n  run\n\noptions:\n  -h, --help  show this help message and exit\n",
+   "stderr": "",
+   "values": null
+  },
+  {
+   "argv": [
+    "show",
+    "-h"
+   ],
+   "status": 0,
+   "stdout": "usage: lcr show [-h] [--json] run case\n\npositional arguments:\n  run\n  case\n\noptions:\n  -h, --help  show this help message and exit\n  --json      everything about the case, untruncated\n",
+   "stderr": "",
+   "values": null
+  },
+  {
+   "argv": [
+    "table",
+    "-h"
+   ],
+   "status": 0,
+   "stdout": "usage: lcr table [-h] [--transition TRANSITION] [--check CHECK] [--case CASE]\n                 [--json]\n                 run\n\npositional arguments:\n  run\n\noptions:\n  -h, --help            show this help message and exit\n  --transition TRANSITION\n                        only these transitions (comma separated)\n  --check CHECK         only the cases a report check lists (needs\n                        report.json)\n  --case CASE           only case ids matching this glob\n  --json\n",
+   "stderr": "",
+   "values": null
+  },
+  {
+   "argv": [
+    "review",
+    "-h"
+   ],
+   "status": 0,
+   "stdout": "usage: lcr review [-h] [--js] pr\n\npositional arguments:\n  pr\n\noptions:\n  -h, --help  show this help message and exit\n  --js\n",
+   "stderr": "",
+   "values": null
+  },
+  {
+   "argv": [
+    "wpt",
+    "-h"
+   ],
+   "status": 0,
+   "stdout": "usage: lcr wpt [-h] [--refresh]\n\noptions:\n  -h, --help  show this help message and exit\n  --refresh\n",
+   "stderr": "",
+   "values": null
+  },
+  {
+   "argv": [
+    "realworld",
+    "-h"
+   ],
+   "status": 0,
+   "stdout": "usage: lcr realworld [-h]\n\noptions:\n  -h, --help  show this help message and exit\n",
+   "stderr": "",
+   "values": null
+  },
+  {
+   "argv": [
+    "spec-coverage",
+    "-h"
+   ],
+   "status": 0,
+   "stdout": "usage: lcr spec-coverage [-h] [--tree TREE]\n\noptions:\n  -h, --help   show this help message and exit\n  --tree TREE  source tree (default: the persistent clone)\n",
+   "stderr": "",
+   "values": null
+  },
+  {
+   "argv": [
+    "clean",
+    "-h"
+   ],
+   "status": 0,
+   "stdout": "usage: lcr clean [-h] [--keep KEEP] [--results] [run]\n\npositional arguments:\n  run          run id, PR number or 'latest'\n\noptions:\n  -h, --help   show this help message and exit\n  --keep KEEP  most recent runs to keep (default 10)\n  --results    delete oracle results-*.jsonl and screenshots once\n               verdicts.jsonl exists\n",
+   "stderr": "",
+   "values": null
+  },
+  {
+   "argv": [
+    "baseline",
+    "-h"
+   ],
+   "status": 0,
+   "stdout": "usage: lcr baseline [-h] [--profiles PROFILES]\n\noptions:\n  -h, --help           show this help message and exit\n  --profiles PROFILES\n",
+   "stderr": "",
+   "values": null
+  },
+  {
+   "argv": [
+    "selftest",
+    "-h"
+   ],
+   "status": 0,
+   "stdout": "usage: lcr selftest [-h] [--profiles PROFILES]\n\noptions:\n  -h, --help           show this help message and exit\n  --profiles PROFILES\n",
+   "stderr": "",
+   "values": null
+  },
+  {
+   "argv": [
+    "validate-probes",
+    "-h"
+   ],
+   "status": 0,
+   "stdout": "usage: lcr validate-probes [-h] [paths ...]\n\npositional arguments:\n  paths\n\noptions:\n  -h, --help  show this help message and exit\n",
+   "stderr": "",
+   "values": null
+  },
+  {
+   "argv": [
+    "clean"
+   ],
+   "status": 0,
+   "stdout": "",
+   "stderr": "",
+   "values": {
+    "command": "clean",
+    "run": null,
+    "keep": 10,
+    "results": false
+   }
+  },
+  {
+   "argv": [
+    "clean",
+    ""
+   ],
+   "status": 0,
+   "stdout": "",
+   "stderr": "",
+   "values": {
+    "command": "clean",
+    "run": "",
+    "keep": 10,
+    "results": false
+   }
+  },
+  {
+   "argv": [
+    "clean",
+    "a",
+    "b"
+   ],
+   "status": 2,
+   "stdout": "",
+   "stderr": "usage: lcr [-h]\n           {doctor,setup,prepare,build,corpus,probe,oracle,perf,report,status,worklist,brief,summary,show,table,review,wpt,realworld,spec-coverage,clean,baseline,selftest,validate-probes} ...\nlcr: error: unrecognized arguments: b\n",
+   "values": null
+  },
+  {
+   "argv": [
+    "clean",
+    "--keep"
+   ],
+   "status": 2,
+   "stdout": "",
+   "stderr": "usage: lcr clean [-h] [--keep KEEP] [--results] [run]\nlcr clean: error: argument --keep: expected one argument\n",
+   "values": null
+  },
+  {
+   "argv": [
+    "clean",
+    "--keep",
+    "abc"
+   ],
+   "status": 2,
+   "stdout": "",
+   "stderr": "usage: lcr clean [-h] [--keep KEEP] [--results] [run]\nlcr clean: error: argument --keep: invalid int value: 'abc'\n",
+   "values": null
+  },
+  {
+   "argv": [
+    "clean",
+    "--keep",
+    "-1"
+   ],
+   "status": 0,
+   "stdout": "",
+   "stderr": "",
+   "values": {
+    "command": "clean",
+    "run": null,
+    "keep": -1,
+    "results": false
+   }
+  },
+  {
+   "argv": [
+    "clean",
+    "--keep=-1"
+   ],
+   "status": 0,
+   "stdout": "",
+   "stderr": "",
+   "values": {
+    "command": "clean",
+    "run": null,
+    "keep": -1,
+    "results": false
+   }
+  },
+  {
+   "argv": [
+    "clean",
+    "--kee",
+    "4"
+   ],
+   "status": 0,
+   "stdout": "",
+   "stderr": "",
+   "values": {
+    "command": "clean",
+    "run": null,
+    "keep": 4,
+    "results": false
+   }
+  },
+  {
+   "argv": [
+    "clean",
+    "--keep",
+    "1_0"
+   ],
+   "status": 0,
+   "stdout": "",
+   "stderr": "",
+   "values": {
+    "command": "clean",
+    "run": null,
+    "keep": 10,
+    "results": false
+   }
+  },
+  {
+   "argv": [
+    "clean",
+    "--keep",
+    " 12 "
+   ],
+   "status": 0,
+   "stdout": "",
+   "stderr": "",
+   "values": {
+    "command": "clean",
+    "run": null,
+    "keep": 12,
+    "results": false
+   }
+  },
+  {
+   "argv": [
+    "clean",
+    "--keep",
+    "١٢"
+   ],
+   "status": 0,
+   "stdout": "",
+   "stderr": "",
+   "values": {
+    "command": "clean",
+    "run": null,
+    "keep": 12,
+    "results": false
+   }
+  },
+  {
+   "argv": [
+    "clean",
+    "--keep",
+    "-0"
+   ],
+   "status": 0,
+   "stdout": "",
+   "stderr": "",
+   "values": {
+    "command": "clean",
+    "run": null,
+    "keep": 0,
+    "results": false
+   }
+  },
+  {
+   "argv": [
+    "clean",
+    "--keep",
+    "+3"
+   ],
+   "status": 0,
+   "stdout": "",
+   "stderr": "",
+   "values": {
+    "command": "clean",
+    "run": null,
+    "keep": 3,
+    "results": false
+   }
+  },
+  {
+   "argv": [
+    "clean",
+    "--keep="
+   ],
+   "status": 2,
+   "stdout": "",
+   "stderr": "usage: lcr clean [-h] [--keep KEEP] [--results] [run]\nlcr clean: error: argument --keep: invalid int value: ''\n",
+   "values": null
+  },
+  {
+   "argv": [
+    "clean",
+    "--keep",
+    "-x"
+   ],
+   "status": 2,
+   "stdout": "",
+   "stderr": "usage: lcr clean [-h] [--keep KEEP] [--results] [run]\nlcr clean: error: argument --keep: expected one argument\n",
+   "values": null
+  },
+  {
+   "argv": [
+    "clean",
+    "-k",
+    "3"
+   ],
+   "status": 2,
+   "stdout": "",
+   "stderr": "usage: lcr [-h]\n           {doctor,setup,prepare,build,corpus,probe,oracle,perf,report,status,worklist,brief,summary,show,table,review,wpt,realworld,spec-coverage,clean,baseline,selftest,validate-probes} ...\nlcr: error: unrecognized arguments: -k\n",
+   "values": null
+  },
+  {
+   "argv": [
+    "clean",
+    "--results=1"
+   ],
+   "status": 2,
+   "stdout": "",
+   "stderr": "usage: lcr clean [-h] [--keep KEEP] [--results] [run]\nlcr clean: error: argument --results: ignored explicit argument '1'\n",
+   "values": null
+  },
+  {
+   "argv": [
+    "clean",
+    "--results="
+   ],
+   "status": 2,
+   "stdout": "",
+   "stderr": "usage: lcr clean [-h] [--keep KEEP] [--results] [run]\nlcr clean: error: argument --results: ignored explicit argument ''\n",
+   "values": null
+  },
+  {
+   "argv": [
+    "clean",
+    "--res"
+   ],
+   "status": 0,
+   "stdout": "",
+   "stderr": "",
+   "values": {
+    "command": "clean",
+    "run": null,
+    "keep": 10,
+    "results": true
+   }
+  },
+  {
+   "argv": [
+    "clean",
+    "--keep",
+    "1",
+    "--",
+    "x",
+    "y"
+   ],
+   "status": 2,
+   "stdout": "",
+   "stderr": "usage: lcr [-h]\n           {doctor,setup,prepare,build,corpus,probe,oracle,perf,report,status,worklist,brief,summary,show,table,review,wpt,realworld,spec-coverage,clean,baseline,selftest,validate-probes} ...\nlcr: error: unrecognized arguments: y\n",
+   "values": null
+  },
+  {
+   "argv": [
+    "clean",
+    "--",
+    "-x"
+   ],
+   "status": 0,
+   "stdout": "",
+   "stderr": "",
+   "values": {
+    "command": "clean",
+    "run": "-x",
+    "keep": 10,
+    "results": false
+   }
+  },
+  {
+   "argv": [
+    "clean",
+    "-1"
+   ],
+   "status": 0,
+   "stdout": "",
+   "stderr": "",
+   "values": {
+    "command": "clean",
+    "run": "-1",
+    "keep": 10,
+    "results": false
+   }
+  },
+  {
+   "argv": [
+    "clean",
+    "-.5"
+   ],
+   "status": 0,
+   "stdout": "",
+   "stderr": "",
+   "values": {
+    "command": "clean",
+    "run": "-.5",
+    "keep": 10,
+    "results": false
+   }
+  },
+  {
+   "argv": [
+    "clean",
+    "x y"
+   ],
+   "status": 0,
+   "stdout": "",
+   "stderr": "",
+   "values": {
+    "command": "clean",
+    "run": "x y",
+    "keep": 10,
+    "results": false
+   }
+  },
+  {
+   "argv": [
+    "status",
+    "-1"
+   ],
+   "status": 0,
+   "stdout": "",
+   "stderr": "",
+   "values": {
+    "command": "status",
+    "run": "-1"
+   }
+  },
+  {
+   "argv": [
+    "status",
+    "--",
+    "-h"
+   ],
+   "status": 0,
+   "stdout": "",
+   "stderr": "",
+   "values": {
+    "command": "status",
+    "run": "-h"
+   }
+  },
+  {
+   "argv": [
+    "status",
+    "--j"
+   ],
+   "status": 2,
+   "stdout": "",
+   "stderr": "usage: lcr [-h]\n           {doctor,setup,prepare,build,corpus,probe,oracle,perf,report,status,worklist,brief,summary,show,table,review,wpt,realworld,spec-coverage,clean,baseline,selftest,validate-probes} ...\nlcr: error: unrecognized arguments: --j\n",
+   "values": null
+  },
+  {
+   "argv": [
+    "status",
+    "a",
+    "--bogus"
+   ],
+   "status": 2,
+   "stdout": "",
+   "stderr": "usage: lcr [-h]\n           {doctor,setup,prepare,build,corpus,probe,oracle,perf,report,status,worklist,brief,summary,show,table,review,wpt,realworld,spec-coverage,clean,baseline,selftest,validate-probes} ...\nlcr: error: unrecognized arguments: --bogus\n",
+   "values": null
+  },
+  {
+   "argv": [
+    "status",
+    "--bogus",
+    "a"
+   ],
+   "status": 2,
+   "stdout": "",
+   "stderr": "usage: lcr [-h]\n           {doctor,setup,prepare,build,corpus,probe,oracle,perf,report,status,worklist,brief,summary,show,table,review,wpt,realworld,spec-coverage,clean,baseline,selftest,validate-probes} ...\nlcr: error: unrecognized arguments: --bogus\n",
+   "values": null
+  },
+  {
+   "argv": [
+    "summary",
+    "a",
+    "b"
+   ],
+   "status": 2,
+   "stdout": "",
+   "stderr": "usage: lcr [-h]\n           {doctor,setup,prepare,build,corpus,probe,oracle,perf,report,status,worklist,brief,summary,show,table,review,wpt,realworld,spec-coverage,clean,baseline,selftest,validate-probes} ...\nlcr: error: unrecognized arguments: b\n",
+   "values": null
+  },
+  {
+   "argv": [
+    "show",
+    "r"
+   ],
+   "status": 2,
+   "stdout": "",
+   "stderr": "usage: lcr show [-h] [--json] run case\nlcr show: error: the following arguments are required: case\n",
+   "values": null
+  },
+  {
+   "argv": [
+    "show",
+    "r",
+    "--json",
+    "c"
+   ],
+   "status": 0,
+   "stdout": "",
+   "stderr": "",
+   "values": {
+    "command": "show",
+    "run": "r",
+    "case": "c",
+    "json": true
+   }
+  },
+  {
+   "argv": [
+    "show",
+    "--json",
+    "r",
+    "c"
+   ],
+   "status": 0,
+   "stdout": "",
+   "stderr": "",
+   "values": {
+    "command": "show",
+    "run": "r",
+    "case": "c",
+    "json": true
+   }
+  },
+  {
+   "argv": [
+    "table"
+   ],
+   "status": 2,
+   "stdout": "",
+   "stderr": "usage: lcr table [-h] [--transition TRANSITION] [--check CHECK] [--case CASE]\n                 [--json]\n                 run\nlcr table: error: the following arguments are required: run\n",
+   "values": null
+  },
+  {
+   "argv": [
+    "table",
+    "r",
+    "--c",
+    "x"
+   ],
+   "status": 2,
+   "stdout": "",
+   "stderr": "usage: lcr table [-h] [--transition TRANSITION] [--check CHECK] [--case CASE]\n                 [--json]\n                 run\nlcr table: error: ambiguous option: --c could match --check, --case\n",
+   "values": null
+  },
+  {
+   "argv": [
+    "table",
+    "r",
+    "--case",
+    "-x"
+   ],
+   "status": 2,
+   "stdout": "",
+   "stderr": "usage: lcr table [-h] [--transition TRANSITION] [--check CHECK] [--case CASE]\n                 [--json]\n                 run\nlcr table: error: argument --case: expected one argument\n",
+   "values": null
+  },
+  {
+   "argv": [
+    "table",
+    "r",
+    "--case=-x"
+   ],
+   "status": 0,
+   "stdout": "",
+   "stderr": "",
+   "values": {
+    "command": "table",
+    "run": "r",
+    "transition": null,
+    "check": null,
+    "case": "-x",
+    "json": false
+   }
+  },
+  {
+   "argv": [
+    "table",
+    "r",
+    "--ca",
+    "m-*"
+   ],
+   "status": 0,
+   "stdout": "",
+   "stderr": "",
+   "values": {
+    "command": "table",
+    "run": "r",
+    "transition": null,
+    "check": null,
+    "case": "m-*",
+    "json": false
+   }
+  },
+  {
+   "argv": [
+    "table",
+    "r",
+    "--json",
+    "--json",
+    "--transition",
+    "a,b"
+   ],
+   "status": 0,
+   "stdout": "",
+   "stderr": "",
+   "values": {
+    "command": "table",
+    "run": "r",
+    "transition": "a,b",
+    "check": null,
+    "case": null,
+    "json": true
+   }
+  },
+  {
+   "argv": [
+    "corpus",
+    "--wpt",
+    "bad",
+    "x"
+   ],
+   "status": 2,
+   "stdout": "",
+   "stderr": "usage: lcr corpus [-h] [--wpt {auto,all,none}] [--realworld {auto,all,none}]\n                  [run]\nlcr corpus: error: argument --wpt: invalid choice: 'bad' (choose from 'auto', 'all', 'none')\n",
+   "values": null
+  },
+  {
+   "argv": [
+    "corpus",
+    "--wpt=all"
+   ],
+   "status": 0,
+   "stdout": "",
+   "stderr": "",
+   "values": {
+    "command": "corpus",
+    "run": null,
+    "wpt": "all",
+    "realworld": "auto"
+   }
+  },
+  {
+   "argv": [
+    "corpus",
+    "--w",
+    "none",
+    "--r",
+    "all",
+    "run"
+   ],
+   "status": 0,
+   "stdout": "",
+   "stderr": "",
+   "values": {
+    "command": "corpus",
+    "run": "run",
+    "wpt": "none",
+    "realworld": "all"
+   }
+  },
+  {
+   "argv": [
+    "oracle",
+    "--max",
+    "x"
+   ],
+   "status": 2,
+   "stdout": "",
+   "stderr": "usage: lcr oracle [-h] [--profiles PROFILES] [--max-cases MAX_CASES]\n                  [--rerun IDS]\n                  [run]\nlcr oracle: error: argument --max-cases: invalid int value: 'x'\n",
+   "values": null
+  },
+  {
+   "argv": [
+    "oracle",
+    "--max-cases"
+   ],
+   "status": 2,
+   "stdout": "",
+   "stderr": "usage: lcr oracle [-h] [--profiles PROFILES] [--max-cases MAX_CASES]\n                  [--rerun IDS]\n                  [run]\nlcr oracle: error: argument --max-cases: expected one argument\n",
+   "values": null
+  },
+  {
+   "argv": [
+    "oracle",
+    "--m",
+    "5"
+   ],
+   "status": 0,
+   "stdout": "",
+   "stderr": "",
+   "values": {
+    "command": "oracle",
+    "run": null,
+    "profiles": null,
+    "max_cases": 5,
+    "rerun": null
+   }
+  },
+  {
+   "argv": [
+    "oracle",
+    "--re",
+    "p-*",
+    "--p",
+    "latest",
+    "r"
+   ],
+   "status": 0,
+   "stdout": "",
+   "stderr": "",
+   "values": {
+    "command": "oracle",
+    "run": "r",
+    "profiles": "latest",
+    "max_cases": 4000,
+    "rerun": "p-*"
+   }
+  },
+  {
+   "argv": [
+    "prepare"
+   ],
+   "status": 0,
+   "stdout": "",
+   "stderr": "",
+   "values": {
+    "command": "prepare",
+    "pr": null,
+    "local_range": null,
+    "offline": false
+   }
+  },
+  {
+   "argv": [
+    "prepare",
+    "abc"
+   ],
+   "status": 2,
+   "stdout": "",
+   "stderr": "usage: lcr prepare [-h] [--range LOCAL_RANGE] [--offline] [pr]\nlcr prepare: error: argument pr: invalid int value: 'abc'\n",
+   "values": null
+  },
+  {
+   "argv": [
+    "prepare",
+    "12"
+   ],
+   "status": 0,
+   "stdout": "",
+   "stderr": "",
+   "values": {
+    "command": "prepare",
+    "pr": 12,
+    "local_range": null,
+    "offline": false
+   }
+  },
+  {
+   "argv": [
+    "prepare",
+    "1",
+    "2"
+   ],
+   "status": 2,
+   "stdout": "",
+   "stderr": "usage: lcr [-h]\n           {doctor,setup,prepare,build,corpus,probe,oracle,perf,report,status,worklist,brief,summary,show,table,review,wpt,realworld,spec-coverage,clean,baseline,selftest,validate-probes} ...\nlcr: error: unrecognized arguments: 2\n",
+   "values": null
+  },
+  {
+   "argv": [
+    "prepare",
+    "--range",
+    "a..b",
+    "--offline"
+   ],
+   "status": 0,
+   "stdout": "",
+   "stderr": "",
+   "values": {
+    "command": "prepare",
+    "pr": null,
+    "local_range": "a..b",
+    "offline": true
+   }
+  },
+  {
+   "argv": [
+    "prepare",
+    "--ra",
+    "a..b"
+   ],
+   "status": 0,
+   "stdout": "",
+   "stderr": "",
+   "values": {
+    "command": "prepare",
+    "pr": null,
+    "local_range": "a..b",
+    "offline": false
+   }
+  },
+  {
+   "argv": [
+    "review"
+   ],
+   "status": 2,
+   "stdout": "",
+   "stderr": "usage: lcr review [-h] [--js] pr\nlcr review: error: the following arguments are required: pr\n",
+   "values": null
+  },
+  {
+   "argv": [
+    "review",
+    "12",
+    "--js"
+   ],
+   "status": 0,
+   "stdout": "",
+   "stderr": "",
+   "values": {
+    "command": "review",
+    "pr": 12,
+    "js": true
+   }
+  },
+  {
+   "argv": [
+    "build",
+    "--jobs",
+    "4",
+    "--js",
+    "r"
+   ],
+   "status": 0,
+   "stdout": "",
+   "stderr": "",
+   "values": {
+    "command": "build",
+    "run": "r",
+    "js": true,
+    "jobs": 4
+   }
+  },
+  {
+   "argv": [
+    "build",
+    "--jo",
+    "x"
+   ],
+   "status": 2,
+   "stdout": "",
+   "stderr": "usage: lcr build [-h] [--js] [--jobs JOBS] [run]\nlcr build: error: argument --jobs: invalid int value: 'x'\n",
+   "values": null
+  },
+  {
+   "argv": [
+    "wpt",
+    "--refresh"
+   ],
+   "status": 0,
+   "stdout": "",
+   "stderr": "",
+   "values": {
+    "command": "wpt",
+    "refresh": true
+   }
+  },
+  {
+   "argv": [
+    "wpt",
+    "--r"
+   ],
+   "status": 0,
+   "stdout": "",
+   "stderr": "",
+   "values": {
+    "command": "wpt",
+    "refresh": true
+   }
+  },
+  {
+   "argv": [
+    "realworld",
+    "x"
+   ],
+   "status": 2,
+   "stdout": "",
+   "stderr": "usage: lcr [-h]\n           {doctor,setup,prepare,build,corpus,probe,oracle,perf,report,status,worklist,brief,summary,show,table,review,wpt,realworld,spec-coverage,clean,baseline,selftest,validate-probes} ...\nlcr: error: unrecognized arguments: x\n",
+   "values": null
+  },
+  {
+   "argv": [
+    "spec-coverage",
+    "--tree",
+    ""
+   ],
+   "status": 0,
+   "stdout": "",
+   "stderr": "",
+   "values": {
+    "command": "spec-coverage",
+    "tree": ""
+   }
+  },
+  {
+   "argv": [
+    "spec-coverage",
+    "--t=/x"
+   ],
+   "status": 0,
+   "stdout": "",
+   "stderr": "",
+   "values": {
+    "command": "spec-coverage",
+    "tree": "/x"
+   }
+  },
+  {
+   "argv": [
+    "validate-probes"
+   ],
+   "status": 0,
+   "stdout": "",
+   "stderr": "",
+   "values": {
+    "command": "validate-probes",
+    "paths": []
+   }
+  },
+  {
+   "argv": [
+    "validate-probes",
+    "a",
+    "b"
+   ],
+   "status": 0,
+   "stdout": "",
+   "stderr": "",
+   "values": {
+    "command": "validate-probes",
+    "paths": [
+     "a",
+     "b"
+    ]
+   }
+  },
+  {
+   "argv": [
+    "validate-probes",
+    "-x"
+   ],
+   "status": 2,
+   "stdout": "",
+   "stderr": "usage: lcr [-h]\n           {doctor,setup,prepare,build,corpus,probe,oracle,perf,report,status,worklist,brief,summary,show,table,review,wpt,realworld,spec-coverage,clean,baseline,selftest,validate-probes} ...\nlcr: error: unrecognized arguments: -x\n",
+   "values": null
+  },
+  {
+   "argv": [
+    "validate-probes",
+    "--",
+    "-x"
+   ],
+   "status": 0,
+   "stdout": "",
+   "stderr": "",
+   "values": {
+    "command": "validate-probes",
+    "paths": [
+     "-x"
+    ]
+   }
+  },
+  {
+   "argv": [
+    "report",
+    "--a",
+    "r"
+   ],
+   "status": 0,
+   "stdout": "",
+   "stderr": "",
+   "values": {
+    "command": "report",
+    "run": "r",
+    "allow_incomplete": true
+   }
+  },
+  {
+   "argv": [
+    "report",
+    "--allow-incomplete=1"
+   ],
+   "status": 2,
+   "stdout": "",
+   "stderr": "usage: lcr report [-h] [--allow-incomplete] [run]\nlcr report: error: argument --allow-incomplete: ignored explicit argument '1'\n",
+   "values": null
+  },
+  {
+   "argv": [
+    "baseline",
+    "--profiles",
+    "latest"
+   ],
+   "status": 0,
+   "stdout": "",
+   "stderr": "",
+   "values": {
+    "command": "baseline",
+    "profiles": "latest"
+   }
+  },
+  {
+   "argv": [
+    "selftest",
+    "--p"
+   ],
+   "status": 2,
+   "stdout": "",
+   "stderr": "usage: lcr selftest [-h] [--profiles PROFILES]\nlcr selftest: error: argument --profiles: expected one argument\n",
+   "values": null
+  },
+  {
+   "argv": [
+    "-h",
+    "clean"
+   ],
+   "status": 0,
+   "stdout": "usage: lcr [-h]\n           {doctor,setup,prepare,build,corpus,probe,oracle,perf,report,status,worklist,brief,summary,show,table,review,wpt,realworld,spec-coverage,clean,baseline,selftest,validate-probes} ...\n\nlcr: deterministic review harness for parcel-bundler/lightningcss pull\nrequests.\n\npositional arguments:\n  {doctor,setup,prepare,build,corpus,probe,oracle,perf,report,status,worklist,brief,summary,show,table,review,wpt,realworld,spec-coverage,clean,baseline,selftest,validate-probes}\n    doctor              check host requirements and images\n    setup               build Docker images (builder + browser engines) and\n                        record versions\n    prepare             resolve PR -> base/head trees, classify the change\n    build               fmt check, inject recorder, cargo test (both sides),\n                        build adapters\n    corpus              assemble cases (tests, probes, WPT, real-world), run\n                        base/head adapters, compute deltas\n    probe               run the agent-written probes in <run>/probes through\n                        both adapters\n    oracle              run browser oracles on deltas, PR tests and probes\n    perf                optional: release-build timing on the real-world\n                        corpus and binary size, base vs head\n    report              compute verdict and render report.md/report.json from\n                        the templates\n    status              show stage status for a run\n    worklist            write/refresh analysis.json with every slot the report\n                        needs; print the open ones\n    brief               compact digest of a run for the reviewer (instead of\n                        raw JSON)\n    summary             print the fixed chat summary for a reported run\n    show                print one case: input, base/head output, per-engine\n                        oracle diffs\n    table               one line per oracle case: transition, base/head\n                        status, bad engines, legacy (before the oracle:\n                        outputs only)\n    review              prepare + build + corpus (stops before the agent\n                        analysis step)\n    wpt                 fetch the pinned WPT revision and extract the parsing\n                        corpus\n    realworld           download the pinned real-world CSS corpus\n    spec-coverage       webref inventory vs. what LightningCSS parses (missing\n                        features)\n    clean               delete old runs; with <run> drop its build trees;\n                        --results drops raw oracle results\n    baseline            run every curated probe on current master through the\n                        oracle\n    selftest            run the oracle's known-answer cases in every engine\n                        profile\n    validate-probes     parse every probe file and report format errors\n\noptions:\n  -h, --help            show this help message and exit\n",
+   "stderr": "",
+   "values": null
+  },
+  {
+   "argv": [
+    "clean",
+    "-hfoo"
+   ],
+   "status": 0,
+   "stdout": "usage: lcr clean [-h] [--keep KEEP] [--results] [run]\n\npositional arguments:\n  run          run id, PR number or 'latest'\n\noptions:\n  -h, --help   show this help message and exit\n  --keep KEEP  most recent runs to keep (default 10)\n  --results    delete oracle results-*.jsonl and screenshots once\n               verdicts.jsonl exists\n",
+   "stderr": "",
+   "values": null
+  },
+  {
+   "argv": [
+    "clean",
+    "-h=x"
+   ],
+   "status": 2,
+   "stdout": "",
+   "stderr": "usage: lcr clean [-h] [--keep KEEP] [--results] [run]\nlcr clean: error: argument -h/--help: ignored explicit argument 'x'\n",
+   "values": null
+  }
+ ]
+}

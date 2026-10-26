@@ -1,14 +1,35 @@
 {
-  "name": "lightningcss-review-dev",
+  "name": "lightningcss-review",
+  "version": "0.1.0",
   "private": true,
-  "description": "Dev dependencies for running the oracle unit tests outside Docker. The Docker images pin the same versions (config/engines.json).",
+  "description": "Deterministic review harness for parcel-bundler/lightningcss pull requests. No runtime dependencies on the host; the dev dependencies are tooling plus the oracle libraries the analysis image pins (compose.yaml's browsers-latest build arguments).",
   "license": "MPL-2.0",
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "bin": {
+    "lcr": "bin/lcr"
+  },
   "scripts": {
-    "test": "node --test oracle/test/oracle.test.mjs"
+    "test": "node --test --test-reporter=spec \"lib/**/test/*.test.js\" \"oracle/test/*.test.mjs\" \"scripts/test/*.test.js\" \"test/*.test.js\"",
+    "lint": "eslint --max-warnings=0 .",
+    "format": "prettier --write \"**/*.{js,mjs,cjs}\" bin/lcr",
+    "format:check": "prettier --check \"**/*.{js,mjs,cjs}\" bin/lcr",
+    "typecheck": "tsc -p tsconfig.json",
+    "lint:context": "node scripts/lint-context.js && node scripts/check-checklists.js",
+    "validate-probes": "bin/lcr validate-probes corpus/probes",
+    "check": "npm run lint && npm run format:check && npm run typecheck && npm test && npm run lint:context && npm run validate-probes"
   },
   "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "@types/node": "24.19.2",
     "colorjs.io": "0.7.1",
     "css-tree": "3.2.1",
-    "pngjs": "7.0.0"
+    "eslint": "10.13.0",
+    "eslint-plugin-jsdoc": "65.4.2",
+    "pngjs": "7.0.0",
+    "prettier": "3.9.10",
+    "typescript": "7.0.2"
   }
 }

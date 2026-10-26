@@ -1,0 +1,25 @@
+{
+  "files": {
+    "napi/src/lib.rs": {
+      "added": 1,
+      "base": [],
+      "head": [
+        [
+          1,
+          1
+        ]
+      ],
+      "removed": 0,
+      "status": "M"
+    }
+  },
+  "risk_flags": [
+    {
+      "detail": "touches bindings or the visitor API; run the JS lane",
+      "id": "bindings",
+      "paths": [
+        "napi/src/lib.rs"
+      ]
+    }
+  ]
+}

@@ -1,5 +1,17 @@
-#!/usr/bin/env bash
-# lightningcss-review entry point. Host requirements: git, gh, docker, python3 (stdlib only).
-set -euo pipefail
-SKILL_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-exec python3 -I "$SKILL_DIR/lib/lcr_main.py" "$@"
+#!/usr/bin/env node
+// lightningcss-review entry point. Host requirements: git, gh, docker (with compose and buildx),
+// Node.js >= 24. No npm install needed: the host side has no runtime dependencies.
+const MIN_NODE_MAJOR = 24;
+const EXIT_INTERRUPTED = 130;
+const nodeMajor = Number(process.versions.node.split('.')[0]);
+
+if (nodeMajor < MIN_NODE_MAJOR) {
+  process.stderr.write(`[lcr] error: Node.js >= ${MIN_NODE_MAJOR} is required (found ${process.version})\n`);
+  process.exit(2);
+}
+
+process.once('SIGINT', () => process.exit(EXIT_INTERRUPTED));
+
+const { main } = await import('../lib/cli/main.js');
+
+process.exitCode = await main(process.argv.slice(2));

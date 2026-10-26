@@ -49,17 +49,18 @@ inventory vs what Lightning CSS parses), `lcr selftest` (known-answer cases thro
 
 ## Requirements
 
-- git, [gh](https://cli.github.com/) (authenticated, read-only use), Docker, Python 3.12+
+- git, [gh](https://cli.github.com/) (authenticated, read-only use), Docker with the Compose and
+  Buildx plugins, [Node.js](https://nodejs.org/) 24 or newer (the harness needs no packages)
 - About 15 GB of disk for the images
 
 ```sh
 git clone https://github.com/ovflowd/lightningcss-review
 cd lightningcss-review
 bin/lcr doctor      # checks the above
-bin/lcr setup       # builds the builder image and the browser images, records engine versions
+bin/lcr setup       # builds the builder and browser images (compose.yaml), records engine versions
 bin/lcr wpt         # one-time WPT checkout + corpus extraction
 bin/lcr realworld   # one-time download of the pinned real-world stylesheets
-bin/lcr selftest    # must print 20/20
+bin/lcr selftest    # every self-test case must pass (N/N)
 ```
 
 To use it as a Claude Code skill, run `./install.sh` (it symlinks the checkout into your skills
@@ -77,14 +78,16 @@ instead of the builder image; browsers always run in Docker.
 | Path | Contents |
 |---|---|
 | `SKILL.md` | the review procedure for an agent (phases, rules, classification) |
-| `bin/lcr`, `lib/lcr/` | the harness (Python standard library only) |
+| `bin/lcr`, `lib/` | the harness (Node.js, no runtime dependencies), one directory per stage |
+| `compose.yaml`, `docker/` | the builder and browser images; compose.yaml pins each engine profile's Playwright release |
 | `adapter/lcr_adapter.rs` | JSONL bridge compiled into each tree as a Cargo example |
 | `oracle/` | DOM synthesis, engine runner, comparison, spec cards; `oracle/wpt/` is the WPT extractor from lightningcss#1328 |
 | `config/` | areas, transform modes and targets, engine profiles, check catalog, test and property maps, pins |
 | `corpus/probes/` | curated probes by area (spec invariants, past regressions, issue repros) |
 | `references/` | what the reviewing agent loads: per-area checklists, spec digests, architecture, conventions, browsers, ecosystem, oracle (size-budgeted, mechanisms only) |
 | `docs/` | how the harness works |
-| `tests/`, `oracle/test/` | unit tests and the oracle's known-answer cases |
+| `lib/*/test/`, `oracle/test/`, `scripts/test/`, `test/` | unit tests (`npm test`), shared fixtures and the oracle's known-answer cases |
+| `scripts/` | CI checks for the agent context and the checklists |
 
 ## Status
 

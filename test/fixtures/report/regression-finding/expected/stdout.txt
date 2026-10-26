@@ -1,0 +1,16 @@
+VERDICT: UNSAFE (3 blocker, 1 major, 0 minor, 0 note)
+<RUN>/report.md
+**LightningCSS # — VERDICT: UNSAFE** (3 blocker · 1 major · 0 minor · 0 note)
+
+s
+
+Findings:
+1. [BLOCKER] Regression: drops the fallback — p-color/r0
+2. [BLOCKER] Regression: worse — p-color/s
+3. [BLOCKER] Regression: x — p-color/e
+4. [MAJOR] Analysis incomplete or inconsistent with the evidence — p-color/s: REGRESSION on p-color/s, but base is wrong in every engine where head is (firefox); use PRE_EXISTING or NEEDS_MAINTAINER_DECISION
+
+Coverage: latest: chromium 1. 4 behavioral deltas (4 verified in browsers), 0 PR probes, 0 mutations, 0 WPT cases, 0 real-world files.
+
+Report: <RUN>/report.md
+

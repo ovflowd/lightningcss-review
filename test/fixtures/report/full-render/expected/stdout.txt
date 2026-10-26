@@ -1,0 +1,18 @@
+VERDICT: UNSAFE (2 blocker, 4 major, 0 minor, 2 note)
+<RUN>/report.md
+**LightningCSS #42 — VERDICT: UNSAFE** (2 blocker · 4 major · 0 minor · 2 note)
+
+Lower color-mix for old targets
+
+Findings:
+1. [BLOCKER] Regression in current engines (head worse than base) — r-bootstrap-minify
+2. [BLOCKER] New panic / crash / timeout — t-err panic: boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom boom…
+3. [MAJOR] Linked issue repro not fixed on head (or not reproduced on base) — #3: no PR probe with `repro: #3`
+4. [MAJOR] Analysis incomplete or inconsistent with the evidence — w-0000000a: PRE_EXISTING on w-0000000a, which base renders equivalent in every engine
+5. [MAJOR] Behavioral deltas neither verified by the oracle nor cleared — t-err
+6. [MAJOR] Deltas outside the declared areas are unexplained — r-bootstrap-minify [realworld]
+
+Coverage: latest: chromium 140, firefox 141, webkit 26; legacy-2021: chromium 97, firefox 93, webkit 15.4. 5 behavioral deltas (4 verified in browsers), 0 PR probes, 0 mutations, 1 WPT cases, 0 real-world files.
+
+Report: <RUN>/report.md
+

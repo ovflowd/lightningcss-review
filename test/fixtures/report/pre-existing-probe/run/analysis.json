@@ -1,0 +1,1 @@
+{"checklist": [], "deltas": [{"classification": "PRE_EXISTING", "id": "p-color/p", "reason": "base fails too, see p-color/curated"}, {"classification": "PRE_EXISTING", "id": "p-color/q", "reason": "same as before"}], "findings": [], "intent": {"kind": "bugfix", "summary": "s"}}

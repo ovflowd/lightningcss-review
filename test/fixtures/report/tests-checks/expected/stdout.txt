@@ -1,0 +1,13 @@
+VERDICT: NEEDS_CHANGES (0 blocker, 1 major, 0 minor, 2 note)
+<RUN>/report.md
+**LightningCSS # — VERDICT: NEEDS_CHANGES** (0 blocker · 1 major · 0 minor · 2 note)
+
+s
+
+Findings:
+1. [MAJOR] Harness fidelity: recorded head expectations reproduce through the adapter — tests::test_color lib.rs:5: unknown flag
+
+Coverage: latest: chromium 1. 0 behavioral deltas (0 verified in browsers), 0 PR probes, 0 mutations, 0 WPT cases, 0 real-world files.
+
+Report: <RUN>/report.md
+

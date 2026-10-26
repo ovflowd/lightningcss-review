@@ -1,0 +1,1 @@
+{"checklist": [], "deltas": [{"classification": "PRE_EXISTING", "id": "w-0000000a", "reason": "base renders it wrong too, open-issue#4"}], "findings": [], "intent": {"behind_flag": "no", "claims": ["fixes #3", "no output change without targets"], "kind": "bugfix", "summary": "Lower color-mix for old targets"}}

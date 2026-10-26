@@ -1,0 +1,33 @@
+# Dependabot keeps the latest engine profile and the dev tooling current.
+#
+# - docker-compose: compose.yaml pins each engine profile's Playwright image. Only the latest
+#   profile's pin is a service Dependabot reads (`playwright-latest`); the legacy profiles
+#   reproduce the engines of a past year on purpose and live in `x-frozen-pins`, which it never
+#   reads. The `allow` list keeps Dependabot away from the harness's own images (lcr-builder,
+#   lcr-browsers), which exist only locally. A bump is a PR that moves the pin; before merging,
+#   run `lcr setup --profiles latest && lcr selftest --profiles latest` on it (or let
+#   `lcr setup --update` do the same locally).
+# - npm: the exact-pinned devDependencies in package.json (the host has no runtime dependencies).
+version: 2
+updates:
+  - package-ecosystem: docker-compose
+    directory: /
+    schedule:
+      interval: weekly
+    allow:
+      # Docker dependency names leave out the registry (mcr.microsoft.com).
+      - dependency-name: playwright
+    commit-message:
+      prefix: engines
+
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    versioning-strategy: increase
+    groups:
+      tooling:
+        patterns:
+          - '*'
+    commit-message:
+      prefix: deps

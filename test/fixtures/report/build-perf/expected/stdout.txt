@@ -1,0 +1,18 @@
+VERDICT: UNSAFE (1 blocker, 5 major, 2 minor, 3 note)
+<RUN>/report.md
+**LightningCSS # — VERDICT: UNSAFE** (1 blocker · 5 major · 2 minor · 3 note)
+
+s
+
+Findings:
+1. [BLOCKER] Head test suite fails where base passes — a::y
+2. [MAJOR] C bindings do not build or c/lightningcss.h is stale — error: x
+3. [MAJOR] Generated files drift from their generator (and not identically on base)
+4. [MAJOR] Does not compile with RUSTFLAGS=-D warnings
+5. [MAJOR] Behavioral deltas neither verified by the oracle nor cleared — p-color/a
+6. [MAJOR] Source changes come without tests
+
+Coverage: latest: chromium 1. 2 behavioral deltas (0 verified in browsers), 0 PR probes, 0 mutations, 0 WPT cases, 0 real-world files.
+
+Report: <RUN>/report.md
+

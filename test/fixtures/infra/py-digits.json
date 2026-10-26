@@ -1,0 +1,122 @@
+[
+ {
+  "text": "0",
+  "isdigit": true,
+  "int": 0
+ },
+ {
+  "text": "12",
+  "isdigit": true,
+  "int": 12
+ },
+ {
+  "text": "-0",
+  "isdigit": false,
+  "int": 0
+ },
+ {
+  "text": "+7",
+  "isdigit": false,
+  "int": 7
+ },
+ {
+  "text": " 3 ",
+  "isdigit": false,
+  "int": 3
+ },
+ {
+  "text": " 7 ",
+  "isdigit": false,
+  "int": 7
+ },
+ {
+  "text": "1_000",
+  "isdigit": false,
+  "int": 1000
+ },
+ {
+  "text": "1__0",
+  "isdigit": false,
+  "int": null
+ },
+ {
+  "text": "_1",
+  "isdigit": false,
+  "int": null
+ },
+ {
+  "text": "1_",
+  "isdigit": false,
+  "int": null
+ },
+ {
+  "text": "",
+  "isdigit": false,
+  "int": null
+ },
+ {
+  "text": " ",
+  "isdigit": false,
+  "int": null
+ },
+ {
+  "text": "abc",
+  "isdigit": false,
+  "int": null
+ },
+ {
+  "text": "1.5",
+  "isdigit": false,
+  "int": null
+ },
+ {
+  "text": "٣",
+  "isdigit": true,
+  "int": 3
+ },
+ {
+  "text": "١٢",
+  "isdigit": true,
+  "int": 12
+ },
+ {
+  "text": "𝟘𝟢",
+  "isdigit": true,
+  "int": 0
+ },
+ {
+  "text": "²",
+  "isdigit": true,
+  "int": null
+ },
+ {
+  "text": "①",
+  "isdigit": true,
+  "int": null
+ },
+ {
+  "text": "12²",
+  "isdigit": true,
+  "int": null
+ },
+ {
+  "text": "0x10",
+  "isdigit": false,
+  "int": null
+ },
+ {
+  "text": "99999999999",
+  "isdigit": true,
+  "int": 99999999999
+ },
+ {
+  "text": "-",
+  "isdigit": false,
+  "int": null
+ },
+ {
+  "text": "९०",
+  "isdigit": true,
+  "int": 90
+ }
+]

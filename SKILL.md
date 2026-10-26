@@ -177,7 +177,7 @@ draft a PR comment; never draft or post one unasked.
 - `lcr selftest` fails: an engine image is broken. Do not review; run `lcr setup --rebuild`.
 - Adapter compile error in the build log: API drift. Fix `adapter/lcr_adapter.rs` so it compiles
   against both sides, then `lcr build` again.
-- `T5` lists unreproduced tuples: `lib/lcr/tuples.py` misses a changed test helper; ignore
+- `T5` lists unreproduced tuples: `lib/build/tuples.js` misses a changed test helper; ignore
   those tuples until the mapping is fixed.
 - Many `unverified` deltas: DOM synthesis could not match the selectors (`lcr show` prints DOM
   stats). Write a probe with a `dom:` line for the important ones, or classify the group.

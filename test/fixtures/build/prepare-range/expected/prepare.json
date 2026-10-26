@@ -1,0 +1,612 @@
+{
+  "areas": [
+    "bindings-api",
+    "build-release",
+    "calc-math",
+    "custom-properties",
+    "other",
+    "prefixing-compat",
+    "properties-registry",
+    "rule-merging",
+    "selectors",
+    "tests",
+    "values-numeric"
+  ],
+  "base": "84dd871856351bac2d8ae365189a09e08afa3779",
+  "blast_radius": [
+    {
+      "areas": [
+        "calc-math",
+        "rule-merging",
+        "values-numeric"
+      ],
+      "files": [
+        "src/values/length.rs",
+        "src/values/users.rs"
+      ],
+      "name": "Length"
+    },
+    {
+      "areas": [
+        "bindings-api"
+      ],
+      "files": [
+        "napi/src/lib.rs"
+      ],
+      "name": "bind"
+    },
+    {
+      "areas": [
+        "calc-math",
+        "rule-merging",
+        "values-numeric"
+      ],
+      "files": [
+        "src/values/length.rs",
+        "src/values/users.rs"
+      ],
+      "name": "compute_length"
+    },
+    {
+      "areas": [
+        "selectors"
+      ],
+      "files": [
+        "selectors/parser.rs"
+      ],
+      "name": "parse_selector"
+    },
+    {
+      "areas": [
+        "rule-merging"
+      ],
+      "files": [
+        "src/new_name.rs"
+      ],
+      "name": "renamed_item"
+    },
+    {
+      "areas": [],
+      "files": [],
+      "name": "Feature::ColorFunction"
+    },
+    {
+      "areas": [],
+      "files": [],
+      "name": "Feature::LabColors"
+    },
+    {
+      "areas": [
+        "rule-merging"
+      ],
+      "files": [
+        "src/values/users.rs"
+      ],
+      "name": "Feature::NewFeature"
+    }
+  ],
+  "changed_items": [
+    {
+      "file": "napi/src/lib.rs",
+      "impl": null,
+      "item": {
+        "kind": "fn",
+        "line": 1,
+        "name": "bind"
+      },
+      "range": [
+        1,
+        4
+      ],
+      "side": "head"
+    },
+    {
+      "file": "napi/src/lib.rs",
+      "impl": null,
+      "item": {
+        "kind": "fn",
+        "line": 1,
+        "name": "bind"
+      },
+      "range": [
+        1,
+        1
+      ],
+      "side": "base"
+    },
+    {
+      "file": "selectors/parser.rs",
+      "impl": null,
+      "item": {
+        "kind": "fn",
+        "line": 1,
+        "name": "parse_selector"
+      },
+      "range": [
+        1,
+        3
+      ],
+      "side": "head"
+    },
+    {
+      "file": "selectors/parser.rs",
+      "impl": null,
+      "item": {
+        "kind": "fn",
+        "line": 1,
+        "name": "parse_selector"
+      },
+      "range": [
+        1,
+        1
+      ],
+      "side": "base"
+    },
+    {
+      "file": "src/compat.rs",
+      "impl": {
+        "line": 7,
+        "trait": null,
+        "type": "Feature"
+      },
+      "item": {
+        "kind": "enum",
+        "line": 1,
+        "name": "Feature"
+      },
+      "range": [
+        1,
+        7
+      ],
+      "side": "head"
+    },
+    {
+      "file": "src/compat.rs",
+      "impl": {
+        "line": 7,
+        "trait": null,
+        "type": "Feature"
+      },
+      "item": {
+        "kind": "fn",
+        "line": 8,
+        "name": "is_compatible"
+      },
+      "range": [
+        17,
+        23
+      ],
+      "side": "head"
+    },
+    {
+      "file": "src/compat.rs",
+      "impl": {
+        "line": 6,
+        "trait": null,
+        "type": "Feature"
+      },
+      "item": {
+        "kind": "enum",
+        "line": 1,
+        "name": "Feature"
+      },
+      "range": [
+        1,
+        6
+      ],
+      "side": "base"
+    },
+    {
+      "file": "src/compat.rs",
+      "impl": {
+        "line": 6,
+        "trait": null,
+        "type": "Feature"
+      },
+      "item": {
+        "kind": "fn",
+        "line": 7,
+        "name": "is_compatible"
+      },
+      "range": [
+        16,
+        22
+      ],
+      "side": "base"
+    },
+    {
+      "file": "src/new_name.rs",
+      "impl": null,
+      "item": {
+        "kind": "fn",
+        "line": 1,
+        "name": "renamed_item"
+      },
+      "range": [
+        1,
+        6
+      ],
+      "side": "head"
+    },
+    {
+      "file": "src/properties/mod.rs",
+      "impl": null,
+      "item": null,
+      "range": [
+        1,
+        5
+      ],
+      "side": "head"
+    },
+    {
+      "file": "src/properties/mod.rs",
+      "impl": null,
+      "item": null,
+      "range": [
+        1,
+        4
+      ],
+      "side": "base"
+    },
+    {
+      "file": "src/values/length.rs",
+      "impl": {
+        "line": 13,
+        "trait": null,
+        "type": "Length"
+      },
+      "item": {
+        "kind": "fn",
+        "line": 18,
+        "name": "compute_length"
+      },
+      "range": [
+        11,
+        23
+      ],
+      "side": "head"
+    },
+    {
+      "file": "src/values/length.rs",
+      "impl": {
+        "line": 13,
+        "trait": null,
+        "type": "Length"
+      },
+      "item": {
+        "kind": "fn",
+        "line": 14,
+        "name": "compute_length"
+      },
+      "range": [
+        11,
+        17
+      ],
+      "side": "base"
+    }
+  ],
+  "changed_tests": {
+    "base": [
+      "test_color"
+    ],
+    "head": [
+      "test_length",
+      "test_new_thing"
+    ]
+  },
+  "compat_variants": [
+    "ColorFunction",
+    "LabColors",
+    "NewFeature"
+  ],
+  "conflicts": [],
+  "file_areas": {
+    "Cargo.lock": [
+      "build-release"
+    ],
+    "docs/removed.md": [
+      "other"
+    ],
+    "napi/src/lib.rs": [
+      "bindings-api"
+    ],
+    "selectors/parser.rs": [
+      "selectors"
+    ],
+    "src/compat.rs": [
+      "prefixing-compat"
+    ],
+    "src/lib.rs": [
+      "tests"
+    ],
+    "src/new_name.rs": [
+      "rule-merging"
+    ],
+    "src/properties/mod.rs": [
+      "custom-properties",
+      "properties-registry"
+    ],
+    "src/values/length.rs": [
+      "values-numeric",
+      "calc-math"
+    ]
+  },
+  "files": {
+    "Cargo.lock": {
+      "added": 2,
+      "base": [
+        [
+          1,
+          2
+        ]
+      ],
+      "head": [
+        [
+          1,
+          4
+        ]
+      ],
+      "removed": 0,
+      "status": "M"
+    },
+    "docs/removed.md": {
+      "added": 0,
+      "base": [
+        [
+          1,
+          1
+        ]
+      ],
+      "head": [],
+      "removed": 1,
+      "status": "D"
+    },
+    "napi/src/lib.rs": {
+      "added": 4,
+      "base": [
+        [
+          1,
+          1
+        ]
+      ],
+      "head": [
+        [
+          1,
+          4
+        ]
+      ],
+      "removed": 1,
+      "status": "M"
+    },
+    "selectors/parser.rs": {
+      "added": 3,
+      "base": [
+        [
+          1,
+          1
+        ]
+      ],
+      "head": [
+        [
+          1,
+          3
+        ]
+      ],
+      "removed": 1,
+      "status": "M"
+    },
+    "src/compat.rs": {
+      "added": 2,
+      "base": [
+        [
+          1,
+          6
+        ],
+        [
+          16,
+          22
+        ]
+      ],
+      "head": [
+        [
+          1,
+          7
+        ],
+        [
+          17,
+          23
+        ]
+      ],
+      "removed": 1,
+      "status": "M"
+    },
+    "src/lib.rs": {
+      "added": 6,
+      "base": [
+        [
+          12,
+          18
+        ],
+        [
+          22,
+          26
+        ]
+      ],
+      "head": [
+        [
+          12,
+          17
+        ],
+        [
+          21,
+          31
+        ]
+      ],
+      "removed": 1,
+      "status": "M"
+    },
+    "src/new_name.rs": {
+      "added": 1,
+      "base": [
+        [
+          1,
+          6
+        ]
+      ],
+      "head": [
+        [
+          1,
+          6
+        ]
+      ],
+      "removed": 1,
+      "status": "R082"
+    },
+    "src/properties/mod.rs": {
+      "added": 1,
+      "base": [
+        [
+          1,
+          4
+        ]
+      ],
+      "head": [
+        [
+          1,
+          5
+        ]
+      ],
+      "removed": 0,
+      "status": "M"
+    },
+    "src/values/length.rs": {
+      "added": 7,
+      "base": [
+        [
+          11,
+          17
+        ]
+      ],
+      "head": [
+        [
+          11,
+          23
+        ]
+      ],
+      "removed": 1,
+      "status": "M"
+    }
+  },
+  "head_tree": "335249b88e79330b50065f3d89391a357dbf8e79",
+  "kind": "range",
+  "master": "84dd871856351bac2d8ae365189a09e08afa3779",
+  "pr_head": "335249b88e79330b50065f3d89391a357dbf8e79",
+  "radius_areas": [],
+  "range": "refs/lcr/master..335249b88e79330b50065f3d89391a357dbf8e79",
+  "repo": "<REPO>",
+  "risk_flags": [
+    {
+      "detail": "touches files with a wide blast radius",
+      "id": "core-file",
+      "paths": [
+        "selectors/parser.rs",
+        "src/compat.rs",
+        "src/properties/mod.rs",
+        "src/values/length.rs"
+      ]
+    },
+    {
+      "detail": "1 line(s) removed from src/lib.rs (expectations changed or deleted)",
+      "id": "test-lines-removed",
+      "paths": [
+        "src/lib.rs"
+      ]
+    },
+    {
+      "detail": "src/compat.rs changed; it is generated by `node scripts/build-prefixes.js` — verify it was regenerated, not hand-edited",
+      "id": "generated-edited",
+      "paths": [
+        "src/compat.rs"
+      ]
+    },
+    {
+      "detail": "touches the forked parcel_selectors crate (published separately)",
+      "id": "selectors-crate",
+      "paths": [
+        "selectors/parser.rs"
+      ]
+    },
+    {
+      "detail": "dependency manifests changed",
+      "id": "dependencies",
+      "paths": [
+        "Cargo.lock"
+      ]
+    },
+    {
+      "detail": "float equality comparison",
+      "id": "added-float-compare",
+      "paths": [
+        "src/values/length.rs"
+      ]
+    },
+    {
+      "detail": "new panic!/unreachable!/todo! in library code",
+      "id": "added-panic",
+      "paths": [
+        "selectors/parser.rs"
+      ]
+    },
+    {
+      "detail": "new unsafe code",
+      "id": "added-unsafe",
+      "paths": [
+        "src/values/length.rs"
+      ]
+    },
+    {
+      "detail": "new unwrap()/expect() in library code (panics on user input?)",
+      "id": "added-unwrap",
+      "paths": [
+        "src/values/length.rs"
+      ]
+    },
+    {
+      "detail": "new or changed `pub` items (Rust API / AST / TS types surface)",
+      "id": "public-api",
+      "paths": [
+        "selectors/parser.rs",
+        "src/values/length.rs"
+      ]
+    },
+    {
+      "detail": "touches bindings or the visitor API; run the JS lane",
+      "id": "bindings",
+      "paths": [
+        "napi/src/lib.rs"
+      ]
+    },
+    {
+      "detail": "new properties registered: zoom-level",
+      "id": "new-property",
+      "paths": [
+        "src/properties/mod.rs"
+      ]
+    }
+  ],
+  "run_dir": "<CACHE>/runs/range-h335249b8-b84dd8718",
+  "run_id": "range-h335249b8-b84dd8718",
+  "schema": 1,
+  "skill_version": "<SKILL_VERSION>",
+  "strategy": "local-range",
+  "test_areas": [
+    "box-model-size",
+    "calc-math",
+    "color",
+    "custom-properties",
+    "prefixing-compat",
+    "supports-container",
+    "values-numeric"
+  ],
+  "toolchain": "[toolchain]\nchannel = \"1.96.0\"\n"
+}

@@ -1,0 +1,1 @@
+{"cases": {"probe": 2}, "deltas": {"probe": 1}, "idempotency": {}, "idempotency_failures": [], "probes": [], "robustness": {"base": [], "head": []}, "size": [], "tuple_stats": {}, "tuples": {}}

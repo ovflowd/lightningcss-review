@@ -1,0 +1,64 @@
+#!/bin/sh
+# A stand-in for cargo in the host-build tests (lib/build/test/build.test.js): prints what cargo
+# prints for a tiny tree. Head's code warns, so its first `-D warnings` attempt fails.
+side=base
+case "$(pwd)" in */src/head | */build/head/tree) side=head ;; esac
+
+case "$1 $2" in
+  "fmt --all")
+    if [ "$side" = head ]; then
+      echo "Diff in src/lib.rs at line 3:"
+      echo "-old"
+      echo "+new"
+      exit 1
+    fi
+    exit 0
+    ;;
+  "test --all-features")
+    if [ "$side" = head ] && [ "$RUSTFLAGS" = "-D warnings" ]; then
+      echo "error: unused variable: \`x\`"
+      echo "  = note: \`-D unused-variables\` implied by \`-D warnings\`"
+      echo "error: could not compile \`lightningcss\` (lib test) due to 1 previous error"
+      exit 101
+    fi
+    if [ -n "${LCR_DUMP:-}" ]; then
+      printf '{"fields":{"expected":".a{}","source":".a{}"},"file":"src/lib.rs","helper":"minify_test_with_options","line":30,"test":"tests::test_a"}\n' >> "$LCR_DUMP"
+      printf '{"fields":{"expected":".b{}","source":".b{}"},"file":"src/lib.rs","helper":"minify_test_with_options","line":31,"test":"tests::test_a"}\n' >> "$LCR_DUMP"
+    fi
+    echo "   Compiling lightningcss v1.0.0 (/src)"
+    echo "     Running unittests src/lib.rs (/target/debug/deps/lightningcss-0123)"
+    echo ""
+    echo "running 2 tests"
+    echo "test tests::test_a ... ok"
+    echo "test tests::test_b ... FAILED"
+    echo ""
+    echo "failures:"
+    echo ""
+    echo "---- tests::test_b stdout ----"
+    echo "thread 'tests::test_b' panicked at src/lib.rs:40:5:"
+    echo "boom"
+    echo ""
+    echo "failures:"
+    echo "    tests::test_b"
+    echo ""
+    echo "test result: FAILED. 1 passed; 1 failed; 0 ignored"
+    echo "error: test failed, to rerun pass \`--lib\`"
+    exit 101
+    ;;
+  "build --all-features")
+    mkdir -p "$CARGO_TARGET_DIR/debug/examples"
+    printf '#!/bin/sh\necho adapter\n' > "$CARGO_TARGET_DIR/debug/examples/lcr_adapter"
+    chmod +x "$CARGO_TARGET_DIR/debug/examples/lcr_adapter"
+    echo "   Compiling lightningcss v1.0.0 (/src)"
+    exit 0
+    ;;
+  "test -p")
+    echo "test parser::tests::test_parsing ... FAILED"
+    echo "error: test failed, to rerun pass \`-p parcel_selectors --lib\`"
+    exit 101
+    ;;
+  *)
+    echo "    Checking lightningcss v1.0.0 (/src)"
+    exit 0
+    ;;
+esac

@@ -1,0 +1,1 @@
+{"helper": "minify_test", "id": "t-1", "line": 1, "request": {"css": "x", "kind": "sheet"}, "side": "head", "source": "tuple", "test": "tests::test_color"}

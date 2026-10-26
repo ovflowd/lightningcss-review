@@ -1,0 +1,124 @@
+diff --git a/Cargo.lock b/Cargo.lock
+index 05990d1..6a14a27 100644
+--- a/Cargo.lock
++++ b/Cargo.lock
+@@ -1,2 +1,4 @@
+ # lock
+ version = 3
++[[package]]
++name = "x"
+diff --git a/docs/removed.md b/docs/removed.md
+deleted file mode 100644
+index 286c5f5..0000000
+--- a/docs/removed.md
++++ /dev/null
+@@ -1 +0,0 @@
+-gone
+diff --git a/napi/src/lib.rs b/napi/src/lib.rs
+index 8026e93..f69e62d 100644
+--- a/napi/src/lib.rs
++++ b/napi/src/lib.rs
+@@ -1 +1,4 @@
+-fn bind() {}
++fn bind() {
++  #[cfg(target_arch = "wasm32")]
++  {}
++}
+diff --git a/selectors/parser.rs b/selectors/parser.rs
+index c5b4d92..cb807df 100644
+--- a/selectors/parser.rs
++++ b/selectors/parser.rs
+@@ -1 +1,3 @@
+-pub fn parse_selector() {}
++pub fn parse_selector() {
++  todo!()
++}
+diff --git a/src/compat.rs b/src/compat.rs
+index 1be2709..8c3c226 100644
+--- a/src/compat.rs
++++ b/src/compat.rs
+@@ -1,6 +1,7 @@
+ pub enum Feature {
+   AnyLink,
+   ColorFunction,
++  NewFeature,
+ }
+ 
+ impl Feature {
+@@ -16,7 +17,7 @@ impl Feature {
+       Feature::ColorFunction
+       | Feature::LabColors => {
+         if let Some(version) = browsers.safari {
+-          if version < 983040 {
++          if version < 983296 {
+             return false;
+           }
+         }
+diff --git a/src/lib.rs b/src/lib.rs
+index e6b9346..30bbf35 100644
+--- a/src/lib.rs
++++ b/src/lib.rs
+@@ -12,7 +12,6 @@ mod tests {
+   #[test]
+   fn test_color() {
+     minify_test(".a { color: red }", ".a{color:red}");
+-    minify_test(".b { color: blue }", ".b{color:#00f}");
+   }
+ 
+   fn helper_between() {
+@@ -22,5 +21,11 @@ mod tests {
+   #[test]
+   fn test_length() {
+     minify_test(".a { width: 1px }", ".a{width:1px}");
++    minify_test(".a { width: 2px }", ".a{width:2px}");
++  }
++
++  #[test]
++  fn test_new_thing() {
++    minify_test(".n { x: y }", ".n{x:y}");
+   }
+ }
+diff --git a/src/old_name.rs b/src/new_name.rs
+similarity index 82%
+rename from src/old_name.rs
+rename to src/new_name.rs
+index 3adfc9b..fa2e10e 100644
+--- a/src/old_name.rs
++++ b/src/new_name.rs
+@@ -1,6 +1,6 @@
+ pub fn renamed_item() {
+   let a = 1;
+   let b = 2;
+-  let c = 3;
++  let c = 30;
+   let d = 4;
+ }
+diff --git a/src/properties/mod.rs b/src/properties/mod.rs
+index ed48c82..80f876b 100644
+--- a/src/properties/mod.rs
++++ b/src/properties/mod.rs
+@@ -1,4 +1,5 @@
+ define_properties! {
+   "color": Color(CssColor),
+   "width": Width(LengthPercentage),
++  "zoom-level": ZoomLevel(TokenList<'i>),
+ }
+diff --git a/src/values/length.rs b/src/values/length.rs
+index 634dbfc..fb36486 100644
+--- a/src/values/length.rs
++++ b/src/values/length.rs
+@@ -11,7 +11,13 @@ impl ToCss for Length {
+ }
+ 
+ impl Length {
++  pub fn new_length(value: f32) -> Length {
++    Length { value }
++  }
++
+   pub fn compute_length(&self) -> f32 {
+-    self.value * 2.0
++    let v = self.value.partial_cmp(&0.0).unwrap();
++    if self.value == 0.0 { return 0.0 }
++    unsafe { self.value * 2.0 }
+   }
+ }

@@ -1,0 +1,40 @@
+#!/bin/sh
+# A stand-in for `gh` in lib/prepare/test/github.test.js: answers the read-only calls prepare
+# makes for PR 9 the way GitHub would, including the failures prepare must tolerate.
+case "$1 $2 $3" in
+  "issue view 12")
+    echo '{"number": 12, "title": "Twelve", "state": "OPEN", "body": "b", "comments": [], "labels": [], "url": "u12"}' ;;
+  "issue view 13")
+    echo "GraphQL: Could not resolve to an issue (13); it is a pull request" >&2
+    exit 1 ;;
+  "issue view 14")
+    echo '{"number": 14, "title": "Fourteen", "state": "CLOSED", "body": "", "comments": [], "labels": [], "url": "u14"}' ;;
+  "pr list -R")
+    case "$*" in
+      *closingIssuesReferences*)
+        # An older gh without closingIssuesReferences on `pr list`.
+        echo 'Unknown JSON field: "closingIssuesReferences"' >&2
+        exit 1 ;;
+    esac
+    cat <<'JSON'
+[
+  {"number": 9, "title": "Self", "files": [{"path": "src/a.rs"}], "author": {"login": "me"}},
+  {"number": 30, "title": "Lockfile only", "files": [{"path": "Cargo.lock"}, {"path": "src/lib.rs"}], "author": null},
+  {"number": 20, "title": "One shared", "files": [{"path": "src/b.rs"}, {"path": "src/z.rs"}], "author": {"login": "x"}},
+  {"number": 10, "title": "Two shared", "files": [{"path": "src/b.rs"}, {"path": "src/a.rs"}], "author": {"login": "y"}},
+  {"number": 5, "title": "One shared too", "files": [{"path": "src/a.rs"}], "files_extra": 1},
+  {"number": 40, "title": "No files", "files": null, "author": {"login": "z"}}
+]
+JSON
+    ;;
+  "pr checks 9")
+    # Failing checks: non-zero exit, valid JSON.
+    echo '[{"name": "test (ubuntu)", "state": "FAILURE", "bucket": "fail", "link": "l1"}, {"name": "lint", "state": "SUCCESS", "bucket": "pass", "link": "l2"}]'
+    exit 8 ;;
+  "pr checks 10")
+    echo "no checks reported on the 'x' branch" >&2
+    exit 1 ;;
+  *)
+    echo "unexpected gh call: $*" >&2
+    exit 2 ;;
+esac

@@ -1,9 +1,10 @@
-# One image per engine profile. The Playwright npm client must match the image's browser builds
-# exactly, so PLAYWRIGHT_VERSION is used for both. Old images ship old Node; the runner in
-# oracle/engine-runner.cjs is written for Node >= 14 for that reason.
-ARG PLAYWRIGHT_VERSION=1.64.1
-ARG DISTRO=noble
-FROM mcr.microsoft.com/playwright:v${PLAYWRIGHT_VERSION}-${DISTRO}
+# One image per engine profile, built by compose.yaml's `browsers-<profile>` services.
+# BASE_IMAGE is the profile's Playwright image (its pin in compose.yaml). The Playwright npm client
+# must match that image's browser builds exactly, so PLAYWRIGHT_VERSION is the same release. Old
+# images ship old Node; the engine runner (oracle/engine-runner.cjs) is written for Node >= 14 for
+# that reason.
+ARG BASE_IMAGE
+FROM ${BASE_IMAGE}
 ARG PLAYWRIGHT_VERSION
 # Extra npm packages for the analysis image only (css-tree, colorjs.io, @webref/css), plus the
 # system tools the vendored WPT extractor needs (python3 for read-html.py, git for ls-files).

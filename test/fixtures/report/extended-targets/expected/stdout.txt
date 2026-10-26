@@ -1,0 +1,16 @@
+VERDICT: NEEDS_CHANGES (0 blocker, 1 major, 0 minor, 1 note)
+<RUN>/report.md
+**LightningCSS # — VERDICT: NEEDS_CHANGES** (0 blocker · 1 major · 0 minor · 1 note)
+
+s
+
+Findings:
+1. [MAJOR] Deltas outside the declared areas are unexplained — t-head [transition-animation, prefixing-compat, rule-merging]
+
+Decision needed:
+- 1 case(s) the browsers cannot judge against base are unclassified (O10)
+
+Coverage: latest: chromium 1. 1 behavioral deltas (1 verified in browsers), 0 PR probes, 0 mutations, 0 WPT cases, 0 real-world files.
+
+Report: <RUN>/report.md
+

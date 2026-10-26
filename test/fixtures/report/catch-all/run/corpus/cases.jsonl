@@ -1,0 +1,2 @@
+{"id": "w-00000000", "mode": "minify", "request": {"kind": "property", "property": "color", "value": "red"}, "source": "wpt", "wpt": {"file": "f", "kind": "valid", "property": "color", "value": "v"}}
+{"id": "w-00000001", "mode": "minify", "request": {"kind": "property", "property": "color", "value": "red"}, "source": "wpt", "wpt": {"file": "f", "kind": "valid", "property": "-webkit-color", "value": "v"}}

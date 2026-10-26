@@ -1,0 +1,382 @@
+{
+  "base": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "checks": [
+    {
+      "evidence": "1 passed, 0 ignored",
+      "group": "build",
+      "id": "B1",
+      "items": [],
+      "severity": null,
+      "status": "PASS",
+      "title": "Head test suite passes (cargo test --all-features)"
+    },
+    {
+      "evidence": "",
+      "group": "build",
+      "id": "B2",
+      "items": [],
+      "severity": null,
+      "status": "PASS",
+      "title": "Compiles with RUSTFLAGS=-D warnings (CI)"
+    },
+    {
+      "evidence": "",
+      "group": "build",
+      "id": "B3",
+      "items": [],
+      "severity": null,
+      "status": "PASS",
+      "title": "rustfmt clean on changed files"
+    },
+    {
+      "evidence": "",
+      "group": "build",
+      "id": "B4",
+      "items": [],
+      "severity": null,
+      "status": "PASS",
+      "title": "Cargo.lock in sync (--locked)"
+    },
+    {
+      "evidence": "bindings not touched",
+      "group": "build",
+      "id": "B5",
+      "items": [],
+      "severity": null,
+      "status": "SKIP",
+      "title": "JS lane: yarn build / test / tsc (when bindings change)"
+    },
+    {
+      "evidence": "no checks reported (first-time contributor workflows may need approval)",
+      "group": "build",
+      "id": "B6",
+      "items": [],
+      "severity": null,
+      "status": "SKIP",
+      "title": "GitHub CI checks on the PR"
+    },
+    {
+      "evidence": "lane not run",
+      "group": "build",
+      "id": "B7",
+      "items": [],
+      "severity": null,
+      "status": "SKIP",
+      "title": "parcel_selectors crate tests (not run by CI)"
+    },
+    {
+      "evidence": "lane not run",
+      "group": "build",
+      "id": "B8",
+      "items": [],
+      "severity": null,
+      "status": "SKIP",
+      "title": "Builds with --no-default-features"
+    },
+    {
+      "evidence": "no napi/node/cfg(target_arch) changes",
+      "group": "build",
+      "id": "B9",
+      "items": [],
+      "severity": null,
+      "status": "SKIP",
+      "title": "wasm32 compile gate (CI test-wasm compiles cfg(wasm32) code only there)"
+    },
+    {
+      "evidence": "c/ not touched",
+      "group": "build",
+      "id": "B10",
+      "items": [],
+      "severity": null,
+      "status": "SKIP",
+      "title": "C bindings build and c/lightningcss.h is up to date"
+    },
+    {
+      "evidence": "no generated inputs touched",
+      "group": "build",
+      "id": "B11",
+      "items": [],
+      "severity": null,
+      "status": "SKIP",
+      "title": "Generated files in sync (build-prefixes.js output, ast.d.ts), compared with base's drift"
+    },
+    {
+      "evidence": "",
+      "group": "tests",
+      "id": "T1",
+      "items": [],
+      "severity": null,
+      "status": "PASS",
+      "title": "Source changes come with tests in src/lib.rs (or tests/, node/test)"
+    },
+    {
+      "evidence": "no new test cases",
+      "group": "tests",
+      "id": "T2",
+      "items": [],
+      "severity": null,
+      "status": "SKIP",
+      "title": "New test cases exercise the change (fail on base)"
+    },
+    {
+      "evidence": "no existing expectation changed",
+      "group": "tests",
+      "id": "T3",
+      "items": [],
+      "severity": null,
+      "status": "SKIP",
+      "title": "Changed expectations are browser-equivalent to their input"
+    },
+    {
+      "evidence": "",
+      "group": "tests",
+      "id": "T4",
+      "items": [],
+      "severity": null,
+      "status": "PASS",
+      "title": "No existing expectation removed while behavior changed"
+    },
+    {
+      "evidence": "0 head tuples reproduced",
+      "group": "tests",
+      "id": "T5",
+      "items": [],
+      "severity": null,
+      "status": "PASS",
+      "title": "Harness fidelity: recorded head expectations reproduce through the adapter"
+    },
+    {
+      "evidence": "0 assertion(s) checked",
+      "group": "tests",
+      "id": "T6",
+      "items": [],
+      "severity": null,
+      "status": "PASS",
+      "title": "PR and curated probe assertions that hold on base still hold on head"
+    },
+    {
+      "evidence": "1 regression(s) cleared in analysis",
+      "group": "oracle",
+      "id": "O1",
+      "items": [],
+      "severity": null,
+      "status": "PASS",
+      "title": "No regression in current engines (base equivalent -> head different, or head worse than base)"
+    },
+    {
+      "evidence": "",
+      "group": "oracle",
+      "id": "O2",
+      "items": [],
+      "severity": null,
+      "status": "PASS",
+      "title": "New/changed test outputs are equivalent to their input in current engines"
+    },
+    {
+      "evidence": "",
+      "group": "oracle",
+      "id": "O3",
+      "items": [],
+      "severity": null,
+      "status": "PASS",
+      "title": "No new declarations/selectors/conditions rejected by an in-target engine without a surviving fallback"
+    },
+    {
+      "evidence": "no legacy engine profile ran",
+      "group": "oracle",
+      "id": "O4",
+      "items": [],
+      "severity": null,
+      "status": "SKIP",
+      "title": "Lowered output in legacy engines within targets matches the modern rendering"
+    },
+    {
+      "evidence": "",
+      "group": "oracle",
+      "id": "O5",
+      "items": [],
+      "severity": null,
+      "status": "PASS",
+      "title": "No new near-miss (color/number drift within tolerance)"
+    },
+    {
+      "evidence": "",
+      "group": "oracle",
+      "id": "O6",
+      "items": [],
+      "severity": null,
+      "status": "PASS",
+      "title": "Pixel-identical rendering for visual areas"
+    },
+    {
+      "evidence": "",
+      "group": "oracle",
+      "id": "O7",
+      "items": [],
+      "severity": null,
+      "status": "SKIP",
+      "title": "WPT property cases do not regress"
+    },
+    {
+      "evidence": "1 delta(s) verified or cleared",
+      "group": "oracle",
+      "id": "O8",
+      "items": [],
+      "severity": null,
+      "status": "PASS",
+      "title": "Every behavioral delta was verified or cleared (errored engine jobs make the verdict INCONCLUSIVE)"
+    },
+    {
+      "evidence": "",
+      "group": "oracle",
+      "id": "O9",
+      "items": [],
+      "severity": null,
+      "status": "PASS",
+      "title": "Engines read the input differently: the spec decides (classify with a spec or WPT citation)"
+    },
+    {
+      "evidence": "",
+      "group": "oracle",
+      "id": "O10",
+      "items": [],
+      "severity": null,
+      "status": "PASS",
+      "title": "Cases the browsers cannot judge against base (input rejected in every engine, base behavior extended to new targets) are classified"
+    },
+    {
+      "evidence": "",
+      "group": "robustness",
+      "id": "R1",
+      "items": [],
+      "severity": null,
+      "status": "PASS",
+      "title": "No new panic / crash / timeout"
+    },
+    {
+      "evidence": "",
+      "group": "robustness",
+      "id": "R2",
+      "items": [],
+      "severity": null,
+      "status": "PASS",
+      "title": "Output is stable under re-minification where base is (idempotent)"
+    },
+    {
+      "evidence": "touched areas: color",
+      "group": "side-effects",
+      "id": "S1",
+      "items": [],
+      "severity": null,
+      "status": "PASS",
+      "title": "Deltas stay inside the declared areas (or are explained)"
+    },
+    {
+      "evidence": "real-world corpus not available",
+      "group": "side-effects",
+      "id": "S2",
+      "items": [],
+      "severity": null,
+      "status": "SKIP",
+      "title": "Real-world minified size does not grow (> 0.1%)"
+    },
+    {
+      "evidence": "",
+      "group": "side-effects",
+      "id": "S3",
+      "items": [],
+      "severity": null,
+      "status": "PASS",
+      "title": "Overlapping open PRs identified"
+    },
+    {
+      "evidence": "optional: run `lcr perf` for core/hot-path changes",
+      "group": "perf",
+      "id": "P1",
+      "items": [],
+      "severity": null,
+      "status": "SKIP",
+      "title": "No consistent slowdown on the real-world corpus (release build; optional `lcr perf`)"
+    },
+    {
+      "evidence": "optional: run `lcr perf`",
+      "group": "perf",
+      "id": "P2",
+      "items": [],
+      "severity": null,
+      "status": "SKIP",
+      "title": "Release binary size does not grow by more than 1% (optional `lcr perf`)"
+    },
+    {
+      "evidence": "0/0 items answered",
+      "group": "analysis",
+      "id": "A1",
+      "items": [],
+      "severity": null,
+      "status": "PASS",
+      "title": "Spec checklist for the affected areas"
+    },
+    {
+      "evidence": "no linked issues",
+      "group": "analysis",
+      "id": "A2",
+      "items": [],
+      "severity": null,
+      "status": "SKIP",
+      "title": "Linked issue repro (`repro: #N` probe) fixed on head and failing on base"
+    },
+    {
+      "evidence": "p-color/*: browsers disagree with head on p-color/x; an INTENDED classification must cite the spec (drafts.csswg.org/w3.org URL#anchor) or a WPT file; p-color/*: a glob may not clear regressed case(s) (p-color/x); classify them by exact id",
+      "group": "analysis",
+      "id": "A3",
+      "items": [
+        "p-color/*: browsers disagree with head on p-color/x; an INTENDED classification must cite the spec (drafts.csswg.org/w3.org URL#anchor) or a WPT file",
+        "p-color/*: a glob may not clear regressed case(s) (p-color/x); classify them by exact id"
+      ],
+      "severity": "MAJOR",
+      "status": "FAIL",
+      "title": "Analysis complete (every slot filled with evidence)"
+    }
+  ],
+  "counts": {
+    "BLOCKER": 0,
+    "MAJOR": 1,
+    "MINOR": 0,
+    "NOTE": 0
+  },
+  "decision_needed": [],
+  "default_requests": null,
+  "engines": {
+    "latest": {
+      "chromium": "1"
+    }
+  },
+  "findings": [
+    {
+      "check": "A3",
+      "detail": "p-color/*: browsers disagree with head on p-color/x; an INTENDED classification must cite the spec (drafts.csswg.org/w3.org URL#anchor) or a WPT file; p-color/*: a glob may not clear regressed case(s) (p-color/x); classify them by exact id",
+      "evidence": [
+        "p-color/*: browsers disagree with head on p-color/x; an INTENDED classification must cite the spec (drafts.csswg.org/w3.org URL#anchor) or a WPT file",
+        "p-color/*: a glob may not clear regressed case(s) (p-color/x); classify them by exact id"
+      ],
+      "n": 1,
+      "severity": "MAJOR",
+      "source": "check",
+      "title": "Analysis incomplete or inconsistent with the evidence"
+    }
+  ],
+  "head_tree": "hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh",
+  "pr": null,
+  "run_id": "run",
+  "schema": 1,
+  "skill_version": "0.1.0",
+  "stages": {
+    "analysis": true,
+    "build": true,
+    "corpus": true,
+    "oracle": true,
+    "prepare": true
+  },
+  "verdict": "INCONCLUSIVE",
+  "verdict_scope": null
+}

@@ -1,0 +1,14 @@
+VERDICT: NEEDS_CHANGES (0 blocker, 2 major, 0 minor, 1 note)
+<RUN>/report.md
+**LightningCSS # — VERDICT: NEEDS_CHANGES** (0 blocker · 2 major · 0 minor · 1 note)
+
+s
+
+Findings:
+1. [MAJOR] Behavioral deltas neither verified by the oracle nor cleared — p-color/a
+2. [MAJOR] Probe assertions that hold on base fail on head — p-color/a: output-not-contains:"x" (holds on base, fails on head) (see F1: Base drops the conjunct)
+
+Coverage: latest: chromium 1. 3 behavioral deltas (1 verified in browsers), 2 PR probes, 0 mutations, 0 WPT cases, 0 real-world files.
+
+Report: <RUN>/report.md
+

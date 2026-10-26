@@ -1,0 +1,13 @@
+VERDICT: NEEDS_CHANGES (0 blocker, 1 major, 0 minor, 0 note)
+<RUN>/report.md
+**LightningCSS # — VERDICT: NEEDS_CHANGES** (0 blocker · 1 major · 0 minor · 0 note)
+
+s
+
+Findings:
+1. [MAJOR] Head emits CSS an in-target engine rejects with no surviving fallback — p-color/rej
+
+Coverage: latest: chromium 1. 2 behavioral deltas (2 verified in browsers), 0 PR probes, 0 mutations, 0 WPT cases, 0 real-world files.
+
+Report: <RUN>/report.md
+

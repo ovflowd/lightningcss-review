@@ -6,7 +6,7 @@ Selectors are parsed by css-tree, values compared by a fixed normalizer, styles 
 ## Pipeline
 
 1. `prepare-jobs.mjs` (analysis image): for each case, synthesize one DOM from the selectors of the
-   input and both outputs (`dom.mjs`), rewrite user-action pseudo-classes (`:hover`, `:focus*`,
+   input and both outputs (`oracle/lib/dom.mjs`), rewrite user-action pseudo-classes (`:hover`, `:focus*`,
    `:active`, `:target`, `:visited`) to attribute selectors **identically in every sheet**, and list
    each sheet's declarations, selectors and `@media`/`@supports`/`@container` preludes (exact
    source text) for validity probing. Rules nested without `&` are parsed in place; `@keyframes`
@@ -27,7 +27,7 @@ Selectors are parsed by css-tree, values compared by a fixed normalizer, styles 
    Differences base and head share exactly are dropped when anything else differs; layout: L3.
 4. `compare.mjs`: normalizes and classifies.
 
-## Value comparison (`normalize.mjs`)
+## Value comparison (`oracle/lib/normalize.mjs`)
 
 Values are tokenized into text, numbers (with units) and colors (functions, hex, named).
 

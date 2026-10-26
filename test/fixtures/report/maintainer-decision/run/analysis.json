@@ -1,0 +1,1 @@
+{"checklist": [], "deltas": [{"classification": "NEEDS_MAINTAINER_DECISION", "id": "p-color/d", "reason": "policy: keep the prefix?"}, {"classification": "NEEDS_MAINTAINER_DECISION", "id": "p-color/n", "reason": "policy: keep the prefix? "}], "findings": [], "intent": {"kind": "bugfix", "summary": "s"}}

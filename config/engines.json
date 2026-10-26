@@ -1,5 +1,5 @@
 {
-  "$comment": "Engine profiles. Each profile is one Docker image (Playwright release => exact browser builds). `expected` versions come from playwright-core/browsers.json and the release notes (research: wpt-engines \u00a73.2); `lcr setup` records the versions the container actually reports in env.json and reports print those. `lightningcss` maps an engine to the LightningCSS Browsers key used to decide whether an engine is inside a case's targets. Playwright WebKit is a WPE/GTK build, not Safari: treat it as Safari of the same WebKit version, minus Apple-only features. Legacy sets were chosen from BCD so that each lacks the features LightningCSS lowers (wpt-engines \u00a73.3).",
+  "$comment": "Engine profiles. Each profile is one Docker image built from a Playwright release (=> exact browser builds); the release is pinned in compose.yaml (`playwright-<profile>` for the latest profile, `x-frozen-pins` for the legacy ones), the single source of a profile's Playwright version. `expected` versions come from playwright-core/browsers.json and the release notes (research: wpt-engines \u00a73.2); `lcr setup` records the versions the container actually reports in env.json and reports print those, and `lcr setup --update` refreshes the latest profile's `expected` when it moves the pin. `analysis` marks the image that also runs the analysis scripts (its extra packages are listed in compose.yaml). `engine_to_target` maps an engine to the LightningCSS Browsers key used to decide whether an engine is inside a case's targets. Playwright WebKit is a WPE/GTK build, not Safari: treat it as Safari of the same WebKit version, minus Apple-only features. Legacy sets were chosen from BCD so that each lacks the features LightningCSS lowers (wpt-engines \u00a73.3).",
   "default_profiles": [
     "latest",
     "legacy-2023",
@@ -7,8 +7,6 @@
   ],
   "profiles": {
     "latest": {
-      "playwright": "1.64.1",
-      "distro": "noble",
       "role": "reference",
       "analysis": true,
       "expected": {
@@ -18,8 +16,6 @@
       }
     },
     "legacy-2023": {
-      "playwright": "1.30.0",
-      "distro": "focal",
       "role": "legacy",
       "expected": {
         "chromium": "110.0.5481.38",
@@ -29,8 +25,6 @@
       "lacks": "nesting, lab/lch/oklab/oklch/color() and color-mix() in Chromium/Firefox, relative color, light-dark(), gradient interpolation spaces in Chromium/Firefox, :dir() in Chromium, round()/mod()/abs()/sign(), @scope, @starting-style, :has() and @container in Firefox"
     },
     "legacy-2021": {
-      "playwright": "1.16.3",
-      "distro": "focal",
       "role": "legacy",
       "expected": {
         "chromium": "97.0.4666.0",
@@ -40,8 +34,6 @@
       "lacks": "everything legacy-2023 lacks, plus @layer, :has(), @container, dvh units in Chromium/Firefox, media range syntax in Chromium/WebKit, individual transforms in Chromium, color-mix() and :dir() in WebKit"
     },
     "legacy-2020": {
-      "playwright": "1.4.2",
-      "distro": "",
       "role": "legacy",
       "optional": true,
       "expected": {
@@ -49,18 +41,12 @@
         "firefox": "80.0b8",
         "webkit": "14.0"
       },
-      "lacks": ":is()/:where() and :not(a, b) in Chromium, logical shorthands, inset, aspect-ratio, system-ui in Firefox. Image is bionic with Node 12 and browsers under /root/.cache/ms-playwright: not supported by browsers.Dockerfile yet"
+      "lacks": ":is()/:where() and :not(a, b) in Chromium, logical shorthands, inset, aspect-ratio, system-ui in Firefox. Image is bionic with Node 12 and browsers under /root/.cache/ms-playwright; docker/browsers.Dockerfile does not support that layout yet"
     }
   },
   "engine_to_target": {
     "chromium": "chrome",
     "firefox": "firefox",
     "webkit": "safari"
-  },
-  "analysis_packages": [
-    "css-tree@3.2.1",
-    "colorjs.io@0.7.1",
-    "@webref/css@8.7.8",
-    "pngjs@7.0.0"
-  ]
+  }
 }

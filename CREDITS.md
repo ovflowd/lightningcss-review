@@ -5,7 +5,7 @@
 - **lightningcss#1328 "Setup web platform test harness"** by Devon Govett (MPL-2.0).
   `oracle/wpt/extract.mjs` and `oracle/wpt/read-html.py` are vendored from it unchanged except for
   a header. The `property` request kind in `adapter/lcr_adapter.rs` follows its
-  `examples/wpt_adapter.rs`, and `pageProperty` in `oracle/engine-runner.cjs` ports its CSSOM
+  `examples/wpt_adapter.rs`, and `pageProperty` in `oracle/runner/page/property.cjs` ports its CSSOM
   oracle (invalid input stays invalid, preceding fallbacks survive, shorthand reset probe,
   contextual computed comparison) to Playwright and three engines.
 - **`test-integration.mjs`** in Lightning CSS, Devon's original computed-style equivalence check,
@@ -30,7 +30,7 @@
 
 - [Playwright](https://playwright.dev/) and its Docker images: the browser engines.
 - [css-tree](https://github.com/csstree/csstree) (MIT): independent CSS parsing for DOM synthesis;
-  the nested-rule `Block` parser in `oracle/dom.mjs` adapts its own.
+  the nested-rule `Block` parser in `oracle/lib/css.mjs` adapts its own.
 - [colorjs.io](https://colorjs.io/): color conversion, ΔE OK and CSS gamut mapping.
 - [pngjs](https://github.com/pngjs/pngjs): screenshot comparison.
 

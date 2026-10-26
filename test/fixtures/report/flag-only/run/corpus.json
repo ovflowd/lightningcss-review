@@ -1,0 +1,1 @@
+{"cases": {"mutation": 1, "probe": 2}, "deltas": {"mutation": 1, "probe": 1}, "flag_only": {"custom-functions": ["p-color/f"]}, "idempotency": {}, "idempotency_failures": [], "probes": [], "robustness": {"base": [], "head": []}, "size": [], "tuple_stats": {}, "tuples": {}}

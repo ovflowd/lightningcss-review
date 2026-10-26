@@ -1,0 +1,13 @@
+VERDICT: NEEDS_CHANGES (0 blocker, 1 major, 0 minor, 0 note)
+<RUN>/report.md
+**LightningCSS # — VERDICT: NEEDS_CHANGES** (0 blocker · 1 major · 0 minor · 0 note)
+
+s
+
+Findings:
+1. [MAJOR] Engines read the input differently: classify against the spec — p-color/x [head equivalent in chromium, webkit; different in firefox; base different in chromium, firefox, webkit] [input inert, output…
+
+Coverage: latest: chromium 1. 1 behavioral deltas (1 verified in browsers), 0 PR probes, 0 mutations, 0 WPT cases, 0 real-world files.
+
+Report: <RUN>/report.md
+
