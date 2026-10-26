@@ -4,9 +4,9 @@ area: nesting
 title: Lowering nested rules whose selectors need vendor prefixes must not duplicate rules per ancestor prefix pass
 mode: lower-minify
 targets: safari 8
-expect: equivalent, idempotent
+expect: equivalent, idempotent, output-not-contains:"-screen{color:red}:fullscreen :fullscreen :fullscreen{color:red}:-webkit-"
 known: open-bug
 ref: https://drafts.csswg.org/css-nesting-1/#nesting https://github.com/oven-sh/bun/pull/31270
-note: master emits each prefixed variant once per ancestor prefix pass (477 bytes for depth 3 instead of 2 rules; depth 16 = 18 MB, depth 20 = 357 MB in 1.1 s); a second pass dedupes, so output is not idempotent
+note: master emits each prefixed variant once per ancestor prefix pass (477 bytes for depth 3 instead of 2 rules; depth 16 = 18 MB, depth 20 = 357 MB in 1.1 s); a second pass dedupes, so output is not idempotent; the output assertion catches a prefixed/unprefixed/prefixed run, which only appears when rules are duplicated (the oracle cannot match :fullscreen)
 */
 :fullscreen { :fullscreen { :fullscreen { color: red; } } }

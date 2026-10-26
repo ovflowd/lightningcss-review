@@ -1,31 +1,30 @@
 # properties-registry checklist (PROPS)
 
-Covers `define_properties!` in `src/properties/mod.rs`: the macro (:172-1200) and the table (:1202-1623; 349 entries, 62 `shorthand: true`, 84 with `[logical_group, category]`, 23 `unprefixed: false`), i.e. `PropertyId` name and prefix matching (:214-232), `Property::parse` with its Unparsed fallback (:700-725), prefix plumbing (:301-385, :754-772), the per-prefix print loop (:804-875), the shorthand API (`is_shorthand` :402, `longhands` :456, `longhand` :884, `set_longhand` :907) and serde/jsonschema (:928-1199). The risk flag `new-property` fires on new table entries.
-Top failure modes: (1) typing a previously unknown property changes its order, merging, serialization and visitor shape (deferred shorthands reorder it, #1084; #1046-#1048); (2) the typed grammar accepts input browsers reject, so an ignored declaration starts to override (unitless lengths #1199/#1042; ranges before #1329); (3) wrong prefix or alias metadata (unreachable prefixed entries, aliases that share a cascade slot, #1234).
+`define_properties!` in `src/properties/mod.rs`: the macro (`PropertyId` matching, `Property::parse` with its Unparsed fallback, prefix plumbing, the per-prefix print loop, shorthand API, serde) and the table. Risk flag `new-property` fires on new entries.
 
-- [PROPS-01] (BLOCKER) A newly typed property keeps its cascade position against every property it interacts with: the PR names the handler that owns it, or none; an owning handler flushes on `Property::Unparsed` and on unowned siblings in both orders; an unowned property, which is pushed immediately, is not reset by a shorthand that a handler buffers and emits later (finalize order, src/declaration.rs:695-731).
-  verify: mutations `reverse-decls`, `var-before`, `var-after`; PR tests `shorthand; new-longhand` and the reverse; risk flag `new-property` (#1084, #1207 with the TODO at font.rs:879, #572, #805).
-- [PROPS-02] (MAJOR) The typed grammar rejects everything browsers reject, so invalid values stay `Property::Unparsed` (src/properties/mod.rs:719-724) and keep losing to an earlier valid declaration: no empty input, no unitless non-zero lengths, numeric ranges enforced with `NonNegative<T>` or range checks (#1329), keywords matched ASCII case-insensitively.
-  verify: `property_range_test(&["name"], &[(invalid, None)])` (src/lib.rs:101-129) in the PR; O7 with no `invalid-became-valid`; GEN-03.
-- [PROPS-03] (MAJOR) The entry's metadata is right: the lowercase spec name; `/ WebKit / Moz / O / Ms` lists exactly the prefixes engines shipped (`PropertyId::from` strips the prefix, and a prefix the entry does not list yields `Custom`, :214-232); legacy-only names use `unprefixed: false`; CSS-modules-only properties use `if css_modules` (`composes`, :1541).
-  verify: read the table diff; a `print`-mode probe for each prefixed spelling (stays typed, prefix kept); mutation `upper-props` (the `"-webkit-mask-composite"` entry at :1590 can never be produced by parsing).
-- [PROPS-04] (MAJOR) Typing a property is declared as a JS visitor and AST change: hooks move from `Declaration.custom['name']` to `Declaration['name']` (napi/src/transformer.rs:650-660), the serde shape changes from `{property: "custom", value: tokens}` to `{property, value, vendorPrefix?}` (src/properties/mod.rs:930-985), and node/ast.d.ts gains the type.
-  verify: a node visitor test on the new property; B11 and API-03 (#1046-#1048 requested by nativewind/react-native-css; #1008).
-- [PROPS-05] (MAJOR) `shorthand: true` entries implement `longhands()`, `longhand()` and `set_longhand()` through `define_shorthand!`/`define_list_shorthand!` (src/macros.rs:331-717), including prefix defaults and refusing mixed `!important`, so `DeclarationBlock::get/set/remove` work for them.
-  verify: tests/test_cssom.rs get/set/remove cases for the new shorthand (B1) (#165).
-- [PROPS-06] (MAJOR) Logical properties carry `[logical_group: X, category: Logical|Physical]` matching their physical counterparts, so `DeclarationBlock::set` (src/declaration.rs:366-386) and the side handlers' category flushes keep the logical/physical order.
-  verify: PR tests that mix the logical and the physical property in both orders; mutation `reverse-decls`; GEN-07.
-- [PROPS-07] (MAJOR) The typed value serializes to something every engine accepts and computes the same, never longer than the input, and idempotently: `none` and identity values stay distinct (#703, #1147), position keywords stay equivalent (#1047), zero and unit handling follow the grammar.
-  verify: O1, O2, O3; R2; O7 for the property; S2.
-- [PROPS-08] (MAJOR) Aliases and legacy spellings share one cascade slot: a new name that aliases an existing property (font-width and font-stretch, gap and grid-gap, overflow-wrap and word-wrap, print-color-adjust and color-adjust) is treated as the same property for ordering and dedupe, or both spellings stay unknown.
-  verify: probe font/font-width-not-moved-before-font; mutation `reverse-decls` with both spellings (#1234).
-- [PROPS-09] (MAJOR) `Property::parse` still consumes the whole value and never drops a declaration: the typed parse ends with `expect_exhausted`, any failure falls back to `UnparsedProperty`, and `var()`, `env()` and CSS-wide keywords on the new property stay Unparsed and print verbatim.
-  verify: PR tests `prop: var(--x)` and `prop: inherit`; WPT recognition `deferred`/`css-wide` unchanged (#752 `all: var()`).
-- [PROPS-10] (BLOCKER) Changes to the macro itself (`PropertyId::from`, `Property::parse`, prefix plumbing, the print loop, serde) are behavior-neutral for all 349 entries unless the PR claims otherwise.
-  verify: tuple and wpt deltas are 0 or classified; T4; O7; tests/test_serde.rs under B1.
-- [PROPS-11] (MAJOR) Prefix expansion for a new property is data-driven: a `prefixes::Feature` from the autoprefixer data exists when it needs prefixes, `set_prefixes_for_targets` stays a no-op for `unprefixed: false` entries (:366-385), and `transition-property` expansion knows the prefixed names (`expand_properties`, src/properties/transition.rs:400).
-  verify: B11; prefix_test with a target that needs the prefix and one that does not (GEN-14).
-- [PROPS-12] (MAJOR) `@supports` conditions and container `style()` queries use the same entry: `@supports (prop: value)` prints unchanged (operands are merged under a prefix-less key, src/rules/supports.rs:225-252) and `style()` queries parse the property (src/rules/container.rs:295-298).
-  verify: mutation `wrap-supports`; a probe with `@supports (new-prop: value)` in `print` and `minify` modes.
-- [PROPS-13] (MINOR) Binary size stays in check: each entry expands into every macro-generated match (`PropertyId`, `Property`, serde, jsonschema, `longhands`), so large value types are boxed or justified.
-  verify: release binary size on base vs head (manual; the harness does not measure it) (#1305 cut 678 KB; boxing discussion in #1332).
+- [PROPS-01] (BLOCKER) A newly typed property keeps its cascade position: the PR names the handler that owns it (or none); an owning handler flushes on `Property::Unparsed` and unowned siblings in both orders; an unowned property, pushed immediately, is not reset by a shorthand a handler buffers until `finalize()`.
+  verify: `reverse-decls`, `var-before`, `var-after`; tests `shorthand; new-longhand` and the reverse.
+- [PROPS-02] (MAJOR) The typed grammar rejects everything browsers reject, so invalid values stay Unparsed and keep losing to an earlier valid declaration: no empty input, no unitless non-zero lengths, ranges via `NonNegative<T>` or checks, keywords ASCII case-insensitive.
+  verify: `property_range_test(.., None)` cases; O7 shows no `invalid-became-valid`.
+- [PROPS-03] (MAJOR) Entry metadata is right: lowercase spec name; the prefix list is exactly what engines shipped (an unlisted prefix parses as `Custom`); legacy-only names use `unprefixed: false`; module-only properties use `if css_modules`.
+  verify: read the table diff; a `print` probe per prefixed spelling; `upper-props`.
+- [PROPS-04] (MAJOR) Typing a property is declared as a JS-visible change: visitor hooks move from `Declaration.custom['name']` to `Declaration['name']`, the serde shape becomes `{property, value, vendorPrefix?}`, ast.d.ts gains the type.
+  verify: a node visitor test on the property.
+- [PROPS-05] (MAJOR) `shorthand: true` entries implement `longhands()`/`longhand()`/`set_longhand()` via `define_shorthand!`/`define_list_shorthand!`, refusing mixed `!important`, so `DeclarationBlock::get/set/remove` work.
+  verify: tests/test_cssom.rs cases for the shorthand.
+- [PROPS-06] (MAJOR) Logical properties carry `[logical_group, category]` matching their physical counterparts, so `DeclarationBlock::set` and side-handler flushes keep logical/physical order.
+  verify: tests mixing logical and physical in both orders; `reverse-decls`.
+- [PROPS-07] (MAJOR) The typed value serializes no longer than the input and keeps `none` distinct from identity values (stacking, interpolation).
+  verify: `lcr show` on deltas; reason about interpolation where the oracle is static (L5).
+- [PROPS-08] (MAJOR) Aliases share one cascade slot: a name aliasing an existing property (`font-width`/`font-stretch`, `gap`/`grid-gap`, `word-wrap`/`overflow-wrap`) is ordered and deduped as one, or both stay unknown.
+  verify: probe font/font-width-not-moved-before-font; `reverse-decls` with both spellings.
+- [PROPS-09] (MAJOR) `Property::parse` consumes the whole value and never drops a declaration: any failure falls back to Unparsed, and `var()`, `env()` and CSS-wide keywords print verbatim.
+  verify: tests `prop: var(--x)` and `prop: inherit`.
+- [PROPS-10] (BLOCKER) A change to the macro itself is behavior-neutral for every entry unless claimed.
+  verify: tuple and wpt deltas are 0 or classified; tests/test_serde.rs.
+- [PROPS-11] (MAJOR) Prefix expansion for a new property is data-driven: a `prefixes::Feature` exists when it needs prefixes, `unprefixed: false` entries get none, and `transition-property` expansion knows the prefixed names.
+  verify: prefix_test with a target that needs the prefix and one that does not.
+- [PROPS-12] (MAJOR) `@supports (prop: value)` and container `style()` queries still print the property unchanged.
+  verify: `wrap-supports`; a `@supports (new-prop: value)` probe in `print` and `minify` modes.
+- [PROPS-13] (MINOR) Each entry expands into every generated match, so large value types are boxed or justified.
+  verify: P2; read the value type size.

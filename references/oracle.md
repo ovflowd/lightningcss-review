@@ -73,14 +73,13 @@ deviates from the spec, or implements a newer rule). Equivalence to "the input" 
 such cases are not counted as regressions (O1/O2) but listed under **O9** with the split
 (`head equivalent in chromium, webkit; different in firefox`). The reviewer decides against the
 spec: which engine follows the current spec text (cite `drafts.csswg.org/...#anchor`) and WPT
-(cite the test file or wpt.fyi). Example: lightningcss#1376 implements css-color-4's carry-forward of
-missing components in `color-mix()`; Chromium 156 and WebKit 27.2 agree, Firefox 157 still treats
-`none` as 0.
+(cite the test file or wpt.fyi). Typical case: a newer spec rule (e.g. css-color-4 carrying missing
+components forward in `color-mix()`) that some engines implement and one still treats as before.
 
 `rejectedHead > rejectedBase` (a declaration, selector or prelude the engine rejects with no
 surviving fallback for the same property) feeds check O3 even when computed styles match.
 
-Property cases (WPT) use the CSSOM-level check from lightningcss#1328: invalid input must stay
+Property cases (WPT) use a CSSOM-level check: invalid input must stay
 invalid and keep a preceding valid fallback; a shorthand must reset the same longhands as the
 original (`shorthand-reset-changed`); spelling differences are resolved with a computed-value
 fixture (`contextual-match` vs `computed-difference`).

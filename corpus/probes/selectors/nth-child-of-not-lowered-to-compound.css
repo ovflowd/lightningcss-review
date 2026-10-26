@@ -4,10 +4,10 @@ area: selectors
 title: `:nth-child(An+B of S)` must not be lowered to `S:nth-child(An+B)` for targets without `of` support
 mode: lower
 targets: chrome 100, safari 14
-expect: equivalent
+expect: output-contains:"li:nth-child(2 of .x)", output-not-contains:".x:nth-child"
 known: none
 dom: <ul><li class="x"></li><li class="y"></li><li class="x t"></li></ul>
 ref: https://drafts.csswg.org/selectors-4/#the-nth-child-pseudo
-note: the spec example: `:nth-child(-n+3 of li.important)` differs from `li.important:nth-child(-n+3)`; here only the third li is the 2nd `.x`, while `.x:nth-child(2)` matches nothing. There is no exact fallback
+note: the spec example: `:nth-child(-n+3 of li.important)` differs from `li.important:nth-child(-n+3)`; here only the third li is the 2nd `.x`, while `.x:nth-child(2)` matches nothing. There is no exact fallback; checked by output only: legacy Chromium 110 (inside the chrome 100 target) reports `different` even for byte-identical input and output sheets, so `equivalent` is oracle noise
 */
 li:nth-child(2 of .x) { color: red; }

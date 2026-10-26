@@ -218,6 +218,7 @@ No issue found (search 2026-10-26). Probes re-run on a cbeaf83 build; engine ver
 **Tooling**
 - **U32** `cargo test -p parcel_selectors` fails at `selectors/parser.rs:3933`; CI tests only the root package (`test.yml:24`).
 - **U33** `release.yml` pins Node 18 (lines 31, 66, 135, 232); `package.json:30` requires `>= 24.0.0`.
+- **U34** `linear-gradient(to top, red 80%, blue 20%)` → `linear-gradient(#00f 80%,red 20%)`: the `to top` → `0deg` flip reverses the stops without running color-stop fixup first, so out-of-order stops end up with blue over the top 80% instead of 20% (`values/gradient.rs` `LinearGradient::to_css`; https://drafts.csswg.org/css-images-3/#color-stop-fixup). The oracle compares gradient text, so only an output assertion catches it. `gradient-image/to-top-flip-with-unordered-stops`.
 
 ### Dropped or folded into an existing issue
 

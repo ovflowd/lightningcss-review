@@ -69,6 +69,9 @@ def main(argv=None) -> int:
     p = sub.add_parser("worklist", help="write/refresh analysis.json with every slot the report needs; print the open ones")
     p.add_argument("run", nargs="?")
 
+    p = sub.add_parser("brief", help="compact digest of a run for the reviewer (instead of raw JSON)")
+    p.add_argument("run", nargs="?")
+
     p = sub.add_parser("summary", help="print the fixed chat summary for a reported run")
     p.add_argument("run", nargs="?")
 
@@ -124,7 +127,10 @@ def main(argv=None) -> int:
             run_dir = prepare(args.pr)
             build(run_dir, js=args.js)
             corpus(run_dir)
-            print(run_dir)
+            from lcr.status import brief
+
+            print()
+            brief(run_dir)
             return 0
         if args.command == "wpt":
             from lcr.wpt import ensure_fixtures
@@ -175,6 +181,11 @@ def main(argv=None) -> int:
             from lcr.status import worklist
 
             worklist(run_dir)
+            return 0
+        if args.command == "brief":
+            from lcr.status import brief
+
+            brief(run_dir)
             return 0
         if args.command == "summary":
             from lcr.report import summary

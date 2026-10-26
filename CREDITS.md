@@ -37,6 +37,7 @@
 
 The references were distilled from a review of 417 Lightning CSS issues, every maintainer and
 community PR since 2021, the CSS Working Group editor's drafts, and the issue trackers of
-downstream tools and other CSS minifiers. Issue and PR numbers are cited inline. The research
+downstream tools and other CSS minifiers, then condensed into the mechanisms a reviewer checks;
+the issue-level findings are kept in `docs/findings/`. The research
 and much of the code were produced with AI assistance (Claude) and reviewed by the maintainer of
 this repository.

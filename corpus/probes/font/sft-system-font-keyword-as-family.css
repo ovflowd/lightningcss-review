@@ -4,10 +4,11 @@ area: font
 title: System font keywords are family names after a font-size and keywords only when alone
 mode: minify
 targets: none
-expect: equivalent, idempotent
+expect: equivalent, idempotent, output-contains:".a{font:12px"
 known: none
 ref: https://drafts.csswg.org/css-fonts-4/#font-prop https://drafts.csswg.org/css-fonts-4/#valdef-font-menu
-note: font:12px "menu" may print as font:12px menu (still a family), but font:menu must stay a system font and must never gain a size
+dom: <div class="b">x</div><div class="c">x</div>
+note: font:12px "menu" may print as font:12px menu (still a family), but font:menu must stay a system font and must never gain a size; .a is checked by output only: Firefox serializes the computed family with its original quoting ("menu" vs menu), which is the same family name per css-fonts-4 #family-name-syntax, so the oracle's text diff there is noise
 */
 .a { font: 12px "menu"; }
 .b { font: menu; }

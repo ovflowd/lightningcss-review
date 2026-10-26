@@ -82,8 +82,8 @@ instead of the builder image; browsers always run in Docker.
 | `oracle/` | DOM synthesis, engine runner, comparison, spec cards; `oracle/wpt/` is the WPT extractor from lightningcss#1328 |
 | `config/` | areas, transform modes and targets, engine profiles, check catalog, test and property maps, pins |
 | `corpus/probes/` | curated probes by area (spec invariants, past regressions, issue repros) |
-| `references/` | what a reviewer needs: per-area checklists, spec digests, architecture, regressions, issues, browsers, ecosystem, maintainer conventions |
-| `docs/` | how the harness and oracle work, and how to contribute probes and checklists |
+| `references/` | what the reviewing agent loads: per-area checklists, spec digests, architecture, conventions, browsers, ecosystem, oracle (size-budgeted, mechanisms only) |
+| `docs/` | how the harness works, and findings about Lightning CSS from building this (`docs/findings/`) |
 | `tests/`, `oracle/test/` | unit tests and the oracle's known-answer cases |
 
 ## Status
@@ -91,7 +91,7 @@ instead of the builder image; browsers always run in Docker.
 Early. The harness, oracle and references are complete enough to review real PRs; expect the
 check catalog and the probe corpus to keep changing. Findings about Lightning CSS itself that came
 out of building this (bugs reproducible on `master` with no issue filed yet) are listed in
-[`references/issues.md`](references/issues.md#3-unfiled-bugs-found-during-this-research-verified-on-master-cbeaf83).
+[`docs/findings/issues.md`](docs/findings/issues.md#3-unfiled-bugs-found-during-this-research-verified-on-master-cbeaf83).
 
 ## Credits
 

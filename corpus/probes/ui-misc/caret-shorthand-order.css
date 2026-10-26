@@ -4,9 +4,9 @@ area: ui-misc
 title: interleaved `caret` and `caret-color` must keep source order
 mode: minify
 targets: none
-expect: equivalent
+expect: equivalent, output-not-contains:"caret:green;caret-color:#00f"
 known: open-issue#1362
 ref: https://drafts.csswg.org/css-ui-4/#propdef-caret https://github.com/parcel-bundler/lightningcss/issues/1362 https://drafts.csswg.org/css-ui-4/#caret
-note: FallbackHandler writes a repeated property back at its first index (src/properties/prefix_handler.rs:120); only observable in engines that implement the `caret` shorthand
+note: FallbackHandler writes a repeated property back at its first index (src/properties/prefix_handler.rs:120); only observable in engines that implement the `caret` shorthand; master prints `caret:green;caret-color:#00f`, so caret-color ends up blue instead of green; no reference engine implements `caret` yet (oracle equivalent), so the output assertion decides
 */
 .t { caret: red; caret-color: blue; caret: green; }

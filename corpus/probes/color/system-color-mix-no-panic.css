@@ -4,10 +4,10 @@ area: color
 title: color-mix() with system colors must not panic when lowering
 mode: lower-minify
 targets: chrome 100
-expect: no-panic, equivalent
+expect: no-panic, output-contains:"color-mix(in lab", output-contains:"color-mix(in srgb"
 known: fixed-by#819
 ref: https://github.com/parcel-bundler/lightningcss/issues/685 https://drafts.csswg.org/css-color-4/#css-system-colors https://github.com/parcel-bundler/lightningcss/pull/819
-note: 1.24.0 (2983614 system-color parsing) .. 1.27.0 hit unreachable!() in CssColor::interpolate
+note: 1.24.0 (2983614 system-color parsing) .. 1.27.0 hit unreachable!() in CssColor::interpolate; system colors are only known at computed-value time, so color-mix() must be kept. Checked by output only: legacy Chromium 110 reports `different` even for byte-identical input and output sheets, so `equivalent` was oracle noise
 */
 .foo { background: color-mix(in lab, Canvas 75%, CanvasText 25%); }
 .bar { background: color-mix(in srgb, AccentColor, transparent 75%); }

@@ -7,6 +7,7 @@ targets: safari 13
 expect: equivalent, output-contains:"max("
 known: none
 ref: https://drafts.csswg.org/css-values-4/#comp-func
-note: guard; Safari 13 has min()/max() (11.1) but not clamp() (13.1); the min-wins ordering must be kept
+dom: <div class="t"></div>
+note: guard; Safari 13 has min()/max() (11.1) but not clamp() (13.1); the min-wins ordering must be kept; dom has no text because legacy WebKit 15.4 reports a 2px line-height change even between byte-identical sheets (oracle noise, not LightningCSS)
 */
 .t { width: clamp(10px, 50%, 300px); }

@@ -1,26 +1,22 @@
 # sourcemap checklist (MAP)
 
-Covers source maps and source positions: mapping and position accounting in the printer (`add_mapping`, `write_str`, `write_char`, `write_str_with_newlines`; src/printer.rs:143-283), input source maps (`inputSourceMap`, inline `sourceMappingURL`), bundler maps (src/bundler.rs:458-466), CLI `--sourcemap` (src/main.rs:210-260), the `sourcemap` cargo feature (`parcel_sourcemap`), and user-visible locations.
-Top failure modes: (1) generated columns drift (bytes vs UTF-16, #780 and PR #1354; raw text with newlines, #971); (2) bundler source indices differ from the map's source order (#1167); (3) CLI map file and URL handling (#794, #1019).
-No path maps to `sourcemap` in config/areas.json (the area appears only when a sourcemap test fn changes), and corpus deltas compare code only, so map behavior needs tests that decode mappings.
+Mapping and position accounting in `src/printer.rs` (`add_mapping`, `write_str`, `write_char`, `write_str_with_newlines`), input maps, bundler maps, CLI `--sourcemap`, the `sourcemap` feature. Corpus deltas compare code only: map behavior needs tests that decode mappings.
 
-- [MAP-01] (MAJOR) Generated columns are counted in UTF-16 code units, the unit `Location.column` documents (src/rules/mod.rs:124-127), on every write path: today `write_str` adds bytes (src/printer.rs:143-144) while `write_char` adds 1 per char (:169-174), so non-ASCII text before a mapping shifts every later column on that line.
-  verify: a PR test with non-ASCII selectors or strings before a later rule that asserts the decoded line and column of a known token; test_input_source_map (src/lib.rs:31168-31201) (#780 open, PR #1354).
-- [MAP-02] (MAJOR) Every printer path that writes raw text containing newlines (license comments, token lists, unknown or custom at-rule bodies) keeps line accounting through `write_str_with_newlines` (src/printer.rs:150-163), and `write_str` itself stays newline-free and cheap.
-  verify: a test like test_source_maps_with_license_comments (src/lib.rs:31203-31247) for the new path; PERF-08 (#971).
-- [MAP-03] (MAJOR) Each rule type the PR adds or prints calls `add_mapping` at its start with its original `loc` (the 1-based column becomes `loc.column - 1`, src/printer.rs:245-251), including rules created by lowering (nesting, `:dir()` rules, `@supports` fallbacks), which map back to their source rule.
-  verify: grep the diff for new rule `ToCss` impls without `add_mapping`; a PR test that decodes the map for the new rule.
-- [MAP-04] (MAJOR) Bundled maps are consistent and deterministic: a stylesheet's `source_index` equals its index in the map, and `sources`/`sourcesContent` keep the same order across runs (index assigned at registration, src/bundler.rs:413-414; `add_source` in completion order, :463-465).
-  verify: bundler::tests::test_source_map (src/bundler.rs:2163-2206) and a node bundle test with `sourceMap: true` over at least three parallel imports, each run twice (#1167 open).
-- [MAP-05] (MAJOR) Input source maps chain: `inputSourceMap` and inline `data:` maps remap original positions, a stylesheet that carries a `data:` map is not also added as its own source (src/bundler.rs:458-466), and no source appears twice.
-  verify: test_input_source_map; a PR test with a Sass-style input map (#780 reports wrong lines with Sass maps).
-- [MAP-06] (MAJOR) CLI `--sourcemap` writes a usable pair: `sourceMappingURL` names the map relative to the CSS file, not the full output path (src/main.rs:255-257, #794 open), and the `.map` is written after the output directory exists (written at :258, `create_dir_all` only at :262-263, #1019 open).
-  verify: tests/cli_integration_tests.rs `sourcemap` (:423-449) plus a case with a nested, non-existent output directory (PR #1020 adds one; closed PR #1290 tested only the URL half).
-- [MAP-07] (MAJOR) The `sourcemap` feature gate holds: code that uses `parcel_sourcemap`, `SourceMap` or `add_mapping` is `#[cfg(feature = "sourcemap")]`, the crate builds without the feature, and no new behavior relies on state that only `add_mapping` updates (`Printer.loc`, src/printer.rs:243-246, which CSS-module hashing also reads).
-  verify: B8; `cargo check -p lightningcss --no-default-features --features visitor` (not a harness lane) (#372).
-- [MAP-08] (MAJOR) User-visible locations keep their conventions and accuracy: Rust `ErrorLocation.line` is 0-based and `column` 1-based, JS `loc.line` and `loc.column` are both 1-based, dependency `loc` points at the token after whitespace (#1149), and `StyleRule::property_location`'s re-parse (#169) still matches.
-  verify: node tests asserting error `loc`; `dep_test` locations (Vite subtracts 1 from the column only; Turbopack converts to 0-based).
-- [MAP-09] (MAJOR) The PR's source-map tests decode positions: they assert the original line and column of at least one generated token (via a `parcel_sourcemap` lookup or the `source-map` package), not only that a map exists or that its JSON equals a fixture.
-  verify: read the PR's tests; test_input_source_map is a model.
-- [MAP-10] (MINOR) Mapping work stays off the hot path: no per-char work in `write_str`, no copy of source content per mapping, no allocation per mapping.
-  verify: CodSpeed does not enable source maps (benches/common/mod.rs:36-46), so time a large file with `sourceMap: true` on base and head (the automated review on PR #1289 found a per-mapping source-content copy and no handling for input maps without embedded content).
+- [MAP-01] (MAJOR) Generated columns count UTF-16 code units (what `Location.column` documents) on every write path: `write_str` adds bytes and `write_char` adds 1 per char, so non-ASCII text before a mapping shifts later columns on that line.
+  verify: a test with non-ASCII selectors or strings before a later rule asserting the decoded line and column of a known token.
+- [MAP-02] (MAJOR) Every path writing raw text that can contain newlines (comments, token lists, unknown or custom at-rule bodies) uses `write_str_with_newlines`; `write_str` stays newline-free and cheap.
+  verify: grep the diff for `write_str` of source text; a decoding test like `test_source_maps_with_license_comments`.
+- [MAP-03] (MAJOR) Each rule type the PR adds or prints calls `add_mapping` with its original `loc` (1-based column becomes 0-based), including rules created by lowering (nesting, `:dir()` rules, `@supports` fallbacks), which map to their source rule.
+  verify: grep for new `ToCss` impls on rules without `add_mapping`; a test decoding the new rule's position.
+- [MAP-04] (MAJOR) Bundled and chained maps are consistent: a stylesheet's `source_index` equals its index in `sources`, order is stable across runs, `inputSourceMap` and inline `data:` maps remap positions (also input maps without `sourcesContent`), and no source appears twice (a sheet carrying a `data:` map is not also its own source).
+  verify: `bundler::tests::test_source_map` and `test_input_source_map`; a node bundle test with `sourceMap: true`, run twice.
+- [MAP-05] (MAJOR) CLI `--sourcemap` writes a usable pair: `sourceMappingURL` is relative to the CSS file, and the `.map` is written after the output directory exists.
+  verify: `tests/cli_integration_tests.rs` sourcemap cases plus one with a nested, non-existent output directory.
+- [MAP-06] (MAJOR) No behavior depends on state that only `add_mapping` updates (`Printer.loc`, also read by CSS-module hashing), and source-map code is `#[cfg(feature = "sourcemap")]`.
+  verify: `cargo check -p lightningcss --no-default-features --features visitor`; read the printer diff.
+- [MAP-07] (MAJOR) User-visible locations keep their conventions: Rust `ErrorLocation.line` 0-based and `column` 1-based, JS `loc` 1-based for both, dependency `loc` at the token after whitespace, `StyleRule::property_location` (re-parses the rule) still matching.
+  verify: node tests asserting error and dependency `loc`.
+- [MAP-08] (MAJOR) The PR's source-map tests decode positions (original line and column of a generated token), not only that a map exists or equals a fixture.
+  verify: read the tests; `test_input_source_map` is a model.
+- [MAP-09] (MINOR) Mapping work stays off the hot path: no per-char scan in `write_str`, no source-content copy or allocation per mapping. Benchmarks do not enable source maps.
+  verify: time a large file with `sourceMap: true` on base and head release builds.

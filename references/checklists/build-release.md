@@ -1,34 +1,24 @@
 # build-release checklist (BUILD)
 
-Covers build, CI and release plumbing: `.github/workflows/*` (test.yml jobs test, test-js and test-wasm; codspeed.yml; release.yml; release-crates.yml), `Cargo.toml`/`Cargo.lock` (features, `[profile.release]`), `package.json`/`yarn.lock` (engines, scripts, compat-data packages), `rust-toolchain.toml` (1.96.0), `scripts/*` (build-npm.js, build-wasm.js, build-flow.js), `cli/postinstall.js`, and `.cargo/config.toml` and `patches/*` (both unmapped in config/areas.json, so they classify as `other`).
-Top failure modes: (1) dependency or toolchain bumps change output or break a target CI does not build (cssparser 0.37 via #1200, serde 1.0.220 #1056, rustc 1.83 worker segfault #892, c6a0c3c broke wasm linking for two months); (2) crates and feature sets CI never builds (#361/#381, #1251, #739 broke the C crate, #1094); (3) packaging metadata and the platform matrix (libc chain #188-#210, Android #932 → #1030, engines >= 24 #1388).
-CI cannot be assumed to have run (first-time contributors need approval; 82 of 99 open PRs never ran it), so the harness lanes are the evidence.
+CI workflows, manifests and lockfiles, `rust-toolchain.toml`, `scripts/*`, `cli/postinstall.js`, `patches/*`. Lock sync, fmt, warnings, crate lanes and generated files are B2-B4, B7-B11; CI often has not run on contributor PRs, so the harness lanes are the evidence.
 
-- [BUILD-01] (MAJOR) A dependency bump that can change output (cssparser, browserslist-rs, serde/serde-content, napi, and caniuse-lite/@mdn/data/autoprefixer in yarn.lock) comes with a base-vs-head corpus diff in which every changed expectation is explained.
-  verify: S1 and S2 on realworld; T4 on tuples; B11 when data packages move; probe values-numeric/large-integral-value-no-i32-saturation (#1200 shipped `3.40282e38px` → `2147483647px` through the int_value from src/values/length.rs:518, while `10%` → `0%` was caught by tests; #1062 caused #1065/#1081/#1188).
-- [BUILD-02] (MAJOR) `Cargo.lock` is in sync with every manifest (`--locked` succeeds), and no second major version of a core crate such as cssparser enters the tree.
-  verify: B4; `cargo tree -d -p lightningcss` (manual) (trunk#1084 saw duplicate cssparser versions after #1200).
-- [BUILD-03] (MAJOR) A toolchain bump (`rust-toolchain.toml`, which overrides CI's `dtolnay/rust-toolchain@stable`) is checked for wasm linking, native loading inside Node worker threads, CSS-module hash stability and new `-D warnings` lints.
-  verify: B2; B9 compiles without linking and does not trigger on rust-toolchain.toml, so run `yarn wasm:build-release` or rely on CI test-wasm (B6) (c6a0c3c needed 3822c49's `--allow-undefined`, and all 61 test.yml runs between the two commits failed); a worker-thread load test (#892: rustc 1.83 TLS destructors, fixed by `-z nodelete` in d302a6b); test_css_modules unchanged (`DefaultHasher`, src/css_modules.rs:538-549).
-- [BUILD-04] (MAJOR) Every published crate builds alone and with each documented feature set: `-p lightningcss-derive`, `-p parcel_selectors` (whose tests CI does not run), `-p lightningcss_c_bindings`, `--no-default-features`, and `--no-default-features --features bundler,sourcemap`; dependency features are gated by the crate's own features.
-  verify: B7, B8, B10; `cargo publish --dry-run -p <crate>` for changed manifests (manual) (#361 reverted by #381; 48841f7; #1251; removing the `grid` feature in #972 broke crates that listed it; #1094: indexmap `serde` is unconditional at Cargo.toml:78).
-- [BUILD-05] (MAJOR) Platform and packaging changes are complete across the pipeline: a target appears in release.yml, in `scripts/build-npm.js` (triples, optionalDependencies, `os`/`cpu`/`libc`), in node/index.js detection and in `cli/postinstall.js`, and `libc` is set only where a libc exists.
-  verify: read those four files together; `npm pack --dry-run` on a generated platform package (manual) (#932 → #1024 → #1030; libc chain #188 → #203 → #205 → #208 → #210; #1193 pnpm blocks postinstall; Devon declines platforms he cannot test: #651, #1258, #1264, #1268, #1294).
-- [BUILD-06] (MAJOR) Runtime metadata matches what the shipped code needs and what consumers run: `engines` is copied into every platform package (`{ ...pkg }` in scripts/build-npm.js), so tightening it affects every install, and release.yml's Node version satisfies it.
-  verify: diff package.json `engines`, `exports` and `optionalDependencies`, and release.yml `node-version` (still 18 at lines 31, 66, 135 and 232 while master has `engines.node >= 24.0.0` from #1388, so the next release run fails `yarn install` as test.yml run 40225753775 did; Vite 8 supports Node ^20.19 || >=22.12 and Yarn 1 refuses engine mismatches).
-- [BUILD-07] (MAJOR) CI changes keep every existing check meaningful: `cargo fmt` (CI does not pass `--check`), `RUSTFLAGS=-D warnings` (test job only), `yarn tsc`, test-wasm with binaryen version_111, `permissions: contents: read`; no `continue-on-error` on a blocking job; actions and images pinned, and no author-controlled images in release jobs.
-  verify: diff .github/workflows/*; B6 (#335 → #342: an unpinned cross image raised the ARM glibc floor to 2.35, so check `objdump -T` GLIBC versions of a built binary when images change; #1353 proposed an author-controlled container image).
-- [BUILD-08] (MAJOR) Release and debug builds stay alike where it matters: `[profile.release]` (`lto = true`, `codegen-units = 1`, `panic = 'abort'`, Cargo.toml:126-129) is unchanged unless justified, and no behavior depends on `debug_assert!` or overflow checks, which tests (debug) run but published binaries (release) do not.
-  verify: diff Cargo.toml; the harness runs debug builds, so a release-only abort is not observed (R1 covers debug panics).
-- [BUILD-09] (MAJOR) Version bumps follow the release pattern: lightningcss (`1.0.0-alpha.N`), `napi/Cargo.toml`, `node/Cargo.toml`, `selectors/Cargo.toml` and package.json move together, and an internal crate that gains a public variant bumps its own version (`lightningcss-derive` is pinned `=1.0.0-alpha.43` at Cargo.toml:85, `parcel_selectors` is a caret `0.28.3` at :67).
-  verify: diff every manifest's version (#784: a parcel_selectors patch release broke `cargo install trunk`).
-- [BUILD-10] (MAJOR) Generated artifacts and patches regenerate with the pinned tools: `node scripts/build-prefixes.js` with the yarn.lock data, `yarn build-ast` with the patch-package patches in `patches/` (json-schema-to-typescript, @babel/types), cbindgen for the C header; after a tool bump the patches still apply.
-  verify: B11, B10, B5 (`yarn install` runs `prepare: patch-package`).
-- [BUILD-11] (MAJOR) Wasm packaging stays complete: `scripts/build-wasm.js` copies every node file the wasm package needs (flags.js, browserslistToTargets.js, composeVisitors.js, index.d.ts, ast.d.ts, targets.d.ts), `wasm/package.json` exports cover new files, and both the ESM and CJS entries load.
-  verify: CI test-wasm (B6); diff scripts/build-wasm.js (#755, #643, #394).
-- [BUILD-12] (MAJOR) Tests stay hermetic and runnable where CI runs them: the CLI browserslist tests are not influenced by config in ancestor directories (tests/cli_integration_tests.rs:510-541), node tests run from the repo root, no test needs the network, and deprecated test APIs are handled (`assert_cmd::cargo_bin`, #1112).
-  verify: B1, B5.
-- [BUILD-13] (MINOR) rustfmt is clean: CI's `cargo fmt` rewrites files but never fails, so formatting drift is caught only by the harness's `cargo fmt --all -- --check`.
-  verify: B3.
-- [BUILD-14] (MINOR) No debug leftovers in library code: no `dbg!`, no `println!`/`eprintln!` outside the CLI, no `todo!()`.
-  verify: grep the diff; risk flag `added-panic` (#954 shipped `dbg!()` output on stderr in 1.30.0 and 1.30.1; CI does not run clippy).
+- [BUILD-01] (MAJOR) A dependency bump that can change output (cssparser, browserslist-rs, serde/serde-content, napi, compat-data packages) comes with a base-vs-head corpus diff in which every changed expectation is explained, and adds no second major version of a core crate.
+  verify: realworld and tuple deltas classified; `cargo tree -d -p lightningcss`; probe values-numeric/large-integral-value-no-i32-saturation.
+- [BUILD-02] (MAJOR) A toolchain bump is checked where tests cannot see it: wasm linking (B9 compiles only), loading the native module in Node worker threads, CSS-module hash stability (`DefaultHasher` changes across releases), new `-D warnings` lints.
+  verify: CI test-wasm (B6) or `yarn wasm:build-release`; a worker-thread load test; module hashes unchanged in tuples.
+- [BUILD-03] (MAJOR) Platform and packaging changes are complete: a target appears in release.yml, in `scripts/build-npm.js` (triple, optionalDependencies, `os`/`cpu`/`libc`), in node/index.js detection and in `cli/postinstall.js`; `libc` is set only where a libc exists.
+  verify: read the four files together; `npm pack --dry-run` on a generated platform package.
+- [BUILD-04] (MAJOR) Runtime metadata matches shipped code and the release workflow: `engines` is copied into every platform package, so tightening it affects every install, and release.yml's Node version must satisfy it.
+  verify: diff package.json `engines`/`exports`/`optionalDependencies` and every `node-version` in release.yml.
+- [BUILD-05] (MAJOR) CI changes keep each check meaningful: no `continue-on-error` on a blocking job, `-D warnings`, `yarn tsc` and test-wasm kept, `permissions: contents: read`, actions and images pinned, no author-controlled image in release jobs (an image change can raise the glibc floor).
+  verify: diff .github/workflows/*; `objdump -T` GLIBC versions of a built binary when images change.
+- [BUILD-06] (MAJOR) Release and test builds stay alike: `[profile.release]` (`lto`, `codegen-units = 1`, `panic = 'abort'`) unchanged unless justified, and no behavior depends on `debug_assert!` or overflow checks, which only debug tests run.
+  verify: diff Cargo.toml; the harness runs debug builds, so a release-only abort is invisible to R1.
+- [BUILD-07] (MAJOR) Versions move together: lightningcss, napi, node and selectors manifests and package.json; a crate gaining a public variant bumps its own version; removing or renaming a cargo feature is breaking; `cargo publish --dry-run` passes for each changed manifest.
+  verify: diff every manifest version.
+- [BUILD-08] (MAJOR) Wasm packaging is complete: `scripts/build-wasm.js` copies every node file the package needs, `wasm/package.json` exports cover new files, ESM and CJS entries load.
+  verify: CI test-wasm (B6); diff scripts/build-wasm.js.
+- [BUILD-09] (MAJOR) Tests stay hermetic: CLI browserslist tests ignore config in ancestor directories, node tests run from the repo root, no test needs the network.
+  verify: read new tests for cwd, env and network use.
+- [BUILD-10] (MINOR) No debug leftovers in library code: no `dbg!`, no `println!`/`eprintln!` outside the CLI, no `todo!()`.
+  verify: grep the diff.

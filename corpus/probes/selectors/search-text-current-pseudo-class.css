@@ -4,10 +4,10 @@ area: selectors
 title: `::search-text:current` is valid and must not be rejected
 mode: minify
 targets: none
-expect: equivalent
+expect: equivalent, output-contains:"::search-text:current", output-contains:"::search-text:not(:current)"
 known: open-issue#1303
 ref: https://drafts.csswg.org/css-pseudo-4/#selectordef-search-text https://github.com/parcel-bundler/lightningcss/issues/1212 https://github.com/parcel-bundler/lightningcss/issues/1303 https://github.com/web-platform-tests/wpt/blob/master/css/css-pseudo/parsing/highlight-pseudos-search-text.tentative.html
-note: regression from #1213 (v1.33.0): accepted with a warning in v1.32.0, now a hard error; #1213 implemented `:current::search-text` instead of the spec form
+note: regression from #1213 (v1.33.0): accepted with a warning in v1.32.0, now a hard error; #1213 implemented `:current::search-text` instead of the spec form; the output assertions make the parse error count (the oracle skips inputs LightningCSS rejects)
 */
 .t::search-text:current { color: red; }
 .t::search-text:not(:current) { color: blue; }

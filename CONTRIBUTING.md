@@ -32,6 +32,13 @@ A probe is one CSS file with a header (`references/probe-format.md`). Put it in
 followed by an indented `verify:` line naming the evidence (a check id, mutation, probe, spec
 anchor or file to read). Items must be decidable as PASS, FAIL or N/A. Number without gaps.
 
+Everything under `references/` and `SKILL.md` is loaded into the reviewing agent's context, so it
+must stay small and timeless: explain the mechanism (what the code does, why it breaks CSS
+semantics, how to spot it in a diff), not the history. No issue or PR numbers, commit hashes,
+release versions or line numbers, and only judgment the harness cannot make itself.
+`python3 -I scripts/lint_context.py` enforces this and the per-file size budgets. History and
+research notes go in `docs/findings/`.
+
 ## Harness and oracle
 
 - The harness is Python standard library only; keep it that way so it runs anywhere.

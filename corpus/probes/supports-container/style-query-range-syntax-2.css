@@ -4,11 +4,11 @@ area: supports-container
 title: Range syntax inside a container style() query must parse
 mode: minify
 targets: none
-expect: no-panic, equivalent, idempotent
+expect: no-panic, equivalent, idempotent, output-contains:"style(1em"
 known: open-issue#1069
 ref: https://github.com/parcel-bundler/lightningcss/issues/1069 https://drafts.csswg.org/css-conditional-5/#typedef-style-range https://drafts.csswg.org/css-conditional-5/#container-rule
 dom: <div class="c"><div class="t">x</div></div>
-note: StyleQuery (src/rules/container.rs:121) has no range variant and no <general-enclosed> fallback; without errorRecovery the whole stylesheet fails, with it 1.28-1.30 drop the rule
+note: StyleQuery (src/rules/container.rs:121) has no range variant and no <general-enclosed> fallback; without errorRecovery the whole stylesheet fails, with it 1.28-1.30 drop the rule; the output assertion makes the parse error count (the oracle skips inputs LightningCSS rejects)
 */
 .t { color: blue; }
 @container style(1em < 20px) { .t { color: red; } }

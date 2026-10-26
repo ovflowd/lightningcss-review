@@ -4,9 +4,9 @@ area: text
 title: An already prefixed text-decoration: inherit must not be duplicated on every pass
 mode: lower-minify
 targets: safari 18
-expect: equivalent, idempotent
+expect: equivalent, idempotent, output-not-contains:"-webkit-text-decoration:inherit;-webkit-text-decoration:inherit"
 known: open-issue#872
 ref: https://github.com/parcel-bundler/lightningcss/issues/872 https://github.com/parcel-bundler/lightningcss/issues/403
-note: since 1.19.0 each pass adds another -webkit-text-decoration:inherit (unparsed CSS-wide keyword path in TextDecorationHandler does not dedupe)
+note: since 1.19.0 each pass adds another -webkit-text-decoration:inherit (unparsed CSS-wide keyword path in TextDecorationHandler does not dedupe); master already duplicates on the first pass, which the output assertion catches (the baseline does not decide `idempotent`)
 */
 a { -webkit-text-decoration: inherit; text-decoration: inherit; }

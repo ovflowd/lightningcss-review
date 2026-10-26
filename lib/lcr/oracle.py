@@ -311,6 +311,11 @@ def baseline(profiles: str | None = None) -> Path:
             "legacy": {f"{p}{'~dark' if v.get('scheme') == 'dark' else ''}": ls["head"] for v in vs for p, ls in v["summary"].get("legacy", {}).items()},
         }
         failed = [k for k, ok in a.items() if ok is False]
+        expect = c["probe"]["expect"]
+        if "idempotent" in expect and not summary.get("idempotency", {}).get(cid, {}).get("stable", True):
+            failed.append("idempotent")
+        if "equivalent" in expect and entry["stage"] and "parse-error" not in expect:
+            failed.append("equivalent")  # master rejects the input, so it cannot be equivalent
         if "equivalent" in c["probe"]["expect"] and any(s == "different" for s in entry["latest"].values()):
             failed.append("equivalent")
         if "equivalent" in c["probe"]["expect"] and any(s == "different" for s in entry["legacy"].values()):

@@ -4,10 +4,10 @@ area: rule-merging
 title: Rule dedupe must see a rule that was mutated by an earlier merge (minify must be idempotent)
 mode: minify
 targets: none
-expect: equivalent, idempotent
+expect: equivalent, idempotent, output-not-contains:".a{border-radius:16px}.x"
 known: open-issue#1235
 ref: https://github.com/parcel-bundler/lightningcss/issues/1235 https://github.com/parcel-bundler/lightningcss/pull/1236
-note: StyleRuleKey hash is computed before merge_style_rules mutates the rule; first pass leaves a duplicate .a rule that a second pass removes (ahash seed makes it nondeterministic across processes)
+note: StyleRuleKey hash is computed before merge_style_rules mutates the rule; first pass leaves a duplicate .a rule that a second pass removes (ahash seed makes it nondeterministic across processes); the output assertion catches the leftover first .a rule in one pass (the baseline does not decide `idempotent`)
 */
 .a { border-top-left-radius: 16px; }
 .a { border-top-right-radius: 16px; }

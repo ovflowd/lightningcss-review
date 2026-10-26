@@ -38,8 +38,8 @@ Header keys (one per line, `key: value`, no nesting):
   changes nothing), `no-panic`, `parse-error` (LightningCSS must reject it),
   `output-contains:"<text>"`, `output-not-contains:"<text>"`, `output-equals:"<text>"` (only when the
   exact output is spec-determined).
-- `known` (required): `none`, or `open-issue#<n>` when master is known to fail it, or
-  `fixed-by#<pr>` when it guards a past regression.
+- `known` (required): `none`, `open-issue#<n>` / `open-bug` when master fails it, or
+  `fixed-by#<pr or sha>` when it guards a past regression.
 - `ref` (required): one or more space-separated URLs (spec anchor, issue, PR, WPT file).
 - `dom` (optional, single line): an HTML fragment to use instead of the auto-generated DOM
   (the harness otherwise synthesizes elements that match the selectors).
@@ -59,9 +59,8 @@ type selectors, simple combinators) unless the probe is about selectors.
 | `parse-error` | corpus | LightningCSS rejects the input at parse time (note: invalid *property values* are kept as unparsed, not rejected) |
 | `output-contains:"…"` / `output-not-contains:"…"` / `output-equals:"…"` | corpus | exact text checks on the head output |
 
-`known: open-issue#N` marks a probe that fails on master; a PR that fixes issue N must make it pass
-(check A2). `known: open-bug` marks a verified master failure with no issue filed yet.
-`known: fixed-by#<PR number or commit sha>` guards a past regression.
+A PR that fixes the issue named in `known: open-issue#<n>` must make that probe pass (check A2).
+`known: open-bug` marks a verified master failure with no issue filed yet.
 
 Mode mapping to LightningCSS calls: `print` = parse + print (no `minify()`); `minify` = `minify()` +
 compact printer, no targets; `lower` = `minify()` with targets + pretty printer (like `prefix_test`);

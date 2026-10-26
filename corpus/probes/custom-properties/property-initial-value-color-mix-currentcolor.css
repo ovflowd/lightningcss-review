@@ -4,11 +4,11 @@ area: custom-properties
 title: @property initial-value using color-mix() with currentColor must be preserved, not rejected
 mode: minify
 targets: none
-expect: equivalent, idempotent
+expect: equivalent, idempotent, output-contains:"initial-value:color-mix("
 known: open-issue#921
 ref: https://drafts.css-houdini.org/css-properties-values-api-1/#initial-value-descriptor https://drafts.csswg.org/css-color-5/#color-mix https://github.com/parcel-bundler/lightningcss/issues/921
 dom: <div class="t">x</div>
-note: rules/property.rs re-parses initial-value with a fresh Parser; CssColor::parse only accepts color-mix() it can resolve, so the whole stylesheet errors (and the error location is relative to the substring)
+note: rules/property.rs re-parses initial-value with a fresh Parser; CssColor::parse only accepts color-mix() it can resolve, so the whole stylesheet errors (and the error location is relative to the substring); the output assertion makes the parse error count (the oracle skips inputs LightningCSS rejects)
 */
 @property --my-color { syntax: "<color>"; inherits: true; initial-value: color-mix(in srgb, currentColor 15%, transparent); }
 .t { color: rgb(0, 128, 0); background-color: var(--my-color); }

@@ -7,6 +7,7 @@ targets: safari 9, chrome 80
 expect: equivalent
 known: none
 ref: https://drafts.csswg.org/css-color-4/#color-function https://github.com/parcel-bundler/lightningcss/blob/master/website/pages/transpilation.md
-note: guard: fallbacks (#rrggbb) precede the original; modern engines must still compute the p3 color
+dom: <div class="t"></div>
+note: guard: fallbacks (#rrggbb) precede the original; modern engines must still compute the p3 color; dom has no text because legacy WebKit 15.4 reports a 2px line-height change even between byte-identical sheets (oracle noise, not LightningCSS)
 */
 .t { color: color(display-p3 1 0.5 0); border: 2px solid color(display-p3 0 0.5 1); }
