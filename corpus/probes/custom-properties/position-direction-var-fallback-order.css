@@ -6,7 +6,7 @@ mode: minify
 targets: none
 expect: equivalent
 known: open-issue#1225
-ref: https://drafts.csswg.org/css-variables-2/#using-variables https://github.com/parcel-bundler/lightningcss/issues/1225 https://github.com/parcel-bundler/lightningcss/pull/1387
+ref: https://drafts.csswg.org/css-variables-2/#using-variables https://github.com/parcel-bundler/lightningcss/issues/1225
 note: PositionHandler has no Unparsed arm (src/properties/position.rs:104); direction/unicode-bidi are buffered by handle_all since d7aeff3 (v1.25.0). Chrome 156: absolute -> static
 */
 .t { --x: absolute; position: static; position: var(--x, static); }

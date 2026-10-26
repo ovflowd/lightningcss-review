@@ -6,7 +6,7 @@ mode: minify
 targets: none
 expect: equivalent, output-contains:".n"
 known: open-issue#1235
-ref: https://github.com/parcel-bundler/lightningcss/issues/1235 https://github.com/parcel-bundler/lightningcss/pull/1236 https://github.com/oven-sh/bun/pull/42948
+ref: https://github.com/parcel-bundler/lightningcss/issues/1235 https://github.com/oven-sh/bun/pull/42948
 dom: <div class="a">a</div><div class="q"><div class="n">x</div></div>
 note: rules.pop() in the cascade merge (src/rules/mod.rs:808) leaves a stale index in style_rules; the nested `.q{...;.n{}}` lands on it and is marked Ignored. v1.24.1-v1.33.0 all drop `.q .n`
 */

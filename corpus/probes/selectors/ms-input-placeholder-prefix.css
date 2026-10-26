@@ -6,7 +6,7 @@ mode: print
 targets: none
 expect: output-contains:"::-ms-input-placeholder", output-not-contains:"-moz-placeholder"
 known: open-bug
-ref: https://github.com/parcel-bundler/lightningcss/pull/1281 https://github.com/parcel-bundler/lightningcss/blob/master/src/selector.rs#L291
-note: src/selector.rs:291 stores VendorPrefix::Moz for -ms-input-placeholder; #1281 is an open PR (no separate issue); 1.33.0 prints input::-moz-placeholder
+ref: https://github.com/parcel-bundler/lightningcss/blob/master/src/selector.rs#L291
+note: src/selector.rs:291 stores VendorPrefix::Moz for -ms-input-placeholder (no issue filed); 1.33.0 prints input::-moz-placeholder
 */
 input::-ms-input-placeholder { color: red; }

@@ -7,14 +7,17 @@
 """
 from __future__ import annotations
 
+import fnmatch
+import hashlib
 import json
 import shutil
 from pathlib import Path
 
-from .common import SKILL_DIR, LcrError, cache_dir, docker_run, load_config, log, read_json, read_jsonl, require_docker, write_json, write_jsonl
+from .common import SKILL_DIR, LcrError, cache_dir, docker_run, load_config, log, preflight_disk, read_json, read_jsonl, require_docker, write_json, write_jsonl
 from .setup import browsers_tag, default_profiles, ensure_browsers
 
 ORACLE_MOUNT = "/opt/lcr/oracle"
+ERRORED_SHARE = 0.05
 
 
 def outputs(run_dir: Path, side: str) -> dict:
@@ -73,6 +76,7 @@ def select_cases(run_dir: Path, max_cases: int) -> tuple[list[dict], dict]:
     prep = read_json(run_dir / "prepare.json") or {}
     visual_areas = {a for a in prep.get("areas", []) + prep.get("radius_areas", []) if areas_meta.get(a, {}).get("visual")}
     base, head = outputs(run_dir, "base"), outputs(run_dir, "head")
+    flag_of = {cid: flag for flag, ids in (summary.get("flag_only") or {}).items() for cid in ids}
     from .prepare import test_area_map
 
     tmap = test_area_map()
@@ -135,10 +139,10 @@ def select_cases(run_dir: Path, max_cases: int) -> tuple[list[dict], dict]:
             sheets = {"input": wrap(req["css"]), "base": wrap(b.get("code") if b.get("ok") else None), "head": wrap(h.get("code") if h.get("ok") else None)}
             dom = '<div id="lcr-attr">x</div>'
         else:
-            if req.get("css_modules"):
+            if req.get("css_modules") is not None:
                 continue  # renamed identifiers: computed-style comparison would be meaningless
             sheets = {"input": req["css"], "base": b.get("code") if b.get("ok") else None, "head": h.get("code") if h.get("ok") else None}
-            dom = (c.get("probe") or {}).get("dom") or (cases.get(c.get("parent"), {}).get("probe") or {}).get("dom")
+            dom = c.get("dom") or (c.get("probe") or {}).get("dom") or (cases.get(c.get("parent"), {}).get("probe") or {}).get("dom")
             if c["source"] == "wpt":
                 dom = '<div class="t">x</div>'
             dom_from = None
@@ -156,6 +160,7 @@ def select_cases(run_dir: Path, max_cases: int) -> tuple[list[dict], dict]:
         oracle_cases.append({
             "id": c["id"], "kind": "sheet", "sheets": sheets, "targets": req.get("targets"), "dom": dom, "domFrom": dom_from,
             "visual": bool(c.get("_visual_test") or area in visual_areas or (area and areas_meta.get(area, {}).get("visual"))) and c["source"] != "realworld",
+            **({"introduced": True, "flagOnly": flag_of[c["id"]]} if c["id"] in flag_of else {}),
         })
     stats = {"candidates": len(chosen), "selected": len(selected), "dropped": dropped, "by_reason": {}}
     for cid in [c["id"] for c in selected]:
@@ -215,7 +220,70 @@ def _env(profiles: str | None):
     return env, env_path, wanted
 
 
-def oracle(run_dir: Path, profiles: str | None = None, max_cases: int = 4000) -> dict:
+def file_sha(path: Path) -> str | None:
+    if not path.exists():
+        return None
+    h = hashlib.sha256()
+    with path.open("rb") as f:
+        for chunk in iter(lambda: f.read(1 << 20), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+def oracle_inputs(run_dir: Path) -> dict:
+    """Fingerprints of what the oracle judged; a mismatch with the current files means a stale oracle."""
+    corpus = run_dir / "corpus"
+    return {
+        "cases": file_sha(corpus / "cases.jsonl"),
+        "outputs-base": file_sha(corpus / "outputs-base.jsonl"),
+        "outputs-head": file_sha(corpus / "outputs-head.jsonl"),
+        "probe_files": (read_json(run_dir / "corpus.json") or {}).get("probe_files"),
+    }
+
+
+def transition_counts(verdicts: dict) -> dict:
+    counts = {}
+    for vs in verdicts.values():
+        for v in vs:
+            t = v["summary"]["latest"]["transition"]
+            counts[t] = counts.get(t, 0) + 1
+    return dict(sorted(counts.items()))
+
+
+def errored_cases(verdicts: dict) -> list[str]:
+    return sorted(cid for cid, vs in verdicts.items() if any(v["summary"]["latest"]["transition"] == "errored" for v in vs))
+
+
+def visual_errors(verdicts: dict) -> list[str]:
+    """Cases whose screenshot failed in some engine (the computed-style verdict still stands)."""
+    return sorted({cid for cid, vs in verdicts.items() for v in vs
+                   if (v["summary"]["latest"].get("visualErrors") or any(ls.get("visualErrors") for ls in v["summary"].get("legacy", {}).values()))})
+
+
+def log_problems(verdicts: dict) -> None:
+    errored, shots = errored_cases(verdicts), visual_errors(verdicts)
+    if errored:
+        log(f"oracle: {len(errored)} case(s) errored in an engine: {', '.join(errored[:8])}{'…' if len(errored) > 8 else ''}")
+    if shots:
+        log(f"oracle: {len(shots)} case(s) without a screenshot comparison (screenshot failed): {', '.join(shots[:8])}{'…' if len(shots) > 8 else ''}")
+
+
+def check_errors(verdicts: dict) -> None:
+    """Fail the stage when engine jobs errored on probes or on more than 5% of the cases."""
+    errored = errored_cases(verdicts)
+    probes = [cid for cid in errored if cid.startswith(("p-", "m-p-"))]
+    if errored and (probes or len(errored) > ERRORED_SHARE * max(1, len(verdicts))):
+        raise LcrError(f"oracle: {len(errored)}/{len(verdicts)} case(s) errored in an engine ({len(probes)} probe case(s)), e.g. {', '.join(errored[:5])}; "
+                       f"inspect with `lcr show`, then `lcr oracle <run> --rerun <ids>`")
+
+
+def oracle_disk_need(cases: list[dict]) -> int:
+    return (200 << 20) + (512 << 10) * len(cases)
+
+
+def oracle(run_dir: Path, profiles: str | None = None, max_cases: int = 4000, rerun: str | None = None) -> dict:
+    if rerun:
+        return rerun_cases(run_dir, rerun, profiles)
     env, env_path, wanted = _env(profiles)
     out = run_dir / "oracle"
     if out.exists():
@@ -223,22 +291,76 @@ def oracle(run_dir: Path, profiles: str | None = None, max_cases: int = 4000) ->
     out.mkdir(parents=True)
     cases, stats = select_cases(run_dir, max_cases)
     if not cases:
-        write_json(run_dir / "oracle.json", {"stats": stats, "verdicts": {}, "profiles": {}})
+        write_json(run_dir / "oracle.json", {"stats": stats, "verdicts": {}, "profiles": {}, "inputs": oracle_inputs(run_dir)})
         log("oracle: nothing to verify")
         return {}
+    preflight_disk(out, oracle_disk_need(cases), "oracle")
     result = run_oracle(out, cases, wanted, env, env_path)
-    summary = {"stats": stats, **result}
+    summary = {"stats": stats, **result, "inputs": oracle_inputs(run_dir)}
     write_json(run_dir / "oracle.json", summary)
     from .spec import spec_cards
 
     spec_cards(run_dir)
-    counts = {}
-    for vs in result["verdicts"].values():
-        for v in vs:
-            t = v["summary"]["latest"]["transition"]
-            counts[t] = counts.get(t, 0) + 1
-    log(f"oracle: transitions {counts}")
+    log(f"oracle: transitions {transition_counts(result['verdicts'])}")
+    log_problems(result["verdicts"])
+    check_errors(result["verdicts"])
     return summary
+
+
+def match_ids(patterns: str, ids) -> list[str]:
+    """Case ids named by a comma/space separated list of ids or globs (`m-p-color/x-*`)."""
+    wanted = [p for p in patterns.replace(",", " ").split() if p]
+    return sorted(cid for cid in ids if any(cid == w or fnmatch.fnmatchcase(cid, w) for w in wanted))
+
+
+def merge_verdicts(summary: dict, result: dict, ids: list[str]) -> dict:
+    """oracle.json with the cases in `ids` replaced by a re-run's result."""
+    verdicts = {k: v for k, v in summary.get("verdicts", {}).items() if k not in ids}
+    verdicts.update({k: v for k, v in result["verdicts"].items() if k in ids})
+    dom = {k: v for k, v in summary.get("dom", {}).items() if k not in ids}
+    dom.update({k: v for k, v in result.get("dom", {}).items() if k in ids})
+    profiles = {**summary.get("profiles", {}), **result.get("profiles", {})}
+    stats = {**summary.get("stats", {}), "reruns": sorted(set(summary.get("stats", {}).get("reruns", [])) | set(ids))}
+    return {**summary, "verdicts": dict(sorted(verdicts.items())), "dom": dict(sorted(dom.items())), "profiles": dict(sorted(profiles.items())), "stats": stats}
+
+
+def rerun_cases(run_dir: Path, patterns: str, profiles: str | None = None) -> dict:
+    """Run the oracle again for some cases only (after an engine error) and merge the verdicts."""
+    summary = read_json(run_dir / "oracle.json")
+    if not summary:
+        raise LcrError("no oracle.json yet; run `lcr oracle <run>` first")
+    env, env_path, wanted = _env(profiles)
+    cases, _ = select_cases(run_dir, 10**9)
+    ids = match_ids(patterns, [c["id"] for c in cases])
+    if not ids:
+        raise LcrError(f"--rerun {patterns}: no oracle case matches")
+    chosen = [c for c in cases if c["id"] in set(ids)]
+    out = run_dir / "oracle" / "rerun"
+    if out.exists():
+        shutil.rmtree(out)
+    out.mkdir(parents=True)
+    preflight_disk(out, oracle_disk_need(chosen), "oracle")
+    result = run_oracle(out, chosen, wanted, env, env_path)
+    merged = merge_verdicts(summary, result, ids)
+    write_json(run_dir / "oracle.json", merged)
+    rows = [r for r in read_jsonl(run_dir / "oracle" / "verdicts.jsonl") if r.get("case") not in set(ids)]
+    write_jsonl(run_dir / "oracle" / "verdicts.jsonl", rows + read_jsonl(out / "verdicts.jsonl"))
+    log(f"oracle: re-ran {len(ids)} case(s); transitions {transition_counts({k: merged['verdicts'][k] for k in ids if k in merged['verdicts']})}")
+    log_problems({k: merged["verdicts"][k] for k in ids if k in merged["verdicts"]})
+    check_errors({k: merged["verdicts"][k] for k in ids if k in merged["verdicts"]})
+    return merged
+
+
+def drop_cases(run_dir: Path, ids: set[str]) -> None:
+    """Remove cases (deleted probes) from oracle.json and oracle/verdicts.jsonl."""
+    summary = read_json(run_dir / "oracle.json")
+    if summary:
+        summary["verdicts"] = {k: v for k, v in summary.get("verdicts", {}).items() if k not in ids}
+        summary["dom"] = {k: v for k, v in summary.get("dom", {}).items() if k not in ids}
+        write_json(run_dir / "oracle.json", summary)
+    path = run_dir / "oracle" / "verdicts.jsonl"
+    if path.exists():
+        write_jsonl(path, [r for r in read_jsonl(path) if r.get("case") not in ids])
 
 
 def selftest(profiles: str | None = None) -> int:
@@ -257,6 +379,7 @@ def selftest(profiles: str | None = None) -> int:
         for v in result["verdicts"].get(cid, []):
             suffix = "~dark" if v.get("scheme") == "dark" else ""
             got["latest" + suffix] = v["summary"]["latest"]["transition"]
+            got["divergent" + suffix] = bool(v["summary"]["latest"].get("divergent"))
             got["rejectedHead" + suffix] = v["summary"]["latest"]["rejectedHead"] > v["summary"]["latest"]["rejectedBase"]
             for prof, ls in v["summary"].get("legacy", {}).items():
                 got[prof + suffix] = ls["transition"]
@@ -284,7 +407,7 @@ def baseline(profiles: str | None = None) -> Path:
     head = outputs(run_dir, "head")
     oracle_cases = []
     for cid, c in sorted(cases.items()):
-        if c["source"] != "probe" or c["request"].get("kind") != "sheet" or c["request"].get("css_modules"):
+        if c["source"] != "probe" or c["request"].get("kind") != "sheet" or c["request"].get("css_modules") is not None:
             continue
         h = head.get(cid, {})
         if not h.get("ok"):

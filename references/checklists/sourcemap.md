@@ -12,6 +12,7 @@ Mapping and position accounting in `src/printer.rs` (`add_mapping`, `write_str`,
   verify: `bundler::tests::test_source_map` and `test_input_source_map`; a node bundle test with `sourceMap: true`, run twice.
 - [MAP-05] (MAJOR) CLI `--sourcemap` writes a usable pair: `sourceMappingURL` is relative to the CSS file, and the `.map` is written after the output directory exists.
   verify: `tests/cli_integration_tests.rs` sourcemap cases plus one with a nested, non-existent output directory.
+  covers: src/main.rs, tests/cli_integration_tests.rs
 - [MAP-06] (MAJOR) No behavior depends on state that only `add_mapping` updates (`Printer.loc`, also read by CSS-module hashing), and source-map code is `#[cfg(feature = "sourcemap")]`.
   verify: `cargo check -p lightningcss --no-default-features --features visitor`; read the printer diff.
 - [MAP-07] (MAJOR) User-visible locations keep their conventions: Rust `ErrorLocation.line` 0-based and `column` 1-based, JS `loc` 1-based for both, dependency `loc` at the token after whitespace, `StyleRule::property_location` (re-parses the rule) still matching.

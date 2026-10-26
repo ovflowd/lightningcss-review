@@ -143,28 +143,134 @@ def classify_files(paths: list[str]) -> dict[str, list[str]]:
     return out
 
 
-def test_fns_in_ranges(text: str, ranges: list[list[int]]) -> list[str]:
-    """Names of `#[test] fn` items in src/lib.rs that overlap the changed ranges."""
+FN_RE = re.compile(r"^(\s*)(?:pub(?:\([^)]*\))?\s+)?fn (\w+)")
+
+
+def change_areas(files: dict) -> dict[str, list[str]]:
+    """Areas of the changed files (the code areas a review must cover). A changed line that
+    mentions `TokenList` (var()/env() substitution, unparsed values) also reaches custom-properties."""
+    out = classify_files(sorted(files))
+    for path, info in files.items():
+        if path.endswith(".rs") and path.startswith(("src/", "selectors/")) and path != "src/lib.rs":
+            if any("TokenList" in line for line in info.get("added_lines", []) + info.get("removed_lines", [])):
+                out[path] = sorted(set(out.get(path, [])) | {"custom-properties"})
+    return out
+
+
+FEATURE_ARM_RE = re.compile(r"^\s*(?:\|\s*)?Feature::\w+")
+
+
+def compat_variants(text: str, ranges: list[list[int]]) -> list[str]:
+    """`Feature` variants of the generated src/compat.rs whose enum entry or match arm contains a
+    changed line (each arm is `Feature::A | Feature::B => { version checks }`)."""
     lines = text.splitlines()
-    starts = []
+    enum = next((i for i, l in enumerate(lines) if re.match(r"^pub enum Feature\b", l)), None)
+    enum_end = next((i for i in range(enum, len(lines)) if lines[i].startswith("}")), len(lines)) if enum is not None else None
+    found = set()
+    for start, end in ranges:
+        for idx in range(start - 1, min(end, len(lines))):
+            line = lines[idx]
+            if enum is not None and enum < idx < enum_end:
+                m = re.match(r"^\s*(\w+),?\s*$", line)
+                if m:
+                    found.add(m.group(1))
+                continue
+            if "Feature::" in line:
+                found.update(re.findall(r"Feature::(\w+)", line))
+                continue
+            for j in range(idx - 1, -1, -1):
+                above = lines[j]
+                if re.match(r"^\s*(pub )?fn ", above):
+                    break
+                if "=>" in above and "Feature::" in above:
+                    found.update(re.findall(r"Feature::(\w+)", above))
+                    k = j - 1
+                    while k >= 0 and FEATURE_ARM_RE.match(lines[k]) and "=>" not in lines[k]:
+                        found.update(re.findall(r"Feature::(\w+)", lines[k]))
+                        k -= 1
+                    break
+    return sorted(found)
+
+
+def test_fns_in_ranges(text: str, ranges: list[list[int]]) -> list[str]:
+    """Names of the `#[test] fn` items in src/lib.rs whose bodies contain a changed line.
+
+    `ranges` should hold only the added/removed lines (see `changed_lines`): a hunk's context lines
+    belong to its neighbors. A span starts at the item's attribute lines (an added `#[test]` counts
+    for the test it introduces) and ends where the next fn at the same indentation starts, so
+    helpers between tests belong to no test; blank lines change nothing."""
+    lines = text.splitlines()
+    fns = []
     for i, line in enumerate(lines):
-        m = re.match(r"^  fn (test_[a-z0-9_]+)\(\)", line)
-        if m and i > 0 and lines[i - 1].strip() == "#[test]":
-            starts.append((i + 1, m.group(1)))
+        m = FN_RE.match(line)
+        if m:
+            is_test = m.group(2).startswith("test_") and i > 0 and lines[i - 1].strip() == "#[test]"
+            fns.append((i, len(m.group(1)), m.group(2) if is_test else None))
+    indents = {indent for _, indent, name in fns if name}
+    starts = []
+    for i, indent, name in fns:
+        if indent in indents:
+            first = i
+            while first > 0 and lines[first - 1].strip().startswith("#["):
+                first -= 1
+            starts.append((first + 1, name))
     names = set()
     for start, end in ranges:
-        current = None
-        for line_no, name in starts:
-            if line_no <= end:
-                current = name
-            else:
-                break
-        if current:
-            names.add(current)
-        for line_no, name in starts:
-            if start <= line_no <= end:
-                names.add(name)
+        for line_no in range(start, min(end, len(lines)) + 1):
+            if not lines[line_no - 1].strip():
+                continue
+            current = None
+            for fn_start, name in starts:
+                if fn_start <= line_no:
+                    current = name
+                else:
+                    break
+            if current:
+                names.add(current)
     return sorted(names)
+
+
+def changed_lines(patch: str) -> dict[str, dict[str, list[list[int]]]]:
+    """file -> {"head": ranges of added lines, "base": ranges of removed lines} (no context lines)."""
+    out: dict[str, dict] = {}
+    current = None
+    in_header = False
+    b = h = 0
+
+    def add(side: str, line: int) -> None:
+        ranges = out[current][side]
+        if ranges and ranges[-1][1] == line - 1:
+            ranges[-1][1] = line
+        else:
+            ranges.append([line, line])
+
+    for line in patch.splitlines():
+        if line.startswith("diff --git "):
+            m = re.match(r"diff --git a/(.*?) b/(.*)$", line)
+            current = m.group(2) if m else None
+            if current:
+                out.setdefault(current, {"head": [], "base": []})
+            in_header = True
+            continue
+        if current is None:
+            continue
+        m = re.match(r"@@ -(\d+)(?:,\d+)? \+(\d+)(?:,\d+)? @@", line)
+        if m:
+            b, h = int(m.group(1)), int(m.group(2))
+            in_header = False
+            continue
+        if in_header:
+            continue
+        if line.startswith("+"):
+            add("head", h)
+            h += 1
+        elif line.startswith("-"):
+            add("base", b)
+            b += 1
+        elif line.startswith(" "):
+            b += 1
+            h += 1
+    return out
 
 
 def test_area_map() -> dict[str, list[str]]:
@@ -182,9 +288,26 @@ def test_area_map() -> dict[str, list[str]]:
     return mapping
 
 
-def blast_radius(head_tree: str, items: list[dict]) -> list[dict]:
+def grep_users(head_tree: str, needle: str, exclude: tuple[str, ...] = ()) -> list[str]:
+    proc = run(
+        ["git", "-C", str(repo_dir()), "grep", "-n", "-w", "--fixed-strings", needle, head_tree, "--", "src", "selectors", "node/src", "napi/src", "c/src"],
+        check=False,
+    )
+    hits = []
+    for line in proc.stdout.splitlines():
+        parts = line.split(":", 3)
+        if len(parts) >= 3 and parts[1] not in exclude:
+            hits.append(parts[1])
+    return sorted(set(hits))
+
+
+def blast_radius(head_tree: str, items: list[dict], variants: list[str] = ()) -> list[dict]:
+    """Files and areas that reference the changed items. Generated src/compat.rs is scoped to the
+    users of its changed `Feature` variants, not to every `is_compatible` caller."""
     names = set()
     for entry in items:
+        if entry["file"] == "src/compat.rs":
+            continue
         for key in ("item", "impl"):
             obj = entry.get(key)
             if not obj:
@@ -193,17 +316,9 @@ def blast_radius(head_tree: str, items: list[dict]) -> list[dict]:
             if name and name not in GENERIC_NAMES and len(name) > 2:
                 names.add(name)
     radius = []
-    for name in sorted(names):
-        proc = run(
-            ["git", "-C", str(repo_dir()), "grep", "-n", "-w", "--fixed-strings", name, head_tree, "--", "src", "selectors", "node/src", "napi/src", "c/src"],
-            check=False,
-        )
-        hits = []
-        for line in proc.stdout.splitlines():
-            parts = line.split(":", 3)
-            if len(parts) >= 3:
-                hits.append(parts[1])
-        files = sorted(set(hits))
+    needles = [(name, ()) for name in sorted(names)] + [(f"Feature::{v}", ("src/compat.rs",)) for v in variants]
+    for name, exclude in needles:
+        files = grep_users(head_tree, name, exclude)
         radius.append({"name": name, "files": files, "areas": sorted({a for f in files for a in classify_files([f]).get(f, [])})})
     return radius
 
@@ -215,6 +330,16 @@ def linked_issue_numbers(pr: dict) -> list[int]:
         nums.add(int(m.group(1)))
     nums.discard(pr["number"])
     return sorted(nums)
+
+
+CLOSING_RE = re.compile(r"\b(?:close[sd]?|fix(?:e[sd])?|resolve[sd]?)\b:?\s+(?:(?:https://)?github\.com/parcel-bundler/lightningcss/issues/|#)(\d{1,5})\b", re.I)
+
+
+def closing_issue_numbers(pr: dict) -> set[int]:
+    """Issues the PR says it closes: GitHub's closing references plus `fixes/closes/resolves #N`."""
+    nums = {i["number"] for i in pr.get("closingIssuesReferences") or [] if i.get("number")}
+    nums.update(int(m.group(1)) for m in CLOSING_RE.finditer((pr.get("body") or "") + "\n" + (pr.get("title") or "")))
+    return nums
 
 
 def risk_flags(files: dict, file_areas: dict, hunks: dict, head_root: Path, base_root: Path) -> list[dict]:
@@ -286,7 +411,7 @@ def risk_flags(files: dict, file_areas: dict, hunks: dict, head_root: Path, base
     return flags
 
 
-def added_lines_by_file(patch: str) -> dict[str, list[str]]:
+def added_lines_by_file(patch: str, sign: str = "+") -> dict[str, list[str]]:
     out: dict[str, list[str]] = {}
     current = None
     for line in patch.splitlines():
@@ -294,7 +419,7 @@ def added_lines_by_file(patch: str) -> dict[str, list[str]]:
             m = re.match(r"diff --git a/(.*?) b/(.*)$", line)
             current = m.group(2) if m else None
             continue
-        if current and line.startswith("+") and not line.startswith("+++"):
+        if current and line.startswith(sign) and not line.startswith(sign * 3):
             out.setdefault(current, []).append(line[1:])
     return out
 
@@ -373,18 +498,20 @@ def prepare(pr_number: int | None = None, local_range: str | None = None, offlin
     (run_dir / "diff.patch").write_text(patch)
     hunks = parse_hunks(patch)
     added = added_lines_by_file(patch)
+    removed = added_lines_by_file(patch, "-")
+    precise = changed_lines(patch)
     name_status = run(["git", "-C", str(repo), "diff", "--name-status", "-M", base, head_tree]).stdout
     files = {}
     for line in name_status.splitlines():
         parts = line.split("\t")
         status, path = parts[0], parts[-1]
-        files[path] = {"status": status, **hunks.get(path, {"head": [], "base": [], "added": 0, "removed": 0}), "added_lines": added.get(path, [])}
+        files[path] = {"status": status, **hunks.get(path, {"head": [], "base": [], "added": 0, "removed": 0}), "added_lines": added.get(path, []), "removed_lines": removed.get(path, [])}
 
     export_tree(base, run_dir / "src" / "base")
     export_tree(head_tree, run_dir / "src" / "head")
     head_root, base_root = run_dir / "src" / "head", run_dir / "src" / "base"
 
-    file_areas = classify_files(sorted(files))
+    file_areas = change_areas(files)
     items = []
     for path, info in sorted(files.items()):
         if not path.endswith(".rs") or path == "src/lib.rs":
@@ -399,15 +526,22 @@ def prepare(pr_number: int | None = None, local_range: str | None = None, offlin
         for side, root in (("head", head_root), ("base", base_root)):
             p = root / "src" / "lib.rs"
             if p.exists():
-                test_fns[side] = test_fns_in_ranges(p.read_text(), files["src/lib.rs"][side])
+                test_fns[side] = test_fns_in_ranges(p.read_text(), precise.get("src/lib.rs", {}).get(side, []))
     tmap = test_area_map()
+    # Test-derived areas are context for S1 only; the checklists and probes follow the code areas.
     test_areas = sorted({a for side in test_fns.values() for t in side for a in tmap.get(t, [])})
-    areas = sorted({a for v in file_areas.values() for a in v} | set(test_areas))
-    radius = blast_radius(head_tree, items)
+    areas = sorted({a for v in file_areas.values() for a in v})
+    variants = set()
+    if "src/compat.rs" in files:
+        for side, root in (("head", head_root), ("base", base_root)):
+            p = root / "src" / "compat.rs"
+            if p.exists():
+                variants.update(compat_variants(p.read_text(errors="replace"), precise.get("src/compat.rs", {}).get(side, [])))
+    radius = blast_radius(head_tree, items, sorted(variants))
     flags = risk_flags(files, file_areas, hunks, head_root, base_root)
 
     meta.update({
-        "files": {p: {k: v for k, v in info.items() if k != "added_lines"} for p, info in sorted(files.items())},
+        "files": {p: {k: v for k, v in info.items() if k not in ("added_lines", "removed_lines")} for p, info in sorted(files.items())},
         "file_areas": file_areas,
         "changed_items": items,
         "changed_tests": test_fns,
@@ -415,6 +549,7 @@ def prepare(pr_number: int | None = None, local_range: str | None = None, offlin
         "areas": areas,
         "blast_radius": radius,
         "radius_areas": sorted({a for r in radius for a in r["areas"]} - set(areas)),
+        "compat_variants": sorted(variants),
         "risk_flags": flags,
         "toolchain": (head_root / "rust-toolchain.toml").read_text() if (head_root / "rust-toolchain.toml").exists() else None,
     })
@@ -423,19 +558,24 @@ def prepare(pr_number: int | None = None, local_range: str | None = None, offlin
         issues_dir = run_dir / "issues"
         issues_dir.mkdir(exist_ok=True)
         linked = []
-        for n in linked_issue_numbers({**meta["pr"], "number": pr_number, "closingIssuesReferences": pr.get("closingIssuesReferences")}):
+        pr_refs = {**meta["pr"], "number": pr_number, "closingIssuesReferences": pr.get("closingIssuesReferences")}
+        closing = closing_issue_numbers(pr_refs)
+        for n in linked_issue_numbers(pr_refs):
             try:
                 issue = gh_json(["issue", "view", str(n), "-R", UPSTREAM, "--json", "number,title,state,body,comments,labels,url"])
             except LcrError:
                 continue  # a PR number, or not accessible
             if issue:
                 write_json(issues_dir / f"{n}.json", issue)
-                linked.append({"number": n, "title": issue["title"], "state": issue["state"]})
+                linked.append({"number": n, "title": issue["title"], "state": issue["state"], "closing": n in closing})
         meta["linked_issues"] = linked
         try:
-            open_prs = gh_json(["pr", "list", "-R", UPSTREAM, "--state", "open", "--limit", "300", "--json", "number,title,files,author,updatedAt"])
+            open_prs = gh_json(["pr", "list", "-R", UPSTREAM, "--state", "open", "--limit", "300", "--json", "number,title,files,author,updatedAt,closingIssuesReferences"])
         except LcrError:
-            open_prs = []
+            try:
+                open_prs = gh_json(["pr", "list", "-R", UPSTREAM, "--state", "open", "--limit", "300", "--json", "number,title,files,author,updatedAt"])
+            except LcrError:
+                open_prs = []
         mine = set(files)
         overlaps = []
         for other in open_prs or []:
@@ -443,7 +583,8 @@ def prepare(pr_number: int | None = None, local_range: str | None = None, offlin
                 continue
             shared = sorted(mine & {f["path"] for f in other.get("files") or []} - {"src/lib.rs", "Cargo.lock", "yarn.lock"})
             if shared:
-                overlaps.append({"number": other["number"], "title": other["title"], "author": (other.get("author") or {}).get("login"), "shared_files": shared})
+                overlaps.append({"number": other["number"], "title": other["title"], "author": (other.get("author") or {}).get("login"), "shared_files": shared,
+                                 "linked_issues": sorted(i["number"] for i in other.get("closingIssuesReferences") or [] if i.get("number"))})
         meta["overlapping_prs"] = sorted(overlaps, key=lambda o: (-len(o["shared_files"]), o["number"]))
         try:
             # `gh pr checks` exits non-zero when checks fail or are pending; the JSON is still valid.

@@ -11,19 +11,19 @@
   verify: `selectors/not-list-lowering-specificity`, `selectors/webkit-any-fallback-specificity`; `retarget-legacy`; a rule of in-between specificity
 - [SEL-05] (BLOCKER) `:is(X)` unwraps only if X is valid there in every target engine (known, not after a pseudo-element, not in `:has()`, no `:lang()` list or `[s]`) and no type selector lands after a simple selector.
   verify: `selectors/is-not-unwrapped-*`, `selectors/is-type-selector-not-glued`; read `should_unwrap_is`
-- [SEL-06] (BLOCKER) A newly known pseudo or `SelectorParsingState` change rejects nothing base accepted that spec or WPT allows, accepts nothing C/F/W reject, and warns on no valid input (bundlers fail builds on warnings); drafts sit behind a `ParserFlags` flag.
+- [SEL-06] (BLOCKER) A newly known pseudo or `SelectorParsingState` change rejects nothing base accepted that spec or WPT allows, accepts nothing C/F/W reject, and warns on no valid input (bundlers fail on warnings); drafts sit behind `ParserFlags`.
   verify: `selectors/before-marker`, `selectors/details-content-*`, `selectors/*search-text*`, `selectors/framework-pseudo-verbatim`; parse-error and warning deltas
-- [SEL-07] (MAJOR) `:not()`, `:has()`, `of S`, `:-webkit-any()` stay unforgiving; an emptied `:is()`/`:where()` prints `:is()`; `:has(::x)` is never reduced to `:has()`.
+- [SEL-07] (MAJOR) `:not()`, `:has()`, `of S`, `:-webkit-any()` stay unforgiving; an emptied `:is()`/`:where()` prints `:is()`; `:has(::x)` never becomes `:has()`.
   verify: `selectors/has-unforgiving-argument`, `selectors/has-pseudo-element-argument-not-emptied`; selectors-4#forgiving-selector
 - [SEL-08] (BLOCKER) Prefixed spellings round-trip: legacy pseudo-class and pseudo-element forms stay distinct, no unprefixed copy from a legacy alias, merged prefix-equivalent rules keep each prefix.
-  verify: `selectors/*placeholder*`, `selectors/prefixed-pseudo-merge-keeps-prefix`; `retarget-none`; read `get_prefix`, `is_equivalent`
-- [SEL-09] (MAJOR) A new pseudo has a generated compat Feature (partial support is not full) and each new variant is matched without `_ =>` in printers, `get_prefix`, `is_equivalent`, `is_unused`, specificity and serde.
+  verify: `selectors/*placeholder*`, `selectors/prefixed-pseudo-merge-keeps-prefix`; a stored-prefix change: same-declaration sibling pairs in both orders plus a non-adjacent duplicate
+- [SEL-09] (MAJOR) A new pseudo has a generated compat Feature (partial is not full) and each new variant is matched without `_ =>` in printers, `get_prefix`, `is_equivalent`, `is_unused`, specificity, serde.
   verify: grep each new variant in `src/selector.rs`, `selectors/`; `retarget-modern`
-- [SEL-10] (BLOCKER) Output re-parses equivalently: closed functions, leading `:scope` kept in `:has()`, escaped unknown names, same An+B set, name case, `i`/`s`, `*` under a default namespace, no collapse inside a compound.
+- [SEL-10] (BLOCKER) Output re-parses equivalently: closed functions, leading `:scope` kept in `:has()`, escaped unknown names, same An+B set, name case, `i`/`s`, `*` under a default namespace, no compound collapse.
   verify: `selectors/nth-col-a0-unbalanced-output`, `selectors/has-scope-only-argument`, `selectors/type-and-attribute-name-case-preserved-for-svg` (F/W only)
 - [SEL-11] (BLOCKER) Namespace-prefixed selectors merge only if declared with one URL in one sheet; bundling moves no `@namespace`.
   verify: `rule-merging/no-merge-undeclared-namespace-prefix`; two-file `--bundle`
-- [SEL-12] (BLOCKER) Case-sensitive pseudo arguments keep case; CSS modules hash no `::part()`/`:state()` name nor the UA `root` view-transition name, and rename classes in every selector argument.
+- [SEL-12] (BLOCKER) Case-sensitive pseudo arguments keep case; CSS modules hash no `::part()`/`:state()` name or the UA `root` view-transition name, and rename classes in every selector argument.
   verify: flag `css-modules`; `css-modules/state-pseudo-not-hashed`, `css-modules/sat-view-transition-root-name-not-scoped`, `css-modules/nth-child-of-selector-renamed`
 - [SEL-13] (BLOCKER) `:host(X)`, `::slotted(X)`, `::part()` keep their one-compound argument and every part name and never become compounds or descendants (`:host(.a)` is not `:host.a`).
   verify: output assertions (no shadow trees in the oracle); `selectors/host-*`

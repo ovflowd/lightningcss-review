@@ -6,7 +6,7 @@ mode: minify
 targets: none
 expect: equivalent, output-contains:"monospace,monospace"
 known: open-issue#1221
-ref: https://github.com/parcel-bundler/lightningcss/issues/1221 https://github.com/parcel-bundler/lightningcss/pull/1250
+ref: https://github.com/parcel-bundler/lightningcss/issues/1221
 note: a lone generic `monospace` triggers the UA 13px default-size quirk; Chrome 156 computes 16px for `monospace,monospace` and 13px for `monospace`
 */
 .t { font-family: monospace, monospace; }

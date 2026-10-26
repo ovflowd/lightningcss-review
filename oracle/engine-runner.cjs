@@ -10,6 +10,7 @@ const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 const readline = require('readline');
+const zlib = require('zlib');
 const playwright = require('playwright');
 
 const args = process.argv.slice(2);
@@ -39,6 +40,7 @@ function pageSnapshot(job) {
   for (var i = 0; i < all.length; i++) els.push(all[i]);
   var pseudos = [null].concat(job.pseudos || []);
   var propsFilter = job.props ? new Set(job.props) : null;
+  var keysFilter = job.keys ? new Set(job.keys) : null;
 
   function read(el, pseudo) {
     var cs = getComputedStyle(el, pseudo);
@@ -57,20 +59,6 @@ function pageSnapshot(job) {
     if (el === document.body) return 'body';
     var idx = Array.prototype.indexOf.call(all, el);
     return el.tagName.toLowerCase() + '#' + idx;
-  }
-  function describeRules(list, out) {
-    for (var i = 0; i < list.length; i++) {
-      var r = list[i];
-      var entry = { type: r.constructor && r.constructor.name ? r.constructor.name : String(r.type) };
-      if (r.selectorText !== undefined) entry.selector = r.selectorText;
-      if (r.style && r.style.length !== undefined) entry.decls = r.style.length;
-      if (r.media && r.media.mediaText !== undefined) entry.media = r.media.mediaText;
-      if (r.conditionText !== undefined) entry.condition = r.conditionText;
-      if (r.name !== undefined) entry.name = r.name;
-      out.push(entry);
-      if (r.cssRules) describeRules(r.cssRules, out);
-    }
-    return out;
   }
   // Probe whether this engine accepts a declaration / selector / at-rule prelude.
   var scratch = document.createElement('style');
@@ -113,7 +101,7 @@ function pageSnapshot(job) {
         snap[label(els[e]) + (pseudos[p] || '')] = read(els[e], pseudos[p]);
       }
     }
-    var info = { rules: styleEl.sheet ? describeRules(styleEl.sheet.cssRules, []) : null };
+    var info = {};
     var probe = (job.probe && job.probe[name]) || null;
     if (probe) {
       info.decls = (probe.decls || []).map(function (d) {
@@ -129,20 +117,29 @@ function pageSnapshot(job) {
   styleEl.textContent = '';
   scratch.remove();
   // Return only what differs from the reference variant, plus the reference itself for the
-  // properties that the input touched (differs from the empty sheet).
+  // properties that the input touched (differs from the empty sheet). Lowering jobs (job.props)
+  // return the raw values of the elements their reference engine saw touched, nothing else.
   var ref = result.variants[job.reference || 'input'];
   var empty = result.variants.empty;
   var packed = { elements: result.elements, variants: {} };
   variants.forEach(function (name) {
     var cur = result.variants[name];
     var entry = { info: cur.info };
-    if (name === (job.reference || 'input')) {
+    if (job.props) {
+      if (name !== 'empty' && name !== (job.reference || 'input')) {
+        var values = {};
+        Object.keys(cur.snap).forEach(function (key) {
+          if (!keysFilter || keysFilter.has(key)) values[key] = cur.snap[key];
+        });
+        entry.values = values;
+      }
+    } else if (name === (job.reference || 'input')) {
       var touched = {};
       Object.keys(cur.snap).forEach(function (key) {
         var vals = cur.snap[key];
         var base = empty ? empty.snap[key] : null;
         Object.keys(vals).forEach(function (prop) {
-          if (!base || base[prop] !== vals[prop] || job.props) {
+          if (!base || base[prop] !== vals[prop]) {
             (touched[key] = touched[key] || {})[prop] = vals[prop];
           }
         });
@@ -161,7 +158,6 @@ function pageSnapshot(job) {
         });
       });
       entry.diff = diff;
-      if (job.props) entry.values = cur.snap;
     }
     packed.variants[name] = entry;
   });
@@ -303,9 +299,27 @@ async function versions() {
   process.stdout.write(JSON.stringify(out) + '\n');
 }
 
+// Screenshot file for a job: ids contain `/` (p-<area>/<slug>), which must not become directories.
+function shotFile(dir, id, engine, variant) {
+  return path.join(dir, id.replace(/[\\/]/g, '__') + '.' + engine + '.' + variant + '.png');
+}
+
+function openInput(file) {
+  const stream = fs.createReadStream(file);
+  return file.endsWith('.gz') ? stream.pipe(zlib.createGunzip()) : stream;
+}
+
+function openOutput(file) {
+  const stream = fs.createWriteStream(file);
+  if (!file.endsWith('.gz')) return { write: (s) => stream.write(s), end: (cb) => stream.end(cb) };
+  const gz = zlib.createGzip();
+  gz.pipe(stream);
+  return { write: (s) => gz.write(s), end: (cb) => { stream.on('finish', cb); gz.end(); } };
+}
+
 async function readJobs(file) {
   const jobs = [];
-  const rl = readline.createInterface({ input: fs.createReadStream(file) });
+  const rl = readline.createInterface({ input: openInput(file), crlfDelay: Infinity });
   for await (const line of rl) if (line.trim()) jobs.push(JSON.parse(line));
   return jobs;
 }
@@ -326,22 +340,26 @@ async function runEngine(name, jobs, out, shotsDir) {
         if (job.colorScheme) await page.emulateMedia({ colorScheme: job.colorScheme });
         record = { result: await page.evaluate(pageSnapshot, job) };
         if (job.visual && shotsDir) {
-          record.shots = {};
-          for (const variant of Object.keys(job.sheets)) {
-            if (variant === 'empty') continue;
-            await page.evaluate(
-              ({ html, css }) => {
-                document.getElementById('lcr-root').innerHTML = html;
-                document.getElementById('lcr-style').textContent = css;
-              },
-              { html: job.html || '', css: job.sheets[variant] }
-            );
-            const handle = await page.$('#lcr-root');
-            const buf = await handle.screenshot();
-            const hash = crypto.createHash('sha256').update(buf).digest('hex').slice(0, 16);
-            record.shots[variant] = hash;
-            const file = path.join(shotsDir, `${job.id}.${name}.${variant}.png`);
-            fs.writeFileSync(file, buf);
+          // A screenshot failure loses the visual check only, never the computed-style result.
+          const shots = {};
+          try {
+            for (const variant of Object.keys(job.sheets)) {
+              if (variant === 'empty') continue;
+              await page.evaluate(
+                ({ html, css }) => {
+                  document.getElementById('lcr-root').innerHTML = html;
+                  document.getElementById('lcr-style').textContent = css;
+                },
+                { html: job.html || '', css: job.sheets[variant] }
+              );
+              const handle = await page.$('#lcr-root');
+              const buf = await handle.screenshot();
+              shots[variant] = crypto.createHash('sha256').update(buf).digest('hex').slice(0, 16);
+              fs.writeFileSync(shotFile(shotsDir, job.id, name, variant), buf);
+            }
+            record.shots = shots;
+          } catch (e) {
+            record.visualError = String(e && e.message ? e.message : e).split('\n')[0];
           }
           await page.evaluate(() => {
             document.getElementById('lcr-style').textContent = '';
@@ -375,13 +393,13 @@ async function main() {
   const jobs = await readJobs(jobsFile);
   const shotsDir = opt('--screenshots', null);
   if (shotsDir) fs.mkdirSync(shotsDir, { recursive: true });
-  const out = fs.createWriteStream(outFile);
+  const out = openOutput(outFile);
   for (const name of ENGINES) {
     // propsByEngine: legacy runs read only the properties the reference engine of the same family
     // saw the input touch.
     const subset = jobs
       .filter((j) => !j.engines || j.engines.indexOf(name) >= 0)
-      .map((j) => (j.propsByEngine ? Object.assign({}, j, { props: j.propsByEngine[name] || [] }) : j));
+      .map((j) => (j.propsByEngine ? Object.assign({}, j, { props: j.propsByEngine[name] || [], keys: (j.keysByEngine && j.keysByEngine[name]) || null }) : j));
     if (subset.length) await runEngine(name, subset, out, shotsDir);
   }
   await new Promise((resolve) => out.end(resolve));

@@ -6,7 +6,7 @@ mode: minify
 targets: none
 expect: no-panic, equivalent
 known: open-issue#910
-ref: https://github.com/parcel-bundler/lightningcss/issues/910 https://github.com/parcel-bundler/lightningcss/pull/1245 https://drafts.csswg.org/css-values-4/#calc-simplification
+ref: https://github.com/parcel-bundler/lightningcss/issues/910 https://drafts.csswg.org/css-values-4/#calc-simplification
 note: 1.33.0 dumps core on this input
 */
 .t { height: calc((100dvh - 10.5rem) + (4vh + 230px)); }

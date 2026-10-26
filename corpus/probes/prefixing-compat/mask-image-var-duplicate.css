@@ -6,7 +6,7 @@ mode: lower-minify
 targets: chrome 95
 expect: equivalent, idempotent, output-not-contains:"-webkit-mask-image:var(--foo);-webkit-mask-image:var(--foo)"
 known: open-issue#969
-ref: https://github.com/parcel-bundler/lightningcss/issues/969 https://github.com/parcel-bundler/lightningcss/pull/1295
+ref: https://github.com/parcel-bundler/lightningcss/issues/969
 note: each run adds another `-webkit-mask-image:var(--foo)` (1, 2, 3...), so the output is not idempotent
 */
 .bar {

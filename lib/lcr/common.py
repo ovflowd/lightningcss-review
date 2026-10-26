@@ -1,6 +1,7 @@
 """Shared paths, config, process and JSON helpers for lightningcss-review (stdlib only)."""
 from __future__ import annotations
 
+import errno
 import hashlib
 import json
 import os
@@ -73,11 +74,23 @@ def stable_id(*parts) -> str:
     return sha256(json.dumps(parts, sort_keys=True, ensure_ascii=False))[:16]
 
 
-def write_json(path: Path, value) -> None:
+def _atomic(path: Path, write) -> None:
+    """Write through <path>.tmp and rename; never leave a partial file or a .tmp behind."""
     path.parent.mkdir(parents=True, exist_ok=True)
     tmp = path.with_suffix(path.suffix + ".tmp")
-    tmp.write_text(json.dumps(value, indent=2, sort_keys=True, ensure_ascii=False) + "\n")
-    tmp.replace(path)
+    try:
+        write(tmp)
+        tmp.replace(path)
+    except OSError as e:
+        tmp.unlink(missing_ok=True)
+        if e.errno == errno.ENOSPC:
+            raise LcrError(f"no space left writing {path}; {DISK_REMEDY}") from None
+        raise
+
+
+def write_json(path: Path, value) -> None:
+    text = json.dumps(value, indent=2, sort_keys=True, ensure_ascii=False) + "\n"
+    _atomic(path, lambda tmp: tmp.write_text(text))
 
 
 def read_json(path: Path, default=None):
@@ -87,15 +100,16 @@ def read_json(path: Path, default=None):
 
 
 def write_jsonl(path: Path, rows) -> int:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    count = 0
-    tmp = path.with_suffix(path.suffix + ".tmp")
-    with tmp.open("w") as f:
-        for row in rows:
-            f.write(json.dumps(row, sort_keys=True, ensure_ascii=False) + "\n")
-            count += 1
-    tmp.replace(path)
-    return count
+    count = [0]
+
+    def write(tmp: Path) -> None:
+        with tmp.open("w") as f:
+            for row in rows:
+                f.write(json.dumps(row, sort_keys=True, ensure_ascii=False) + "\n")
+                count[0] += 1
+
+    _atomic(path, write)
+    return count[0]
 
 
 def read_jsonl(path: Path):
@@ -108,6 +122,42 @@ def read_jsonl(path: Path):
             if line:
                 rows.append(json.loads(line))
     return rows
+
+
+DISK_REMEDY = "free space with `lcr clean --results` (oracle raw results), `lcr clean <run>` (build trees) or `lcr clean --keep 3` (old runs), or set LCR_CACHE to a larger disk"
+
+
+def mount_of(path: Path) -> tuple[str, str] | None:
+    """(mount point, filesystem type) holding `path`, from /proc/mounts (None where unavailable)."""
+    try:
+        lines = Path("/proc/mounts").read_text().splitlines()
+    except OSError:
+        return None
+    target = str(path.resolve())
+    best = None
+    for line in lines:
+        parts = line.split()
+        if len(parts) < 3:
+            continue
+        mnt = parts[1].replace("\\040", " ")
+        if (target == mnt or target.startswith(mnt.rstrip("/") + "/")) and (best is None or len(mnt) > len(best[0])):
+            best = (mnt, parts[2])
+    return best
+
+
+def on_tmpfs(path: Path) -> bool:
+    m = mount_of(path)
+    return bool(m and m[1] in ("tmpfs", "ramfs"))
+
+
+def preflight_disk(path: Path, need_bytes: int, stage: str) -> None:
+    """Refuse to start a stage that would run out of space halfway; warn when the cache is in RAM."""
+    path.mkdir(parents=True, exist_ok=True)
+    free = shutil.disk_usage(path).free
+    if on_tmpfs(path):
+        log(f"warning: {path} is on tmpfs (RAM); set LCR_CACHE to an on-disk directory")
+    if free < need_bytes:
+        raise LcrError(f"{stage} needs about {need_bytes >> 20} MiB in {path}, {free >> 20} MiB free; {DISK_REMEDY}")
 
 
 def log(message: str) -> None:

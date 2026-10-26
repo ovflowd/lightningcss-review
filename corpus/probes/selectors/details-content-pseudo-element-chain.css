@@ -6,7 +6,7 @@ mode: minify
 targets: none
 expect: equivalent, output-contains:"::details-content::before"
 known: open-issue#1244
-ref: https://drafts.csswg.org/css-pseudo-4/#element-backed https://drafts.csswg.org/css-pseudo-4/#details-content-pseudo https://github.com/parcel-bundler/lightningcss/issues/1244 https://github.com/parcel-bundler/lightningcss/pull/1308
+ref: https://drafts.csswg.org/css-pseudo-4/#element-backed https://drafts.csswg.org/css-pseudo-4/#details-content-pseudo https://github.com/parcel-bundler/lightningcss/issues/1244
 dom: <details open class="d"><summary>s</summary><p>x</p></details>
 note: v1.33.0 throws "Invalid state" (hard error, fails builds); Chrome 156 accepts the selector; the output assertion makes the parse error count (the oracle skips inputs LightningCSS rejects); `::before` must keep two colons after another pseudo-element
 */

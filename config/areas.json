@@ -478,7 +478,7 @@
     [
       "src/rules/*",
       [
-        "rule-merging"
+        "at-rules-other"
       ]
     ],
     [

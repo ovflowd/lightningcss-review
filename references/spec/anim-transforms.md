@@ -49,6 +49,10 @@ css-view-transitions, `val4` css-values-4.
   keeps its other components. Duration L2 initial `auto` (`an2#animation-duration`): invalid before Firefox 159, Safari 18.4.
 - Reset-only sub-properties: timeline, range (`sda#named-range-animation-declaration`), composition, trigger. No engine
   parses them in the shorthand; engines reset timeline and range, not yet composition or trigger.
+- Precedence: a CSSWG resolution backed by every engine and WPT (`css/css-animations/parsing/animation-shorthand.html`)
+  outranks stale ED grammar text that still lists a timeline in `an2#animation-shorthand`. Base already parses a timeline
+  inside `animation` leniently and lowers it (pinned by its tests): extending that is a decision, not a regression. If a
+  maintainer asked for something else on the PR, classify NEEDS_MAINTAINER_DECISION.
 - `@keyframes`: last same-name rule in document order wins (layers by order); an empty one still wins and fires events
   (`an1#events`). Selectors `from | to | <percentage [0,100]> | <timeline-range-name> <percentage>`
   (`sda#named-range-keyframes`); `calc()` only in WebKit. Blocks group by (offset, easing, composition)

@@ -7,7 +7,7 @@ targets: none
 expect: equivalent, idempotent, output-contains:"@property --radialprogress"
 known: none
 ref: https://github.com/parcel-bundler/lightningcss/issues/968 https://github.com/parcel-bundler/lightningcss/pull/1090 https://drafts.csswg.org/css-conditional-3/#contents-of https://drafts.csswg.org/css-cascade-5/#layer-empty
-note: guard for #1090 and for PR #1314, which tightens nested @property validation; `initial-value: 0%` must stay a percentage
+note: guard for #1090 and for any tightening of nested @property validation; `initial-value: 0%` must stay a percentage
 */
 @layer base {
   @property --radialprogress {

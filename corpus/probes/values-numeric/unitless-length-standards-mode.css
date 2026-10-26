@@ -7,7 +7,7 @@ targets: none
 expect: equivalent
 known: open-issue#682
 ref: https://drafts.csswg.org/css-values-4/#deprecated-quirky-length https://github.com/parcel-bundler/lightningcss/issues/682
-note: LengthValue parses Token::Number as px ("TODO: quirks mode only?", src/values/length.rs); Devon calls this deliberate quirks leniency, WPT harness (#1328) flags column-gap: 10 too
+note: LengthValue parses Token::Number as px ("TODO: quirks mode only?", src/values/length.rs); unitless non-zero lengths are quirks-only per spec, and WPT flags column-gap: 10 too
 */
 .x { width: 50px; width: 10; }
 .y { column-gap: 5px; column-gap: 10; }

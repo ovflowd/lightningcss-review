@@ -8,17 +8,33 @@
     "behind_flag": "yes | no | n/a  (draft/one-engine syntax must be behind a ParserFlags/Features flag)"
   },
   "checklist": [
-    { "item": "GEN-01", "answer": "PASS | FAIL | N/A", "evidence": "case id, probe id, file:line, spec URL#anchor, or command output", "note": "optional, one line" }
+    {
+      "item": "GEN-01",
+      "answer": "PASS | FAIL | FAIL_PRE_EXISTING | N/A",
+      "evidence": "case id, probe id, file:line, spec URL#anchor, or command output. FAIL_PRE_EXISTING: a probe, base case or issue (#N) showing base fails the same way; it becomes a NOTE and never counts toward A1",
+      "note": "one line; required on FAIL when the verify line offers alternatives (`… or …`): say why none holds. A FAIL citing a fixed or equivalent case of the mode the verify line accepts is rejected (A3)",
+      "effective_severity": "optional: a lower severity when the item applies only marginally (never higher than the item's own)",
+      "severity_reason": "required with effective_severity: why the item's severity does not fit this PR",
+      "finding": "optional: id of the analysis finding this failure belongs to (e.g. F3); it folds into that finding as evidence"
+    },
+    { "area": "logical", "answer": "N/A", "evidence": "one answer for every unanswered item of a whole (non-general) checklist the diff does not reach" }
   ],
   "deltas": [
-    { "id": "case id from deltas / oracle", "classification": "INTENDED | ACCEPTABLE_SIDE_EFFECT | REGRESSION | NEEDS_MAINTAINER_DECISION | ORACLE_NOISE", "reason": "one line; for ORACLE_NOISE say which tolerance/limitation" }
+    {
+      "id": "case id, a glob (`m-p-color/x-*`) or `source:<src>`. Entries match in file order and the first match wins. A glob may not clear a regressed case unless it is REGRESSION; a catch-all (`w-*`, `m-*`, `source:wpt`) must cover cases of one transition",
+      "classification": "INTENDED | ACCEPTABLE_SIDE_EFFECT | REGRESSION | NEEDS_MAINTAINER_DECISION | ORACLE_NOISE | PRE_EXISTING",
+      "reason": "one line; for ORACLE_NOISE say which tolerance/limitation; INTENDED/ACCEPTABLE_SIDE_EFFECT/ORACLE_NOISE on a case the browsers call different must cite the spec or WPT. Entries with the same classification and reason are reported as one finding",
+      "evidence": "PRE_EXISTING only (or in reason): a probe, base case or issue showing base is wrong the same way. PRE_EXISTING yields at most a NOTE. REGRESSION needs base right where head is wrong; NEEDS_MAINTAINER_DECISION goes to the decision line and never makes the verdict UNSAFE",
+      "finding": "optional: id of the analysis finding these cases are evidence for"
+    }
   ],
   "findings": [
     {
+      "id": "optional, unique (default F<n>, its position in this list); checklist answers and deltas link to it with `finding`",
       "severity": "BLOCKER | MAJOR | MINOR | NOTE",
       "title": "imperative, one line",
       "detail": "what is wrong and why, citing the spec or the browser evidence",
-      "evidence": ["case/probe ids, file:line, spec URL#anchor"],
+      "evidence": ["case/probe ids, file:line, spec URL#anchor. Check failures whose cases are all cited here fold into this finding, which takes the worst severity of what folds into it"],
       "suggested_test": "optional: a ready-to-paste minify_test/prefix_test/... call"
     }
   ],

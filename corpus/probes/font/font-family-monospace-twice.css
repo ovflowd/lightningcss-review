@@ -6,8 +6,8 @@ mode: minify
 targets: none
 expect: equivalent
 known: open-issue#1221
-ref: https://github.com/parcel-bundler/lightningcss/issues/1221 https://github.com/parcel-bundler/lightningcss/pull/1250 https://drafts.csswg.org/css-fonts-4/#font-family-prop
+ref: https://github.com/parcel-bundler/lightningcss/issues/1221 https://drafts.csswg.org/css-fonts-4/#font-family-prop
 dom: <p><code>x</code></p>
-note: browsers apply the smaller "fixed" default size only when the family list is exactly `monospace`; maintainer questioned relevance (only matters without an explicit font-size)
+note: browsers apply the smaller "fixed" default size only when the family list is exactly `monospace` (only matters without an explicit font-size)
 */
 code { font-family: monospace, monospace; }

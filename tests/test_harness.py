@@ -101,13 +101,13 @@ class ProbesTest(unittest.TestCase):
         self.assertFalse(req["compact"])
 
     def test_invalid_probe(self):
-        p = probes.parse_probe(self.write("/*! lcr-probe\nid: Bad Id\narea: nope\ntitle: t\nmode: lower\nexpect: maybe\nknown: soon\nref: x\n*/\n"))
+        p = probes.parse_probe(self.write("/*! lcr-probe\nid: Bad Id\narea: nope\ntitle: t\nmode: lower-minify\nexpect: maybe\nknown: soon\nref: x\n*/\n"))
         joined = " | ".join(p.errors)
-        for needle in ("unknown area", "lower modes need targets", "bad expect", "bad known", "bad id", "empty CSS body"):
+        for needle in ("unknown area", "lower-minify needs targets", "bad expect", "bad known", "bad id", "empty CSS body", "bad ref"):
             self.assertIn(needle, joined)
 
     def test_parser_flag_passthrough(self):
-        p = probes.parse_probe(self.write("/*! lcr-probe\nid: at-rules-other/f\narea: at-rules-other\ntitle: t\nmode: minify\nflags: custom-functions, error-recovery\nexpect: no-panic\nknown: none\nref: x\n*/\n@function --f(){}\n"))
+        p = probes.parse_probe(self.write("/*! lcr-probe\nid: at-rules-other/f\narea: at-rules-other\ntitle: t\nmode: minify\nflags: custom-functions, error-recovery\nexpect: no-panic\nknown: none\nref: https://x.org/\n*/\n@function --f(){}\n"))
         self.assertEqual(p.errors, [])
         req = p.request()
         self.assertEqual(req["flags"], ["custom-functions"])

@@ -7,6 +7,7 @@ consecutive reviews only rebuild what changed.
 """
 from __future__ import annotations
 
+import difflib
 import fcntl
 import os
 import re
@@ -16,7 +17,7 @@ import threading
 import time
 from pathlib import Path
 
-from .common import LcrError, cache_dir, docker_run, image_exists, log, read_json, require_docker, run, write_json
+from .common import LcrError, cache_dir, docker_run, image_exists, log, preflight_disk, read_json, require_docker, run, sha256, write_json
 from .inject import inject_adapter, inject_dump
 from .setup import builder_tag, ensure_builder
 
@@ -26,6 +27,8 @@ HOST = os.environ.get("LCR_BUILD") == "host"
 TEST_LINE = re.compile(r"^test (.+?) \.\.\. (ok|FAILED|ignored)(?:, .*)?$")
 RUNNING = re.compile(r"^\s*Running (?:unittests )?(\S+)")
 DOCTESTS = re.compile(r"^\s*Doc-tests (\S+)")
+# Two instrumented trees, test logs and incremental target growth per side.
+BUILD_DISK = 4 << 30
 
 
 def toolchain_channel(tree: Path) -> str:
@@ -257,11 +260,24 @@ def _build_side(run_dir: Path, side: str, jobs: int, results: dict, lock: thread
 GENERATED_COMPAT = ["src/compat.rs", "src/prefixes.rs", "src/targets.rs", "node/targets.d.ts", "node/flags.js"]
 
 
-def js_lane(run_dir: Path, regen_compat: bool, regen_ast: bool, run_js: bool) -> dict:
-    """CI test-js job (yarn build/test/tsc) and generated-file drift, on the head tree."""
-    tree = run_dir / "build" / "head" / "tree"
-    pristine = run_dir / "src" / "head"
-    out = run_dir / "build" / "head"
+def drift_signature(pristine: bytes, regenerated: bytes) -> str:
+    """Hash of the changed lines of regenerated vs committed output, without positions, so the same
+    drift on both sides compares equal even when line numbers moved."""
+    a = pristine.decode(errors="replace").splitlines()
+    b = regenerated.decode(errors="replace").splitlines()
+    return sha256("\n".join(l for l in difflib.unified_diff(a, b, n=0, lineterm="") if l[:1] in "+-" and not l.startswith(("+++ ", "--- "))))
+
+
+def new_drift(head: dict, base: dict) -> list[str]:
+    """Generated files whose drift on head (file -> drift_signature) differs from base's."""
+    return sorted(rel for rel in head if head[rel] != base.get(rel))
+
+
+def js_lane(run_dir: Path, regen_compat: bool, regen_ast: bool, run_js: bool, side: str = "head") -> dict:
+    """CI test-js job (yarn build/test/tsc) and generated-file drift, on one side's tree."""
+    tree = run_dir / "build" / side / "tree"
+    pristine = run_dir / "src" / side
+    out = run_dir / "build" / side
     image = builder_tag(toolchain_channel(tree))
     steps = ["yarn install --frozen-lockfile --registry=https://registry.npmjs.com/"]
     if run_js:
@@ -295,7 +311,7 @@ export CARGO_HOME=/cargo CARGO_TARGET_DIR=/target-js YARN_CACHE_FOLDER=/cargo/ya
         for rel in (GENERATED_COMPAT if regen_compat else []) + (["node/ast.d.ts"] if regen_ast else []):
             a, b = pristine / rel, tree / rel
             if a.exists() != b.exists() or (a.exists() and a.read_bytes() != b.read_bytes()):
-                drift[rel] = "differs from regenerated output"
+                drift[rel] = drift_signature(a.read_bytes() if a.exists() else b"", b.read_bytes() if b.exists() else b"")
     return {"ran": True, "steps": steps, "failed_step": failed, "drift": drift, "log": str(out / "js.log"), "js_tests": run_js, "regen_compat": regen_compat, "regen_ast": regen_ast}
 
 
@@ -307,6 +323,7 @@ def build(run_dir: Path, js: bool = False, jobs: int | None = None) -> dict:
     prep = read_json(run_dir / "prepare.json")
     if not prep:
         raise LcrError("run `lcr prepare` first")
+    preflight_disk(cache_dir(), BUILD_DISK, "build")
     jobs = jobs or max(2, (os.cpu_count() or 4) // 2)
     results: dict = {}
     lock = threading.Lock()
@@ -326,6 +343,14 @@ def build(run_dir: Path, js: bool = False, jobs: int | None = None) -> dict:
         js_result = {"ran": False, "skipped": "JS lane needs the builder image (LCR_BUILD=host)"}
     else:
         js_result = js_lane(run_dir, regen_compat, regen_ast, run_js) if (run_js or regen_compat or regen_ast) else {"ran": False}
+        if regen_compat or regen_ast:
+            # Generated files can already drift on master; only a different drift is the PR's.
+            base_js = js_lane(run_dir, regen_compat, regen_ast, False, side="base")
+            js_result["base_failed_step"] = base_js["failed_step"]
+            js_result["base_log"] = base_js["log"]
+            if not base_js["failed_step"]:
+                js_result["base_drift"] = base_js["drift"]
+                js_result["drift_new"] = new_drift(js_result["drift"], base_js["drift"])
     record = {"base": results["base"], "head": results["head"], "js": js_result}
     write_json(run_dir / "build.json", record)
     for side in ("base", "head"):

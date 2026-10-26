@@ -6,7 +6,7 @@ mode: minify
 targets: none
 expect: equivalent
 known: open-issue#1327
-ref: https://drafts.csswg.org/filter-effects-2/#BackdropFilterProperty https://github.com/parcel-bundler/lightningcss/issues/1327 https://drafts.fxtf.org/filter-effects-2/#BackdropFilterProperty https://github.com/parcel-bundler/lightningcss/issues/1229 https://github.com/parcel-bundler/lightningcss/issues/695 https://github.com/parcel-bundler/lightningcss/pull/1259
+ref: https://drafts.csswg.org/filter-effects-2/#BackdropFilterProperty https://github.com/parcel-bundler/lightningcss/issues/1327 https://drafts.fxtf.org/filter-effects-2/#BackdropFilterProperty https://github.com/parcel-bundler/lightningcss/issues/1229 https://github.com/parcel-bundler/lightningcss/issues/695
 note: FallbackHandler shares one slot across prefixes and FilterList::is_compatible is always true (src/properties/prefix_handler.rs:116-123); Chrome and Firefox lose the blur; regression since v1.21.0 (2694a18)
 */
 .t { backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }

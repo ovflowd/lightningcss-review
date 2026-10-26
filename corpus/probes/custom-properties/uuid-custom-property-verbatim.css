@@ -7,6 +7,6 @@ targets: none
 expect: equivalent, output-contains:"12345678-12e3-8d9b-a456-426614174000"
 known: open-bug
 ref: https://drafts.csswg.org/css-variables-1/#serializing-custom-props https://github.com/parcel-bundler/lightningcss/issues/807
-note: UNFILED master failure; observable via getPropertyValue('--uuid'); master prints 12345700-12000-8d9b-...; #807 was closed by the maintainer (f32 precision), the spec example says this must not happen
+note: UNFILED master failure; observable via getPropertyValue('--uuid'); master prints 12345700-12000-8d9b-...; the spec example says this must not happen
 */
 .t { --uuid: 12345678-12e3-8d9b-a456-426614174000; }

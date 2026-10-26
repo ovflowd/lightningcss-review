@@ -268,7 +268,7 @@ def mutation_cases(parents: list[dict], limit: int = 60) -> list[dict]:
     out = []
     for parent in sorted(parents, key=lambda c: c["id"])[:limit]:
         req = parent["request"]
-        if req.get("kind") != "sheet" or req.get("css_modules") or not req.get("css"):
+        if req.get("kind") != "sheet" or req.get("css_modules") is not None or not req.get("css"):
             continue
         for m in list(MUTATIONS) + [k for k in retargets if k.startswith("engine-")]:
             new_req = dict(req)
@@ -287,12 +287,26 @@ def mutation_cases(parents: list[dict], limit: int = 60) -> list[dict]:
                 if not css or css == req["css"]:
                     continue
                 new_req["css"] = css
-            out.append({
+            case = {
                 "id": f"m-{parent['id']}-{m}",
                 "source": "mutation",
                 "mutation": m,
                 "parent": parent["id"],
                 "area": parent.get("area") or (parent.get("probe") or {}).get("area"),
                 "request": new_req,
-            })
+            }
+            dom = mutation_dom((parent.get("probe") or {}).get("dom"), m)
+            if dom:
+                case["dom"] = dom
+            if parent.get("timeout"):
+                case["timeout"] = parent["timeout"]
+            out.append(case)
     return out
+
+
+def mutation_dom(dom: str | None, mutation: str) -> str | None:
+    """A probe's `dom:` override adapted to the mutation: `nest` puts every rule under `.lcr-n`, so the
+    fragment needs that ancestor; other mutations keep the selectors and reuse the parent's DOM."""
+    if dom and mutation == "nest":
+        return f'<div class="lcr-n">{dom}</div>'
+    return None

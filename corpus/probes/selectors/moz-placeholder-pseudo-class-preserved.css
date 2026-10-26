@@ -6,7 +6,7 @@ mode: print
 targets: none
 expect: output-not-contains:"placeholder-shown"
 known: open-bug
-ref: https://github.com/parcel-bundler/lightningcss/pull/929 https://github.com/parcel-bundler/lightningcss/pull/492
+ref: https://github.com/parcel-bundler/lightningcss/pull/929
 note: PR #929 changed only the parse table (selector.rs:168-169); serialize_pseudo_class still writes "placeholder-shown" with the prefix, so :-moz-placeholder and :-ms-input-placeholder become :-moz-placeholder-shown / :-ms-placeholder-shown
 */
 .t:-moz-placeholder { color: red }

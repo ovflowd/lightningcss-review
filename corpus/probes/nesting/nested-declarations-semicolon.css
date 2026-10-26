@@ -6,7 +6,7 @@ mode: minify
 targets: none
 expect: equivalent, idempotent
 known: none
-ref: https://drafts.csswg.org/css-nesting-1/#mixing https://github.com/parcel-bundler/lightningcss/pull/1089
+ref: https://drafts.csswg.org/css-nesting-1/#mixing
 dom: <div class="x"><div class="y"></div><div class="z"></div></div>
 note: guards 9e04c01 (and acde78b for the declaration-before-rule case); missing `;` swallows the next nested rule
 */

@@ -5,23 +5,19 @@ description: "Deterministic correctness review of parcel-bundler/lightningcss pu
 
 # LightningCSS PR review (`lcr`)
 
-CSS has many edge cases, and a small change often affects more than its author thinks. This skill
-produces the evidence a maintainer would otherwise build by hand: what the change does to output
-(isolated against the merge base), whether browsers agree the output means the same as the input,
-what it does outside the area it claims to touch, and what the spec says.
+This skill builds the evidence a maintainer would build by hand: what the change does to output
+against the merge base, whether browsers agree output and input mean the same, what it does
+outside its area, and what the spec says.
 
-The harness (`bin/lcr`) is deterministic: same PR, base and images give the same report, byte for
-byte. Your part is what a script cannot do: read the spec, write the few probes the corpus lacks,
-classify what the oracle could not decide, and fill the analysis slots. Everything you add goes into
-`<run>/probes/*.css` and `<run>/analysis.json`, both with fixed formats.
+The harness (`bin/lcr`) is deterministic. Your part is what a script cannot do: read the spec,
+write the probes the corpus lacks, classify what the oracle could not decide, and fill the analysis
+slots, in `<run>/probes/*.css` and `<run>/analysis.json`.
 
 ## Rules
 
-1. **Never post to GitHub** (comments, reviews, labels, PR edits) unless the user explicitly asks for
-   that action. The report is local. A drafted comment is short and evidence-first (spec anchor,
-   minimal repro, before/after output, engines) and waits for an explicit "post it".
-2. **Never modify the user's LightningCSS checkout** (`lcr doctor` shows which one is used). The
-   harness exports base and head into the run directory and instruments those copies only.
+1. **Never post to GitHub** unless the user explicitly asks for that action. Drafted comments are
+   short and evidence-first (spec anchor, repro, before/after output).
+2. **Never modify the user's LightningCSS checkout** (`lcr doctor` shows which one is used).
 3. **The verdict comes from `lcr report`.** Never override or soften it. To change it, change the
    evidence (probes, classifications) and re-run the report.
 4. **Run the phases in order.** If a command fails, fix the cause (Troubleshooting) or stop and
@@ -30,15 +26,18 @@ classify what the oracle could not decide, and fill the analysis slots. Everythi
    (`t-…`, `p-…`, `m-…`, `w-…`, `r-…`), a probe id, a file and function, a spec `URL#anchor`, or
    command output.
 6. **Spec first, then browsers, never folklore.** The spec decides what is correct; emitted syntax
-   must also be accepted by the target browsers. When they disagree, say so.
-7. **Spend tokens on judgment, not on reading.** Use `lcr brief` and `lcr show` instead of opening
-   run JSON files. Load only the references the loading policy below names.
+   must also be accepted by the target browsers. A CSSWG resolution backed by every engine and WPT
+   outranks stale draft grammar text. When they disagree, say so.
+7. **Charge the PR only with what it changes.** What base already does wrong the same way is
+   pre-existing (FAIL_PRE_EXISTING, PRE_EXISTING), never a FAIL or REGRESSION.
+8. **Spend tokens on judgment, not on reading.** Use `lcr brief`, `lcr table` and `lcr show`
+   instead of opening run JSON files. Load only the references the loading policy names.
 
 ## Setup (once per machine)
 
 ```sh
 lcr=<this skill's directory>/bin/lcr
-$lcr doctor      # git, gh auth, docker access, clone, disk
+$lcr doctor      # git, gh auth, docker, clone, disk
 $lcr setup       # builder image + engine images; records versions
 $lcr wpt         # pinned WPT checkout and property corpus
 $lcr realworld   # pinned real-world stylesheets (sha256-verified)
@@ -46,21 +45,18 @@ $lcr selftest    # known-answer cases through every engine profile: must pass al
 $lcr baseline    # curated probes on current master (re-run when master moves)
 ```
 
-If `doctor` reports a docker permission problem, give the user the fix it prints; you cannot grant
-group membership. Engine profiles live in `config/engines.json`: `latest` is the reference,
-`legacy-*` are old engines for lowering checks.
+`config/engines.json`: `latest` is the reference profile, `legacy-*` old engines for lowering.
 
 ## Reading the results
 
 - A **delta** is a normalized output difference between base and head for the same input and
-  options. Only deltas are attributed to the PR; pre-existing behavior never is.
-- Oracle **transitions** (worst across current engines): `regressed` (base matched the input, head
-  does not) is what matters; `fixed` is credit; `both-equivalent` means output changed but renders
-  the same; `still-different` is pre-existing; `near-introduced` is drift within tolerance;
-  `unverified` means the DOM could not exercise it. O9 (engines disagree) means the input itself is
-  engine-dependent and the spec decides.
-- Legacy profiles judge only cases whose targets include that engine at a version it satisfies:
-  lowered output must render in the old engine as the input does in the new one.
+  options. Only deltas are attributed to the PR.
+- Oracle **transitions** (`references/oracle.md`): `regressed` and `worsened` matter; `introduced`
+  judges head alone (base lacks the PR's flag); `fixed` is credit; `errored` is never verified nor
+  different; `input-rejected` needs a decision, not a verdict. O9: engines disagree on the input.
+- T6: probe assertions head breaks. O10 and "Decision needed": cases browsers cannot judge
+  against base, plus NEEDS_MAINTAINER_DECISION entries.
+- Legacy profiles judge only cases whose targets include that engine at a version it satisfies.
 
 ## Phase 1-3: automated
 
@@ -69,15 +65,10 @@ $lcr review <PR>     # prepare + build + corpus, then prints the brief
 $lcr brief <run>     # the one-screen digest again: files, items, flags, issues, tests, deltas
 ```
 
-`prepare` merges the PR head into current master without committing, exports both trees, maps
-files to areas, finds changed Rust items, blast radius, risk flags, linked issues and overlapping
-PRs. `build` runs fmt, the full test suite with CI flags while recording every test-helper call as
-a tuple, the review adapter and lanes CI lacks. `corpus` runs every case on both builds: `tuple`
-(all test expectations of both sides), `probe`, `mutation` (metamorphic variants of the PR's new
-test inputs), `wpt` and `realworld`.
-
-In the brief, `new_failing_on_base` tuples show the change is exercised; `new_passing_on_base`
-tuples are tests that do not demonstrate it; modified or removed expectations need a reason.
+`corpus` runs every case on both builds: `tuple` (recorded test expectations), `probe`,
+`mutation` (variants of new test inputs), `wpt`, `realworld`. In the brief,
+`new_failing_on_base` tuples show the change is exercised; `new_passing_on_base` tuples do not;
+modified or removed expectations need a reason.
 
 ## Phase 4: analysis (you)
 
@@ -86,21 +77,29 @@ intent in one or two sentences and list each behavior the PR claims to change.
 
 **4.2 Load only what the change needs.**
 - Always: `references/checklists/general.md`.
-- Each area in `areas` (not `radius adds`): `references/checklists/<area>.md`.
-- A spec digest (`references/spec/*.md`) only when a checklist item's `verify:` points to it or a
-  delta needs a spec ruling; read the relevant section, not the whole file.
-- `references/architecture.md` only when the diff touches handler, flush, merge, printer or
-  minify code (`risk_flags` contains `core-file`).
-- `references/conventions.md` when writing findings or suggested tests.
-- Other references only to answer a specific question (table below).
+- Each code area in `areas`: `references/checklists/<area>.md`. Test-derived and `radius adds`
+  areas are context: load their checklists only if the diff reaches their code.
+- A spec digest only when a `verify:` points to it or a delta needs a ruling (that section only).
+- `references/architecture.md` if `risk_flags` has `core-file`; `conventions.md` for findings.
+
+**4.2b Thread and reach.** Answer each maintainer request or question in the thread with
+evidence; run any WPT file a maintainer names. Name duplicate or alternative PRs and recommend
+one. For each regression state its reach: real-world hits, common patterns, flag or default path,
+pre-existing defect newly reachable.
 
 **4.3 Write probes only where evidence is missing.** Format: `templates/probe.css.tmpl`, spec
 `references/probe-format.md`.
-- One probe per linked issue, from its repro, `known: open-issue#<n>`, asserting what the issue
-  asks for (fails on base, passes on head).
-- One probe for each checklist item whose `verify:` asks for a probe that the corpus, mutations
-  and the PR's tests do not already cover. Do not write probes that restate existing cases.
-- Run `lcr validate-probes <run>/probes` until it reports 0 problems.
+- At least 3 probes per code area with CSS behavior (`tests`, `docs`, `bindings-api`,
+  `build-release` need none). A curated probe, mutation or PR test that covers an item satisfies
+  its `verify:`; never restate existing cases.
+- Linked issue: one probe from its repro with `repro: #N`. If base is already browser-equivalent
+  on it, assert the requested output (`output-contains`/`output-equals`) and add a probe for the
+  browser-visible variant. A request contradicting the spec: assert the spec, note it in `intent`.
+  List each part of the issue's expected behavior the PR does not deliver. Closed or related
+  issues use `known: fixed-by#PR`.
+- Pitfalls: the synthesized element is a `div` (a UA-default value has no coverage); conditional
+  probes need an unconditional baseline and a true/false pair; prefer chrome targets for lowering
+  equivalence; each probe spawns about 12 mutations. `lcr validate-probes <run>/probes` → 0.
 
 ```sh
 $lcr probe <run>      # PR probes (and their mutations) on both builds
@@ -108,44 +107,53 @@ $lcr oracle <run>     # reference engines, then legacy engines for targeted case
 $lcr worklist <run>   # writes analysis.json with every slot; prints the open slots
 ```
 
-**4.4 Inspect** the cases the worklist lists with `lcr show <run> <case-id>` (input, both outputs,
-per-engine diffs). For a large homogeneous group, inspect a few representatives and classify the
-group with a glob. Decide correctness from the spec, not intuition.
+Errored oracle jobs: `lcr oracle <run> --rerun <ids>`. Never cite browser output the report
+cannot read.
+
+**4.4 Inspect** listed cases with `lcr table <run>` and `lcr show <run> <case-id>`; for a large
+homogeneous group, inspect a few and classify the group with a glob.
 
 **4.5 Fill `analysis.json`** (`templates/analysis.template.json` documents every field):
-- `intent`: `kind`, `summary`, `claims`, `behind_flag` (yes/no/n/a).
-- `checklist`: every listed item, `answer` PASS | FAIL | N/A with `evidence`. N/A also needs
-  evidence ("no handler changed: diff touches only src/values/color.rs").
-- `deltas`: one entry per listed case, or a glob (`w-*`, `m-t-<id>-*`, `source:wpt`) for a
-  homogeneous group, with exactly one classification:
+- `intent`: `kind`, `summary`, `claims`, `behind_flag`.
+- `checklist`: every listed item, `answer` PASS | FAIL | FAIL_PRE_EXISTING | N/A with `evidence`.
+  N/A needs evidence ("diff touches only src/values/color.rs"). FAIL_PRE_EXISTING cites a base
+  case or probe that fails the same way (a NOTE). A FAIL says why each `verify:` alternative fails.
+  `effective_severity` + `severity_reason` may lower an item's severity, never raise it. Link an
+  answer to the finding it restates with `finding: F<n>`. A whole area may be N/A:
+  `{"area": "<area>", "answer": "N/A", "evidence": …}`.
+- `deltas`: one entry per listed case, or a glob (`m-t-<id>-*`) for a group sharing one root
+  cause. Globs match in file order and the first match wins; a glob never clears a `regressed`
+  case unless REGRESSION; no catch-all source glob (`w-*`, `source:wpt`). Exactly one classification:
   - `INTENDED`: claimed by the PR and equivalent (or `fixed`) in the oracle.
   - `ACCEPTABLE_SIDE_EFFECT`: unclaimed, equivalent in every engine that ran, spec-correct.
-  - `REGRESSION`: head wrong per spec or oracle, base right. Becomes a BLOCKER.
-  - `NEEDS_MAINTAINER_DECISION`: spec-correct but breaking, spec ambiguous, or a default changes.
-  - `ORACLE_NOISE`: only for a limitation listed in `references/oracle.md`, named in the reason.
-    Never use it for a difference you do not understand.
-  For cases the browsers call different (O1, O2, O7, O9), an `INTENDED`, `ACCEPTABLE_SIDE_EFFECT`
-  or `ORACLE_NOISE` reason must cite a spec anchor or a WPT file; the report rejects it otherwise.
-  For O9, find which engine follows the current spec and WPT: head agrees with the conformant
-  engines → `INTENDED`; spec new or contested and engines split → `NEEDS_MAINTAINER_DECISION`;
-  head agrees with none → `REGRESSION`.
-- `findings`: problems no failing check already reports, with severity (BLOCKER: wrong output or
-  crash for valid CSS; MAJOR: missing tests, unflagged draft feature, wrong lowering, behavior
-  change without opt-in; MINOR: style, perf, docs; NOTE: context), evidence, and when possible a
-  `suggested_test` in the repo's idiom (`minify_test`, `prefix_test` with `Browsers { … }`,
-  `nesting_test`).
+  - `REGRESSION`: base matched the browsers (or the spec, per engine) and head does not. Group by
+    root cause, one glob each.
+  - `PRE_EXISTING`: base is wrong the same way; cites a probe, issue or base case (a NOTE at most).
+  - `NEEDS_MAINTAINER_DECISION`: spec-correct but breaking, spec ambiguous, a default changes, or
+    pre-existing behavior extended to new targets. Caps the verdict at NEEDS_CHANGES. First grep
+    base `src/lib.rs` tests for the same input under other targets and cite what you find.
+  - `ORACLE_NOISE`: only for a limitation in `references/oracle.md`, named in the reason; also an
+    initial-value or no-touched-property case (cite its L-number).
+  An `unverified` delta whose parent case is verified takes the parent's classification and cites
+  it. For cases the browsers call different, a non-REGRESSION reason cites a spec anchor or WPT
+  file. For O9, judge each engine against the spec meaning of the input in that engine: REGRESSION
+  only if base matched in every engine where head does not; if base was also wrong somewhere, use
+  PRE_EXISTING or NEEDS_MAINTAINER_DECISION; spec new or contested → NEEDS_MAINTAINER_DECISION.
+- `findings`: problems no failing check reports, with severity (BLOCKER: wrong output or crash
+  for valid CSS; MAJOR: missing tests, unflagged draft, wrong lowering, behavior change without
+  opt-in; MINOR: style, perf, docs; NOTE: context), evidence, and a `suggested_test` if possible.
 
-**4.6 Optional.** `$lcr perf <run>` (release builds, a few minutes) when `risk_flags` contains
-`core-file` or the diff touches a hot path: fills P1 (consistent >10% slowdown on real-world CSS)
-and P2 (binary size).
+**4.6 Optional.** `$lcr perf <run>` when `risk_flags` contains `core-file` or the diff touches a
+hot path (P1 slowdown, P2 binary size). A property's `ToCss` change is not a printer change unless
+it touches `src/printer.rs` or a shared serializer.
 
-**4.7 Render.** `$lcr report <run>`, then `$lcr summary <run>`. If `A3` fails, a slot is missing
-or lacks evidence: fix analysis.json and re-run. After changing probes, re-run `probe`, `oracle`,
-`worklist`, `report` in that order.
+**4.7 Render.** `$lcr report <run>`, then `$lcr summary <run>`. If `A3` fails, fix analysis.json
+and re-run. Re-run `lcr worklist` after classifying until it reports 0 open slots. After changing
+probes, re-run `probe`, `oracle`, `worklist`, `report` in that order.
 
 ## Phase 5: present
 
-Paste `lcr summary <run>` verbatim. Below it, at most five lines of your own: the single most
+Paste `lcr summary <run>` verbatim. Below it, at most five lines of your own: the most
 important thing for the maintainer to look at, and any check you could not run and why. Offer in
 one line to draft a PR comment; do not draft or post one unless asked.
 
@@ -153,28 +161,23 @@ one line to draft a PR comment; do not draft or post one unless asked.
 
 | File | Read when |
 |---|---|
-| `references/checklists/general.md` | every review |
-| `references/checklists/<area>.md` | the PR touches that area |
 | `references/spec/<cluster>.md` | a `verify:` points there or a delta needs a spec ruling |
 | `references/architecture.md` | the diff touches handlers, flushing, merging, printing, minify |
 | `references/conventions.md` | writing findings and suggested tests in the project's idiom |
 | `references/browsers.md` | an engine divergence, prefix semantics or compat data question |
 | `references/ecosystem.md` | an option or default change that downstream tools rely on |
-| `references/oracle.md` | a status or limitation you need to cite |
+| `references/oracle.md` | a status, transition or limitation to cite |
 | `references/probe-format.md` | writing probes |
 
-Harness internals are in `docs/harness.md`; you do not need them to review.
 
 ## Troubleshooting
 
-- Docker socket permission denied: the user runs `sudo usermod -aG docker $USER` (new login) or
-  `sudo setfacl -m u:$USER:rw /var/run/docker.sock` (this session; lost on reboot). With only
-  `docker.socket` enabled, the daemon starts on the first `lcr` call.
+- Docker socket permission denied: give the user the fix `lcr doctor` prints.
 - `lcr selftest` fails: an engine image is broken. Do not review; run `lcr setup --rebuild`.
 - Adapter compile error in the build log: API drift. Fix `adapter/lcr_adapter.rs` so it compiles
   against both sides, then `lcr build` again.
-- `T5` lists unreproduced tuples: `lib/lcr/tuples.py` does not match a changed test helper. Those
-  tuples are excluded from conclusions; fix the mapping if the PR changed helpers.
+- `T5` lists unreproduced tuples: `lib/lcr/tuples.py` misses a changed test helper; those are
+  excluded from conclusions until the mapping is fixed.
 - Many `unverified` deltas: DOM synthesis could not match the selectors (`lcr show` prints DOM
   stats). Write a probe with a `dom:` line for the important ones, or classify the group.
-- WPT or real-world lane missing: run `lcr wpt` or `lcr realworld` once.
+- WPT or real-world lane missing: `lcr wpt` / `lcr realworld` once.

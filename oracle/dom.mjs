@@ -13,19 +13,87 @@ const STATE_ATTRS = {
   target: 'data-lcr-target',
   visited: 'data-lcr-visited',
 };
-export const READABLE_PSEUDOS = new Set(['before', 'after', 'marker', 'first-line', 'first-letter', 'placeholder']);
+export const READABLE_PSEUDOS = new Set(['before', 'after', 'marker', 'first-line', 'first-letter', 'placeholder', 'selection', 'backdrop', 'file-selector-button']);
+// Prefixed aliases are read through the standard pseudo-element (getComputedStyle does not accept
+// most prefixed names); an engine that cannot resolve the standard name reads nothing for both.
+export const PSEUDO_ALIASES = {
+  '-moz-placeholder': 'placeholder',
+  '-webkit-input-placeholder': 'placeholder',
+  '-ms-input-placeholder': 'placeholder',
+  '-moz-selection': 'selection',
+  '-webkit-backdrop': 'backdrop',
+  '-ms-backdrop': 'backdrop',
+  '-webkit-file-upload-button': 'file-selector-button',
+  '-ms-browse': 'file-selector-button',
+};
+// CSS 2 pseudo-elements that may be written with one colon (LightningCSS prints them that way).
+const LEGACY_PSEUDO_ELEMENTS = new Set(['before', 'after', 'first-line', 'first-letter']);
+// LightningCSS lowers :dir(rtl) to :lang() over this list.
+export const RTL_LANGS = new Set(['ae', 'ar', 'arc', 'bcc', 'bqi', 'ckb', 'dv', 'fa', 'glk', 'he', 'ku', 'mzn', 'nqo', 'pnb', 'ps', 'sd', 'ug', 'ur', 'yi']);
+
+/** Standard pseudo-element name for a selector node, or null when the node is not one. */
+export function pseudoElementName(node) {
+  if (node.type !== 'PseudoElementSelector' && node.type !== 'PseudoClassSelector') return null;
+  const name = node.name.toLowerCase();
+  if (node.type === 'PseudoElementSelector') return PSEUDO_ALIASES[name] || name;
+  return LEGACY_PSEUDO_ELEMENTS.has(name) ? name : null;
+}
 
 const decodeIdent = (s) => (csstree.ident && csstree.ident.decode ? csstree.ident.decode(s) : s);
 const decodeString = (s) => (csstree.string && csstree.string.decode ? csstree.string.decode(s) : s.replace(/^['"]|['"]$/g, ''));
 
+// css-tree only parses nested style rules that start with `&`; any other nested rule becomes a Raw
+// node (or a bogus declaration such as `div::before{...}`), and every such parse error costs a pass
+// over the whole sheet. This Block parser reads a statement in a style block as a nested rule when
+// a `{` comes before the next `;` or `}` (no declaration value but a custom property's has one).
+const T = csstree.tokenTypes;
+function startsNestedRule() {
+  if (this.tokenType === T.Ident && this.substring(this.tokenStart, this.tokenStart + 2) === '--') return false;
+  let depth = 0;
+  for (let i = 0; ; i++) {
+    const type = this.lookupType(i);
+    if (type === T.EOF) return false;
+    if (type === T.LeftParenthesis || type === T.LeftSquareBracket || type === T.Function) depth++;
+    else if ((type === T.RightParenthesis || type === T.RightSquareBracket) && depth > 0) depth--;
+    else if (depth === 0 && type === T.LeftCurlyBracket) return true;
+    else if (depth === 0 && (type === T.Semicolon || type === T.RightCurlyBracket)) return false;
+  }
+}
+function parseBlock(isStyleBlock) {
+  const raw = () => this.Raw(null, true);
+  const rawDeclaration = () => this.Raw(this.consumeUntilSemicolonIncluded, true);
+  const start = this.tokenStart;
+  const children = this.createList();
+  this.eat(T.LeftCurlyBracket);
+  while (!this.eof && this.tokenType !== T.RightCurlyBracket) {
+    if (this.tokenType === T.WhiteSpace || this.tokenType === T.Comment) {
+      this.next();
+    } else if (this.tokenType === T.AtKeyword) {
+      children.push(this.parseWithFallback(this.Atrule.bind(this, isStyleBlock), raw));
+    } else if (!isStyleBlock || startsNestedRule.call(this)) {
+      children.push(this.parseWithFallback(this.Rule, raw));
+    } else if (this.tokenType === T.Semicolon) {
+      children.push(rawDeclaration());
+    } else {
+      children.push(this.parseWithFallback(this.Declaration, rawDeclaration));
+      if (this.tokenType === T.Semicolon) this.next();
+    }
+  }
+  if (!this.eof) this.eat(T.RightCurlyBracket);
+  return { type: 'Block', loc: this.getLocation(start, this.tokenStart), children };
+}
+const nesting = csstree.fork({ node: { Block: { parse: parseBlock } } });
+
 /** Parse leniently; returns null if css-tree cannot parse at all. */
 export function parseSheet(css) {
   try {
-    return csstree.parse(css, { positions: true, parseValue: true, parseCustomProperty: false, onParseError: () => {} });
+    return nesting.parse(css, { positions: true, parseValue: true, parseCustomProperty: false, onParseError: () => {} });
   } catch {
     return null;
   }
 }
+
+const isKeyframes = (node) => node.type === 'Atrule' && /keyframes$/i.test(node.name);
 
 // A selector is an array of steps: {combinator, compound: [simple nodes]}.
 function toSteps(selectorNode) {
@@ -101,7 +169,7 @@ export function collectSelectors(ast) {
       });
       resolved.forEach((s) => selectors.push(s));
       visitBlock(node.block, resolved);
-    } else if (node.type === 'Atrule') {
+    } else if (node.type === 'Atrule' && !isKeyframes(node)) {
       if (node.name === 'scope' && node.prelude) {
         // @scope (<root>) [to (<limit>)]: treat the first root selector as the parent.
         let rootList = null;
@@ -123,10 +191,10 @@ export function collectSelectors(ast) {
   for (const steps of selectors) {
     for (const s of steps) {
       for (const n of s.compound) {
-        if (n.type === 'PseudoElementSelector') {
-          if (READABLE_PSEUDOS.has(n.name.toLowerCase())) pseudos.add('::' + n.name.toLowerCase());
-          else unsupported++;
-        }
+        const name = pseudoElementName(n);
+        if (name === null) continue;
+        if (READABLE_PSEUDOS.has(name)) pseudos.add('::' + name);
+        else unsupported++;
       }
     }
   }
@@ -178,14 +246,18 @@ function applyCompound(el, compound, ctx) {
         break;
       }
       case 'PseudoClassSelector':
-        applyPseudoClass(el, n, ctx);
+        if (pseudoElementName(n) === null) applyPseudoClass(el, n, ctx);
         break;
       case 'PseudoElementSelector': {
-        const name = n.name.toLowerCase();
+        const name = pseudoElementName(n);
         if (name === 'marker' && el.tag === 'div') el.tag = 'li';
-        if (name === 'placeholder' || name === '-webkit-input-placeholder' || name === '-moz-placeholder') {
+        if (name === 'placeholder') {
           el.tag = 'input';
           el.attrs.placeholder = 'x';
+        }
+        if (name === 'file-selector-button') {
+          el.tag = 'input';
+          el.attrs.type = 'file';
         }
         break;
       }
@@ -250,10 +322,13 @@ function applyPseudoClass(el, n, ctx) {
       el.empty = true;
       return;
     case 'dir':
+      // An RTL element normally carries an RTL language, which is what lowered :dir(rtl) matches.
       if (arg) el.attrs.dir = arg.name || 'ltr';
+      if (el.attrs.dir === 'rtl' && !el.attrs.lang) el.attrs.lang = 'ar';
       return;
     case 'lang':
       if (arg) el.attrs.lang = arg.name || (arg.value ? decodeString(arg.value) : 'en');
+      if (RTL_LANGS.has(String(el.attrs.lang).toLowerCase().split('-')[0]) && !el.attrs.dir) el.attrs.dir = 'rtl';
       return;
     case 'link':
     case 'any-link':
@@ -419,6 +494,45 @@ export function synthesize(sheets, { maxSelectors = 60 } = {}) {
   return { html, pseudos: [...pseudos].sort(), rootAttrs: ctx.rootAttrs, selectors: total, synthesized: parts.length, unsupported: ctx.unsupported, generic: !parts.length };
 }
 
+/** Readable pseudo-elements used by any of the sheets (for a DOM given by the case, not synthesized). */
+export function collectPseudos(sheets) {
+  const pseudos = new Set();
+  for (const css of sheets) {
+    const ast = parseSheet(css);
+    if (ast) collectSelectors(ast).pseudos.forEach((p) => pseudos.add(p));
+  }
+  return [...pseudos].sort();
+}
+
+const CUSTOM_REF = /var\(\s*(--[A-Za-z0-9_\-\u0080-\uffff]+)\s*(,)?/g;
+const COLOR_PROP = /(^|-)color$|^(fill|stroke|background|outline|text-decoration|text-emphasis|column-rule)$/;
+
+/** Custom properties the sheet references without a fallback but never defines, each with a
+ *  stand-in value typed after the first property that consumes it (`[name, value]`, sorted).
+ *  Without a definition the consuming declaration is invalid at computed-value time and the input
+ *  touches nothing, so the case could never be judged. */
+export function undefinedCustomProperties(css) {
+  const ast = parseSheet(css);
+  if (!ast) return [];
+  const defined = new Set();
+  const used = new Map();
+  csstree.walk(ast, {
+    enter(node) {
+      if (node.type === 'Atrule' && node.name.toLowerCase() === 'property' && node.prelude) {
+        defined.add(csstree.generate(node.prelude).trim());
+      }
+      if (node.type !== 'Declaration' || !node.loc) return;
+      if (node.property.startsWith('--')) defined.add(node.property);
+      const text = css.slice(node.value.loc ? node.value.loc.start.offset : node.loc.start.offset, node.loc.end.offset);
+      for (const m of text.matchAll(CUSTOM_REF)) {
+        if (m[2] || used.has(m[1])) continue;
+        used.set(m[1], COLOR_PROP.test(node.property.toLowerCase()) ? 'rgb(1, 2, 3)' : '5px');
+      }
+    },
+  });
+  return [...used].filter(([name]) => !defined.has(name)).sort((a, b) => (a[0] < b[0] ? -1 : 1));
+}
+
 /** Rewrite user-action pseudo-classes in style-rule preludes to attribute selectors, identically
  *  for every sheet, by editing exact source offsets (the rest of the text is untouched). */
 export function rewriteStates(css) {
@@ -433,12 +547,16 @@ export function rewriteStates(css) {
       edits.push([node.loc.start.offset, node.loc.end.offset, `[${attr}]`]);
     },
   });
-  edits.sort((a, b) => b[0] - a[0]);
-  let out = css;
+  edits.sort((a, b) => a[0] - b[0]);
+  const parts = [];
+  let at = 0;
   for (const [s, e, text] of edits) {
-    if (out.slice(s, e).toLowerCase().startsWith(':')) out = out.slice(0, s) + text + out.slice(e);
+    if (s < at || !css.slice(s, e).startsWith(':')) continue;
+    parts.push(css.slice(at, s), text);
+    at = e;
   }
-  return { css: out, rewrites: edits.length };
+  parts.push(css.slice(at));
+  return { css: parts.join(''), rewrites: edits.length };
 }
 
 /** Lists for the engine to test: declarations, selectors, conditional preludes (per sheet). */
@@ -450,18 +568,32 @@ export function validityProbe(css, limit = 400) {
   if (!ast) return { decls, selectors, preludes, parsed: false };
   // Probe the exact source text (loc offsets), never a re-serialization.
   const src = (node) => (node && node.loc ? css.slice(node.loc.start.offset, node.loc.end.offset) : node ? csstree.generate(node) : '');
+  // css-tree can end a prelude's loc before its last `)`; the prelude runs up to the block.
+  const preludeSrc = (node) => (node.prelude.loc && node.block && node.block.loc ? css.slice(node.prelude.loc.start.offset, node.block.loc.start.offset) : src(node.prelude));
+  // Nested rule selectors are only valid relative to their parent, and keyframe selectors are
+  // not selectors at all: neither is probed on its own.
+  let rules = 0;
+  let keyframes = 0;
   csstree.walk(ast, {
     enter(node) {
       if (node.type === 'Declaration' && decls.length < limit) {
         let value = src(node.value).trim();
         value = value.replace(/!\s*important\s*$/i, '').trim();
         decls.push([node.property, value, Boolean(node.important)]);
-      } else if (node.type === 'Rule' && node.prelude && node.prelude.type === 'SelectorList' && selectors.length < limit) {
-        const text = src(node.prelude).trim();
-        if (!text.includes('&')) selectors.push(text);
-      } else if (node.type === 'Atrule' && ['media', 'supports', 'container'].includes(node.name) && node.prelude && preludes.length < limit) {
-        preludes.push([node.name, src(node.prelude).trim()]);
+      } else if (node.type === 'Rule') {
+        if (node.prelude && node.prelude.type === 'SelectorList' && selectors.length < limit && !rules && !keyframes) {
+          const text = src(node.prelude).trim();
+          if (!text.includes('&')) selectors.push(text);
+        }
+        rules++;
+      } else if (node.type === 'Atrule') {
+        if (isKeyframes(node)) keyframes++;
+        if (['media', 'supports', 'container'].includes(node.name.toLowerCase()) && node.prelude && preludes.length < limit) preludes.push([node.name, preludeSrc(node).trim()]);
       }
+    },
+    leave(node) {
+      if (node.type === 'Rule') rules--;
+      else if (isKeyframes(node)) keyframes--;
     },
   });
   return { decls, selectors, preludes, parsed: true };

@@ -5,8 +5,9 @@ title: <one line: the behavior this probe pins down>
 mode: <print | minify | lower | lower-minify>
 targets: <none | chrome 80, safari 13.1, firefox 78 ...>
 expect: <equivalent[, idempotent][, no-panic][, output-contains:"…"][, output-not-contains:"…"][, output-equals:"…"][, parse-error]>
-known: <none | open-issue#N | fixed-by#PR>
-ref: <spec URL#anchor and/or issue/PR URL>
+known: <none | open-issue#N | open-bug | fixed-by#PR>
+repro: <PR probes only: #N of the linked issue this reproduces; otherwise delete this line>
+ref: <spec URL#anchor, WPT file, issue or merged PR URL; never an open PR>
 note: <optional: why a plausible-looking change would break this>
 */
 .t { /* CSS input: simple, matchable selectors unless the probe is about selectors */ }

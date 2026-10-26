@@ -15,7 +15,7 @@ import time
 from pathlib import Path
 
 from .build import HOST, toolchain_channel
-from .common import LcrError, cache_dir, docker_run, log, read_json, run, write_json
+from .common import LcrError, cache_dir, docker_run, log, preflight_disk, read_json, run, write_json
 from .realworld import available_files
 from .setup import builder_tag, ensure_builder
 
@@ -61,6 +61,7 @@ def perf(run_dir: Path, repeats: int = 9) -> dict:
     files = available_files()
     if not files:
         raise LcrError("real-world corpus missing; run `lcr realworld`")
+    preflight_disk(cache_dir(), 3 << 30, "perf")
     bins = {side: build_release(run_dir, side) for side in ("base", "head")}
     sizes = {side: bins[side].stat().st_size for side in bins}
     rows = []

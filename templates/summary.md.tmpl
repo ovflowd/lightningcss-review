@@ -1,10 +1,10 @@
-**LightningCSS #{pr} — VERDICT: {verdict}** ({blocker} blocker · {major} major · {minor} minor · {note} note)
+**LightningCSS #{pr} — VERDICT: {verdict}{scope}** ({blocker} blocker · {major} major · {minor} minor · {note} note)
 
 {intent_summary}
 
 Findings:
 {findings_list}
-
-Coverage: {engines}. {deltas_total} behavioral deltas ({deltas_verified} verified in browsers), {probes_pr} PR probes, {mutations} mutations, {wpt_cases} WPT cases, {realworld_files} real-world files.
+{decision_block}
+Coverage: {engines}. {deltas_total} behavioral deltas ({deltas_verified} verified in browsers{deltas_errored}){default_path}, {probes_pr} PR probes, {mutations} mutations, {wpt_cases} WPT cases, {realworld_files} real-world files.
 
 Report: {report_path}

@@ -6,7 +6,7 @@ mode: lower-minify
 targets: chrome 100
 expect: equivalent, output-not-contains:"#b:after{color:green}", output-not-contains:"#b::after{color:green}"
 known: open-issue#982
-ref: https://github.com/parcel-bundler/lightningcss/issues/982 https://drafts.csswg.org/css-nesting-1/#nest-selector https://github.com/parcel-bundler/lightningcss/pull/1156
+ref: https://github.com/parcel-bundler/lightningcss/issues/982 https://drafts.csswg.org/css-nesting-1/#nest-selector
 dom: <div id="b">b</div>
 note: natively `&` cannot represent ::after so the nested rule matches nothing; LightningCSS lowers it to `#b:after{color:green}`, which matches (v1.29-v1.33)
 */

@@ -6,7 +6,7 @@ mode: minify
 targets: none
 expect: equivalent, output-not-contains:"place-self:self-start}"
 known: open-issue#1182
-ref: https://drafts.csswg.org/css-align-3/#place-self-property https://github.com/parcel-bundler/lightningcss/issues/1182 https://github.com/parcel-bundler/lightningcss/pull/1302
+ref: https://drafts.csswg.org/css-align-3/#place-self-property https://github.com/parcel-bundler/lightningcss/issues/1182
 dom: <div class="g"><div class="t">x</div></div>
 note: PlaceSelf::to_css treats JustifySelf::Auto as equal to any align value (src/properties/align.rs:510); Chrome 156 width 200px -> 8px
 */

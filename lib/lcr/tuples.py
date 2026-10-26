@@ -38,6 +38,11 @@ PARSER_FLAG_NAMES = {"NESTING": "nesting", "CUSTOM_MEDIA": "custom-media", "DEEP
 RUST_STR = r'"((?:[^"\\]|\\.)*)"'
 
 
+def parser_flag_name(name: str) -> str:
+    """`ParserFlags::CUSTOM_FUNCTIONS` -> `custom-functions`, as the adapter's `ParserFlags::from_name`."""
+    return PARSER_FLAG_NAMES.get(name, name.lower().replace("_", "-"))
+
+
 def rust_unescape(s: str) -> str:
     out, i = [], 0
     while i < len(s):
@@ -110,6 +115,15 @@ def _range_requests(f: dict) -> list[tuple[str, dict, dict]] | None:
     return out
 
 
+def mapping_problem(t: dict) -> str:
+    """Why `to_requests` returned None for this tuple."""
+    if t["helper"] not in HELPERS:
+        return f"helper {t['helper']} has no adapter mapping"
+    if HELPERS[t["helper"]].get("expand") == "range":
+        return "property_range_test names/cases not parseable"
+    return "no source field recorded"
+
+
 def to_requests(t: dict, bits: dict[str, int]) -> list[tuple[str, dict, dict]] | None:
     """[(suffix, adapter request, expectation)] reproducing the helper, or None if not mappable."""
     spec = HELPERS.get(t["helper"])
@@ -159,10 +173,7 @@ def to_requests(t: dict, bits: dict[str, int]) -> list[tuple[str, dict, dict]] |
     opts = f.get("options") if isinstance(f.get("options"), dict) else None
     if opts and "flags" in opts:
         for name in parse_flags_debug(opts["flags"]):
-            if name in PARSER_FLAG_NAMES:
-                flags.append(PARSER_FLAG_NAMES[name])
-            else:
-                return None
+            flags.append(parser_flag_name(name))
     if flags:
         req["flags"] = sorted(set(flags))
     if opts:

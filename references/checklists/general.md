@@ -1,5 +1,6 @@
 # General checklist (every PR)
 Cross-cutting judgment the harness cannot make; reasons and helpers in `references/conventions.md`.
+Every item judges the PR's change: when base fails it the same way, answer `FAIL_PRE_EXISTING` citing the base evidence. A FAIL says why each `verify:` alternative does not hold.
 
 - [GEN-01] (MAJOR) The parser implements the spec grammar exactly (optional parts, `||`/`&&`, functional vs keyword forms, ranges) and the PR cites the section.
   verify: spec anchor for the property or rule; one probe per optional or alternative branch; read the `Parse` impl.
@@ -11,12 +12,12 @@ Cross-cutting judgment the harness cannot make; reasons and helpers in `referenc
   verify: reason from the spec anchor; mutations `var-before`, `var-after`, `important`.
 - [GEN-05] (MAJOR) Emitted syntax is accepted by targets the engines do not cover (versions below the legacy profiles, Samsung, Opera, Android), and no old-browser workaround is added without a target gate and a reason.
   verify: compat data for the emitted syntax; mutations `retarget-legacy`, `engine-legacy-2021`.
-- [GEN-06] (MAJOR) A handler or ordering change is tested in both orders in the PR's own tests: typed then `var()`, `var()` then typed, prefixed then unprefixed, shorthand then longhand.
-  verify: read the PR tests; mutations `reverse-decls`, `var-before`, `var-after`, `prefixed-sibling`.
+- [GEN-06] (MAJOR) A handler or ordering change behaves correctly in both orders: typed then `var()`, `var()` then typed, prefixed then unprefixed, shorthand then longhand (behavior; test coverage is TESTS-03).
+  verify: mutations `reverse-decls`, `var-before`, `var-after`, `prefixed-sibling`.
 - [GEN-07] (MAJOR) Compat changes go through `scripts/build-prefixes.js` (generated files not hand-edited), partial support is not counted as support, and every override cites the browser bug.
   verify: read the generator diff; compare `src/compat.rs`/`src/prefixes.rs` hunks against it.
-- [GEN-08] (MAJOR) A new lowering has a `Features` flag, is tested with `prefix_test` on a target that needs it and one that does not, and honors an enclosing `@supports` condition.
-  verify: `src/targets.rs` `Features` diff; PR tests; mutations `retarget-none`, `retarget-modern`, `wrap-supports`.
+- [GEN-08] (MAJOR) A new lowering has a `Features` flag, applies only to targets that need it (output unchanged for one that does not), and honors an enclosing `@supports` condition (test coverage is TESTS-02).
+  verify: `src/targets.rs` `Features` diff; mutations `retarget-none`, `retarget-modern`, `wrap-supports`.
 - [GEN-09] (MAJOR) Behavior changes are opt-in: new options default to current behavior, existing options keep their meaning, new errors are gated by their mode, and a spec-driven output change states its path (fix, opt-in, major).
   verify: read option handling and the PR text; S1 deltas.
 - [GEN-10] (MAJOR) The fix is at the root cause and covers the whole class: sibling types and call sites sharing the code, several values or selectors, boundary numbers.

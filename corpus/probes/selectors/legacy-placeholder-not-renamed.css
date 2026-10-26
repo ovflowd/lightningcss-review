@@ -6,7 +6,7 @@ mode: minify
 targets: none
 expect: output-not-contains:"placeholder-shown"
 known: open-issue#1351
-ref: https://drafts.csswg.org/css-pseudo-4/#placeholder-pseudo https://drafts.csswg.org/selectors-4/#placeholder https://github.com/parcel-bundler/lightningcss/issues/1351 https://github.com/parcel-bundler/lightningcss/pull/929 https://github.com/parcel-bundler/lightningcss/pull/1352
+ref: https://drafts.csswg.org/css-pseudo-4/#placeholder-pseudo https://drafts.csswg.org/selectors-4/#placeholder https://github.com/parcel-bundler/lightningcss/issues/1351 https://github.com/parcel-bundler/lightningcss/pull/929
 note: regression from #929 (v1.29.3): parse side maps the legacy names to PlaceholderShown(prefix) but the printer still writes :-moz-placeholder-shown / :-ms-placeholder-shown
 */
 input:-moz-placeholder { color: red; }

@@ -6,7 +6,7 @@ mode: lower-minify
 targets: chrome 90
 expect: no-panic, equivalent
 known: open-bug
-ref: https://github.com/parcel-bundler/lightningcss/pull/1311 https://drafts.csswg.org/css-color-4/#currentcolor-color
-note: 1.33.0 aborts with Result::unwrap() on an Err value; #1311 is an open PR (no separate issue)
+ref: https://drafts.csswg.org/css-color-4/#currentcolor-color
+note: 1.33.0 aborts with Result::unwrap() on an Err value (no issue filed)
 */
 .t { background-image: linear-gradient(oklch(0% 0 0), oklch(100% 0 0)), linear-gradient(currentcolor, currentcolor); }

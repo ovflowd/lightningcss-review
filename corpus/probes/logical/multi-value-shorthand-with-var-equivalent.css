@@ -6,8 +6,8 @@ mode: lower
 targets: chrome 80
 expect: equivalent
 known: none
-ref: https://drafts.csswg.org/css-logical-1/#propdef-margin-block https://drafts.csswg.org/css-variables-2/#using-variables https://github.com/parcel-bundler/lightningcss/pull/1227
+ref: https://drafts.csswg.org/css-logical-1/#propdef-margin-block https://drafts.csswg.org/css-variables-2/#using-variables
 dom: <div class="t">x</div>
-note: guard for #927 fixes: PR #1227 treats any token list other than a lone var() as single-valued, which would emit `margin-top: calc(var(--s)) 5px` (invalid at computed-value time)
+note: guard for #927 fixes: treating any token list other than a lone var() as single-valued emits `margin-top: calc(var(--s)) 5px` (invalid at computed-value time)
 */
 .t { --s: 4px; margin-block: calc(var(--s)) 5px; }

@@ -6,7 +6,7 @@ mode: minify
 targets: none
 expect: equivalent, idempotent
 known: open-issue#337
-ref: https://drafts.csswg.org/css-animations-1/#animation https://github.com/parcel-bundler/lightningcss/issues/337 https://github.com/parcel-bundler/lightningcss/pull/879 https://github.com/parcel-bundler/lightningcss/pull/1328
-note: 1.33.0 emits animation:none, so computed animation-duration/delay/timing-function change; also found by the WPT harness in #1328
+ref: https://drafts.csswg.org/css-animations-1/#animation https://github.com/parcel-bundler/lightningcss/issues/337
+note: 1.33.0 emits animation:none, so computed animation-duration/delay/timing-function change; also found by the WPT harness
 */
 .t { animation: 2s ease-in 1s; }

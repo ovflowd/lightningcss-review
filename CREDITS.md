@@ -29,7 +29,8 @@
 ## Libraries
 
 - [Playwright](https://playwright.dev/) and its Docker images: the browser engines.
-- [css-tree](https://github.com/csstree/csstree): independent CSS parsing for DOM synthesis.
+- [css-tree](https://github.com/csstree/csstree) (MIT): independent CSS parsing for DOM synthesis;
+  the nested-rule `Block` parser in `oracle/dom.mjs` adapts its own.
 - [colorjs.io](https://colorjs.io/): color conversion, ΔE OK and CSS gamut mapping.
 - [pngjs](https://github.com/pngjs/pngjs): screenshot comparison.
 

@@ -34,13 +34,19 @@ class AdapterProcess:
             bufsize=1,
             env={**os.environ, "RUST_BACKTRACE": "0"},
         )
-        self.lines = queue.Queue()
+        q: queue.Queue = queue.Queue()
+        self.lines = q
         proc = self.proc
 
         def reader():
-            for line in proc.stdout:
-                self.lines.put(line)
-            self.lines.put(None)
+            try:
+                for line in proc.stdout:
+                    q.put(line)
+            except (OSError, ValueError):
+                pass
+            finally:
+                proc.stdout.close()
+                q.put(None)
 
         threading.Thread(target=reader, daemon=True).start()
 
@@ -48,11 +54,15 @@ class AdapterProcess:
         if self.proc:
             try:
                 self.proc.kill()
-            except OSError:
+                self.proc.wait(timeout=5)
+                self.proc.stdin.close()
+            except (OSError, subprocess.TimeoutExpired):
                 pass
             self.proc = None
 
     def request(self, req: dict) -> dict:
+        timeout = req.get("_timeout") or self.timeout
+        req = {k: v for k, v in req.items() if not k.startswith("_")}
         if self.proc is None or self.proc.poll() is not None:
             self.start()
         try:
@@ -63,13 +73,18 @@ class AdapterProcess:
             self.restarts += 1
             return {"id": req.get("id"), "ok": False, "stage": "crash", "error": "adapter stdin closed"}
         try:
-            line = self.lines.get(timeout=self.timeout)
+            line = self.lines.get(timeout=timeout)
         except queue.Empty:
             self.close()
             self.restarts += 1
-            return {"id": req.get("id"), "ok": False, "stage": "timeout", "error": f"no response within {self.timeout}s"}
+            return {"id": req.get("id"), "ok": False, "stage": "timeout", "error": f"no response within {timeout}s"}
         if line is None:
-            code = self.proc.wait() if self.proc else None
+            code = None
+            if self.proc:
+                try:
+                    code = self.proc.wait(timeout=5)
+                except subprocess.TimeoutExpired:
+                    pass
             self.close()
             self.restarts += 1
             return {"id": req.get("id"), "ok": False, "stage": "crash", "error": f"adapter exited ({code}); stack overflow or abort"}

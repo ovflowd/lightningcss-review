@@ -16,6 +16,8 @@ from .common import (
     image_id,
     load_config,
     log,
+    mount_of,
+    on_tmpfs,
     read_json,
     repo_dir,
     run,
@@ -138,6 +140,8 @@ def doctor() -> int:
     check("lightningcss clone", (repo_dir() / ".git").exists(), str(repo_dir()))
     free = shutil.disk_usage(cache_dir()).free // (1 << 30)
     check("disk space for images (>= 15 GiB)", free >= 15, f"{free} GiB free in {cache_dir()}")
+    mount = mount_of(cache_dir())
+    check("cache on disk (not tmpfs)", not on_tmpfs(cache_dir()), f"{cache_dir()} on {mount[1] if mount else 'unknown fs'}" + ("; set LCR_CACHE to an on-disk directory" if on_tmpfs(cache_dir()) else ""))
     if ok:
         env = read_json(cache_dir() / "env.json", {}) or {}
         for profile in default_profiles():

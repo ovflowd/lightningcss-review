@@ -3,11 +3,11 @@ id: nesting/logical-after-nested-rule
 area: nesting
 title: A logical declaration after a nested rule must survive nesting + logical lowering
 mode: lower-minify
-targets: safari 12
+targets: chrome 80
 expect: equivalent
 known: open-issue#1049
-ref: https://drafts.csswg.org/css-nesting-1/#nested-declarations-rule https://github.com/parcel-bundler/lightningcss/issues/1049 https://github.com/parcel-bundler/lightningcss/pull/1123 https://github.com/parcel-bundler/lightningcss/pull/1386
+ref: https://drafts.csswg.org/css-nesting-1/#nested-declarations-rule https://github.com/parcel-bundler/lightningcss/issues/1049
 dom: <div class="foo"></div>
-note: 1.33.0 emits only :where(.foo){width:unset} and drops the radius
+note: chrome targets lower the logical side to `:is()`/`:-webkit-any()` copies of single-language `:lang()` that every engine parses (a safari target emits a `:lang()` list Chromium rejects); 1.33.0 emits only :where(.foo){width:unset} and drops the radius
 */
 .foo { :where(&) { width: unset; } border-start-start-radius: 10px; }

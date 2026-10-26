@@ -8,7 +8,7 @@ expect: equivalent
 known: open-issue#873
 ref: https://drafts.csswg.org/css-color-5/#light-dark https://drafts.csswg.org/css-color-adjust-1/#color-scheme-prop https://github.com/parcel-bundler/lightningcss/issues/873
 dom: <div class="p"><div class="c">x</div></div>
-note: lowering resolves --bg on .p via --lightningcss-light/dark, so .c inherits white instead of evaluating light-dark() as dark (maintainer: not fixable with variables; LightDark feature flag)
+note: lowering resolves --bg on .p via --lightningcss-light/dark, so .c inherits white instead of evaluating light-dark() as dark (not fixable with variables alone; the LightDark feature flag opts out)
 */
 .p { color-scheme: light; --bg: light-dark(rgb(255, 255, 255), rgb(0, 0, 0)); }
 .c { color-scheme: dark; background-color: var(--bg); }

@@ -171,14 +171,14 @@ Open bugs outside CSS output (API, visitors, bindings, source maps, CLI, warning
 No issue found (search 2026-10-26). Probes re-run on a cbeaf83 build; engine verdicts from cbeaf83 `baseline.json`; every `file:line` re-read. ≠ = engines compute input and output differently; `+N` = more probes. A fix earns credit like an open issue.
 
 **Breaks the sheet**
-- **U1** `border-color:oklch(70% .2 30) currentColor` (safari 14) panics: `values/color.rs:517-519` unwraps (open PR #1311). `border-outline/border-color-oklch-currentcolor` +2.
+- **U1** `border-color:oklch(70% .2 30) currentColor` (safari 14) panics: `values/color.rs:517-519` unwraps. `border-outline/border-color-oklch-currentcolor` +2.
 - **U2** `:host(&){.b{}}` (chrome 95) overflows the stack (suspected `selector.rs:1702-1714`); nested `:fullscreen` ×20 (safari 8) prints 357 MB (`rules/style.rs:218-238`). `nesting/host-amp-nested-rule-no-stack-overflow`, `nesting/prefixed-nested-selector-no-duplication`.
 - **U3** Escaped names printed raw, `fake\7d name` → `fake}name` ends the block: `transition-property`, unknown at-rules, `@font-face`, `@page`, media types, pseudo-classes (`properties/mod.rs:265`, `rules/unknown.rs:40`, `selector.rs:866`). `printer-serialization/transition-property-ident-escaped` +5.
 - **U4** Token lists merge tokens ≠: `x//**/*y` → `x/*y` comments out the rest (`custom.rs:898-902`); `1px+2px` → `1px2px`, `2e3.4` → `2000.4` (`custom.rs:544`). `custom-properties/comment-removal-creates-comment-opener` +7.
 - **U5** `:nth-col(1)` → `:nth-col(` (`selectors/parser.rs:1299-1320`); `@font-feature-values` with `font-display` rejects the sheet (`rules/font_feature_values.rs:145`). `selectors/nth-col-a0-unbalanced-output`, `font/sft-font-feature-values-font-display`.
 
 **Merging and cascade ≠**
-- **U6 (N1)** `.a{color:red}.b{color:blue}.b{color:red}.b{color:green}` → `.a,.b{color:red}`: `rules.pop()` (`rules/mod.rs:804-816`) leaves a stale `style_rules` index (`:864-890`). #1235's family; PR #1236 tests a similar pop case. `rule-merging/dedupe-stale-index-drops-rule` +1.
+- **U6 (N1)** `.a{color:red}.b{color:blue}.b{color:red}.b{color:green}` → `.a,.b{color:red}`: `rules.pop()` (`rules/mod.rs:804-816`) leaves a stale `style_rules` index (`:864-890`). #1235's family. `rule-merging/dedupe-stale-index-drops-rule` +1.
 - **U7 (N2/N3)** Same-name `@keyframes` replaced in place (`rules/mod.rs:643-648`), crossing an `@media` copy and leaving the loser's `@supports` fallback last. `rule-merging/keyframes-replacement-crosses-conditional` +1.
 - **U8 (N6)** Anonymous `@layer{}` contents never minified or lowered (`rules/mod.rs:716-729`, since v1.23.0). `cascade-layers-scope/anonymous-layer-contents-lowered`.
 - **U9** `@property`: unknown descriptor drops the rule (`rules/property.rs:198`); a browser-rejected later copy wins (`rules/mod.rs:973-978`); `"<LENGTH>"` accepted (`values/syntax.rs:346`). `custom-properties/property-unknown-descriptor` +4.

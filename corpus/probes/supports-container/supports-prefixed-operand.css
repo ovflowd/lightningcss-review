@@ -6,7 +6,7 @@ mode: minify
 targets: none
 expect: equivalent, output-contains:"-webkit-box-orient"
 known: open-issue#710
-ref: https://drafts.csswg.org/css-conditional-3/#at-supports https://github.com/parcel-bundler/lightningcss/issues/710 https://github.com/parcel-bundler/lightningcss/pull/1316 https://github.com/parcel-bundler/lightningcss/pull/1313
+ref: https://drafts.csswg.org/css-conditional-3/#at-supports https://github.com/parcel-bundler/lightningcss/issues/710
 note: condition is true in Chromium, Gecko and WebKit; 1.33.0 rewrites it to (box-orient:vertical) which no engine supports
 */
 @supports (display: flex) and (-webkit-box-orient: vertical) { .t { color: red; } }

@@ -17,6 +17,11 @@ NON_PARSER_FLAGS = ("error-recovery", "css-modules")
 FLAG_RE = re.compile(r"^(error-recovery|css-modules|unused-symbols:[\w|-]+|[a-z][a-z0-9-]*)$")
 EXPECT_RE = re.compile(r'^(equivalent|idempotent|no-panic|parse-error|output-(contains|not-contains|equals):"(.*)")$', re.S)
 KNOWN_RE = re.compile(r"^(none|open-issue#\d+|open-bug|fixed-by#(\d+|[0-9a-f]{7,40}))$")
+REPRO_RE = re.compile(r"^#(\d+)$")
+REF_RE = re.compile(r"^https?://[^\s<>{}\"'`\\]+$")
+REF_PLACEHOLDER_RE = re.compile(r"\.\.\.|…|\b(TODO|TBD|XXX|NNNN?)\b|/(pull|issues)/[A-Za-z]+(?:$|[/#?])")
+KEYS = ("id", "area", "title", "mode", "targets", "flags", "expect", "known", "ref", "repro", "timeout", "dom", "note")
+MAX_TIMEOUT = 600
 
 
 @dataclass
@@ -35,8 +40,11 @@ class Probe:
     css: str
     dom: str | None = None
     note: str | None = None
+    repro: int | None = None
+    timeout: float | None = None
     origin: str = "curated"
     errors: list[str] = field(default_factory=list)
+    warnings: list[str] = field(default_factory=list)
 
     def request(self) -> dict:
         """Adapter request for this probe (without id)."""
@@ -81,7 +89,7 @@ def parse_probe(path: Path, origin: str = "curated") -> Probe:
         raise LcrError(f"{path}: missing /*! lcr-probe ... */ header")
     header, css = m.group(1), text[m.end():]
     fields: dict[str, str] = {}
-    errors = []
+    errors, warnings = [], []
     for line in header.splitlines():
         if not line.strip():
             continue
@@ -92,6 +100,8 @@ def parse_probe(path: Path, origin: str = "curated") -> Probe:
         key, value = km.group(1), km.group(2).strip()
         if key in fields:
             errors.append(f"duplicate key {key}")
+        if key not in KEYS:
+            warnings.append(f"unknown header key {key}")
         fields[key] = value
     for key in ("id", "area", "title", "mode", "expect", "known", "ref"):
         if not fields.get(key):
@@ -109,8 +119,8 @@ def parse_probe(path: Path, origin: str = "curated") -> Probe:
     except LcrError as e:
         errors.append(str(e))
         targets = None
-    if mode.startswith("lower") and not targets:
-        errors.append("lower modes need targets")
+    if mode == "lower-minify" and not targets:
+        errors.append("lower-minify needs targets (without targets it is `minify`)")
     flags = split_list(fields.get("flags", ""))
     for f in flags:
         if not FLAG_RE.match(f):
@@ -125,6 +135,28 @@ def parse_probe(path: Path, origin: str = "curated") -> Probe:
     pid = fields.get("id", "")
     if pid and not re.match(r"^[a-z0-9-]+/[a-z0-9][a-z0-9._-]*$", pid):
         errors.append(f"bad id {pid} (expected <area>/<kebab-slug>)")
+    elif pid and pid.split("/", 1)[1] != path.stem:
+        warnings.append(f"file name {path.name} does not match the id slug {pid.split('/', 1)[1]}")
+    refs = fields.get("ref", "").split()
+    for r in refs:
+        if not REF_RE.match(r) or REF_PLACEHOLDER_RE.search(r):
+            errors.append(f"bad ref {r[:80]} (a full URL without placeholders)")
+    repro = None
+    if fields.get("repro"):
+        rm = REPRO_RE.match(fields["repro"])
+        if rm:
+            repro = int(rm.group(1))
+        else:
+            errors.append(f"bad repro {fields['repro']} (expected #<issue number>)")
+    timeout = None
+    if fields.get("timeout"):
+        try:
+            timeout = float(fields["timeout"])
+        except ValueError:
+            timeout = -1.0
+        if not 0 < timeout <= MAX_TIMEOUT:
+            errors.append(f"bad timeout {fields['timeout']} (seconds, 0 < t <= {MAX_TIMEOUT})")
+            timeout = None
     if not css.strip():
         errors.append("empty CSS body")
     return Probe(
@@ -138,12 +170,15 @@ def parse_probe(path: Path, origin: str = "curated") -> Probe:
         flags=flags,
         expect=expect,
         known=known,
-        refs=fields.get("ref", "").split(),
+        refs=refs,
         css=css.strip("\n") + "\n",
         dom=fields.get("dom") or None,
         note=fields.get("note") or None,
+        repro=repro,
+        timeout=timeout,
         origin=origin,
         errors=errors,
+        warnings=warnings,
     )
 
 
@@ -178,10 +213,13 @@ def validate_cli(paths: list[str]) -> int:
     probes, problems = load_probes(dirs)
     for line in problems:
         print(line)
+    warnings = [f"warning: {p.path}: {w}" for p in probes for w in p.warnings]
+    for line in warnings:
+        print(line)
     by_area: dict[str, int] = {}
     for p in probes:
         by_area[p.area] = by_area.get(p.area, 0) + 1
-    print(f"{len(probes)} valid probes, {len(problems)} problems")
+    print(f"{len(probes)} valid probes, {len(problems)} problems" + (f", {len(warnings)} warnings" if warnings else ""))
     for area, n in sorted(by_area.items()):
         print(f"  {area}: {n}")
     return 1 if problems else 0

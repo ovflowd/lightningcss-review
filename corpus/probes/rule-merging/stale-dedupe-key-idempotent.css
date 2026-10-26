@@ -6,7 +6,7 @@ mode: minify
 targets: none
 expect: equivalent, idempotent, output-not-contains:".a{border-radius:16px}.x"
 known: open-issue#1235
-ref: https://github.com/parcel-bundler/lightningcss/issues/1235 https://github.com/parcel-bundler/lightningcss/pull/1236
+ref: https://github.com/parcel-bundler/lightningcss/issues/1235
 note: StyleRuleKey hash is computed before merge_style_rules mutates the rule; first pass leaves a duplicate .a rule that a second pass removes (ahash seed makes it nondeterministic across processes); the output assertion catches the leftover first .a rule in one pass (the baseline does not decide `idempotent`)
 */
 .a { border-top-left-radius: 16px; }

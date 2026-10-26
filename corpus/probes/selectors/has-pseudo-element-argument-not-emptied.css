@@ -6,7 +6,7 @@ mode: minify
 targets: none
 expect: output-not-contains:":has()", no-panic
 known: open-issue#1239
-ref: https://drafts.csswg.org/selectors-4/#relational https://github.com/parcel-bundler/lightningcss/issues/1239 https://github.com/parcel-bundler/lightningcss/pull/1309
+ref: https://drafts.csswg.org/selectors-4/#relational https://github.com/parcel-bundler/lightningcss/issues/1239
 note: input and output are both invalid in Chrome 156 (unforgiving :has()), so this is a diagnostics/serialization bug, not a cascade change; empty :is()/:where() are valid and match nothing
 */
 video:not(:has(::backdrop)) { color: red; }

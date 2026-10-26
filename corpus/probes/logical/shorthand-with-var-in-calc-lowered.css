@@ -3,10 +3,10 @@ id: logical/shorthand-with-var-in-calc-lowered
 area: logical
 title: margin-block with a single calc(var()) value is lowered to physical longhands for old targets
 mode: lower
-targets: chrome 80
-expect: output-contains:"margin-top", output-contains:"margin-bottom"
+targets: chrome 68
+expect: output-contains:"margin-top", output-contains:"margin-bottom", output-not-contains:"margin-block:"
 known: open-issue#927
-ref: https://drafts.csswg.org/css-logical-1/#propdef-margin-block https://github.com/parcel-bundler/lightningcss/issues/927 https://github.com/parcel-bundler/lightningcss/pull/1227
-note: Chrome < 87 lacks margin-block; master passes the Unparsed shorthand through unchanged (Tailwind v4 `my-0` emits exactly this)
+ref: https://drafts.csswg.org/css-logical-1/#propdef-margin-block https://github.com/parcel-bundler/lightningcss/issues/927
+note: Chrome < 87 lacks margin-block and Chrome < 69 lacks margin-block-start, so chrome 68 needs physical longhands (chrome 80 correctly gets margin-block-start/end); master passes the Unparsed shorthand through unchanged (Tailwind v4 `my-0` emits exactly this)
 */
 .t { --s: 4px; margin-block: calc(var(--s) * 2); }

@@ -16,6 +16,21 @@ Every stage can be re-run on its own; later stages read only the files listed he
 | `report` | everything above + `analysis.json` | `report.md`, `report.json` |
 | `perf` (optional) | `src/*`, real-world files | `perf/`, `perf.json` |
 
+Every command that works on a run takes the run id (or `latest`, or a PR number) explicitly and
+prints the run it resolved to; nothing falls back to an implicit "last run".
+
+Inspection and housekeeping:
+
+- `lcr table <run> [--transition t1,t2] [--check O9] [--case <glob>] [--json]`: one line per oracle
+  case (transition, base/head status, wrong engines per side, legacy transitions).
+- `lcr show <run> <case>`: input, outputs and a per-engine `element | property | input | base | head`
+  table; `--json` prints everything untruncated.
+- `lcr oracle <run> --rerun <ids|globs>`: re-run only those cases and merge their verdicts. `lcr
+  oracle` exits non-zero when a probe case, or more than 5% of the cases, errored in an engine.
+- `lcr clean <run>` drops the run's build trees; `lcr clean --results` drops raw oracle results and
+  screenshots once `verdicts.jsonl` exists. Stages check free space first and warn when the cache
+  is on tmpfs.
+
 ## Base and head
 
 `prepare` computes the tree you get by merging the PR head into current `master`
@@ -46,10 +61,48 @@ applies the rule: any BLOCKER is `UNSAFE`, any MAJOR `NEEDS_CHANGES`, any MINOR 
 otherwise `SAFE`; a missing stage turns a clean result into `INCONCLUSIVE`. Every check appears in
 every report, in catalog order, so reports diff cleanly.
 
+Checks compare head with base, so behavior base already has is never charged to the PR: a checklist
+answer `FAIL_PRE_EXISTING` and a `PRE_EXISTING` delta become NOTEs, and a
+`NEEDS_MAINTAINER_DECISION` delta feeds a "decision needed" line that caps the verdict at
+`NEEDS_CHANGES`. An `effective_severity` on a checklist answer can only lower its severity. Answers
+and deltas that name an analysis finding (`"finding": "F3"`) fold into it as evidence, so one
+defect is counted once; so do check failures whose cases an analysis finding cites, REGRESSION
+entries sharing a reason, and a checklist FAIL whose `same-root-as:` item also failed.
+
+Other verdict rules:
+
+- A check can be `INCONCLUSIVE` (O8 when deltas errored in an engine, A2 when the oracle could not
+  judge the linked issue's repro); any INCONCLUSIVE check turns a SAFE or SAFE_WITH_NITS result
+  into `INCONCLUSIVE`. An incomplete analysis (A3 fails) makes every verdict short of `UNSAFE`
+  `INCONCLUSIVE`: its own MAJOR says nothing about the PR, but a proven BLOCKER still stands.
+- T6 fails for probe assertions that hold on base and fail on head. O10 lists cases the browsers
+  cannot judge against base (`input-rejected`, or head output equal to what base gives the same
+  input under other targets); with NEEDS_MAINTAINER_DECISION entries they make up the
+  "Decision needed" lines of the report and summary. A decision is MAJOR only when the oracle
+  shows head worse than base, otherwise a NOTE.
+- When every delta needs a parser flag the PR adds (`corpus.json` `flag_only`), the verdict carries
+  a scope, e.g. `UNSAFE (flag custom-functions only)`, and the summary adds "default path
+  byte-identical (N requests)".
+- Classifications match in file order and the first match wins. A glob may not clear a `regressed`
+  case unless it is REGRESSION; a catch-all (`w-*`, `m-t-*`, `source:wpt`) must cover cases of a
+  single transition; REGRESSION is rejected where base is wrong in the same engines as head.
+- A checklist answer `{"area": "<area>", "answer": "N/A", "evidence": …}` answers every item of
+  that (non-general) area that has no answer of its own.
+
+## The worklist
+
+`lcr worklist <run>` writes every slot into `analysis.json`, keeping existing answers, and prints
+`{checklist, prefilled_na, deltas: [{id, checks, count}], stale_slots, linked_issues, intent}`.
+Slots come from the same uncapped lists the report evaluates (`open_slots()`); a mutation family
+with no oracle-bad case becomes one glob slot with its count. A checklist item with a
+`covers: <glob>, …` line starts as N/A when the diff touches none of those files. A slot whose case
+no longer fails is marked `_stale` and ignored by A3.
+
 ## The oracle
 
 See [`references/oracle.md`](../references/oracle.md) for how DOMs are synthesized, how values are
-compared, what each status means, and the known limitations.
+compared, what each status and transition means, and the known limitations. Jobs that errored can
+be re-run on their own with `lcr oracle <run> --rerun <ids>`.
 
 ## Adding things
 
@@ -58,4 +111,8 @@ compared, what each status means, and the known limitations.
 - An engine profile: add it to `config/engines.json` (a Playwright release), run
   `lcr setup --profiles <name>`, then `lcr selftest`.
 - A mutation: `lib/lcr/mutations.py`; it must be deterministic and produce valid CSS or `None`.
-- Probes and checklists: see [CONTRIBUTING.md](../CONTRIBUTING.md).
+- Probes and checklists: see [CONTRIBUTING.md](../CONTRIBUTING.md). A checklist item that restates
+  another item's root cause carries a line `  same-root-as: <ID>` after its `verify:` line, so a
+  FAIL of both is counted once; an item about specific files carries `  covers: <glob>, …`. Curated probes cite spec anchors, WPT files, issues and merged
+  PRs, never an open PR, and never set `repro:` (that key marks a PR probe reproducing the linked
+  issue).
