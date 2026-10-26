@@ -19,7 +19,8 @@ Cargo build scripts, procedural macros and the test suite. Treat a review like c
 building the branch yourself.
 
 - Every build, test and browser run happens in a Docker container, as your user, with only the
-  run directory and the harness cache mounted. Nothing from the pull request runs on the host.
+  run directory and the harness cache mounted. Nothing from the pull request runs on the host,
+  unless you opt into `LCR_BUILD=host`, which builds and tests directly on your machine.
 - The browser oracle runs with networking disabled.
 - The builder container needs the network to fetch crates, and it shares a Cargo home and build
   targets across runs to stay fast. A malicious pull request could therefore tamper with the
