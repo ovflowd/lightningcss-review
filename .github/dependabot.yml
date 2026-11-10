@@ -15,6 +15,8 @@ updates:
     directory: /
     schedule:
       interval: weekly
+    cooldown:
+      default-days: 3
     allow:
       # Docker dependency names leave out the registry (mcr.microsoft.com).
       - dependency-name: playwright
@@ -25,6 +27,8 @@ updates:
     directory: /
     schedule:
       interval: weekly
+    cooldown:
+      default-days: 3
     versioning-strategy: increase
     ignore:
       # The types follow the oldest Node major lcr supports (package.json engines), so tsc
@@ -42,6 +46,8 @@ updates:
     directory: /
     schedule:
       interval: monthly
+    cooldown:
+      default-days: 3
     groups:
       actions:
         patterns:
