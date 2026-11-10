@@ -1,4 +1,4 @@
-# Dependabot keeps the latest engine profile and the dev tooling current.
+# Dependabot keeps the latest engine profile, the dev tooling and the CI actions current.
 #
 # - docker-compose: compose.yaml pins each engine profile's Playwright image. Only the latest
 #   profile's pin is a service Dependabot reads (`playwright-latest`); the legacy profiles
@@ -8,6 +8,7 @@
 #   run `lcr setup --profiles latest && lcr selftest --profiles latest` on it (or let
 #   `lcr setup --update` do the same locally).
 # - npm: the exact-pinned devDependencies in package.json (the host has no runtime dependencies).
+# - github-actions: the actions in .github/workflows, all in one PR.
 version: 2
 updates:
   - package-ecosystem: docker-compose
@@ -36,3 +37,14 @@ updates:
           - '*'
     commit-message:
       prefix: deps
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    groups:
+      actions:
+        patterns:
+          - '*'
+    commit-message:
+      prefix: ci
